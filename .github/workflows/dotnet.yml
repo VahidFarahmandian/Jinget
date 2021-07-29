@@ -1,4 +1,4 @@
-name: .NET
+name:  .NET
 
 on:
   push:
@@ -8,7 +8,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      Version: $(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r) #Build Number format 
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -21,3 +22,9 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Pack
+      run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output .
+    - name: Push
+      run: dotnet nuget push Jinget.Extensions.${Version}.nupkg --api-key ${GITHUB_TOKEN} --source https://api.nuget.org/v3/index.json
+      env:
+        GITHUB_TOKEN: ${{ secrets.Nuget_GitHub_Api_Key }}
