@@ -1,10 +1,16 @@
-name:  .NET
+name:  JingetExtensionsCI
 
 on:
   push:
     branches: [ main ]
+    paths-ignore: 
+      - '**/*.md'
+      - '.github/*.yml'
   pull_request:
     branches: main
+    paths-ignore: 
+      - '**/*.md'
+      - '.github/*.yml'
   
 jobs:
   build:
@@ -15,8 +21,6 @@ jobs:
     - name: Set Version Number
       id: VersionNumber
       run: echo "::set-output name=versionNumber::$(date +'%Y.%m.%d').${{github.run_number}}"
-    - name: Echo Version Number
-      run: echo "${{steps.VersionNumber.outputs.versionNumber}}"
     
     - uses: actions/checkout@v2
     - name: Setup .NET
