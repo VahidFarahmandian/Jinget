@@ -11,10 +11,8 @@ jobs:
     env:
       set VERSION: $(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r) #Build Number format 
     steps:
-    
     - name: echo verison
-      run: echo $VERSION
-    - name: echo token
-      run: echo $GITHUB_TOKEN
+      run: "echo ${VERSION}"
+    
       env:
         GITHUB_TOKEN: ${{ secrets.Nuget_GitHub_Api_Key }}
