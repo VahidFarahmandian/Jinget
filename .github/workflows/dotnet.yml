@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 env:
   GITHUB_TOKEN: ${{ secrets.Nuget_GitHub_Api_Key }}
-  VERSION: "${{(date +'%Y.%m.%d')}}.${{github.run_number}}"
+  VERSION: "{{$(date +'%Y.%m.%d')}}.${{github.run_number}}"
   
 jobs:
   build:
