@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Jinget.Extensions
+namespace Jinget.Extensions.Database.DbTypes
 {
     public static class DbTypeExtensions
     {

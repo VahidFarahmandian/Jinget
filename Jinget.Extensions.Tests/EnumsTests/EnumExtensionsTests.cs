@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Jinget.Extensions.Enums;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Jinget.Extensions.Tests
+namespace Jinget.Extensions.EnumsTests
 {
     [TestClass()]
     public class EnumExtensionsTests
@@ -70,7 +71,7 @@ namespace Jinget.Extensions.Tests
         public void should_generate_InvalidOperationException()
         {
             string enumDescription = "Java";
-            EnumExtensions.GetValueFromDescription<BaseData.InvalidStruct>(enumDescription);
+            EnumExtensions.GetValueFromDescription<Tests.BaseData.InvalidStruct>(enumDescription);
         }
     }
 }

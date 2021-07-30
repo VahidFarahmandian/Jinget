@@ -1,7 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
+using Jinget.Extensions.Database.DbTypes;
 
-namespace Jinget.Extensions.Tests
+namespace Jinget.Extensions.Database.DbTypesTests
 {
     [TestClass()]
     public class DbTypeExtensionsTests
