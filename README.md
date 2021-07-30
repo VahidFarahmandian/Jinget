@@ -1,7 +1,7 @@
 # jinget-extensions
 [![.NET](https://github.com/VahidFarahmandian/jinget-extensions/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/VahidFarahmandian/jinget-extensions/actions/workflows/dotnet.yml)
 
-| Category  | Type |
+| Category | Type |
 | ------------ | ------------ |
 | Enumeration | Enum |
 | Database | DbType |
