@@ -1,16 +1,20 @@
 name:  JingetExtensionsCI
 
 on:
+  workflow_run:
+    workflows: ["CodeQL"]
+    types: 
+      - completed
   push:
     branches: [ main ]
-    paths-ignore: 
-      - '**/*.md'
-      - '.github/*.yml'
+    paths: 
+      - '!**/*.md'
+      - '!.github/*.yml'
   pull_request:
     branches: main
     paths-ignore: 
-      - '**/*.md'
-      - '.github/*.yml'
+      - '!**/*.md'
+      - '!.github/*.yml'
   
 jobs:
   build:
