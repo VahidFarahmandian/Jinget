@@ -5,13 +5,13 @@ on:
     branches: [ main ]
     paths: 
       - '!**/*.md'
-      - '!.github/*.yml'
+      - '!.github/*'
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ main ]
     paths: 
       - '!**/*.md'
-      - '!.github/*.yml'
+      - '!.github/*'
   schedule:
     - cron: '35 13 * * 0'
 
