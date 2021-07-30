@@ -30,6 +30,6 @@ jobs:
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal
     - name: Pack
-      run: dotnet pack --configuration Release /p:Version=${{steps.VersionNumber.outputs.versionNumber}} --no-build --output
+      run: dotnet pack --configuration Release /p:Version=${{steps.VersionNumber.outputs.versionNumber}} --no-build --output .
     - name: Push
       run: dotnet nuget push Jinget.Extensions.${{steps.VersionNumber.outputs.versionNumber}}.nupkg --api-key ${GITHUB_TOKEN} --source https://api.nuget.org/v3/index.json
