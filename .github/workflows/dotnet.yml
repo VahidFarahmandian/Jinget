@@ -11,7 +11,19 @@ jobs:
     
     steps:
     - name: echo verison
-      run: echo "$(date +'%Y.%m.%d').${{github.run_number}}"
+      run: echo "$VERSION"
+    
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
       env:
         GITHUB_TOKEN: ${{ secrets.Nuget_GitHub_Api_Key }}
-        VERSION: $(date +'%Y.%m.%d')
+        VERSION: "$(date +'%Y.%m.%d').${{github.run_number}}"
