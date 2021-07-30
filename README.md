@@ -1,10 +1,11 @@
 # jinget-extensions
 [![.NET](https://github.com/VahidFarahmandian/jinget-extensions/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/VahidFarahmandian/jinget-extensions/actions/workflows/dotnet.yml)
 
-|  Currently supported extensions  |
-| ------------ |
-|  Enum |
-|  DbType |
+| Category  | Type |
+| ------------ | ------------ |
+| Enumeration | Enum |
+| Database | DbType |
+| Database | IDbConnection |
 
 # How to install
 In order to install this package please refer to [nuget.org](http:https://www.nuget.org/packages/Jinget.Extensions/// "nuget.org")
