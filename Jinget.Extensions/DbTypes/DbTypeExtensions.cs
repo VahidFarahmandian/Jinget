@@ -29,12 +29,12 @@ namespace Jinget.Extensions
         }
 
         /// <summary>
-        /// Check if given type is an unicode string type such as nchar or nvarchar
+        /// Check if the given type is an unicode string type such as nchar or nvarchar
         /// </summary>
         public static bool IsUnicodeType(this DbType type) => type == DbType.String;
 
         /// <summary>
-        /// Check if given type is a non-unicode string type such as char or varchar
+        /// Check if the given type is a non-unicode string type such as char or varchar
         /// </summary>
         public static bool IsNonUnicodeType(this DbType type) => type == DbType.AnsiString;
 
