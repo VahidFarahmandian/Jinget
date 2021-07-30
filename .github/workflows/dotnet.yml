@@ -14,4 +14,4 @@ jobs:
       run: echo "${VERSION}"
       env:
         GITHUB_TOKEN: ${{ secrets.Nuget_GitHub_Api_Key }}
-        VERSION: $(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r) #Build Number format 
+        VERSION: $(date +'%Y.%m.%d')$(Rev:.r) #Build Number format 
