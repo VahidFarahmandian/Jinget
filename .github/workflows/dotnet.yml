@@ -13,4 +13,7 @@ jobs:
     
     steps:
     - name: Set Version Number
-      run: echo "::set-output name=date::$(date +'%Y.%m.%d').${{github.run_number}}"
+      id: VersionNumber
+      run: echo "::set-output name=versionNumber::$(date +'%Y.%m.%d').${{github.run_number}}"
+    - name: Echo Version Number
+      run: echo "${{steps.VersionNumber.outputs.versionNumber}}"
