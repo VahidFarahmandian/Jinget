@@ -9,12 +9,12 @@ on:
     branches: [ main ]
     paths: 
       - '!**/*.md'
-      - '!.github/*.yml'
+      - '!.github/*'
   pull_request:
     branches: main
     paths-ignore: 
       - '!**/*.md'
-      - '!.github/*.yml'
+      - '!.github/*'
   
 jobs:
   build:
