@@ -9,7 +9,7 @@
 | Collection | IDictionary |
 
 # How to install
-In order to install this package please refer to [nuget.org](http:https://www.nuget.org/packages/Jinget.Extensions/// "nuget.org")
+In order to install this package please refer to [nuget.org](https://www.nuget.org/packages/Jinget.Extensions "nuget.org")
 
 # How to use
 Sample codes are available at [Jinget.Extensions.Tests folder](https://github.com/VahidFarahmandian/jinget-extensions/tree/main/Jinget.Extensions.Tests "Jinget.Extensions.Tests folder")
