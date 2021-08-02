@@ -6,6 +6,7 @@
 | Enumeration | Enum |
 | Database | DbType |
 | Database | IDbConnection |
+| Collection | IDictionary |
 
 # How to install
 In order to install this package please refer to [nuget.org](http:https://www.nuget.org/packages/Jinget.Extensions/// "nuget.org")
