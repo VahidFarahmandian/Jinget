@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Jinget.Extensions.EnumsTests
+namespace Jinget.Extensions.Tests.Enums
 {
     [TestClass()]
     public class EnumExtensionsTests

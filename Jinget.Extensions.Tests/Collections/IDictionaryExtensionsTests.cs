@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
+using Jinget.Extensions.Collections;
 
-namespace Jinget.Extensions.Collections.Dictionary.Tests
+namespace Jinget.Extensions.Tests.Collections
 {
     [TestClass()]
     public class IDictionaryExtensionsTests
@@ -37,7 +38,7 @@ namespace Jinget.Extensions.Collections.Dictionary.Tests
                 { "gender", "male" },
                 { "country", "Iran" }
             };
-
+            
             var result = First.Merge(Second);
 
             Assert.IsFalse(result.Keys.Except(expected.Keys).Any());

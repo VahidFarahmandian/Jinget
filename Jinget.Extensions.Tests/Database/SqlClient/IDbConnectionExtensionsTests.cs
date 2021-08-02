@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Data;
 
-namespace Jinget.Extensions.Tests.Database.SqlClientTests
+namespace Jinget.Extensions.Tests.Database.SqlClient
 {
     [TestClass]
     public class IDbConnectionExtensionsTests

@@ -2,7 +2,7 @@
 using System.Data;
 using Jinget.Extensions.Enums;
 
-namespace Jinget.Extensions.EnumsTests
+namespace Jinget.Extensions.Tests.Enums
 {
     [TestClass()]
     public class DbTypeExtensionsTests
