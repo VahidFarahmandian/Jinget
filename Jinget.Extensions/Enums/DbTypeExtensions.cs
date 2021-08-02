@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Jinget.Extensions.Database.DbTypes
+namespace Jinget.Extensions.Enums
 {
     public static class DbTypeExtensions
     {
