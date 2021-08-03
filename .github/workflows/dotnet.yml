@@ -32,13 +32,19 @@ jobs:
       with:
         dotnet-version: 5.0.x
   
-    - name: Calculate next version
-      uses: cezarypiatek/NextVersionGeneratorAction@0.4
+    #- name: Calculate next version
+     # uses: paulhatch/semantic-version@v4.0.2
+      #with:
+       # major-pattern: '^(?i)Major Change:\b'
+        #minor-pattern: '^(?i)New Feature:\b'
+        #format: "${major}.${minor}.${patch}-prerelease${increment}"
+        #bump_each_commit: false
+    - name: Git Version
+      uses: codacy/git-version@2.2.0
       with:
-        major-pattern: '^(?i)Major Change:\b'
-        minor-pattern: '^(?i)New Feature:\b'
-        patch-pattern: '^(?i)Fix:\b'
-        output-to-env-variable: 'Version'
+         major-identifier: '/^(?i)Breaking:\b/'
+         minor-identifier: '/^(?i)Feature:\b/'
+         
     - name: echo verison1
       run: echo "${{ env.Version }}"
   
