@@ -25,6 +25,13 @@ jobs:
     #- name: Set Version Number
      # id: VersionNumber
       #run: echo "::set-output name=versionNumber::$(date +'%Y.%m.%d').${{github.run_number}}"
+   
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+  
     - name: Calculate next version
       uses: cezarypiatek/NextVersionGeneratorAction@0.4
       with:
@@ -36,12 +43,7 @@ jobs:
       run: echo "${{ env.Version }}"
     - name: echo verison2
       run: echo "$env.Version"
-
-    #- uses: actions/checkout@v2
-   # - name: Setup .NET
-  #    uses: actions/setup-dotnet@v1
-   #   with:
-  #      dotnet-version: 5.0.x
+  
   #  - name: Restore dependencies
  #    run: dotnet restore
 
