@@ -41,8 +41,6 @@ jobs:
         output-to-env-variable: 'Version'
     - name: echo verison1
       run: echo "${{ env.Version }}"
-    - name: echo verison2
-      run: echo "$env.Version"
   
   #  - name: Restore dependencies
  #    run: dotnet restore
