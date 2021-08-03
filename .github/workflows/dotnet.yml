@@ -1,20 +1,20 @@
 name:  JingetExtensionsCI
 
 on:
-  workflow_run:
-    workflows: ["CodeQL"]
-    types: 
-      - completed
+ # workflow_run:
+#    workflows: ["CodeQL"]
+#    types: 
+#      - completed
   push:
     branches: [ main ]
-    paths: 
-      - '!**/*.md'
-      - '!.github/*'
-  pull_request:
-    branches: main
-    paths-ignore: 
-      - '!**/*.md'
-      - '!.github/*'
+  #  paths: 
+ #     - '!**/*.md'
+  #    - '!.github/*'
+#  pull_request:
+#    branches: main
+ #   paths-ignore: 
+ #     - '!**/*.md'
+ #     - '!.github/*'
   
 jobs:
   build:
@@ -22,24 +22,36 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Set Version Number
-      id: VersionNumber
-      run: echo "::set-output name=versionNumber::$(date +'%Y.%m.%d').${{github.run_number}}"
-    
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+    #- name: Set Version Number
+     # id: VersionNumber
+      #run: echo "::set-output name=versionNumber::$(date +'%Y.%m.%d').${{github.run_number}}"
+    - name: Calculate next version
+      uses: cezarypiatek/NextVersionGeneratorAction@0.4
       with:
-        dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore
+        major-pattern: 'BREAKING CHANGES:'
+        minor-pattern: 'FEATURE:'
+        patch-pattern: '.*'
+        output-to-env-variable: 'Version'
+    - name: echo verison1
+      run: echo "${{ env.Version }}"
+    - name: echo verison2
+      run: echo "$env.Version"
 
-    - name: Build
-      run: dotnet build --no-restore --configuration Release
-    - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal
+    #- uses: actions/checkout@v2
+   # - name: Setup .NET
+  #    uses: actions/setup-dotnet@v1
+   #   with:
+  #      dotnet-version: 5.0.x
+  #  - name: Restore dependencies
+ #    run: dotnet restore
+
+ #   - name: Build
+  #    run: dotnet build --no-restore --configuration Release
+ #   - name: Test
+  #    run: dotnet test --no-build --configuration Release --verbosity normal
       
-    - name: Pack
-      run: dotnet pack --configuration Release /p:Version=${{steps.VersionNumber.outputs.versionNumber}} --no-build --output ./artifacts
-    - name: Push
-      run: dotnet nuget push ./artifacts/**.nupkg --api-key ${{ secrets.Nuget_GitHub_Api_Key }} --source nuget.org
+ #  - name: Pack
+  #    #run: dotnet pack --configuration Release /p:Version=${{steps.VersionNumber.outputs.versionNumber}} --no-build --output ./artifacts
+   #   run: dotnet pack --configuration Release /p:Version=${{ env.Version }} --no-build --output ./artifacts
+  #  - name: Push
+  #    run: dotnet nuget push ./artifacts/**.nupkg --api-key ${{ secrets.Nuget_GitHub_Api_Key }} --source nuget.org
