@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Jinget.Extensions\Jinget.Extensions.csproj" />
+    <ProjectReference Include="..\Jinget.Core\Jinget.Core.csproj" />
   </ItemGroup>
 
 </Project>

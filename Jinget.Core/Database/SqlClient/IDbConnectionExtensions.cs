@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Jinget.Extensions.Database.SqlClient
+namespace Jinget.Core.Database.SqlClient
 {
     public static class IDbConnectionExtensions
     {

@@ -3,21 +3,19 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Authors>Vahid Farahmandian</Authors>
-    <RepositoryUrl>https://github.com/VahidFarahmandian/jinget-extensions</RepositoryUrl>
+    <RepositoryUrl>https://github.com/VahidFarahmandian/Jinget</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
-    <Description>Contains some useful extension methods for different types.</Description>
-    <Copyright />
+    <Description>Contains core functionalities such as some useful extension methods, attributes etc.</Description>
+    <Copyright>All Rights Reserved</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageIcon>package-icon.png</PackageIcon>
     <PackageIconUrl />
-    <Company>Arka Solutions</Company>
+    <Company>Jinget</Company>
+    <Product>Jinget</Product>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="assets\package-icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
+    <Folder Include="assets\" />
   </ItemGroup>
 
 </Project>

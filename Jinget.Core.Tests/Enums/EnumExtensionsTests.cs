@@ -1,8 +1,8 @@
-﻿using Jinget.Extensions.Enums;
+﻿using Jinget.Core.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Jinget.Extensions.Tests.Enums
+namespace Jinget.Core.Tests.Enums
 {
     [TestClass()]
     public class EnumExtensionsTests

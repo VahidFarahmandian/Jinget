@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
-using Jinget.Extensions.Enums;
+using Jinget.Core.Enums;
 
-namespace Jinget.Extensions.Tests.Enums
+namespace Jinget.Core.Tests.Enums
 {
     [TestClass()]
     public class DbTypeExtensionsTests

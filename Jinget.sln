@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31423.177
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Extensions", "Jinget.Extensions\Jinget.Extensions.csproj", "{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Core", "Jinget.Core\Jinget.Core.csproj", "{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jinget.Extensions.Tests", "Jinget.Extensions.Tests\Jinget.Extensions.Tests.csproj", "{228C0492-4882-4F24-993F-1EE0D7E41258}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jinget.Core.Tests", "Jinget.Core.Tests\Jinget.Core.Tests.csproj", "{228C0492-4882-4F24-993F-1EE0D7E41258}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

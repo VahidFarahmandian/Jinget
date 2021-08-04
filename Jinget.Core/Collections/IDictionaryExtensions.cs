@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Jinget.Extensions.Collections
+namespace Jinget.Core.Collections
 {
     public static class IDictionaryExtensions
     {

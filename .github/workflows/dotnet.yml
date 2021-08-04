@@ -1,4 +1,4 @@
-name:  JingetExtensionsCI
+name:  JingetCI
 
 on:
  # workflow_run:
