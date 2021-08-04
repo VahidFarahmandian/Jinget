@@ -1,10 +1,11 @@
+name:  release-preview-ci
+
 on:
   workflow_run:
     workflows: ["build-ci"]
     types: 
       - completed
   push:
-    push:
     branches:
     - main
     paths: 
