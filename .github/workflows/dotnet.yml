@@ -45,8 +45,8 @@ jobs:
       with:
          major-identifier: '/^(?i)Breaking:\b/'
          minor-identifier: '/^(?i)Feature:\b/'
-         
-         
+         format: "${major}.${minor}.${patch}"
+         bump_each_commit: false
     - name: echo verison1
       run: echo "${{steps.versionNumber.outputs.version}}"
   
