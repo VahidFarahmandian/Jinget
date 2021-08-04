@@ -1,10 +1,10 @@
 # Jinget
 [![.NET](https://github.com/VahidFarahmandian/jinget/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/VahidFarahmandian/jinget/actions/workflows/dotnet.yml)
+**We are currently in the way to make Jinget an open source project, during this journey we will publish different parts of Jinget**
 
+Jinget is a framework written using .NetStandard2.1, and built using DDD+CQRS. Jinget boosts your productivity by providing robust infrastructure for source codesCurrently 
 
-Jinget is a framework written using .NetStandard2.1, and built using DDD+CQRS. Jinget boosts your productivity by providing robust infrastructure for codes.
-
-Currently Jinget provides the following benefits:
+Jinget provides the following benefits:
 
 - Easy to config data access layer using Entity Framework Core and Dapper
 - Communicating with external services and web APIs(SOAP, RestFul and gRPC services)
