@@ -46,6 +46,7 @@ jobs:
          major-identifier: '/^(?i)Breaking:\b/'
          minor-identifier: '/^(?i)Feature:\b/'
          
+         
     - name: echo verison1
       run: echo "${{steps.versionNumber.outputs.version}}"
   
