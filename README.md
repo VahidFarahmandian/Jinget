@@ -1,5 +1,6 @@
 # Jinget
-[![.NET](https://github.com/VahidFarahmandian/jinget/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/VahidFarahmandian/jinget/actions/workflows/dotnet.yml)
+**Build:** [![build-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/build-ci.yml/badge.svg?branch=main)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/build-ci.yml)
+**Release:** [![release-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-ci.yml/badge.svg?branch=main)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-ci.yml)
 **We are currently in the way to make Jinget an open source project, during this journey we will publish different parts of Jinget**
 
 Jinget is a framework written using .NetStandard2.1, and built using DDD+CQRS. Jinget boosts your productivity by providing robust infrastructure for source codesCurrently 
