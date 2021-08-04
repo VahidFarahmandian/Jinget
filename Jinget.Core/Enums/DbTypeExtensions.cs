@@ -28,6 +28,7 @@ namespace Jinget.Core.Enums
             }
         }
 
+        
         /// <summary>
         /// Check if the given type is an unicode string type such as 'nchar' or 'nvarchar'
         /// </summary>
