@@ -7,6 +7,7 @@ namespace Jinget.Core.Tests.Enums
     [TestClass()]
     public class DbTypeExtensionsTests
     {
+        
         [TestMethod()]
         public void Should_return_true_for_numeric_dbType() => Assert.IsTrue(DbType.Int32.IsNumericType());
 
