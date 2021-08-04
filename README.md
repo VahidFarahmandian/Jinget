@@ -1,8 +1,8 @@
 # Jinget
 [![.NET](https://github.com/VahidFarahmandian/jinget/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/VahidFarahmandian/jinget/actions/workflows/dotnet.yml)
+**We are currently in the way to make Jinget an open source project, during this journey we will publish different parts of Jinget**
 
-
-Jinget is a framework based on .NET core, which is built using DDD+CQRS. Jinget boosts your productivity by providing robust infrastructure for codes.
+Jinget is a framework based on .NET core, which is built using DDD+CQRS. Jinget boosts your productivity by providing robust infrastructure for codes. 
 
 Currently Jinget provides the following benefits:
 
