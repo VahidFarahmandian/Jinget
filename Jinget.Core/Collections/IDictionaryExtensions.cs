@@ -5,7 +5,7 @@ namespace Jinget.Core.Collections
     public static class IDictionaryExtensions
     {
         /// <summary>
-        /// By default (force=false), only keys in second collection which do not exist in first collection will be merged and duplicate keys will be ignored
+        /// By default(force=false), only keys in second collection which do not exist in first collection will be merged and duplicate keys will be ignored
         /// </summary>
         /// <param name="overwrite">if set to true, then duplicate keys from second collection will be overwritten to the first collection</param>
         /// <returns></returns>
