@@ -1,22 +1,20 @@
 name:  build-ci
 
 on:
- # workflow_run:
+# workflow_run:
 #    workflows: ["CodeQL"]
   #  types: 
 #      - completed
   push:
-    branches:
-    - main
-    paths: 
-      - '!**/*.md'
-      - '!.github/*'
+    branches: [main]
+#    paths: 
+#      - '!**/*.md'
+#      - '!.github/*'
   pull_request:
-    branches:
-    - main
-    paths-ignore: 
-      - '!**/*.md'
-      - '!.github/*'
+    branches: [main]
+#    paths-ignore: 
+#      - '!**/*.md'
+#      - '!.github/*'
   
 jobs:
   build:

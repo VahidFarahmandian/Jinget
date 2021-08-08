@@ -8,6 +8,7 @@ namespace Jinget.Core.Database.SqlClient
         {
             if (connection.State != ConnectionState.Closed)
                 connection.Close();
+            
             connection.Open();
         }
     }
