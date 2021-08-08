@@ -6,7 +6,7 @@ on:
     types: 
       - completed
   push:
-    branches: [main]
+#    branches: [main]
 #    paths: 
 #      - '!**/*.md'
 #      - '!.github/*'
