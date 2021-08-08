@@ -11,6 +11,14 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+        source-url: https://nuget.pkg.github.com/Jinget/index.json
+      env:
+        NUGET_AUTH_TOKEN: '%NUGET_AUTH_TOKEN%'
+        
     - name: Set VERSION variable from tag
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
     - name: Build
@@ -19,10 +27,17 @@ jobs:
       run: dotnet test --configuration Release /p:Version=${VERSION} --no-build
     - name: Pack
       run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output ./artifacts
-    - name: Push
-      #run: dotnet nuget push ./artifacts/**.${VERSION}.nupkg --source https://nuget.pkg.github.com/jinget/index.json --api-key ${GITHUB_TOKEN} --skip-duplicate --no-symbols
-      run: |
-        dotnet nuget add source https://nuget.pkg.github.com/jinget/index.json --name github --username jinget --password ${GITHUB_TOKEN} --store-password-in-clear-text
-        dotnet nuget push ./artifacts/**.${VERSION}.nupkg --source github
+    
+
+    - name: Publish the package to GPR
+      run: dotnet nuget push ./artifacts/**.${VERSION}.nupkg --no-symbols --skip-duplicate
       env:
-        GITHUB_TOKEN: ${{ secrets.NUGET_GITHUB_API_KEY }}
+        NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TO_NUGET_ORG}}
+    
+    #run: dotnet nuget push ./artifacts/**.${VERSION}.nupkg --source https://nuget.pkg.github.com/jinget/index.json --api-key ${GITHUB_TOKEN} --skip-duplicate --no-symbols
+    #  run: |
+    #    dotnet nuget add source https://nuget.pkg.github.com/jinget/index.json --name github --username jinget --password ${{ secrets.NUGET_GITHUB_API_KEY }} --store-password-in-clear-text
+    #    nuget setapikey ${GITHUB_TOKEN} -source https://nuget.pkg.github.com/jinget
+     #   dotnet nuget push ./artifacts/**.${VERSION}.nupkg --source https://nuget.pkg.github.com/jinget/index.json --api-key ${{ secrets.NUGET_GITHUB_API_KEY }} --skip-duplicate
+     #       --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
+
