@@ -6,11 +6,10 @@ on:
     types: 
       - completed
   push:
-    branches:
-    - main
-    paths: 
-      - '!**/*.md'
-      - '!.github/*'
+    branches: [main]
+#    paths: 
+#      - '!**/*.md'
+#      - '!.github/*'
     tags:
     - "v[0-9]+.[0-9]+.[0-9]+"
 jobs:
