@@ -1,24 +1,24 @@
 name:  build-ci
 
 on:
-# workflow_run:
-#    workflows: ["CodeQL"]
-  #  types: 
-#      - completed
+  workflow_run:
+    workflows: ["CodeQL"]
+    types: 
+      - completed
   push:
     branches: [main]
-#    paths: 
-#      - '!**/*.md'
-#      - '!.github/*'
+    paths: 
+      - '!**/*.md'
+      - '!.github/*'
   pull_request:
     branches: [main]
-#    paths-ignore: 
-#      - '!**/*.md'
-#      - '!.github/*'
+    paths-ignore: 
+      - '!**/*.md'
+      - '!.github/*'
   
 jobs:
   build:
-  #  if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
