@@ -20,6 +20,9 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output ./artifacts
     - name: Push
-      run: dotnet nuget push ./artifacts/**.${VERSION}.nupkg --source https://nuget.pkg.github.com/jinget/index.json --api-key ${GITHUB_TOKEN}
+      #run: dotnet nuget push ./artifacts/**.${VERSION}.nupkg --source https://nuget.pkg.github.com/jinget/index.json --api-key ${GITHUB_TOKEN} --skip-duplicate --no-symbols
+      run: |
+        dotnet nuget add source https://nuget.pkg.github.com/jinget/index.json --name github --username jinget --password ${GITHUB_TOKEN --store-password-in-clear-text
+        dotnet nuget push ./artifacts/**.${VERSION}.nupkg --source github
       env:
         GITHUB_TOKEN: ${{ secrets.NUGET_GITHUB_API_KEY }}
