@@ -7,15 +7,14 @@
     <RepositoryType>GitHub</RepositoryType>
     <Description>Contains core functionalities such as some useful extension methods, attributes etc.</Description>
     <Copyright>All Rights Reserved</Copyright>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageIcon>package-icon.png</PackageIcon>
-    <PackageIconUrl />
     <Company>Jinget</Company>
     <Product>Jinget</Product>
   </PropertyGroup>
-
   <ItemGroup>
-    <Folder Include="assets\" />
+    <None Include="assets\package-icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
-
 </Project>
