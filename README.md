@@ -25,7 +25,9 @@ In order to install Jinget please refer to [nuget.org](https://www.nuget.org/pac
 Sample codes are available via Unit Test projects which are provided beside the main source codes
 
 # Contact Me
-:tw-27a1: Twitter: https://twitter.com/_jinget
-:tw-27a1: Email: farahmandian2011@gmail.com
-:tw-27a1: Instagram: https://www.instagram.com/vahidfarahmandian
+👨‍💻 Twitter: https://twitter.com/_jinget
+
+📧 Email: farahmandian2011@gmail.com
+
+📣 Instagram: https://www.instagram.com/vahidfarahmandian
 
