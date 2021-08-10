@@ -8,6 +8,9 @@ namespace Jinget.Core.Tests.ExtensionMethods.Generics
     public class GenericTypeExtensionsTests
     {
         [TestMethod()]
+        public void should_return_false_for_irrelative_types() => Assert.IsFalse(typeof(System.Tuple).IsSubclassOfRawGeneric(typeof(System.Exception)));
+
+        [TestMethod()]
         public void should_return_true_for_nongeneric_child_nongeneric_parent() => Assert.IsTrue(typeof(NonGenericChildNonGenericParent).IsSubclassOfRawGeneric(typeof(NonGenericParent)));
 
         [TestMethod()]
