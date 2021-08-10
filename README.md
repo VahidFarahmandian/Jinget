@@ -19,7 +19,7 @@ Jinget provides the following benefits:
 - Auto injected security considerations based on OWASP Top 10
 
 # How to install
-In order to install Jinget please refer to [nuget.org](https://www.nuget.org/packages/Jinget "nuget.org")
+In order to install Jinget please refer to [nuget.org](https://www.nuget.org/profiles/Jinget "nuget.org")
 
 # How to use
 Sample codes are available via Unit Test projects which are provided beside the main source codes
