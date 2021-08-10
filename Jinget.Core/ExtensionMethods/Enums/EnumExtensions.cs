@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Jinget.Core.Enums
+namespace Jinget.Core.ExtensionMethods.Enums
 {
     public static class EnumExtensions
     {
