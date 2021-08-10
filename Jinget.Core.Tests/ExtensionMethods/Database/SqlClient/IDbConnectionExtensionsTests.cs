@@ -1,9 +1,9 @@
-﻿using Jinget.Core.Database.SqlClient;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Data;
+using Jinget.Core.ExtensionMethods.Database.SqlClient;
 
-namespace Jinget.Core.Tests.Database.SqlClient
+namespace Jinget.Core.Tests.ExtensionMethods.Database.SqlClient
 {
     [TestClass]
     public class IDbConnectionExtensionsTests

@@ -1,10 +1,6 @@
 name:  build-ci
 
 on:
-  workflow_run:
-    workflows: ["CodeQL"]
-    types: 
-      - completed
   push:
     branches: [main]
     paths: 
@@ -18,7 +14,6 @@ on:
   
 jobs:
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
-using Jinget.Core.Collections;
+using Jinget.Core.ExtensionMethods.Collections;
 
-namespace Jinget.Core.Tests.Collections
+namespace Jinget.Core.Tests.ExtensionMethods.Collections
 {
     [TestClass()]
     public class IDictionaryExtensionsTests

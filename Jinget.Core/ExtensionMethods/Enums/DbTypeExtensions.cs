@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Jinget.Core.Enums
+namespace Jinget.Core.ExtensionMethods.Enums
 {
     public static class DbTypeExtensions
     {
@@ -38,6 +38,5 @@ namespace Jinget.Core.Enums
         /// Check if the given type is a non-unicode string type such as 'char' or 'varchar'
         /// </summary>
         public static bool IsNonUnicodeType(this DbType type) => type == DbType.AnsiString;
-
     }
 }
