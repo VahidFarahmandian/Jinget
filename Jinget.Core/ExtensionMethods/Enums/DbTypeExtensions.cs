@@ -6,6 +6,26 @@ namespace Jinget.Core.ExtensionMethods.Enums
     {
         public static bool IsNumericType(this DbType type)
         {
+        #if NET5_0_OR_GREATER
+            return type switch
+            {
+                DbType.AnsiString
+                or DbType.Binary
+                or DbType.Currency
+                or DbType.Date
+                or DbType.DateTime
+                or DbType.Guid
+                or DbType.Object
+                or DbType.String
+                or DbType.Time
+                or DbType.AnsiStringFixedLength
+                or DbType.StringFixedLength
+                or DbType.Xml
+                or DbType.DateTime2
+                or DbType.DateTimeOffset => false,
+                _ => true,
+            };
+        #else
             switch (type)
             {
                 case DbType.AnsiString:
@@ -26,9 +46,10 @@ namespace Jinget.Core.ExtensionMethods.Enums
                 default:
                     return true;
             }
+        #endif
         }
 
-        
+
         /// <summary>
         /// Check if the given type is an unicode string type such as 'nchar' or 'nvarchar'
         /// </summary>

@@ -10,10 +10,14 @@ namespace Jinget.Core.ExtensionMethods.Generics
         /// </summary>
         public static bool IsSubclassOfRawGeneric(this Type derivedType, Type parentType)
         {
+        #if NET5_0_OR_GREATER
+            while (derivedType != null && derivedType is not object)
+        #else
             while (derivedType != null && derivedType != typeof(object))
+        #endif
             {
-                var cur = derivedType.IsGenericType ? derivedType.GetGenericTypeDefinition() : derivedType;
-                if (parentType == cur)
+                var currentType = derivedType.IsGenericType ? derivedType.GetGenericTypeDefinition() : derivedType;
+                if (parentType == currentType)
                 {
                     return true;
                 }
