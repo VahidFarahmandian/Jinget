@@ -5,10 +5,10 @@ namespace Jinget.Core.ExtensionMethods.Collections
     public static class IDictionaryExtensions
     {
         /// <summary>
-        /// By default(force=false), only keys in second collection which do not exist in first collection will be merged and duplicate keys will be ignored
+        /// By default(<paramref name="overwrite"/>=false), only keys in second collection which do not exist 
+        /// in the first collection will be merged and duplicate keys will be ignored
         /// </summary>
         /// <param name="overwrite">if set to true, then duplicate keys from second collection will be overwritten to the first collection</param>
-        /// <returns></returns>
         public static IDictionary<string, TValue> Merge<TValue>(this IDictionary<string, TValue> first, IDictionary<string, TValue> second, bool overwrite = false)
         {
             foreach (var member in second)

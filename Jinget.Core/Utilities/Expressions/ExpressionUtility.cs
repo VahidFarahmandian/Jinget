@@ -1,10 +1,8 @@
 ﻿using Jinget.Core.Enumerations;
 using Jinget.Core.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Jinget.Core.ExtensionMethods.Expressions
 {
@@ -49,6 +47,10 @@ namespace Jinget.Core.ExtensionMethods.Expressions
             return source;
         }
 
+        /// <summary>
+        /// Try parse an expression and return a string representation of the expression in form of 'A.B.C.etc'
+        /// </summary>
+        /// <exception cref="JingetException"></exception>
         internal static bool TryParseExpression(Expression expression, out string path)
         {
             path = null;

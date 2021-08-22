@@ -4,6 +4,9 @@ namespace Jinget.Core.ExtensionMethods.Enums
 {
     public static class DbTypeExtensions
     {
+        /// <summary>
+        /// Check if given <seealso cref="DbType"/> is a numeric type or not
+        /// </summary>
         public static bool IsNumericType(this DbType type)
         {
         #if NET5_0_OR_GREATER

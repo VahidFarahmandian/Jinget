@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Jinget.Core.Tests.ExtensionMethods.BaseData
 {
@@ -8,10 +7,14 @@ namespace Jinget.Core.Tests.ExtensionMethods.BaseData
         public class InnerClass
         {
             public int InnerProperty1 { get; set; }
+            public string InnerProperty2 { get; set; }
+
         }
 
         public int Property1 { get; set; }
         public string Property2 { get; set; }
+
+        public InnerClass InnerSingularProperty { get; set; }
 
         public ICollection<InnerClass> InnerProperty { get; set; }
     }

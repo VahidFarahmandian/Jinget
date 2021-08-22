@@ -22,6 +22,8 @@ namespace Jinget.Core.ExtensionMethods.Enums
         /// If no Description is set on a field, then field name will be compared aginst the given description
         /// </summary>
         /// <typeparam name="TEnum">typeof enum</typeparam>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="InvalidEnumArgumentException"></exception>
         public static TEnum GetValueFromDescription<TEnum>(string description) where TEnum : struct, IConvertible
         {
             var type = typeof(TEnum);
