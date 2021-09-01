@@ -5,6 +5,7 @@ using System.Linq;
 using Jinget.Core.Tests.ExtensionMethods.BaseData;
 using static Jinget.Core.Tests.ExtensionMethods.BaseData.TestClass;
 using Jinget.Core.Enumerations;
+using System.Linq.Expressions;
 
 namespace Jinget.Core.ExtensionMethods.Tests
 {
@@ -97,6 +98,25 @@ namespace Jinget.Core.ExtensionMethods.Tests
         {
             IQueryable<TestClass> input = null;
             input.OrderByDynamic("", OrderByDirection.Descending);
+        }
+
+        [TestMethod()]
+        public void Should_find_given_property_invariant_case()
+        {
+            TestClass class1 = new() { Property1 = 1, Property2 = "C" };
+
+            Expression property1MemberExpr = Expression.PropertyOrField(
+                Expression.Constant(class1),
+                "pRoPerTy1"
+            );
+
+            Expression property2MemberExpr = Expression.PropertyOrField(
+                Expression.Constant(class1),
+                "PropErTy2"
+            );
+
+            Assert.IsTrue(Expression.Lambda<Func<int>>(property1MemberExpr).Compile()() == 1);
+            Assert.IsTrue(Expression.Lambda<Func<string>>(property2MemberExpr).Compile()() == "C");
         }
     }
 }
