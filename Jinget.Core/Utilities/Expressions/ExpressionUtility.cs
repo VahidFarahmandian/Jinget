@@ -1,10 +1,13 @@
 ﻿using Jinget.Core.Enumerations;
 using Jinget.Core.Exceptions;
+using Jinget.Core.ExtensionMethods;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
-namespace Jinget.Core.ExtensionMethods.Expressions
+namespace Jinget.Core.Utilities.Expressions
 {
     public static class ExpressionUtility
     {
@@ -129,6 +132,30 @@ namespace Jinget.Core.ExtensionMethods.Expressions
             }
 
             return expression;
+        }
+
+        /// <summary>
+        /// iterates throw the <paramref name="properties"/> and create a member init expression
+        /// </summary>
+        /// <typeparam name="T">type of expression parameter</typeparam>
+        /// <param name="properties">an array of member init expression properties name</param>
+        public static Expression<Func<T, T>> CreateMemberInitExpression<T>(string parameterName = "Param_0", params string[] properties)
+        {
+            var paramExpression = Expression.Parameter(typeof(T), parameterName);
+
+            List<MemberAssignment> bindings = new List<MemberAssignment>();
+
+            foreach (var property in properties)
+            {
+                bindings.Add(Expression.Bind(
+                    member: typeof(T).GetProperty(property),
+                    expression: Expression.Property(paramExpression, property)
+                    ));
+            }
+
+            var memberinit = Expression.MemberInit(Expression.New(typeof(T).GetDefaultConstructor()), bindings);
+
+            return Expression.Lambda<Func<T, T>>(memberinit, paramExpression);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Jinget.Core.ExtensionMethods.Enums;
-using Jinget.Core.Tests.ExtensionMethods.BaseData;
+using Jinget.Core.Tests._BaseData;
 
 namespace Jinget.Core.Tests.ExtensionMethods.Enums
 {

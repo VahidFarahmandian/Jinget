@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Jinget.Core.Tests.ExtensionMethods.BaseData
+namespace Jinget.Core.Tests._BaseData
 {
     public class NonGenericParent { }
     public class GenericParent<T> { }

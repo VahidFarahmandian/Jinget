@@ -2,8 +2,8 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Jinget.Core.Tests.ExtensionMethods.BaseData;
 using Jinget.Core.Exceptions;
+using Jinget.Core.Tests._BaseData;
 
 namespace Jinget.Core.ExtensionMethods.Expressions.Tests
 {

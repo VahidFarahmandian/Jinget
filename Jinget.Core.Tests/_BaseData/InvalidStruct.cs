@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Jinget.Core.Tests.ExtensionMethods.BaseData
+namespace Jinget.Core.Tests._BaseData
 {
     struct InvalidStruct : IConvertible
     {

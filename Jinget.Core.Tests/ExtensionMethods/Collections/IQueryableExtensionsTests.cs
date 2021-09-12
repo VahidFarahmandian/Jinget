@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Jinget.Core.Tests.ExtensionMethods.BaseData;
-using static Jinget.Core.Tests.ExtensionMethods.BaseData.TestClass;
 using Jinget.Core.Enumerations;
+using Jinget.Core.Tests._BaseData;
+using static Jinget.Core.Tests._BaseData.TestClass;
 
 namespace Jinget.Core.ExtensionMethods.Tests
 {
