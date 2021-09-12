@@ -1,8 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Jinget.Core.Tests._BaseData;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Jinget.Core.Tests.ExtensionMethods.BaseData;
 
 namespace Jinget.Core.ExtensionMethods.Expressions.Tests
 {

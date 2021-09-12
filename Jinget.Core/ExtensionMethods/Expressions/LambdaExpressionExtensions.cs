@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Jinget.Core.Utilities.Expressions;
+using System.Linq.Expressions;
 
 namespace Jinget.Core.ExtensionMethods.Expressions
 {
@@ -6,7 +7,8 @@ namespace Jinget.Core.ExtensionMethods.Expressions
     {
         public static string Stringfy(this LambdaExpression expression)
         {
-            if (expression == null) return null;
+            if (expression == null)
+                return null;
             ExpressionUtility.TryParseExpression(expression.Body, out var path);
             return path;
         }

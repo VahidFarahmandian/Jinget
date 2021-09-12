@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Jinget.Core.ExtensionMethods.Generics;
-using Jinget.Core.Tests.ExtensionMethods.BaseData;
+using Jinget.Core.Tests._BaseData;
 
 namespace Jinget.Core.Tests.ExtensionMethods.Generics
 {
