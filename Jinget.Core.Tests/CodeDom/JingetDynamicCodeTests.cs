@@ -105,6 +105,105 @@ namespace JingetDynamic {
         }
 
         [TestMethod]
+        public void should_compile_and_execute_multiline_dynamic_code_at_runtime()
+        {
+            string expectedResult = "1399/07/21";
+
+            string code = @"
+                          using Jinget.Core;
+                          return ConvertDate(dt);
+                          string ConvertDate(DateTime dt)
+                          {
+                                return Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(dt);
+                          }";
+            var result = new JingetDynamicCode().Execute(
+                code,
+                out List<string> errors, out string compiledSourceCode,
+                options: new JingetDynamicCode.MethodOptions
+                {
+                    ReturnType = typeof(string),
+                    Parameters = new List<JingetDynamicCode.MethodOptions.ParameterOptions>
+                    {
+                        new JingetDynamicCode.MethodOptions.ParameterOptions
+                        {
+                            Name="dt",
+                            Value=new DateTime(2020, 10, 12),
+                            Type = typeof(DateTime)
+                        }
+                    }
+                },
+                references: new List<string> { typeof(Utilities.DateTimeUtility).Assembly.Location });
+
+            Assert.IsFalse(errors.Any());
+            Assert.IsFalse(string.IsNullOrEmpty(compiledSourceCode));
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod]
+        public void should_compile_and_execute_single_dynamic_code_at_runtime()
+        {
+            string expectedResult = "1399/07/21";
+
+            string code = @"using Jinget.Core;return ConvertDate(dt);string ConvertDate(DateTime dt){return Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(dt);}";
+
+            var result = new JingetDynamicCode().Execute(
+                code,
+                out List<string> errors,
+                out string compiledSourceCode,
+                options: new JingetDynamicCode.MethodOptions
+                {
+                    ReturnType = typeof(string),
+                    Parameters = new List<JingetDynamicCode.MethodOptions.ParameterOptions>
+                    {
+                        new JingetDynamicCode.MethodOptions.ParameterOptions
+                        {
+                            Name="dt",
+                            Value=new DateTime(2020, 10, 12),
+                            Type = typeof(DateTime)
+                        }
+                    }
+                },
+                references: new List<string> { typeof(Utilities.DateTimeUtility).Assembly.Location });
+
+            Assert.IsFalse(errors.Any());
+            Assert.IsFalse(string.IsNullOrEmpty(compiledSourceCode));
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod]
+        public void should_compile_and_execute_single_dynamic_code_at_runtime_with_pass_parameter_value()
+        {
+            int expectedResult = 6;
+
+            string code = @"return GetValue(a, b);int GetValue(int a, int b){return a*b;}";
+
+            var result = new JingetDynamicCode().Execute(code, out List<string> errors, out string compiledSourceCode,
+                new JingetDynamicCode.MethodOptions()
+                {
+                    ReturnType = typeof(int),
+                    Parameters = new List<JingetDynamicCode.MethodOptions.ParameterOptions>
+                    {
+                        new JingetDynamicCode.MethodOptions.ParameterOptions
+                        {
+                            Name = "a",
+                            Value = 2,
+                            Type = typeof(int)
+                        },
+                        new JingetDynamicCode.MethodOptions.ParameterOptions
+                        {
+                            Name = "b",
+                            Value = 3,
+                            Type = typeof(int)
+                        }
+                    }
+                });
+
+            Assert.IsFalse(errors.Any());
+            Assert.IsFalse(string.IsNullOrEmpty(compiledSourceCode));
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void should_throw_exception()
         {
