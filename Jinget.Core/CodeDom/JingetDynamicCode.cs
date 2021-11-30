@@ -22,7 +22,10 @@ namespace Jinget.Core.CodeDom
 
         private class Compiler
         {
+            /// <param name="errors">Compilation might be ended with some errors. The compile time errors are stored in this output parameter</param>
+            /// <param name="jingetSource">During the dynamic code execution process, given sourceCode might change. Changed version of the sourceCode are stored in this output parameter</param>
             /// <param name="isTopLevelStatement">C# 9.0 enables you to write top level statements.</param>
+            /// <param name="references">In order to compile the given sourceCode, some external references might needed to be added. Required references are being passed using this parameter</param>
             internal byte[] Compile(string sourceCode, MethodOptions args, out List<string> errors, out string jingetSource,
                 bool isTopLevelStatement = true, List<string> references = null)
             {
@@ -59,6 +62,9 @@ namespace Jinget.Core.CodeDom
                 }
             }
 
+            /// <summary>
+            /// Generaetes new dynamic dll, based on the given source code. this dll created on the fly
+            /// </summary>
             CSharpCompilation GenerateAssembly(string sourceCode, List<string> externalReferences)
             {
                 var codeString = SourceText.From(sourceCode);
@@ -84,6 +90,10 @@ namespace Jinget.Core.CodeDom
                         assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default));
             }
 
+            /// <summary>
+            /// Generate source code using given expression. This method tries to put the given expression inside a method in a class
+            /// so that it could be invoked
+            /// </summary>
             string GenerateSourceCode(string expression, MethodOptions methodOptions)
             {
                 CodeNamespace globalCodeNamespace = new CodeNamespace();
@@ -185,7 +195,15 @@ namespace Jinget.Core.CodeDom
 
         public class MethodOptions
         {
+            /// <summary>
+            /// What should be return type of the dynamically injected Invoke method?
+            /// If not set, void will be used
+            /// </summary>
             public Type ReturnType { get; set; }
+
+            /// <summary>
+            /// What are the input parameters for dynamically injected Invoke method?
+            /// </summary>
             public List<ParameterOptions> Parameters { get; set; } = new List<ParameterOptions>();
             public class ParameterOptions
             {

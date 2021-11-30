@@ -2,6 +2,10 @@
 
 namespace Jinget.Core.Tests._BaseData
 {
+    public class SampleInterfaceClass : ISampleInterface
+    {
+
+    }
     public class TestClass
     {
         public class InnerClass
