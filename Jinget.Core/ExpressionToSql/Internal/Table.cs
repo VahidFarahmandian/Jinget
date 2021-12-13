@@ -1,4 +1,4 @@
-namespace Jinget.Core.ExpressionToSql
+namespace Jinget.Core.ExpressionToSql.Internal
 {
     public class Table
     {
