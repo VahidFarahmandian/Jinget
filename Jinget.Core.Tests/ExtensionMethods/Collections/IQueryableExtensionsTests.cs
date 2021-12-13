@@ -88,7 +88,7 @@ namespace Jinget.Core.ExtensionMethods.Tests
         {
             TestClass class1 = new() { Property1 = 1, Property2 = "C" };
             var input = new List<TestClass>() { class1 }.AsQueryable();
-            input.OrderByDynamic("Property3", OrderByDirection.Descending);
+            input.OrderByDynamic("PropertyXYZ", OrderByDirection.Descending);
         }
 
         [TestMethod()]
