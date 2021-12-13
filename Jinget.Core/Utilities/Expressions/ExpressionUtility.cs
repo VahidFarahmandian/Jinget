@@ -1,11 +1,10 @@
 ﻿using Jinget.Core.Enumerations;
 using Jinget.Core.Exceptions;
-using Jinget.Core.ExtensionMethods;
+using Jinget.Core.ExtensionMethods.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Jinget.Core.Utilities.Expressions
 {
