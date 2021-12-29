@@ -1,10 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Jinget.Core.ExtensionMethods.Enums
 {
     public static class EnumExtensions
     {
+        /// <summary>
+        /// Get Name property of Display attribute for a specific enum value
+        /// If no Name is set on a field, then the stringfied value will be returned
+        /// </summary>
+        public static string GetDisplayName(this Enum value)
+        {
+            var fi = value.GetType().GetField(value.ToString());
+            if (fi == null)
+                return string.Empty;
+            var attributes = (DisplayAttribute[])fi.GetCustomAttributes(typeof(DisplayAttribute), false);
+            return attributes.Length > 0 ? attributes[0].Name : value.ToString();
+        }
+
         /// <summary>
         /// Get Description of a specific enum value
         /// If no Description is set on a field, then the stringfied value will be returned
@@ -12,7 +28,8 @@ namespace Jinget.Core.ExtensionMethods.Enums
         public static string GetDescription(this Enum value)
         {
             var fi = value.GetType().GetField(value.ToString());
-
+            if (fi == null)
+                return string.Empty;
             var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
             return attributes.Length > 0 ? attributes[0].Description : value.ToString();
         }
@@ -43,6 +60,38 @@ namespace Jinget.Core.ExtensionMethods.Enums
             }
 
             throw new InvalidEnumArgumentException($"Enum member with description/name '{description}', not found!");
+        }
+
+        /// <summary>
+        /// Return enum value based on the given Name property of Display attribute. 
+        /// If no Name is set on a field, then field name will be compared aginst the given displayName
+        /// </summary>
+        /// <typeparam name="TEnum">typeof enum</typeparam>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="InvalidEnumArgumentException"></exception>
+        public static List<TEnum> GetValueFromDisplayName<TEnum>(string displayName) where TEnum : struct, IConvertible
+        {
+            var type = typeof(TEnum);
+            if (!type.IsEnum)
+                throw new InvalidOperationException();
+
+            List<TEnum> results = new List<TEnum>();
+
+            foreach (var field in type.GetFields())
+            {
+                //Is there any Description attribute set for the field?
+                if (
+                    string.Equals(
+                        Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) is DisplayAttribute attribute ? attribute.Name : field.Name,
+                        displayName,
+                        StringComparison.CurrentCultureIgnoreCase)
+                    )
+                    results.Add((TEnum)field.GetValue(null));
+            }
+            if (results.Any())
+                return results;
+
+            throw new InvalidEnumArgumentException($"Enum member with displayName/name '{displayName}', not found!");
         }
     }
 }
