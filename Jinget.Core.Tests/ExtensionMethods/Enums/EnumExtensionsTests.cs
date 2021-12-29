@@ -2,33 +2,101 @@
 using System;
 using Jinget.Core.ExtensionMethods.Enums;
 using Jinget.Core.Tests._BaseData;
+using System.Collections.Generic;
+using System.Linq;
+using static Jinget.Core.Tests._BaseData.SampleEnum;
 
 namespace Jinget.Core.Tests.ExtensionMethods.Enums
 {
     [TestClass()]
     public class EnumExtensionsTests
     {
-        enum ProgrammingLanguage
-        {
-            CSharp,
-
-            [System.ComponentModel.Description("F#.Net")]
-            FSharp,
-            VB
-        }
+        #region DisplayName
 
         [TestMethod()]
-        public void should_return_enum_field_value()
+        public void should_return_default_display_name()
         {
-            ProgrammingLanguage langauge = ProgrammingLanguage.CSharp;
-            string expected = "CSharp";
-            var result = langauge.GetDescription();
+            ProgrammingLanguage langauge = default;
+            string expected = "";
+            string result = langauge.GetDisplayName();
 
             Assert.AreEqual(expected, result);
         }
 
         [TestMethod()]
-        public void should_return_enum_field_description_value()
+        public void should_return_display_name_for_member_with_display_attribute()
+        {
+            ProgrammingLanguage langauge = ProgrammingLanguage.FSharp;
+            string expected = "F#";
+            string result = langauge.GetDisplayName();
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
+        public void should_return_display_name_for_member_without_display_attribute()
+        {
+            ProgrammingLanguage langauge = ProgrammingLanguage.Golang;
+            string expected = "Golang";
+            string result = langauge.GetDisplayName();
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
+        public void should_return_enum_value_where_display_name_provided()
+        {
+            string enumDisplayName = "C#";
+            List<ProgrammingLanguage> expected = new() { ProgrammingLanguage.CSharp, ProgrammingLanguage.VB };
+
+            List<ProgrammingLanguage> result = EnumExtensions.GetValueFromDisplayName<ProgrammingLanguage>(enumDisplayName);
+
+            Assert.IsTrue(expected.SequenceEqual(result));
+        }
+
+        [TestMethod()]
+        public void should_return_enum_value_where_display_name_not_provided()
+        {
+            string enumDisplayName = "Golang";
+            List<ProgrammingLanguage> expected = new() { ProgrammingLanguage.Golang };
+
+            List<ProgrammingLanguage> result = EnumExtensions.GetValueFromDisplayName<ProgrammingLanguage>(enumDisplayName);
+
+            Assert.IsTrue(expected.SequenceEqual(result));
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(System.ComponentModel.InvalidEnumArgumentException))]
+        public void should_throw_exception_where_display_name_not_found()
+        {
+            string enumDescription = "Java";
+            EnumExtensions.GetValueFromDisplayName<ProgrammingLanguage>(enumDescription);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void should_throw_exception_where_enum_type_is_invalid_in_display_name()
+        {
+            string enumDescription = "Java";
+            EnumExtensions.GetValueFromDisplayName<InvalidStruct>(enumDescription);
+        }
+
+        #endregion
+
+        #region Description
+
+        [TestMethod()]
+        public void should_return_default_description()
+        {
+            ProgrammingLanguage langauge = default;
+            string expected = "";
+            string result = langauge.GetDescription();
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
+        public void should_return_description_for_member_with_description_attribute()
         {
             ProgrammingLanguage langauge = ProgrammingLanguage.FSharp;
             string expected = "F#.Net";
@@ -38,7 +106,17 @@ namespace Jinget.Core.Tests.ExtensionMethods.Enums
         }
 
         [TestMethod()]
-        public void should_return_enum_field_using_description()
+        public void should_return_description_for_member_without_description_attribute()
+        {
+            ProgrammingLanguage langauge = ProgrammingLanguage.CSharp;
+            string expected = "CSharp";
+            var result = langauge.GetDescription();
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestMethod()]
+        public void should_return_enum_value_where_description_provided()
         {
             string enumDescription = "F#.Net";
             ProgrammingLanguage expected = ProgrammingLanguage.FSharp;
@@ -49,7 +127,7 @@ namespace Jinget.Core.Tests.ExtensionMethods.Enums
         }
 
         [TestMethod()]
-        public void should_return_enum_field_using_field_name()
+        public void should_return_enum_value_where_description_not_provided()
         {
             string enumDescription = "VB";
             ProgrammingLanguage expected = ProgrammingLanguage.VB;
@@ -61,7 +139,7 @@ namespace Jinget.Core.Tests.ExtensionMethods.Enums
 
         [TestMethod()]
         [ExpectedException(typeof(System.ComponentModel.InvalidEnumArgumentException))]
-        public void should_generate_InvalidEnumArgumentException()
+        public void should_throw_exception_where_description_not_found()
         {
             string enumDescription = "Java";
             EnumExtensions.GetValueFromDescription<ProgrammingLanguage>(enumDescription);
@@ -69,10 +147,12 @@ namespace Jinget.Core.Tests.ExtensionMethods.Enums
 
         [TestMethod()]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void should_generate_InvalidOperationException()
+        public void should_throw_exception_where_enum_type_is_invalid_in_description()
         {
             string enumDescription = "Java";
             EnumExtensions.GetValueFromDescription<InvalidStruct>(enumDescription);
         }
+
+        #endregion region
     }
 }
