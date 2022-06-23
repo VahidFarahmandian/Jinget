@@ -9,8 +9,8 @@ on:
   pull_request:
     branches: [main]
     paths-ignore: 
-      - '!**/*.md'
-      - '!.github/*'
+      - '**/*.md'
+      - '.github/*'
   
 jobs:
   build:
