@@ -109,8 +109,8 @@ namespace Jinget.Core.ExpressionToSql.Internal
             // Table value function. [ and ] should added to function name only, not to its parameters 
             if (attributeName.Contains("(") && attributeName.Contains(")"))
             {
-                string functionName = attributeName.Substring(0, attributeName.IndexOf("(", StringComparison.Ordinal));
-                string functionParameters = attributeName.Substring(attributeName.IndexOf("(", StringComparison.Ordinal));
+                string functionName = attributeName[..attributeName.IndexOf("(", StringComparison.Ordinal)];
+                string functionParameters = attributeName[attributeName.IndexOf("(", StringComparison.Ordinal)..];
                 _sb.Append("[").Append(functionName).Append("]").Append(functionParameters);
             }
             else
