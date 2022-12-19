@@ -159,7 +159,7 @@ namespace Jinget.Core.Utilities.Expressions
             return Expression.Lambda<Func<T, T>>(memberinit, paramExpression);
         }
 
-        public static Func<T, bool> ConstructBinaryExpression<T>(string json)
+        public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(string json)
         {
             var filters = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
 
@@ -169,7 +169,7 @@ namespace Jinget.Core.Utilities.Expressions
             //if there is no filter specified, then return a true condition
             if (filters == null || !filters.Any())
             {
-                return BooleanUtility.TrueCondition<T>().Compile();
+                return BooleanUtility.TrueCondition<T>();
             }
 
             //construct queries
@@ -195,7 +195,7 @@ namespace Jinget.Core.Utilities.Expressions
 
             var result = Expression.Lambda<Func<T, bool>>(query, exprVar);
 
-            return result.Compile();
+            return result;
         }
 
     }
