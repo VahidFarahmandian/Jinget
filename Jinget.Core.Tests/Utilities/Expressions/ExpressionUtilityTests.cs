@@ -46,7 +46,7 @@ namespace Jinget.Core.ExtensionMethods.Expressions.Tests
                 new TestClass{ Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
                 new TestClass{ Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
                 new TestClass{ Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
-            };
+            }.AsQueryable();
 
             var result = data.Where(ExpressionUtility.ConstructBinaryExpression<TestClass>(json)).ToList();
 
@@ -67,8 +67,8 @@ namespace Jinget.Core.ExtensionMethods.Expressions.Tests
                 new TestClass{ Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
                 new TestClass{ Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
                 new TestClass{ Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
-            };
-
+            }.AsQueryable();
+            
             var result = data.Where(ExpressionUtility.ConstructBinaryExpression<TestClass>(json)).ToList();
 
             Assert.IsTrue(result.Count == 1);
