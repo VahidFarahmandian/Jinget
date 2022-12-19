@@ -1,10 +1,12 @@
 ﻿using Jinget.Core.Enumerations;
 using Jinget.Core.Exceptions;
 using Jinget.Core.ExtensionMethods.Reflection;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Jinget.Core.Utilities.Expressions
 {
@@ -156,5 +158,45 @@ namespace Jinget.Core.Utilities.Expressions
 
             return Expression.Lambda<Func<T, T>>(memberinit, paramExpression);
         }
+
+        public static Func<T, bool> ConstructBinaryExpression<T>(string json)
+        {
+            var filters = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+
+            var type = typeof(T);
+            var exprVar = Expression.Parameter(type, "x");
+
+            //if there is no filter specified, then return a true condition
+            if (filters == null || !filters.Any())
+            {
+                return BooleanUtility.TrueCondition<T>().Compile();
+            }
+
+            //construct queries
+            List<BinaryExpression> filterExpressions = new List<BinaryExpression>();
+            foreach (var filter in filters)
+            {
+                var property = type.GetProperty(filter.Key, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
+                var propertyType = property.PropertyType;
+                var exprProperty = Expression.Property(exprVar, property);
+
+                var data = Convert.ChangeType(filter.Value, propertyType);
+
+                var expr = Expression.Equal(exprProperty, Expression.Constant(data));
+                filterExpressions.Add(expr);
+            }
+
+            //merge queries
+            BinaryExpression query = filterExpressions.Count > 1 ? Expression.AndAlso(filterExpressions[0], filterExpressions[1]) : filterExpressions.First();
+            for (int i = 2; i < filterExpressions.Count; i++)
+            {
+                query = Expression.AndAlso(query, filterExpressions[i]);
+            }
+
+            var result = Expression.Lambda<Func<T, bool>>(query, exprVar);
+
+            return result.Compile();
+        }
+
     }
 }
