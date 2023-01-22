@@ -159,8 +159,22 @@ namespace Jinget.Core.Utilities.Expressions
             return Expression.Lambda<Func<T, T>>(memberinit, paramExpression);
         }
 
-        public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(string json)
+        public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(object? json, bool treatNullAsTrueCondition = true)
         {
+            if (json is null)
+            {
+                return treatNullAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
+            }
+            else
+                return ConstructBinaryExpression<T>(json.ToString(), treatNullAsTrueCondition);
+        }
+        public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(string json, bool treatNullAsTrueCondition = true)
+        {
+            if (string.IsNullOrWhiteSpace(json.ToString()))
+            {
+                return treatNullAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
+            }
+
             var filters = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
 
             var type = typeof(T);

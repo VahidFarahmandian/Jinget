@@ -68,11 +68,84 @@ namespace Jinget.Core.ExtensionMethods.Expressions.Tests
                 new TestClass{ Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
                 new TestClass{ Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
             }.AsQueryable();
-            
+
             var result = data.Where(ExpressionUtility.ConstructBinaryExpression<TestClass>(json)).ToList();
 
             Assert.IsTrue(result.Count == 1);
             Assert.IsTrue(result.First().Property1 == 4);
+        }
+
+        [TestMethod]
+        public void should_return_all_data_using_null_filter()
+        {
+            object? json = null;
+            var data = new List<TestClass>
+            {
+                new TestClass{ Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
+                new TestClass{ Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
+                new TestClass{ Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
+                new TestClass{ Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
+                new TestClass{ Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
+            }.AsQueryable();
+
+            var result = data.Where(ExpressionUtility.ConstructBinaryExpression<TestClass>(json)).ToList();
+
+            Assert.IsTrue(result.Count == 5);
+            Assert.IsTrue(result.First().Property1 == 1);
+        }
+        [TestMethod]
+        public void should_return_no_data_using_null_filter()
+        {
+            object? json = null;
+            var data = new List<TestClass>
+            {
+                new TestClass{ Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
+                new TestClass{ Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
+                new TestClass{ Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
+                new TestClass{ Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
+                new TestClass{ Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
+            }.AsQueryable();
+
+            var result = data.Where(ExpressionUtility.ConstructBinaryExpression<TestClass>(json, false)).ToList();
+
+            Assert.IsTrue(result.Count == 0);
+        }
+
+        [TestMethod]
+        public void should_return_all_data_using_empty_filter()
+        {
+            object? json = "";
+            var data = new List<TestClass>
+            {
+                new TestClass{ Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
+                new TestClass{ Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
+                new TestClass{ Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
+                new TestClass{ Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
+                new TestClass{ Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
+            }.AsQueryable();
+
+            var result = data.Where(ExpressionUtility.ConstructBinaryExpression<TestClass>(json)).ToList();
+
+            Assert.IsTrue(result.Count == 5);
+            Assert.IsTrue(result.First().Property1 == 1);
+        }
+
+        [TestMethod]
+        public void should_return_no_data_using_empty_filter()
+        {
+            object? json = "";
+            var data = new List<TestClass>
+            {
+                new TestClass{ Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
+                new TestClass{ Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
+                new TestClass{ Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
+                new TestClass{ Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
+                new TestClass{ Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
+            }.AsQueryable();
+
+            var result = data.Where(ExpressionUtility.ConstructBinaryExpression<TestClass>(json, false)).ToList();
+
+            Assert.IsTrue(result.Count == 0);
         }
     }
 }
