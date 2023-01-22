@@ -159,20 +159,37 @@ namespace Jinget.Core.Utilities.Expressions
             return Expression.Lambda<Func<T, T>>(memberinit, paramExpression);
         }
 
-        public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(object? json, bool treatNullAsTrueCondition = true)
+        /// <summary>
+        /// Construct a boolean expression based on a json input
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="json">a key/value structured json string/object, where keys are types property and values are their value</param>
+        /// <param name="treatNullOrEmptyAsTrueCondition">When <paramref name="json"/> is null or empty, then a default condition will be returned.
+        /// if this parameter's value is set to true the a default true condition will be returned otherwise a defaule false condition will be returned</param>
+        /// <returns></returns>
+        public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(object? json, bool treatNullOrEmptyAsTrueCondition = true)
         {
             if (json is null)
             {
-                return treatNullAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
+                return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
             }
             else
-                return ConstructBinaryExpression<T>(json.ToString(), treatNullAsTrueCondition);
+                return ConstructBinaryExpression<T>(json.ToString(), treatNullOrEmptyAsTrueCondition);
         }
-        public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(string json, bool treatNullAsTrueCondition = true)
+
+        /// <summary>
+        /// Construct a boolean expression based on a json input
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="json">a key/value structured json string/object, where keys are types property and values are their value</param>
+        /// <param name="treatNullOrEmptyAsTrueCondition">When <paramref name="json"/> is null or empty, then a default condition will be returned.
+        /// if this parameters value is set to true the a default true condition will be returned otherwise a defaule false condition will be returned</param>
+        /// <returns></returns>
+        public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(string json, bool treatNullOrEmptyAsTrueCondition = true)
         {
             if (string.IsNullOrWhiteSpace(json.ToString()))
             {
-                return treatNullAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
+                return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
             }
 
             var filters = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
@@ -180,10 +197,10 @@ namespace Jinget.Core.Utilities.Expressions
             var type = typeof(T);
             var exprVar = Expression.Parameter(type, "x");
 
-            //if there is no filter specified, then return a true condition
+            //if there is no filter specified, then return the default true/false condition
             if (filters == null || !filters.Any())
             {
-                return BooleanUtility.TrueCondition<T>();
+                return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
             }
 
             //construct queries
