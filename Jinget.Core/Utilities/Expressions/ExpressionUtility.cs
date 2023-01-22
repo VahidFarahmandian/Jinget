@@ -177,7 +177,11 @@ namespace Jinget.Core.Utilities.Expressions
                 return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
             }
             else
-                return ConstructBinaryExpression<T>(json.ToString(), treatNullOrEmptyAsTrueCondition);
+            {
+                return json is IList<FilterCriteria>
+                    ? ConstructBinaryExpression<T>(JsonConvert.DeserializeObject<IList<FilterCriteria>>(JsonConvert.SerializeObject(json)), treatNullOrEmptyAsTrueCondition)
+                    : ConstructBinaryExpression<T>(json.ToString(), treatNullOrEmptyAsTrueCondition);
+            }
         }
 
         /// <summary>
