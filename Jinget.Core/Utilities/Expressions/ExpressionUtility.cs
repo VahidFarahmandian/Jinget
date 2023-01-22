@@ -1,12 +1,14 @@
 ﻿using Jinget.Core.Enumerations;
 using Jinget.Core.Exceptions;
 using Jinget.Core.ExtensionMethods.Reflection;
+using Jinget.Core.Types;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Jinget.Core.ExtensionMethods.Collections;
 
 namespace Jinget.Core.Utilities.Expressions
 {
@@ -169,6 +171,7 @@ namespace Jinget.Core.Utilities.Expressions
         /// <returns></returns>
         public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(object? json, bool treatNullOrEmptyAsTrueCondition = true)
         {
+            //if there is no json object specified, then return the default true/false condition
             if (json is null)
             {
                 return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
@@ -181,53 +184,87 @@ namespace Jinget.Core.Utilities.Expressions
         /// Construct a boolean expression based on a json input
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="json">a key/value structured json string/object, where keys are types property and values are their value</param>
+        /// <param name="json">a key/value structured json string/object, where keys are types property and values are their value. 
+        /// for example:{'name':'vahid','age':'34'} which translates to a dictionary where 'name' and 'age' are keys and their values are 'vahid' and '34'</param>
         /// <param name="treatNullOrEmptyAsTrueCondition">When <paramref name="json"/> is null or empty, then a default condition will be returned.
         /// if this parameters value is set to true the a default true condition will be returned otherwise a defaule false condition will be returned</param>
         /// <returns></returns>
         public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(string json, bool treatNullOrEmptyAsTrueCondition = true)
         {
+            //if there empty json string specified, then return the default true/false condition
             if (string.IsNullOrWhiteSpace(json.ToString()))
             {
                 return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
             }
 
-            var filters = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            var filters = JsonConvert.DeserializeObject<IDictionary<string, string>>(json).ToFilterCriteria();
+            return ConstructBinaryExpression<T>(filters, treatNullOrEmptyAsTrueCondition);
 
-            var type = typeof(T);
-            var exprVar = Expression.Parameter(type, "x");
+        }
 
+        public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(IList<FilterCriteria> filters, bool treatNullOrEmptyAsTrueCondition = true)
+        {
             //if there is no filter specified, then return the default true/false condition
             if (filters == null || !filters.Any())
             {
                 return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
             }
 
+            var type = typeof(T);
+            var exprVariable = Expression.Parameter(type, "x");
+
             //construct queries
-            List<BinaryExpression> filterExpressions = new List<BinaryExpression>();
+            IDictionary<Expression, ConditionCombiningType> filterExpressions = new Dictionary<Expression, ConditionCombiningType>();
             foreach (var filter in filters)
             {
-                var property = type.GetProperty(filter.Key, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
+                var property = type.GetProperty(filter.Operand, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
                 var propertyType = property.PropertyType;
-                var exprProperty = Expression.Property(exprVar, property);
+                var propertyExpression = Expression.Property(exprVariable, property);
 
-                var data = Convert.ChangeType(filter.Value, propertyType);
+                var value = Convert.ChangeType(filter.Value, propertyType);
 
-                var expr = Expression.Equal(exprProperty, Expression.Constant(data));
-                filterExpressions.Add(expr);
+                filterExpressions.Add(GetBinaryExpression(propertyExpression, Expression.Constant(value), filter.Operator), filter.NextConditionCombination);
             }
 
-            //merge queries
-            BinaryExpression query = filterExpressions.Count > 1 ? Expression.AndAlso(filterExpressions[0], filterExpressions[1]) : filterExpressions.First();
-            for (int i = 2; i < filterExpressions.Count; i++)
-            {
-                query = Expression.AndAlso(query, filterExpressions[i]);
-            }
-
-            var result = Expression.Lambda<Func<T, bool>>(query, exprVar);
-
-            return result;
+            return Expression.Lambda<Func<T, bool>>(MergeFilterExpressions(filterExpressions), exprVariable);
         }
 
+        private static Expression MergeFilterExpressions(IDictionary<Expression, ConditionCombiningType> filterExpressions)
+        {
+            Expression JoinExpressions(Expression left, ConditionCombiningType join, Expression right)
+            {
+                return join switch
+                {
+                    ConditionCombiningType.Unknown => Expression.AndAlso(left, right),
+                    ConditionCombiningType.AndAlso => Expression.AndAlso(left, right),
+                    ConditionCombiningType.OrElse => Expression.OrElse(left, right),
+                    _ => throw new JingetException($"Conditional join of type {filterExpressions.ElementAt(0).Value} is not supported by Jinget!")
+                };
+            }
+            Expression query = filterExpressions.Count > 1
+                ? JoinExpressions(filterExpressions.ElementAt(0).Key, filterExpressions.ElementAt(0).Value, filterExpressions.ElementAt(1).Key)
+                : filterExpressions.First().Key;
+
+            for (int i = 2; i < filterExpressions.Count; i++)
+            {
+                query = JoinExpressions(query, filterExpressions.ElementAt(i - 1).Value, filterExpressions.ElementAt(i).Key);
+            }
+            return query;
+        }
+
+        private static Expression GetBinaryExpression(MemberExpression left, ConstantExpression right, Operator @operator)
+        {
+            return @operator switch
+            {
+                Operator.Equal => Expression.Equal(left, right),
+                Operator.GreaterThan => Expression.GreaterThan(left, right),
+                Operator.LowerThan => Expression.LessThan(left, right),
+                Operator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(left, right),
+                Operator.LowerThanOrEqual => Expression.LessThanOrEqual(left, right),
+                Operator.NotEqual => Expression.NotEqual(left, right),
+                Operator.Contains => Expression.Call(left, typeof(string).GetMethod("Contains", new[] { typeof(string) }), right),
+                _ => throw new JingetException($"Operator of type {@operator} is not supported by Jinget!"),
+            };
+        }
     }
 }

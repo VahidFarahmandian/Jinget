@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Jinget.Core.Types;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Jinget.Core.ExtensionMethods.Collections
 {
@@ -32,5 +34,17 @@ namespace Jinget.Core.ExtensionMethods.Collections
 
             return first;
         }
+
+        /// <summary>
+        /// convert dictionary to <see cref="FilterCriteria"/>
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static List<FilterCriteria> ToFilterCriteria(this IDictionary<string, string> input)
+            => input.Select(x => new FilterCriteria
+            {
+                Operand = x.Key,
+                Value = x.Value
+            }).ToList();
     }
 }
