@@ -22,8 +22,9 @@
     <PackageReference Include="System.CodeDom" Version="6.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
+  
   <ItemGroup>
-    <None Update="assets\icon.png">
+    <None Include="assets\icon.png" >
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
