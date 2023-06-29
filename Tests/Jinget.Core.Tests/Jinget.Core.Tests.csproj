@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Jinget.Core\Jinget.Core.csproj" />
+    <ProjectReference Include="..\..\01-Core\Jinget.Core\Jinget.Core.csproj" />
   </ItemGroup>
 
 </Project>

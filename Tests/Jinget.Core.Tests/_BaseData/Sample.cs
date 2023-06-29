@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace Jinget.Core.Tests._BaseData
 {
@@ -23,6 +27,7 @@ namespace Jinget.Core.Tests._BaseData
         public InnerClass InnerSingularProperty { get; set; }
 
         public ICollection<InnerClass> InnerProperty { get; set; }
+        public List<InnerClass> InnerListProperty { get; set; }
     }
 
     public class ParentType
@@ -47,5 +52,28 @@ namespace Jinget.Core.Tests._BaseData
 
         public int Id { get; protected set; }
         public SubType SubType { get; set; }
+    }
+    public class XmlSample
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        public InnerXmlSample InnerSample { get; set; }
+        public List<InnerXmlSample> InnerSampleList { get; set; }
+
+        public class InnerXmlSample
+        {
+            public string Data { get; set; }
+        }
+    }
+
+    [Serializable]
+    public class SoapSample
+    {
+        private int id;
+        private string name;
+
+        public int Id { get => id; set => id = value; }
+        public string Name { get => name; set => name = value; }
     }
 }

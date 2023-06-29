@@ -3,9 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31423.177
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Core", "Jinget.Core\Jinget.Core.csproj", "{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Core.Tests", "Tests\Jinget.Core.Tests\Jinget.Core.Tests.csproj", "{228C0492-4882-4F24-993F-1EE0D7E41258}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Core.Tests", "Jinget.Core.Tests\Jinget.Core.Tests.csproj", "{228C0492-4882-4F24-993F-1EE0D7E41258}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Core", "01-Core\Jinget.Core\Jinget.Core.csproj", "{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Handlers.ExternalServiceHandlers", "02-Handlers\Jinget.Handlers.ExternalServiceHandlers\Jinget.Handlers.ExternalServiceHandlers.csproj", "{1811968F-BFBB-4623-9E7B-2FB02B0355E3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F1B06C67-988D-4E24-8110-92C9B6D4CBC0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-Core", "01-Core", "{115DD383-ACB4-48AA-A6C2-C6105314F051}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-Handlers", "02-Handlers", "{27D7B409-7A82-4565-9A00-146BCD7C7D9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,17 +21,26 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55}.Release|Any CPU.Build.0 = Release|Any CPU
 		{228C0492-4882-4F24-993F-1EE0D7E41258}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{228C0492-4882-4F24-993F-1EE0D7E41258}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{228C0492-4882-4F24-993F-1EE0D7E41258}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{228C0492-4882-4F24-993F-1EE0D7E41258}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1811968F-BFBB-4623-9E7B-2FB02B0355E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1811968F-BFBB-4623-9E7B-2FB02B0355E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1811968F-BFBB-4623-9E7B-2FB02B0355E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1811968F-BFBB-4623-9E7B-2FB02B0355E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{228C0492-4882-4F24-993F-1EE0D7E41258} = {F1B06C67-988D-4E24-8110-92C9B6D4CBC0}
+		{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55} = {115DD383-ACB4-48AA-A6C2-C6105314F051}
+		{1811968F-BFBB-4623-9E7B-2FB02B0355E3} = {27D7B409-7A82-4565-9A00-146BCD7C7D9C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8690B4B4-1E8A-4C1D-9A63-123EAD0492EE}
