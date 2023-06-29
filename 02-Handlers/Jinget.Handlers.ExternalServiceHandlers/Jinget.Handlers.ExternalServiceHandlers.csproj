@@ -4,17 +4,16 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Authors>Vahid Farahmandian</Authors>
     <RepositoryUrl>https://github.com/VahidFarahmandian/Jinget</RepositoryUrl>
-    <RepositoryType>GitHub</RepositoryType>
-    <Description>Contains core functionalities such as some useful extension methods, attributes etc.</Description>
+    <RepositoryType>git</RepositoryType>
+    <Description>Facilitates consuming HTTP resources</Description>
     <Copyright>All Rights Reserved</Copyright>
-    <PackageIcon>package-icon.png</PackageIcon>
+    <PackageIcon>icon.png</PackageIcon>
     <Company>Jinget</Company>
     <Product>Jinget</Product>
+    <PackageProjectUrl>https://github.com/VahidFarahmandian/Jinget</PackageProjectUrl>
+    <PackageTags>jinget, framework, webapi, http, soap, xml</PackageTags>
+    <Title>Jinget External Service Handler</Title>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="assets\package-icon.png" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
@@ -23,6 +22,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\01-Core\Jinget.Core\Jinget.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="assets\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
