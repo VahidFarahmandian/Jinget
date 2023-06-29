@@ -9,82 +9,83 @@ using System.Threading.Tasks;
 using Jinget.Core.Utilities;
 using Newtonsoft.Json;
 
-namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory;
-
-public class HttpClientFactory : ObjectFactory<HttpClient>
+namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
 {
-    protected override HttpClient GetInstance(string baseUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null)
+    public class HttpClientFactory : ObjectFactory<HttpClient>
     {
-        HttpClient client;
-        if (ignoreSslErrors)
+        protected override HttpClient GetInstance(string baseUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null)
         {
-            var httpClientHandler = new HttpClientHandler
+            HttpClient client;
+            if (ignoreSslErrors)
             {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
-            };
-
-            client = new HttpClient(httpClientHandler)
-            {
-                BaseAddress = new Uri(baseUri)
-            };
-        }
-        else
-        {
-            client = new HttpClient
-            {
-                BaseAddress = new Uri(baseUri)
-            };
-        }
-
-        client.DefaultRequestHeaders.Clear();
-
-        if (headers == null)
-        {
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-        }
-        else
-        {
-            foreach (var header in headers)
-            {
-                client.DefaultRequestHeaders.Add(header.Key, header.Value);
-            }
-        }
-
-        return client;
-    }
-
-    public override async Task<HttpResponseMessage> PostAsync(string baseUri, object content = null, bool ignoreSslErrors = false, Dictionary<string, string> headers = null)
-    {
-        StringContent bodyContent = null;
-        if (content != null)
-        {
-            if (headers != null && headers.Keys.Any(x => x == "Content-Type") && headers["Content-Type"].ToLower() != MediaTypeNames.Application.Json)
-            {
-                if (headers["Content-Type"] == MediaTypeNames.Text.Xml || headers["Content-Type"] == MediaTypeNames.Application.Xml)
+                var httpClientHandler = new HttpClientHandler
                 {
-                    bodyContent = new StringContent(content is string ? content.ToString() : XmlUtility.SerializeToXml(content), Encoding.UTF8, headers["Content-Type"]);
-                }
-                else
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
+                };
+
+                client = new HttpClient(httpClientHandler)
                 {
-                    bodyContent = new StringContent(content.ToString(), Encoding.UTF8, headers["Content-Type"]);
-                }
+                    BaseAddress = new Uri(baseUri)
+                };
             }
             else
             {
-                bodyContent = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, MediaTypeNames.Application.Json);
+                client = new HttpClient
+                {
+                    BaseAddress = new Uri(baseUri)
+                };
             }
-            headers?.Remove("Content-Type");
+
+            client.DefaultRequestHeaders.Clear();
+
+            if (headers == null)
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+            }
+            else
+            {
+                foreach (var header in headers)
+                {
+                    client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                }
+            }
+
+            return client;
         }
-        return await GetInstance(baseUri, ignoreSslErrors, headers).PostAsync(baseUri, bodyContent).ConfigureAwait(false);
-    }
 
-    public override async Task<HttpResponseMessage> GetAsync(string baseUri, string requestUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null)
-    {
-        return await GetInstance(baseUri, ignoreSslErrors, headers).GetAsync(baseUri + requestUri).ConfigureAwait(false);
-    }
+        public override async Task<HttpResponseMessage> PostAsync(string baseUri, object content = null, bool ignoreSslErrors = false, Dictionary<string, string> headers = null)
+        {
+            StringContent bodyContent = null;
+            if (content != null)
+            {
+                if (headers != null && headers.Keys.Any(x => x == "Content-Type") && headers["Content-Type"].ToLower() != MediaTypeNames.Application.Json)
+                {
+                    if (headers["Content-Type"] == MediaTypeNames.Text.Xml || headers["Content-Type"] == MediaTypeNames.Application.Xml)
+                    {
+                        bodyContent = new StringContent(content is string ? content.ToString() : XmlUtility.SerializeToXml(content), Encoding.UTF8, headers["Content-Type"]);
+                    }
+                    else
+                    {
+                        bodyContent = new StringContent(content.ToString(), Encoding.UTF8, headers["Content-Type"]);
+                    }
+                }
+                else
+                {
+                    bodyContent = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, MediaTypeNames.Application.Json);
+                }
+                headers?.Remove("Content-Type");
+            }
+            return await GetInstance(baseUri, ignoreSslErrors, headers).PostAsync(baseUri, bodyContent).ConfigureAwait(false);
+        }
 
-    public override async Task<HttpResponseMessage> SendAsync(string baseUri, HttpRequestMessage message, bool ignoreSslErrors = false)
-    {
-        return await GetInstance(baseUri, ignoreSslErrors).SendAsync(message).ConfigureAwait(false);
+        public override async Task<HttpResponseMessage> GetAsync(string baseUri, string requestUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null)
+        {
+            return await GetInstance(baseUri, ignoreSslErrors, headers).GetAsync(baseUri + requestUri).ConfigureAwait(false);
+        }
+
+        public override async Task<HttpResponseMessage> SendAsync(string baseUri, HttpRequestMessage message, bool ignoreSslErrors = false)
+        {
+            return await GetInstance(baseUri, ignoreSslErrors).SendAsync(message).ConfigureAwait(false);
+        }
     }
 }
