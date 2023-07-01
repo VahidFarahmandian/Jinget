@@ -11,11 +11,11 @@ using Newtonsoft.Json;
 
 namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
 {
-    public class HttpClientFactory : ObjectFactory<HttpClient>
+    public class HttpClientFactory
     {
-        protected override HttpClient GetInstance(string baseUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null)
+        readonly HttpClient client;
+        internal HttpClientFactory(string baseUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null)
         {
-            HttpClient client;
             if (ignoreSslErrors)
             {
                 var httpClientHandler = new HttpClientHandler
@@ -35,26 +35,40 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
                     BaseAddress = new Uri(baseUri)
                 };
             }
+        }
 
-            client.DefaultRequestHeaders.Clear();
-
+        private Uri GetUrl(string url)
+        {
+            string baseUrl = client.BaseAddress.ToString().EndsWith("/") ? client.BaseAddress.ToString() : $"{client.BaseAddress}/";
+            return new Uri($"{baseUrl}{url}".TrimEnd('/'));
+        }
+        private void SetHeaders(Dictionary<string, string>? headers)
+        {
             if (headers == null)
+                return;
+            foreach (var header in headers)
             {
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-            }
-            else
-            {
-                foreach (var header in headers)
+                if (header.Key == "Authorization")
+                {
+                    if (header.Value.StartsWith("Bearer ", StringComparison.InvariantCultureIgnoreCase))
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", header.Value[7..]);
+                    else if (header.Value.StartsWith("Basic ", StringComparison.InvariantCultureIgnoreCase))
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", header.Value[6..]);
+                    else if (header.Value.StartsWith("Digest ", StringComparison.InvariantCultureIgnoreCase))
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Digest", header.Value[7..]);
+                }
+                else
                 {
                     client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
                 }
             }
-
-            return client;
         }
 
-        public override async Task<HttpResponseMessage> PostAsync(string baseUri, object content = null, bool ignoreSslErrors = false, Dictionary<string, string> headers = null)
+        public async Task<HttpResponseMessage> PostAsync(string url, object content = null, Dictionary<string, string> headers = null)
         {
+            if (url != "" && url.StartsWith("/"))
+                throw new Jinget.Core.Exceptions.JingetException($"{nameof(url)} should not start with '/'");
+
             StringContent bodyContent = null;
             if (content != null)
             {
@@ -75,11 +89,19 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
                 }
                 headers?.Remove("Content-Type");
             }
-            return await GetInstance(baseUri, ignoreSslErrors, headers).PostAsync(baseUri, bodyContent);
+
+            SetHeaders(headers);
+            return await client.PostAsync(GetUrl(url), bodyContent);
         }
 
-        public override async Task<HttpResponseMessage> GetAsync(string baseUri, string requestUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null) => await GetInstance(baseUri, ignoreSslErrors, headers).GetAsync(baseUri + requestUri);
+        public async Task<HttpResponseMessage> GetAsync(string url, Dictionary<string, string> headers = null)
+        {
+            if (url.StartsWith("/"))
+                throw new Jinget.Core.Exceptions.JingetException($"{nameof(url)} should not start with '/'");
+            SetHeaders(headers);
+            return await client.GetAsync(GetUrl(url));
+        }
 
-        public override async Task<HttpResponseMessage> SendAsync(string baseUri, HttpRequestMessage message, bool ignoreSslErrors = false) => await GetInstance(baseUri, ignoreSslErrors).SendAsync(message);
+        public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage message) => await client.SendAsync(message);
     }
 }

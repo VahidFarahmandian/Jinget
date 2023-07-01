@@ -11,6 +11,8 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler
 {
     public class JingetServiceHandler<TResponseModel> : ServiceHandler<JingetServiceHandlerEvents<TResponseModel>> where TResponseModel : class, new()
     {
+        public JingetServiceHandler(string baseUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null) : base(baseUri, ignoreSslErrors, headers) { }
+
         private async Task<TResponseModel> ProcessTask(Func<Task<HttpResponseMessage>> task)
         {
             TResponseModel responseModel = null;
@@ -45,10 +47,12 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler
             return responseModel;
 
         }
-        public async Task<TResponseModel> GetAsync(string baseUri, string requestUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null) => await ProcessTask(async () => await HttpClientFactory.GetAsync(baseUri, requestUri, ignoreSslErrors, headers));
+        public async Task<TResponseModel> GetAsync(string url, Dictionary<string, string> headers = null)
+            => await ProcessTask(async () => await HttpClientFactory.GetAsync(url, headers));
 
-        public async Task<TResponseModel> PostAsync(string baseUri, object content = null, bool ignoreSslErrors = false, Dictionary<string, string> headers = null) => await ProcessTask(async () => await HttpClientFactory.PostAsync(baseUri, content, ignoreSslErrors, headers));
+        public async Task<TResponseModel> PostAsync(string url, object content = null, Dictionary<string, string> headers = null)
+            => await ProcessTask(async () => await HttpClientFactory.PostAsync(url, content, headers));
 
-        public async Task<TResponseModel> SendAsync(string baseUri, HttpRequestMessage message, bool ignoreSslErrors = false) => await ProcessTask(async () => await HttpClientFactory.SendAsync(baseUri, message, ignoreSslErrors));
+        public async Task<TResponseModel> SendAsync(HttpRequestMessage message) => await ProcessTask(async () => await HttpClientFactory.SendAsync(message));
     }
 }

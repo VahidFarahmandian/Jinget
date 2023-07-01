@@ -1,4 +1,5 @@
 ﻿using Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory;
+using System.Collections.Generic;
 
 namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler
 {
@@ -8,10 +9,10 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler
 
         protected HttpClientFactory HttpClientFactory { get; set; }
 
-        protected ServiceHandler()
+        protected ServiceHandler(string baseUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null)
         {
             Events = new T();
-            HttpClientFactory = new HttpClientFactory();
+            HttpClientFactory = new HttpClientFactory(baseUri, ignoreSslErrors, headers);
         }
     }
 }
