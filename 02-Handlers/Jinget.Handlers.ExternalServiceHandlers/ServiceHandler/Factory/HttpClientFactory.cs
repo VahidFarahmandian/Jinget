@@ -46,7 +46,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
             {
                 foreach (var header in headers)
                 {
-                    client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                    client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
                 }
             }
 
@@ -75,17 +75,11 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
                 }
                 headers?.Remove("Content-Type");
             }
-            return await GetInstance(baseUri, ignoreSslErrors, headers).PostAsync(baseUri, bodyContent).ConfigureAwait(false);
+            return await GetInstance(baseUri, ignoreSslErrors, headers).PostAsync(baseUri, bodyContent);
         }
 
-        public override async Task<HttpResponseMessage> GetAsync(string baseUri, string requestUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null)
-        {
-            return await GetInstance(baseUri, ignoreSslErrors, headers).GetAsync(baseUri + requestUri).ConfigureAwait(false);
-        }
+        public override async Task<HttpResponseMessage> GetAsync(string baseUri, string requestUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null) => await GetInstance(baseUri, ignoreSslErrors, headers).GetAsync(baseUri + requestUri);
 
-        public override async Task<HttpResponseMessage> SendAsync(string baseUri, HttpRequestMessage message, bool ignoreSslErrors = false)
-        {
-            return await GetInstance(baseUri, ignoreSslErrors).SendAsync(message).ConfigureAwait(false);
-        }
+        public override async Task<HttpResponseMessage> SendAsync(string baseUri, HttpRequestMessage message, bool ignoreSslErrors = false) => await GetInstance(baseUri, ignoreSslErrors).SendAsync(message);
     }
 }

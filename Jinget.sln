@@ -1,4 +1,5 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31423.177
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -13,6 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-Core", "01-Core", "{115DD383-ACB4-48AA-A6C2-C6105314F051}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-Handlers", "02-Handlers", "{27D7B409-7A82-4565-9A00-146BCD7C7D9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jinget.Handlers.ExternalServiceHandlers.Tests", "Tests\Jinget.Handlers.ExternalServiceHandlers.Tests\Jinget.Handlers.ExternalServiceHandlers.Tests.csproj", "{0724C2F1-FCA0-4F78-BF2B-A4B41ABFD8FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +35,10 @@ Global
 		{1811968F-BFBB-4623-9E7B-2FB02B0355E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1811968F-BFBB-4623-9E7B-2FB02B0355E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1811968F-BFBB-4623-9E7B-2FB02B0355E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0724C2F1-FCA0-4F78-BF2B-A4B41ABFD8FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0724C2F1-FCA0-4F78-BF2B-A4B41ABFD8FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0724C2F1-FCA0-4F78-BF2B-A4B41ABFD8FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0724C2F1-FCA0-4F78-BF2B-A4B41ABFD8FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -40,6 +47,7 @@ Global
 		{228C0492-4882-4F24-993F-1EE0D7E41258} = {F1B06C67-988D-4E24-8110-92C9B6D4CBC0}
 		{EF2D7E20-A64D-4E32-8072-B6C59FBA5C55} = {115DD383-ACB4-48AA-A6C2-C6105314F051}
 		{1811968F-BFBB-4623-9E7B-2FB02B0355E3} = {27D7B409-7A82-4565-9A00-146BCD7C7D9C}
+		{0724C2F1-FCA0-4F78-BF2B-A4B41ABFD8FE} = {F1B06C67-988D-4E24-8110-92C9B6D4CBC0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8690B4B4-1E8A-4C1D-9A63-123EAD0492EE}

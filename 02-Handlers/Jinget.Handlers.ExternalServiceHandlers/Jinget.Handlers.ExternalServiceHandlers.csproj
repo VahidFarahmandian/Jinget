@@ -13,6 +13,7 @@
     <PackageProjectUrl>https://github.com/VahidFarahmandian/Jinget</PackageProjectUrl>
     <PackageTags>jinget, framework, webapi, http, soap, xml</PackageTags>
     <Title>Jinget External Service Handler</Title>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +27,13 @@
 
   <ItemGroup>
     <None Include="assets\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
