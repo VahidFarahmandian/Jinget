@@ -30,7 +30,7 @@ var jingetServiceHandler = new JingetServiceHandler<SampleGetResponse>();
 ```csharp
 var result = await jingetServiceHandler.GetAsync("https://jsonplaceholder.typicode.com", "/users", true, null);
 ```
-
+------------
 ### How to call SOAP web Services:
 
 1. For SOAP services, it would be important to create the request envelope before sending the request. To create the request envelop, You need to create classes for different parts of the request envelop. For example suppose that we need to model the following request envelop:
@@ -115,12 +115,13 @@ var (envelope, request) = new SampleSOAPRequest().CreateEnvelope();
 envelope.Body.Add = new SampleSOAPRequest.SampleSOAPGet { intA = 1, intB = 2 };
 
  var result = await jingetServiceHandler.PostAsync("http://www.dneonline.com/calculator.asmx", envelope.ToString(), true, new Dictionary<string, string>
-            {
-                {"Content-Type","text/xml" },
-                {"SOAPAction","http://tempuri.org/Add" }
-            });
+ {
+              {"Content-Type","text/xml" },
+              {"SOAPAction","http://tempuri.org/Add" }
+ });
 ```
 In line number 2, we have our envelop and all we need to do, is to pass our parameters. In line number 4, the envelop is being send to the PostAsync method as string value. It is important to note the `SOAPAction` header.
+
 ------------
 ### How to use custom Service Handler
 
@@ -132,7 +133,7 @@ For example suppose that we have a class called `CustomHandler` as below:
 	...
  }
 ```
-
+------------
 # How to install
 In order to install Jinget please refer to [nuget.org](https://www.nuget.org/packages/Jinget.Handlers.ExternalServiceHandlers "nuget.org")
 
