@@ -23,12 +23,12 @@ You can also use other methods supported by NuGet. Check [Here](https://www.nuge
 
 3. Create an object of type `JingetServiceHandler<>` class and pass the response model as its generic type:
 ```csharp
-var jingetServiceHandler = new JingetServiceHandler<SampleGetResponse>();
+var jingetServiceHandler = new JingetServiceHandler<SampleGetResponse>("https://jsonplaceholder.typicode.com");
 ```
 
 4. Call your endpoint:
 ```csharp
-var result = await jingetServiceHandler.GetAsync("https://jsonplaceholder.typicode.com", "/users", true, null);
+var result = await jingetServiceHandler.GetAsync("users");
 ```
 ------------
 ### How to call SOAP web Services:
@@ -114,13 +114,15 @@ public class SampleSOAPRequest : SOAPRequestBase<SampleSOAPRequest.Envelope, Sam
 var (envelope, request) = new SampleSOAPRequest().CreateEnvelope();
 envelope.Body.Add = new SampleSOAPRequest.SampleSOAPGet { intA = 1, intB = 2 };
 
- var result = await jingetServiceHandler.PostAsync("http://www.dneonline.com/calculator.asmx", envelope.ToString(), true, new Dictionary<string, string>
+ var jingetServiceHandler = new JingetServiceHandler<ResponseType>("http://www.dneonline.com/calculator.asmx");
+
+ var result = await jingetServiceHandler.PostAsync("", envelope.ToString(), true, new Dictionary<string, string>
  {
               {"Content-Type","text/xml" },
               {"SOAPAction","http://tempuri.org/Add" }
  });
 ```
-In line number 2, we have our envelop and all we need to do, is to pass our parameters. In line number 4, the envelop is being send to the PostAsync method as string value. It is important to note the `SOAPAction` header.
+In line number 2, we have our envelop and all we need to do, is to pass our parameters. In line number 6, the envelop is being send to the PostAsync method as string value. It is important to note the `SOAPAction` header.
 
 ------------
 ### How to use custom Service Handler
