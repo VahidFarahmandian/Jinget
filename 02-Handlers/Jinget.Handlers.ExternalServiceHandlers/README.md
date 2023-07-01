@@ -115,12 +115,13 @@ var (envelope, request) = new SampleSOAPRequest().CreateEnvelope();
 envelope.Body.Add = new SampleSOAPRequest.SampleSOAPGet { intA = 1, intB = 2 };
 
  var result = await jingetServiceHandler.PostAsync("http://www.dneonline.com/calculator.asmx", envelope.ToString(), true, new Dictionary<string, string>
-            {
-                {"Content-Type","text/xml" },
-                {"SOAPAction","http://tempuri.org/Add" }
-            });
+ {
+            {"Content-Type","text/xml" },
+            {"SOAPAction","http://tempuri.org/Add" }
+ });
 ```
 In line number 2, we have our envelop and all we need to do, is to pass our parameters. In line number 4, the envelop is being send to the PostAsync method as string value. It is important to note the `SOAPAction` header.
+
 ------------
 ### How to use custom Service Handler
 
