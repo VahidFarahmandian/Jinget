@@ -24,5 +24,15 @@ namespace Jinget.Core.ExtensionMethods
 
             return data;
         }
+
+        /// <summary>
+        /// Convert string to camelCase string
+        /// </summary>
+        public static string ToCamelCase(this string value)
+        {
+            if (string.IsNullOrEmpty(value)) 
+                return value;
+            return char.ToLowerInvariant(value[0]) + value[1..];
+        }
     }
 }

@@ -25,5 +25,14 @@ namespace Jinget.Core.Tests.ExtensionMethods.Database.SqlClient
             Assert.IsTrue("   ".ApplyCorrectYeKe() == string.Empty);
             Assert.IsTrue(string.Empty.ApplyCorrectYeKe() == string.Empty);
         }
+
+        [TestMethod()]
+        public void should_return_CamelCase_string()
+        {
+            string input = "Vahid Farahmandian";
+            string expectedResult = "vahid Farahmandian";
+            string result = input.ToCamelCase();
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }
