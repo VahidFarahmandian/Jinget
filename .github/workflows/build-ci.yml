@@ -3,8 +3,14 @@ name: build-ci
 on:
   push:
     branches: [main]
+    paths-ignore: 
+      - '.github/**'
+      - '**/*.md'
   pull_request:
     branches: [main]
+    paths-ignore: 
+      - '.github/**'
+      - '**/*.md'
 
 jobs:
   build:
