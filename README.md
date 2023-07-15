@@ -18,11 +18,15 @@ Jinget provides the following benefits:
 - Easy to run health check infrastructure for different types of resources such as server availability, database health, web service/API's health etc.
 - Auto injected security considerations based on OWASP Top 10
 
+# Which parts are available now:
+- Jinget.Core: Contains some very useful extension methods and helper classes.
+- Jinget.Handlers.ExternalServiceHandlers: Helps you to consume different types of Web APIs and SOAP web services with ease of use.
+
 # How to install
 In order to install Jinget please refer to [nuget.org](https://www.nuget.org/profiles/Jinget "nuget.org")
 
 # How to use
-Sample codes are available via Unit Test projects which are provided beside the main source codes
+Sample codes are available via Test projects which are provided beside the main source codes
 
 # Contact Me
 👨‍💻 Twitter: https://twitter.com/_jinget
