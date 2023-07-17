@@ -25,7 +25,7 @@ namespace Jinget.Core.Utilities.Tests
 
             string input = "1399/07/21";
 
-            var result = DateTimeUtility.ToGeorgianDate(input);
+            var result = DateTimeUtility.ToGregorianDate(input);
 
             Assert.AreEqual(expectedResult, result);
         }
@@ -33,7 +33,7 @@ namespace Jinget.Core.Utilities.Tests
         [TestMethod()]
         public void should_return_timespan()
         {
-            TimeSpan expectedResult = new TimeSpan(2, 30, 0);
+            TimeSpan expectedResult = new(2, 30, 0);
 
             int input = 150;
 

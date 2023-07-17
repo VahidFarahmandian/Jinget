@@ -3,22 +3,22 @@
     public class SampleGetResponse
     {
         public int id { get; set; }
-        public string name { get; set; }
-        public string username { get; set; }
-        public string email { get; set; }
-        public Address address { get; set; }
-        public string phone { get; set; }
-        public string website { get; set; }
-        public Company company { get; set; }
+        public required string name { get; set; }
+        public required string username { get; set; }
+        public required string email { get; set; }
+        public required Address address { get; set; }
+        public required string phone { get; set; }
+        public required string website { get; set; }
+        public required Company company { get; set; }
 
 
         public class Address
         {
-            public string street { get; set; }
-            public string suite { get; set; }
-            public string city { get; set; }
-            public string zipcode { get; set; }
-            public Geo geo { get; set; }
+            public required string street { get; set; }
+            public required string suite { get; set; }
+            public required string city { get; set; }
+            public required string zipcode { get; set; }
+            public required Geo geo { get; set; }
         }
 
         public class Geo
