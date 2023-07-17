@@ -6,7 +6,7 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
 {
     public static class OrderByExtensions
     {
-        public static string Stringfy(this List<OrderBy> lstOrderBy) =>
+        static string Stringfy(this List<OrderBy> lstOrderBy) =>
             lstOrderBy.Any()
                 ? $"ORDER BY {string.Join(",", lstOrderBy.Select(x => x.ToString()))}"
                 : string.Empty;
