@@ -21,7 +21,7 @@ namespace Jinget.Core.ExpressionToSql.Tests
             var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").ToSql();
 
             Assert.AreEqual(expectedResult, result.query.ToString());
-            Assert.IsTrue(result.parameters == null);
+            Assert.IsTrue(result.parameters is null);
         }
 
         [TestMethod]
@@ -32,7 +32,7 @@ namespace Jinget.Core.ExpressionToSql.Tests
             var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, new Table { Name = "tblTest" }).ToSql();
 
             Assert.AreEqual(expectedResult, result.query.ToString());
-            Assert.IsTrue(result.parameters == null);
+            Assert.IsTrue(result.parameters is null);
         }
 
         #endregion
@@ -47,7 +47,7 @@ namespace Jinget.Core.ExpressionToSql.Tests
             var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, new Table() { Name = "tblTest", Schema = "sch" }).ToSql();
 
             Assert.AreEqual(expectedResult, result.query.ToString());
-            Assert.IsTrue(result.parameters == null);
+            Assert.IsTrue(result.parameters is null);
         }
 
         #endregion
@@ -61,7 +61,7 @@ namespace Jinget.Core.ExpressionToSql.Tests
             var result = Sql.Top<SqlTableSample, object>(x => new { x.Id }, 10, "tblTest").ToSql();
 
             Assert.AreEqual(expectedResult, result.query.ToString());
-            Assert.IsTrue(result.parameters == null);
+            Assert.IsTrue(result.parameters is null);
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ namespace Jinget.Core.ExpressionToSql.Tests
             var result = Sql.Top<SqlTableSample, object>(x => new { x.Id }, 10, new Table { Name = "tblTest" }).ToSql();
 
             Assert.AreEqual(expectedResult, result.query.ToString());
-            Assert.IsTrue(result.parameters == null);
+            Assert.IsTrue(result.parameters is null);
         }
 
         #endregion

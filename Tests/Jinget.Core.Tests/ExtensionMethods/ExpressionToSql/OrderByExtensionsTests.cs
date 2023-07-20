@@ -17,10 +17,11 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
 
             Assert.IsTrue(string.IsNullOrWhiteSpace(result));
         }
+
         [TestMethod()]
         public void should_return_stringfied_order_by_clause()
         {
-            List<OrderBy> lstOrderBy = new List<OrderBy>
+            List<OrderBy> lstOrderBy = new()
             {
                 new OrderBy
                 {
@@ -35,6 +36,62 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
             };
 
             string expectedResult = "ORDER BY [Property1] DESC,[Property2] ASC";
+
+            var result = lstOrderBy.GetSorting();
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod()]
+        public void should_return_stringfied_order_by_clause_complex_type()
+        {
+            List<OrderBy> lstOrderBy = new()
+            {
+                new OrderBy
+                {
+                    Name = x=>((TestClass)x).InnerSingularProperty.InnerProperty1,
+                    Direction = Enumerations.OrderByDirection.Descending
+                }
+            };
+
+            string expectedResult = "ORDER BY [InnerSingularProperty.InnerProperty1] DESC";
+
+            var result = lstOrderBy.GetSorting();
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod()]
+        public void should_return_stringfied_order_by_clause_stringfied_type_name()
+        {
+            List<OrderBy> lstOrderBy = new()
+            {
+                new OrderBy
+                {
+                    Name = x=>"Property3",
+                    Direction = Enumerations.OrderByDirection.Descending
+                }
+            };
+
+            string expectedResult = "ORDER BY [Property3] DESC";
+
+            var result = lstOrderBy.GetSorting();
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod()]
+        public void should_return_stringfied_order_by_clause_using_string_name()
+        {
+            List<OrderBy> lstOrderBy = new()
+            {
+                new OrderBy("Property3")
+                {
+                    Direction = Enumerations.OrderByDirection.Descending
+                }
+            };
+
+            string expectedResult = "ORDER BY [Property3] DESC";
 
             var result = lstOrderBy.GetSorting();
 

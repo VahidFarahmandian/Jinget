@@ -9,6 +9,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Jinget.Core.ExtensionMethods.Collections;
+using System.Net.NetworkInformation;
 
 namespace Jinget.Core.Utilities.Expressions
 {
@@ -73,7 +74,7 @@ namespace Jinget.Core.Utilities.Expressions
                 {
                     return false;
                 }
-                path = parentPart == null ? thisPart : parentPart + "." + thisPart;
+                path = parentPart is null ? thisPart : $"{parentPart}.{thisPart}";
             }
             else if (withoutConvert is MethodCallExpression callExpression)
             {
@@ -133,8 +134,16 @@ namespace Jinget.Core.Utilities.Expressions
             {
                 expression = ((UnaryExpression)expression).Operand;
             }
-
             return expression;
+        }
+
+        public static Expression<Func<T, T>> ToExpression<T>(string property, string parameterName = "Param_0")
+        {
+            var paramExpression = Expression.Parameter(typeof(T), parameterName);
+
+            var memberExpression = Expression.Constant(property);
+
+            return Expression.Lambda<Func<T, T>>(memberExpression, paramExpression);
         }
 
         /// <summary>
@@ -169,7 +178,9 @@ namespace Jinget.Core.Utilities.Expressions
         /// <param name="treatNullOrEmptyAsTrueCondition">When <paramref name="json"/> is null or empty, then a default condition will be returned.
         /// if this parameter's value is set to true the a default true condition will be returned otherwise a defaule false condition will be returned</param>
         /// <returns></returns>
+#nullable enable
         public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(object? json, bool treatNullOrEmptyAsTrueCondition = true)
+#nullable disable
         {
             //if there is no json object specified, then return the default true/false condition
             if (json is null)
@@ -209,7 +220,7 @@ namespace Jinget.Core.Utilities.Expressions
         public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(IList<FilterCriteria> filters, bool treatNullOrEmptyAsTrueCondition = true)
         {
             //if there is no filter specified, then return the default true/false condition
-            if (filters == null || !filters.Any())
+            if (filters is null || !filters.Any())
             {
                 return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
             }

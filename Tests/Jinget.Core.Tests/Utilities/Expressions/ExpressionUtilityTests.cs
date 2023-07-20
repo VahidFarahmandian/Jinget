@@ -62,7 +62,10 @@ namespace Jinget.Core.ExtensionMethods.Expressions.Tests
         [TestMethod]
         public void should_return_no_data_using_empty_string_filter()
         {
+#nullable enable
             object? json = "";
+#nullable disable
+
             string expectedFilter = "x => False";
 
             var data = new List<TestClass>
@@ -84,7 +87,10 @@ namespace Jinget.Core.ExtensionMethods.Expressions.Tests
         [TestMethod]
         public void should_return_all_data_using_null_object()
         {
+#nullable enable
             object? json = null;
+#nullable disable
+
             string expectedFilter = "x => True";
 
             var data = new List<TestClass>
@@ -108,7 +114,10 @@ namespace Jinget.Core.ExtensionMethods.Expressions.Tests
         [TestMethod]
         public void should_return_no_data_using_null_object()
         {
+#nullable enable
             object? json = null;
+#nullable disable
+
             string expectedFilter = "x => False";
 
             var data = new List<TestClass>

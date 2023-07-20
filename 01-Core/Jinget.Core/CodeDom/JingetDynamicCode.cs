@@ -42,24 +42,22 @@ namespace Jinget.Core.CodeDom
                     sourceCode = GenerateSourceCode(sourceCode, args);
                 jingetSource = sourceCode;
 
-                using (var peStream = new MemoryStream())
+                using var peStream = new MemoryStream();
+                var result = GenerateAssembly(sourceCode, references).Emit(peStream);
+
+                if (!result.Success)
                 {
-                    var result = GenerateAssembly(sourceCode, references).Emit(peStream);
+                    var failures = result.Diagnostics.Where(diagnostic =>
+                        diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
 
-                    if (!result.Success)
-                    {
-                        var failures = result.Diagnostics.Where(diagnostic =>
-                            diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+                    errors.AddRange(failures.Select(diagnostic => $"{diagnostic.Id} {diagnostic.GetMessage()}"));
 
-                        errors.AddRange(failures.Select(diagnostic => $"{diagnostic.Id} {diagnostic.GetMessage()}"));
-
-                        return null;
-                    }
-
-                    peStream.Seek(0, SeekOrigin.Begin);
-
-                    return peStream.ToArray();
+                    return null;
                 }
+
+                peStream.Seek(0, SeekOrigin.Begin);
+
+                return peStream.ToArray();
             }
 
             /// <summary>
@@ -72,7 +70,7 @@ namespace Jinget.Core.CodeDom
 
                 var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
 
-                externalReferences = externalReferences ?? new List<string>();
+                externalReferences ??= new List<string>();
 
                 var defaultReferences = new[] { "System.Private.CoreLib", "netstandard", "System.Runtime" };
 
@@ -128,7 +126,7 @@ namespace Jinget.Core.CodeDom
                 {
                     Name = "DynamicInvoke",
                     Attributes = MemberAttributes.Public | MemberAttributes.Final,
-                    ReturnType = methodOptions?.ReturnType == null ? new CodeTypeReference(typeof(void)) : new CodeTypeReference(methodOptions.ReturnType)
+                    ReturnType = methodOptions?.ReturnType is null ? new CodeTypeReference(typeof(void)) : new CodeTypeReference(methodOptions.ReturnType)
                 };
                 if (methodOptions?.Parameters != null)
                 {
@@ -162,7 +160,7 @@ namespace Jinget.Core.CodeDom
                 var allTheCode = source.ToString();
                 var justTheRealCode = allTheCode.Substring(allTheCode.IndexOf(marker) + marker.Length, allTheCode.LastIndexOf(marker) + marker.Length);
 
-                string removedComments = allTheCode.Substring(justTheRealCode.Length).Trim();
+                string removedComments = allTheCode[justTheRealCode.Length..].Trim();
 
                 var removedNewLine = removedComments.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Where(x => !string.IsNullOrWhiteSpace(x));
                 source = new StringBuilder(string.Join(Environment.NewLine, removedNewLine));
@@ -180,7 +178,7 @@ namespace Jinget.Core.CodeDom
 
             var compiledCode = _compiler.Compile(sourceCode, options, out errors, out compiledSourceCode,
                 isTopLevelStatement, references);
-            if (compiledCode == null || compileOnly)
+            if (compiledCode is null || compileOnly)
             {
                 return null;
             }

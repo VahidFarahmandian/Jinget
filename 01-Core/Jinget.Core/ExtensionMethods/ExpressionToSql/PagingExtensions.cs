@@ -13,7 +13,7 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
             if (string.IsNullOrEmpty(strOrderby) && paging != null)
                 throw new JingetException("In order to use paging, you should specify at least one order by expression.", 4000);
 
-            return $"{strOrderby} {(paging == null ? "" : paging.ToString())}";
+            return $"{strOrderby} {(paging is null ? "" : paging.ToString())}";
         }
     }
 }

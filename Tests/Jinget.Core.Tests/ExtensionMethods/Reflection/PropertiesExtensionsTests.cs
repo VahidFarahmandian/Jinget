@@ -17,7 +17,7 @@ namespace Jinget.Core.ExtensionMethods.Reflection.Tests
             var result = input.IsNullable();
             Assert.IsTrue(result);
 
-            input = typeof(Nullable<bool>);
+            input = typeof(bool?);
             result = input.IsNullable();
             Assert.IsTrue(result);
         }

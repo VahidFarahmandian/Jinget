@@ -10,7 +10,7 @@ namespace Jinget.Core.ExtensionMethods.Expressions
         /// </summary>
         public static string Stringfy(this LambdaExpression expression)
         {
-            if (expression == null)
+            if (expression is null)
                 return null;
             ExpressionUtility.TryParseExpression(expression.Body, out var path);
             return path;

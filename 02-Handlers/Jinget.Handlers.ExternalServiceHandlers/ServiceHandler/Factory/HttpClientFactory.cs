@@ -14,7 +14,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
     public class HttpClientFactory
     {
         readonly HttpClient client;
-        internal HttpClientFactory(string baseUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null)
+        internal HttpClientFactory(string baseUri, bool ignoreSslErrors = false)
         {
             if (ignoreSslErrors)
             {
@@ -42,9 +42,12 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
             string baseUrl = client.BaseAddress.ToString().EndsWith("/") ? client.BaseAddress.ToString() : $"{client.BaseAddress}/";
             return new Uri($"{baseUrl}{url}".TrimEnd('/'));
         }
+
+#nullable enable
         private void SetHeaders(Dictionary<string, string>? headers)
+#nullable disable
         {
-            if (headers == null)
+            if (headers is null)
                 return;
             foreach (var header in headers)
             {
@@ -67,7 +70,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
         public async Task<HttpResponseMessage> PostAsync(string url, object content = null, Dictionary<string, string> headers = null)
         {
             if (url != "" && url.StartsWith("/"))
-                throw new Jinget.Core.Exceptions.JingetException($"{nameof(url)} should not start with '/'");
+                throw new Core.Exceptions.JingetException($"{nameof(url)} should not start with '/'");
 
             StringContent bodyContent = null;
             if (content != null)
@@ -97,7 +100,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
         public async Task<HttpResponseMessage> GetAsync(string url, Dictionary<string, string> headers = null)
         {
             if (url.StartsWith("/"))
-                throw new Jinget.Core.Exceptions.JingetException($"{nameof(url)} should not start with '/'");
+                throw new Core.Exceptions.JingetException($"{nameof(url)} should not start with '/'");
             SetHeaders(headers);
             return await client.GetAsync(GetUrl(url));
         }

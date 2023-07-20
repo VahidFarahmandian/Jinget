@@ -4,6 +4,7 @@ using System.Text;
 using Jinget.Core.Enumerations;
 using Jinget.Core.ExtensionMethods.Enums;
 using Jinget.Core.ExtensionMethods.Expressions;
+using Jinget.Core.Utilities.Expressions;
 
 namespace Jinget.Core.ExpressionToSql.Internal
 {
@@ -12,6 +13,12 @@ namespace Jinget.Core.ExpressionToSql.Internal
     /// </summary>
     public class OrderBy
     {
+        public OrderBy()
+        {
+
+        }
+        public OrderBy(string name) => Name = ExpressionUtility.ToExpression<object>(name, "x");
+
         /// <summary>
         /// The order by expression
         /// </summary>

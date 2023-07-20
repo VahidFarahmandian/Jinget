@@ -39,12 +39,16 @@ namespace Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler.Sa
             /// <summary>
             /// defines the Header node inside the envelop node
             /// </summary>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             public EnvelopeHeader Header { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
             /// <summary>
             /// Defines the Body node inside the envelop node
             /// </summary>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             public EnvelopeBody Body { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         }
 
         /// <summary>
@@ -63,7 +67,9 @@ namespace Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler.Sa
         public class EnvelopeBody
         {
             [XmlElement(Namespace = "http://tempuri.org/")]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             public SampleSOAPGet Add { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         }
 
         /// <summary>
@@ -72,8 +78,10 @@ namespace Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler.Sa
         [Serializable]
         public class SampleSOAPGet
         {
+#pragma warning disable IDE1006 // Naming Styles
             public int intA { get; set; }
             public int intB { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
 
         }
     }

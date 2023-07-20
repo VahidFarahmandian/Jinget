@@ -11,7 +11,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler
 {
     public class JingetServiceHandler<TResponseModel> : ServiceHandler<JingetServiceHandlerEvents<TResponseModel>> where TResponseModel : class, new()
     {
-        public JingetServiceHandler(string baseUri, bool ignoreSslErrors = false, Dictionary<string, string> headers = null) : base(baseUri, ignoreSslErrors, headers) { }
+        public JingetServiceHandler(string baseUri, bool ignoreSslErrors = false) : base(baseUri, ignoreSslErrors) { }
 
         private async Task<TResponseModel> ProcessTask(Func<Task<HttpResponseMessage>> task)
         {
@@ -49,6 +49,9 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler
         }
         public async Task<TResponseModel> GetAsync(string url, Dictionary<string, string> headers = null)
             => await ProcessTask(async () => await HttpClientFactory.GetAsync(url, headers));
+
+        public async Task<TResponseModel> PostAsync(object content = null, Dictionary<string, string> headers = null)
+            => await ProcessTask(async () => await HttpClientFactory.PostAsync("", content, headers));
 
         public async Task<TResponseModel> PostAsync(string url, object content = null, Dictionary<string, string> headers = null)
             => await ProcessTask(async () => await HttpClientFactory.PostAsync(url, content, headers));

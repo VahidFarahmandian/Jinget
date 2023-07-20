@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Jinget.Core.Exceptions;
 using Jinget.Core.ExpressionToSql.Internal;
 using Jinget.Core.Tests._BaseData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,10 +21,24 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
         }
 
         [TestMethod()]
+        [ExpectedException(typeof(JingetException), AllowDerivedTypes = false)]
+        public void should_throw_jinget_exception()
+        {
+            Paging paging = new()
+            {
+                PageNumber = 1,
+                PageSize = 10
+            };
+            List<OrderBy> lstOrderBy = null;
+
+            paging.GetPaging(lstOrderBy);
+        }
+
+        [TestMethod()]
         public void should_return_stringfied_order_by_clause()
         {
             Paging paging = null;
-            List<OrderBy> lstOrderBy = new List<OrderBy>
+            List<OrderBy> lstOrderBy = new()
             {
                 new OrderBy
                 {
@@ -41,12 +56,12 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
         [TestMethod()]
         public void should_return_stringfied_paging_clause()
         {
-            Paging paging = new Paging()
+            Paging paging = new()
             {
                 PageNumber = 1,
                 PageSize = 10
             };
-            List<OrderBy> lstOrderBy = new List<OrderBy>
+            List<OrderBy> lstOrderBy = new()
             {
                 new OrderBy
                 {
