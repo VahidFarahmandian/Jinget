@@ -16,7 +16,7 @@ namespace Jinget.Core.Utilities
                 throw new ArgumentException("Jinget Says: length must not be negative", nameof(length));
             if (length > int.MaxValue / 8) // 250 million chars ought to be enough for anybody
                 throw new ArgumentException("Jinget Says: length is too big", nameof(length));
-            if (characterSet == null)
+            if (characterSet is null)
                 throw new ArgumentNullException(nameof(characterSet));
             var characterArray = characterSet.Distinct().ToArray();
             if (characterArray.Length == 0)

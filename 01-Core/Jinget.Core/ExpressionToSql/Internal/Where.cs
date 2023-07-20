@@ -27,7 +27,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
 
             var i = 1;
 
-            if (_where == null)
+            if (_where is null)
                 return (query, new Dictionary<string, object>());
 
             var where = Recurse(ref i, _where.Body, true);
@@ -129,7 +129,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
                 if (methodCall.Method.Name == "ToString")
                 {
                     //Convert.ToString(column)
-                    if (methodCall.Object == null)
+                    if (methodCall.Object is null)
                     {
                         return WherePart.Cast(((MemberExpression)methodCall.Arguments[0]).Member.Name, methodCall.Method.Name);
                     }

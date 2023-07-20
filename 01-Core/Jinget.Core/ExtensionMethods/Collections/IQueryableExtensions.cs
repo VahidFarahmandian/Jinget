@@ -28,7 +28,7 @@ namespace Jinget.Core.ExtensionMethods
                 memberAccess = Expression.PropertyOrField(memberAccess, member);
             }
 
-            if (memberAccess == null)
+            if (memberAccess is null)
                 throw new JingetException($"Jinget Says: {orderByMember} not found in the given type", new NullReferenceException());
 
             var keySelector = Expression.Lambda(memberAccess, queryElementTypeParam);

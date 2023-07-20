@@ -5,9 +5,9 @@ namespace Jinget.Core.Exceptions
 {
     /// <summary>
     /// Provide a mechanism for defining custom jinget exceptions
-    /// Implements the <see cref="System.Exception" />
+    /// Implements the <see cref="Exception" />
     /// </summary>
-    /// <seealso cref="System.Exception" />
+    /// <seealso cref="Exception" />
     public class JingetException : Exception
     {
         public int Code { get; set; }

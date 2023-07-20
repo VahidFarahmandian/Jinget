@@ -64,7 +64,7 @@ namespace Jinget.Core.ExtensionMethods.Reflection
                     return true;
                 }
                 t = Nullable.GetUnderlyingType(t);
-                if (t == null)
+                if (t is null)
                 {
                     break;
                 }
