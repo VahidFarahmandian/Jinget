@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Jinget.Core.Utilities.Parser.SqlServer
+namespace Jinget.Core.Utilities.Parser
 {
     public static class DatabaseParserUtility
     {
