@@ -1,5 +1,4 @@
-﻿using Jinget.Core.Utilities.Parser.SqlServer;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Jinget.Core.Utilities.Parser.DatabaseParser.SqlServer
 {
