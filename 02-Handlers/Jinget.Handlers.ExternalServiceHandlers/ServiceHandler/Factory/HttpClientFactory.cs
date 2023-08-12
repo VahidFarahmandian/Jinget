@@ -7,6 +7,8 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using Jinget.Core.Utilities;
+using Jinget.Core.Utilities.HttpUtility;
+using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 
 namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
@@ -69,26 +71,23 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
 
         public async Task<HttpResponseMessage> PostAsync(string url, object content = null, Dictionary<string, string> headers = null)
         {
-            if (url != "" && url.StartsWith("/"))
-                throw new Core.Exceptions.JingetException($"{nameof(url)} should not start with '/'");
+            if (!string.IsNullOrWhiteSpace(url) && url.StartsWith("/"))
+                url = url.TrimStart('/');
 
             StringContent bodyContent = null;
             if (content != null)
             {
-                if (headers != null && headers.Keys.Any(x => x == "Content-Type") && headers["Content-Type"].ToLower() != MediaTypeNames.Application.Json)
+                if (HeaderUtility.IsXmlContentType(headers))
                 {
-                    if (headers["Content-Type"] == MediaTypeNames.Text.Xml || headers["Content-Type"] == MediaTypeNames.Application.Xml)
-                    {
-                        bodyContent = new StringContent(content is string ? content.ToString() : XmlUtility.SerializeToXml(content), Encoding.UTF8, headers["Content-Type"]);
-                    }
-                    else
-                    {
-                        bodyContent = new StringContent(content.ToString(), Encoding.UTF8, headers["Content-Type"]);
-                    }
+                    bodyContent = new StringContent(content is string ? content.ToString() : XmlUtility.SerializeToXml(content), Encoding.UTF8, headers["Content-Type"]);
+                }
+                else if (HeaderUtility.IsJsonContentType(headers))
+                {
+                    bodyContent = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, MediaTypeNames.Application.Json);
                 }
                 else
                 {
-                    bodyContent = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, MediaTypeNames.Application.Json);
+                    bodyContent = new StringContent(content.ToString(), Encoding.UTF8, headers["Content-Type"]);
                 }
                 headers?.Remove("Content-Type");
             }
