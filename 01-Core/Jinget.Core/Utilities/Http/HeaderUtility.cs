@@ -20,10 +20,23 @@ namespace Jinget.Core.Utilities.Http
         /// searches for content-type header and if presents, return its value.
         /// This method searches for the content-type header using <seealso cref="HasContentType(Dictionary{string, string})"/>
         /// </summary>
-        public static string GetContentType(Dictionary<string, string> headers)
+        public static string GetContentTypeValue(Dictionary<string, string> headers)
         {
             if (headers != null && HasContentType(headers))
+            {
                 return headers.FirstOrDefault(x => string.Equals(x.Key, "Content-Type", StringComparison.OrdinalIgnoreCase)).Value;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// searches for content-type header and if presents, return its key.
+        /// This method searches for the content-type header using <seealso cref="HasContentType(Dictionary{string, string})"/>
+        /// </summary>
+        public static string GetContentTypeHeaderName(Dictionary<string, string> headers)
+        {
+            if (headers != null && HasContentType(headers))
+                return headers.FirstOrDefault(x => string.Equals(x.Key, "Content-Type", StringComparison.OrdinalIgnoreCase)).Key;
             return null;
         }
 
@@ -34,8 +47,8 @@ namespace Jinget.Core.Utilities.Http
         public static bool IsXmlContentType(Dictionary<string, string> headers)
             =>
             HasContentType(headers) &&
-            string.Equals(GetContentType(headers), MediaTypeNames.Text.Xml, StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(GetContentType(headers), MediaTypeNames.Application.Xml, StringComparison.OrdinalIgnoreCase);
+            (string.Equals(GetContentTypeValue(headers), MediaTypeNames.Text.Xml, StringComparison.OrdinalIgnoreCase) ||
+            GetContentTypeValue(headers).StartsWith(MediaTypeNames.Application.Xml, StringComparison.OrdinalIgnoreCase));
 
         /// <summary>
         /// check if <seealso cref="MediaTypeNames.Application.Json"/> exists in the given header collection
@@ -43,6 +56,14 @@ namespace Jinget.Core.Utilities.Http
         public static bool IsJsonContentType(Dictionary<string, string> headers)
             =>
             HasContentType(headers) &&
-            string.Equals(GetContentType(headers), MediaTypeNames.Application.Json, StringComparison.OrdinalIgnoreCase);
+            GetContentTypeValue(headers).StartsWith(MediaTypeNames.Application.Json, StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// check if <seealso cref="MediaTypeNames.Application.mu"/> exists in the given header collection
+        /// </summary>
+        public static bool IsMultiPartFormDataContentType(Dictionary<string, string> headers)
+            =>
+            HasContentType(headers) &&
+            GetContentTypeValue(headers).StartsWith(MediaTypeNames.Application.Json, StringComparison.OrdinalIgnoreCase);
     }
 }

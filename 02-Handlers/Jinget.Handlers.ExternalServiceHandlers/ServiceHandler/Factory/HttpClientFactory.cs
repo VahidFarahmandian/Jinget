@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using Jinget.Core.Utilities;
-using Jinget.Core.Utilities.HttpUtility;
-using Microsoft.Net.Http.Headers;
+using Jinget.Core.Utilities.Http;
 using Newtonsoft.Json;
 
 namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
@@ -25,25 +25,16 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
                     ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
                 };
 
-                client = new HttpClient(httpClientHandler)
-                {
-                    BaseAddress = new Uri(baseUri)
-                };
+                client = new HttpClient(httpClientHandler);
             }
             else
             {
-                client = new HttpClient
-                {
-                    BaseAddress = new Uri(baseUri)
-                };
+                client = new HttpClient();
             }
+            client.BaseAddress = new Uri(baseUri);
         }
 
-        private Uri GetUrl(string url)
-        {
-            string baseUrl = client.BaseAddress.ToString().EndsWith("/") ? client.BaseAddress.ToString() : $"{client.BaseAddress}/";
-            return new Uri($"{baseUrl}{url}".TrimEnd('/'));
-        }
+        private Uri GetUrl(string url) => new Uri($"{client.BaseAddress.ToString().TrimEnd('/')}/{url}".TrimEnd('/'));
 
 #nullable enable
         private void SetHeaders(Dictionary<string, string>? headers)
@@ -69,10 +60,33 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
             }
         }
 
+        public async Task<HttpResponseMessage> UploadFileAsync(string url, List<FileInfo> files = null, Dictionary<string, string> headers = null)
+        {
+            using var multipartFormContent = new MultipartFormDataContent();
+            foreach (var item in files)
+            {
+                //bool isMimeTypeAvailable = MimeTypeMap.TryGetMimeType(item.Name, out var mimeType);
+
+                var st = new ByteArrayContent(await File.ReadAllBytesAsync(item.FullName));
+                //st.Headers.ContentType = new MediaTypeHeaderValue(isMimeTypeAvailable ? mimeType : MediaTypeNames.Application.Octet);
+                multipartFormContent.Add(st, "file", item.Name);
+            }
+            return await UploadFileAsync(url, multipartFormContent, headers);
+        }
+        public async Task<HttpResponseMessage> UploadFileAsync(string url, MultipartFormDataContent multipartFormData, Dictionary<string, string> headers = null)
+        {
+            SetHeaders(headers);
+            return await client.PostAsync(GetUrl(url), multipartFormData);
+        }
+
         public async Task<HttpResponseMessage> PostAsync(string url, object content = null, Dictionary<string, string> headers = null)
         {
-            if (!string.IsNullOrWhiteSpace(url) && url.StartsWith("/"))
+            if (!string.IsNullOrWhiteSpace(url) && url.StartsWith('/'))
                 url = url.TrimStart('/');
+            if (content is MultipartFormDataContent)
+            {
+                return await UploadFileAsync(url, content as MultipartFormDataContent, headers);
+            }
 
             StringContent bodyContent = null;
             if (content != null)
@@ -87,9 +101,9 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
                 }
                 else
                 {
-                    bodyContent = new StringContent(content.ToString(), Encoding.UTF8, headers["Content-Type"]);
+                    bodyContent = new StringContent(content.ToString(), Encoding.UTF8, HeaderUtility.GetContentTypeValue(headers));
                 }
-                headers?.Remove("Content-Type");
+                headers?.Remove(HeaderUtility.GetContentTypeHeaderName(headers));
             }
 
             SetHeaders(headers);
@@ -98,9 +112,9 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
 
         public async Task<HttpResponseMessage> GetAsync(string url, Dictionary<string, string> headers = null)
         {
-            if (url.StartsWith("/"))
-                throw new Core.Exceptions.JingetException($"{nameof(url)} should not start with '/'");
-            SetHeaders(headers);
+            if (url.StartsWith('/'))
+                url = url.TrimStart('/'); SetHeaders(headers);
+
             return await client.GetAsync(GetUrl(url));
         }
 

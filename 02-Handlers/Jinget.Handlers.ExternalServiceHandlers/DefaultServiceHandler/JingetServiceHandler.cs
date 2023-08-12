@@ -3,6 +3,7 @@ using Jinget.Handlers.ExternalServiceHandlers.ServiceHandler;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -55,6 +56,12 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler
 
         public async Task<TResponseModel> PostAsync(string url, object content = null, Dictionary<string, string> headers = null)
             => await ProcessTask(async () => await HttpClientFactory.PostAsync(url, content, headers));
+
+        public async Task<TResponseModel> UploadFileAsync(string url, List<FileInfo> files = null, Dictionary<string, string> headers = null)
+            => await ProcessTask(async () => await HttpClientFactory.UploadFileAsync(url, files, headers));
+
+        public async Task<TResponseModel> UploadFileAsync(string url, MultipartFormDataContent multipartFormData = null, Dictionary<string, string> headers = null)
+            => await ProcessTask(async () => await HttpClientFactory.UploadFileAsync(url, multipartFormData, headers));
 
         public async Task<TResponseModel> SendAsync(HttpRequestMessage message) => await ProcessTask(async () => await HttpClientFactory.SendAsync(message));
     }

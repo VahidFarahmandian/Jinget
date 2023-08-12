@@ -1,6 +1,8 @@
 ﻿using Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler.SampleType;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Net.Mime;
 
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
 namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests
@@ -142,6 +144,29 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests
 
             Assert.IsFalse(result is null);
             Assert.AreEqual(3, result.AddResult);
+        }
+
+        //[TestMethod]
+        public async Task should_post_multipart_formdata()
+        {
+            var jingetServiceHandler = new JingetServiceHandler<SamplePostResponse>("https://localhost:7027/api/upload", true);
+            jingetServiceHandler.Events.ServiceCalled += (object sender, HttpResponseMessage e) =>
+            {
+                Assert.IsTrue(e.IsSuccessStatusCode);
+            };
+            jingetServiceHandler.Events.ResponseDeserialized += (object sender, SamplePostResponse e) =>
+            {
+                Assert.IsFalse(e is null);
+            };
+
+            List<FileInfo> files = new() {
+                new FileInfo("Sample Upload File1.txt") ,
+                new FileInfo("Sample Upload File2.txt")
+            };
+
+            var response = await jingetServiceHandler.UploadFileAsync("something", files);
+
+            Assert.IsFalse(string.IsNullOrWhiteSpace(response.Status));
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Jinget.Core.Utilities.Http.Tests
         {
             Dictionary<string, string> headers = new()
             {
-                { "content-type","text/xml" }
+                { "content-type","some thing..." }
             };
             var result = HeaderUtility.HasContentType(headers);
             Assert.IsTrue(result);
@@ -55,10 +55,22 @@ namespace Jinget.Core.Utilities.Http.Tests
         {
             Dictionary<string, string> headers = new()
             {
-                { "content-type","application/pdf" }
+                { "content-type","some thing..." }
             };
             var result = HeaderUtility.IsXmlContentType(headers);
             Assert.IsFalse(result);
+        }
+
+        [TestMethod()]
+        public void should_return_contenttype_header_name()
+        {
+            string expectedResult = "content-type";
+            Dictionary<string, string> headers = new()
+            {
+                { "content-type","some thing..." }
+            };
+            var result = HeaderUtility.GetContentTypeHeaderName(headers);
+            Assert.AreEqual(result, expectedResult);
         }
     }
 }
