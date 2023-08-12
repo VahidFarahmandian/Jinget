@@ -23,4 +23,16 @@
     <ProjectReference Include="..\..\02-Handlers\Jinget.Handlers.ExternalServiceHandlers\Jinget.Handlers.ExternalServiceHandlers.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Sample Upload File.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Sample Upload File1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Sample Upload File2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
