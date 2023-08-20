@@ -33,8 +33,10 @@ namespace Jinget.Core.Utilities
         public static string SerializeToSoapXml(object input)
         {
             using MemoryStream memStream = new MemoryStream();
-            SoapFormatter formatter = new SoapFormatter();
-            formatter.AssemblyFormat = FormatterAssemblyStyle.Simple;
+            SoapFormatter formatter = new SoapFormatter
+            {
+                AssemblyFormat = FormatterAssemblyStyle.Simple
+            };
             formatter.Serialize(memStream, input);
             return Encoding.UTF8.GetString(memStream.GetBuffer());
         }

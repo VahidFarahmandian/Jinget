@@ -9,7 +9,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Jinget.Core.ExtensionMethods.Collections;
-using System.Net.NetworkInformation;
 
 namespace Jinget.Core.Utilities.Expressions
 {

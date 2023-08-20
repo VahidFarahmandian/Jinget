@@ -4,7 +4,6 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using Jinget.Core.Utilities;
@@ -32,6 +31,11 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
                 client = new HttpClient();
             }
             client.BaseAddress = new Uri(baseUri);
+        }
+
+        internal HttpClientFactory(string baseUri, TimeSpan timeout, bool ignoreSslErrors = false) : this(baseUri, ignoreSslErrors)
+        {
+            client.Timeout = timeout;
         }
 
         private Uri GetUrl(string url) => new Uri($"{client.BaseAddress.ToString().TrimEnd('/')}/{url}".TrimEnd('/'));
@@ -65,11 +69,8 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
             using var multipartFormContent = new MultipartFormDataContent();
             foreach (var item in files)
             {
-                //bool isMimeTypeAvailable = MimeTypeMap.TryGetMimeType(item.Name, out var mimeType);
-
                 var st = new ByteArrayContent(await File.ReadAllBytesAsync(item.FullName));
-                //st.Headers.ContentType = new MediaTypeHeaderValue(isMimeTypeAvailable ? mimeType : MediaTypeNames.Application.Octet);
-                multipartFormContent.Add(st, "file", item.Name);
+                multipartFormContent.Add(st, item.Name, item.Name);
             }
             return await UploadFileAsync(url, multipartFormContent, headers);
         }
