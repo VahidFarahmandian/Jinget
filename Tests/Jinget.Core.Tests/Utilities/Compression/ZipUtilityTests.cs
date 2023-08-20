@@ -66,7 +66,7 @@ namespace Jinget.Core.Utilities.Compression.Tests
             };
             await zip.DecompressAsync(files.ToArray(), files[0].DirectoryName, maxDOP);
 
-            Assert.IsTrue(file.Directory.GetFiles("compressed.txt").Any());
+            Assert.IsTrue(file.Directory.GetFiles(fileName).Any());
         }
 
         [TestMethod()]
