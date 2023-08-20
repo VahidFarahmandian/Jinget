@@ -9,6 +9,20 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests
     public class JingetServiceHandlerTests
     {
         [TestMethod()]
+        public async Task should_configure_httpclientfactory_by_timeout()
+        {
+            var jingetServiceHandler = new JingetServiceHandler<List<SampleGetResponse>>("https://jinget.ir", TimeSpan.FromSeconds(3));
+
+            jingetServiceHandler.Events.ExceptionOccurred += (object sender, Exception e) =>
+            {
+                Assert.IsTrue(e.Message.Contains("Timeout of 3 seconds"));
+            };
+
+            var result = await jingetServiceHandler.GetAsync("users");
+
+            Assert.IsTrue(result is null);
+        }
+        [TestMethod()]
         public async Task should_call_get_restapi()
         {
             var jingetServiceHandler = new JingetServiceHandler<List<SampleGetResponse>>("https://jsonplaceholder.typicode.com");

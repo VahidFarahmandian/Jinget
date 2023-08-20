@@ -13,6 +13,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler
     public class JingetServiceHandler<TResponseModel> : ServiceHandler<JingetServiceHandlerEvents<TResponseModel>> where TResponseModel : class, new()
     {
         public JingetServiceHandler(string baseUri, bool ignoreSslErrors = false) : base(baseUri, ignoreSslErrors) { }
+        public JingetServiceHandler(string baseUri, TimeSpan timeout, bool ignoreSslErrors = false) : base(baseUri, timeout, ignoreSslErrors) { }
 
         private async Task<TResponseModel> ProcessTask(Func<Task<HttpResponseMessage>> task)
         {
