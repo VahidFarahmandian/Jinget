@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace Jinget.Core.Tests._BaseData
 {

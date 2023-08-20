@@ -1,8 +1,6 @@
 ﻿using Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler.SampleType;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using System.Net.Mime;
 
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
 namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests
