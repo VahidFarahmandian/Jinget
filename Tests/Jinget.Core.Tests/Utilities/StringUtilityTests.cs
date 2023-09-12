@@ -19,5 +19,19 @@ namespace Jinget.Core.Utilities.Tests
             Assert.IsTrue(result.Length == length);
             Assert.IsTrue(result.ToCharArray().All(x => charset.Contains(x)));
         }
+
+        [TestMethod()]
+        public void should_return_true_for_numeric_string()
+        {
+            string input = "1234567890";
+            Assert.IsTrue(StringUtility.IsDigitOnly(input));
+        }
+
+        [TestMethod()]
+        public void should_return_false_for_non_numeric_string()
+        {
+            string input = "vahid123";
+            Assert.IsFalse(StringUtility.IsDigitOnly(input));
+        }
     }
 }

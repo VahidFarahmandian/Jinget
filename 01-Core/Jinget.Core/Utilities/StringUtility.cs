@@ -35,5 +35,19 @@ namespace Jinget.Core.Utilities
             }
             return new string(result);
         }
+
+        /// <summary>
+        /// check if given string contains only numeric characters
+        /// </summary>
+        public static bool IsDigitOnly(string input)
+        {
+            foreach (char c in input)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+
+            return true;
+        }
     }
 }
