@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Authors>Vahid Farahmandian</Authors>
+    <RepositoryUrl>https://github.com/VahidFarahmandian/Jinget</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Description>Using this library, you can easily save your application logs in ElasticSearch database or files.</Description>
+    <Copyright>All Rights Reserved</Copyright>
+    <PackageIcon>icon.png</PackageIcon>
+    <Company>Jinget</Company>
+    <Product>Jinget</Product>
+    <Title>Jinget Logger</Title>
+    <PackageProjectUrl>https://github.com/VahidFarahmandian/Jinget</PackageProjectUrl>
+    <PackageTags>jinget, elasticsearch, log, logger, utility</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="assets\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="NEST" Version="7.17.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\01-Core\Jinget.Core\Jinget.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

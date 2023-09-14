@@ -2,6 +2,6 @@
 
 namespace Jinget.Core.Attributes
 {
-    [AttributeUsage(AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
     public class SwaggerExcludeAttribute : Attribute { }
 }

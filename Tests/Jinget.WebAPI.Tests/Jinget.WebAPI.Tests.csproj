@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\01-Core\Jinget.Core\Jinget.Core.csproj" />
+    <ProjectReference Include="..\..\03-Infrastructure\Jinget.Logger\Jinget.Logger.csproj" />
   </ItemGroup>
 
 </Project>
