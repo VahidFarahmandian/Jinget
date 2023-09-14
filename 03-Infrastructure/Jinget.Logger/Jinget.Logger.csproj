@@ -12,7 +12,7 @@
     <Product>Jinget</Product>
     <Title>Jinget Logger</Title>
     <PackageProjectUrl>https://github.com/VahidFarahmandian/Jinget</PackageProjectUrl>
-    <PackageTags>jinget, elasticsearch, log, logger, utility</PackageTags>
+    <PackageTags>jinget, elasticsearch, log, logger, utility, file</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
