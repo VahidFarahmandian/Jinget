@@ -1,5 +1,5 @@
 # Jinget Logger
-Using this library, you can easily save your application logs in ElasticSearch database or files.
+Using this library, you can easily save your application logs in Elasticsearch database or files.
 
 
 ## How to Use:
@@ -12,15 +12,15 @@ You can also use other methods supported by NuGet. Check [Here](https://www.nuge
 
 **Config logging destination:**
 
-***ElasticSearch:***
+***Elasticsearch:***
 
-`LogToElasticSearch`: By calling this method, you are going to save your logs in ElasticSearch
+`LogToElasticSearch`: By calling this method, you are going to save your logs in Elasticsearch
 ```csharp
 builder.Host.LogToElasticSearch<OperationLog, ErrorLog, CustomLog>(blacklist);
 ```
 `blacklist`: Log messages contain the blacklist array items will not logged.
 
-After setting the logging destination, you need to configure ElasticSearch:
+After setting the logging destination, you need to configure Elasticsearch:
 ```csharp
 builder.Services.ConfigureElasticSearchLogger<OperationLog, ErrorLog, CustomLog>(
     new ElasticSearchSettingModel
@@ -34,13 +34,13 @@ builder.Services.ConfigureElasticSearchLogger<OperationLog, ErrorLog, CustomLog>
     });
 ```
 
-`Url`: ElasticSearch service url. If authentication is enabled, this address should not contains the PROTOCOL itself. Use 'abc.com' instead of 'http://abc.com'
+`Url`: Elasticsearch service url. If authentication is enabled, this address should not contains the PROTOCOL itself. Use 'abc.com' instead of 'http://abc.com'
 
-`UserName`: Username, if authentication enabled on ElasticSearch service
+`UserName`: Username, if authentication enabled on Elasticsearch service
 
-`Password`: Password, if authentication enabled on ElasticSearch service
+`Password`: Password, if authentication enabled on Elasticsearch service
 
-`UseSsl`: Use HTTP or HTTPS, if authentication enabled on ElasticSearch service.
+`UseSsl`: Use HTTP or HTTPS, if authentication enabled on Elasticsearch service.
 
 `RegisterDefaultLogModels`: You can configure logging using your own models instead of `OperationLog`, `ErrorLog` or `CustomLog`. In order to do so, you can simple create derived types and use them instead of these types.
 When you are working with your own custom types, if you want to create index for default log models, you can set the `RegisterDefaultLogModels` property to `true`, otherwise you can set it as `false`.
@@ -98,7 +98,7 @@ builder.Host.LogToFile(blacklist, fileNamePrefix: "Log-", logDirectory: "D:\\log
 `RetainedFileCountLimit`: Gets or sets a strictly positive value representing the maximum retained file count or null for no limit. Defaults is 2 files.
 `FileSizeLimit`: Gets or sets a strictly positive value representing the maximum log size in MB or null for no limit. Once the log is full, no more messages will be appended. Defaults is `10MB`.
 
-After setting the logging destination, you need to configure ElasticSearch:
+After setting the logging destination, you need to configure Elasticsearch:
 ```csharp
 builder.Services.ConfigureFileLogger();
 ```
