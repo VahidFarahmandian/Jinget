@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Jinget.Core.ExtensionMethods;
 using Jinget.Logger.Entities.Log;
 using Jinget.Logger.Handlers.CommandHandlers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Jinget.Core.ExtensionMethods;
 
 namespace Jinget.Logger.Providers.ElasticSearchProvider
 {

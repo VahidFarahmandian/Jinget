@@ -52,7 +52,7 @@ namespace Jinget.Core.Utilities.Tests
         [TestMethod()]
         public void should_create_a_valid_jwt_token()
         {
-            var result = JwtUtility.Generate("vahid", new[] { "role1,role2" }, "12345678901234567890123456789012");
+            var result = JwtUtility.Generate("vahid", new[] { "role1,role2" }, new Types.JwtModel { SecretKey = "12345678901234567890123456789012" });
             var tokenInfo = JwtUtility.Read(result);
             Assert.AreEqual(tokenInfo.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value, "vahid");
             Assert.AreEqual(tokenInfo.Claims.First(x => x.Type == ClaimTypes.Role).Value, "role1,role2");

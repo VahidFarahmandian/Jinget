@@ -25,5 +25,11 @@ namespace Jinget.Core.Tests.ExtensionMethods.Enums
 
         [TestMethod()]
         public void Should_return_true_for_non_unicode_dbType_IsNonUnicodeType() => Assert.IsTrue(DbType.AnsiString.IsNonUnicodeType());
+
+        [TestMethod()]
+        public void Should_return_false_for_non_bool_dbType_IsBooleanType() => Assert.IsTrue(DbType.Boolean.IsBooleanType());
+
+        [TestMethod()]
+        public void Should_return_true_for_bool_dbType_IsBooleanType() => Assert.IsTrue(DbType.Boolean.IsBooleanType());
     }
 }
