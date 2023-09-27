@@ -1,8 +1,11 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Jinget.Core.Utilities
@@ -82,6 +85,35 @@ namespace Jinget.Core.Utilities
                 throw result.Exception;
 
             return result.IsValid;
+        }
+
+        /// <summary>
+        /// Create a new JWT token
+        /// </summary>
+        public static string Generate(string username, string[] roles, string key, string issuer = null, string audience = null, int expirationInMinute = 15)
+        {
+            if (key.Length < 32)
+            {
+                throw new Exception("key should be a string with at least 32 chars");
+            }
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier,username),
+            };
+            foreach (var item in roles)
+            {
+               claims.Add(new Claim(ClaimTypes.Role, item));
+            }
+            var token = new JwtSecurityToken(issuer,
+                audience,
+                claims,
+                expires: DateTime.Now.AddMinutes(expirationInMinute),
+                signingCredentials: credentials);
+
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

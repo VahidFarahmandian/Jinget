@@ -1,6 +1,9 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Jinget.Core.Utilities;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Jinget.Core.Utilities.Tests
@@ -43,6 +46,16 @@ namespace Jinget.Core.Utilities.Tests
         {
             string token = "InvalidJwtToken";
             var result = await JwtUtility.IsValidAsync(token);
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod()]
+        public void should_create_a_valid_jwt_token()
+        {
+            var result = JwtUtility.Generate("vahid", new[] { "role1,role2" }, "12345678901234567890123456789012");
+            var tokenInfo = JwtUtility.Read(result);
+            Assert.AreEqual(tokenInfo.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value, "vahid");
+            Assert.AreEqual(tokenInfo.Claims.First(x => x.Type == ClaimTypes.Role).Value, "role1,role2");
         }
     }
 }
