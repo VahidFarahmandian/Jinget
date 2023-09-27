@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
     <Authors>Vahid Farahmandian</Authors>
     <RepositoryUrl>https://github.com/VahidFarahmandian/Jinget</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -15,14 +17,15 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="Dapper" Version="2.0.151" />
     <PackageReference Include="DotNetZip" Version="1.16.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SoapFormatter" Version="1.1.9" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
-    <PackageReference Include="System.CodeDom" Version="6.0.0" />
+    <PackageReference Include="System.CodeDom" Version="7.0.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.32.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0" />
   </ItemGroup>
   
   <ItemGroup>

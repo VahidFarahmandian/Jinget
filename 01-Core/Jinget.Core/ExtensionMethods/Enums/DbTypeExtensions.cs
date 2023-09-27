@@ -9,7 +9,7 @@ namespace Jinget.Core.ExtensionMethods.Enums
         /// </summary>
         public static bool IsNumericType(this DbType type)
         {
-        #if NET5_0_OR_GREATER
+#if NET5_0_OR_GREATER
             return type switch
             {
                 DbType.AnsiString
@@ -28,7 +28,7 @@ namespace Jinget.Core.ExtensionMethods.Enums
                 or DbType.DateTimeOffset => false,
                 _ => true,
             };
-        #else
+#else
             switch (type)
             {
                 case DbType.AnsiString:
@@ -49,7 +49,7 @@ namespace Jinget.Core.ExtensionMethods.Enums
                 default:
                     return true;
             }
-        #endif
+#endif
         }
 
 
@@ -62,5 +62,10 @@ namespace Jinget.Core.ExtensionMethods.Enums
         /// Check if the given type is a non-unicode string type such as 'char' or 'varchar'
         /// </summary>
         public static bool IsNonUnicodeType(this DbType type) => type == DbType.AnsiString;
+
+        /// <summary>
+        /// Check if the given type is a boolean type
+        /// </summary>
+        public static bool IsBooleanType(this DbType type) => type == DbType.Boolean;
     }
 }

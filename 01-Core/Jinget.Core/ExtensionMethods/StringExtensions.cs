@@ -4,7 +4,7 @@ namespace Jinget.Core.ExtensionMethods
 {
     public static class StringExtensions
     {
-        static readonly char[] ArabicYeChar = { (char)1610, 'ي'};
+        static readonly char[] ArabicYeChar = { (char)1610, 'ي' };
         const char PersianYeChar = (char)1740;
 
         static readonly char[] ArabicKeChar = { (char)1603, 'ك' };
@@ -30,7 +30,7 @@ namespace Jinget.Core.ExtensionMethods
         /// </summary>
         public static string ToCamelCase(this string value)
         {
-            if (string.IsNullOrEmpty(value)) 
+            if (string.IsNullOrEmpty(value))
                 return value;
             return char.ToLowerInvariant(value[0]) + value[1..];
         }
