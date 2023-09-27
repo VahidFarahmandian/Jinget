@@ -5,7 +5,7 @@
     {
         private static ResponseResult<TResponseModel>? _instance;
         public static ResponseResult<TResponseModel> Empty => _instance ??= new ResponseResult<TResponseModel>();
-        public int EffectedRowsCount { get; }
+        public long EffectedRowsCount { get; }
 
         public TResponseModel Data { get; }
 
@@ -13,6 +13,6 @@
 
         public ResponseResult(TResponseModel data) : this() => Data = data;
 
-        public ResponseResult(TResponseModel data, int effectedRowsCount) : this(data) => EffectedRowsCount = effectedRowsCount;
+        public ResponseResult(TResponseModel data, long effectedRowsCount) : this(data) => EffectedRowsCount = effectedRowsCount;
     }
 }
