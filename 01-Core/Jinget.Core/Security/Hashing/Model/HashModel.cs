@@ -3,6 +3,6 @@
     public class HashModel
     {
         public string Salt { get; set; }
-        public string Result { get; set; }
+        public string HashedValue { get; set; }
     }
 }

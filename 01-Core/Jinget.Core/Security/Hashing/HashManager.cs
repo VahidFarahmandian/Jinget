@@ -22,15 +22,15 @@ namespace Jinget.Core.Security.Hashing
         /// <returns>if the hashModel's Result property and the result of the destString hashing process are same then true will be
         /// returned</returns>
         /// <exception cref="JingetException">Jinget Says: {nameof(hashModel.Salt)} can not be null or empty - 1000</exception>
-        /// <exception cref="JingetException">Jinget Says: source hashed string can not be null or empty - 1000</exception>
+        /// <exception cref="JingetException">Jinget Says: source hashed value can not be null or empty - 1000</exception>
         /// <exception cref="JingetException">Jinget Says: {nameof(destString)} can not be null or empty - 1000</exception>
         /// <exception cref="JingetException">Jinget Says: given {nameof(hashModel.Salt)} is not a valid base64 string - 1000</exception>
         public bool AreEqual(HashModel hashModel, string destString)
         {
             if (string.IsNullOrEmpty(hashModel.Salt))
                 throw new JingetException($"Jinget Says: {nameof(hashModel.Salt)} can not be null or empty", 1000);
-            if (string.IsNullOrEmpty(hashModel.Result))
-                throw new JingetException("Jinget Says: source hashed string can not be null or empty", 1000);
+            if (string.IsNullOrEmpty(hashModel.HashedValue))
+                throw new JingetException("Jinget Says: source hashed value can not be null or empty", 1000);
             if (string.IsNullOrEmpty(destString))
                 throw new JingetException($"Jinget Says: {nameof(destString)} can not be null or empty", 1000);
 
@@ -46,7 +46,7 @@ namespace Jinget.Core.Security.Hashing
 
             var destHashResult = Hash(originalSalt, destString);
 
-            return hashModel.Result.Equals(Convert.ToBase64String(destHashResult));
+            return hashModel.HashedValue.Equals(Convert.ToBase64String(destHashResult));
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Jinget.Core.Security.Hashing
             return new HashModel
             {
                 Salt = Convert.ToBase64String(salt),
-                Result = Convert.ToBase64String(hashed)
+                HashedValue = Convert.ToBase64String(hashed)
             };
         }
 

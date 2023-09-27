@@ -22,12 +22,12 @@ namespace Jinget.Core.Security.AES
             var keyBytes = Encoding.UTF8.GetBytes(key);
             var ivBytes = Encoding.UTF8.GetBytes(iv);
 
-            if (plainText == null || plainText.Length <= 0) 
+            if (plainText == null || plainText.Length <= 0)
                 throw new JingetException($"Jinget Says: {nameof(plainText)} cannot be null or empty", 1000);
-            if (keyBytes == null || keyBytes.Length <= 0)
-                throw new JingetException($"Jinget Says: {nameof(key)} cannot be null or empty", 1000);
-            if (ivBytes == null || ivBytes.Length <= 0) 
-                throw new JingetException($"Jinget Says: {nameof(iv)} cannot be null or empty", 1000);
+            if (keyBytes == null || keyBytes.Length <= 0 || key.Length < 32)
+                throw new JingetException($"Jinget Says: {nameof(key)} cannot be null or empty and should have at least 32 chars", 1000);
+            if (ivBytes == null || ivBytes.Length <= 0 || iv.Length != 16)
+                throw new JingetException($"Jinget Says: {nameof(iv)} cannot be null or empty and should have 16 chars", 1000);
 
             byte[] encrypted;
 
@@ -79,9 +79,9 @@ namespace Jinget.Core.Security.AES
             // Check arguments.  
             if (cipherText == null || cipherText.Length <= 0)
                 throw new JingetException($"Jinget Says: {nameof(input)} cannot be null or empty, or has invalid value", 1000);
-            if (key == null || key.Length <= 0) 
+            if (key == null || key.Length <= 0)
                 throw new JingetException($"Jinget Says: {nameof(key)} cannot be null or empty", 1000);
-            if (iv == null || iv.Length <= 0) 
+            if (iv == null || iv.Length <= 0)
                 throw new JingetException($"Jinget Says: {nameof(iv)} cannot be null or empty", 1000);
 
             string plaintext;

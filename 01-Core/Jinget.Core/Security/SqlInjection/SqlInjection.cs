@@ -1,4 +1,6 @@
-﻿namespace Jinget.Core.Security.SqlInjection
+﻿using System.Text.Encodings.Web;
+
+namespace Jinget.Core.Security.SqlInjection
 {
     /// <summary>
     /// SqlInjection preventation class
@@ -17,7 +19,7 @@
                     .Replace("'", "''")
                     .Replace(";", string.Empty);
             }
-
+            
             return insecureString
                 .Replace("--", string.Empty)
                 .Replace("<script", string.Empty)
