@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Jinget.Core.Utilities.Expressions;
 using Jinget.Core.Types;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace Jinget.Core.ExtensionMethods.Expressions.Tests
 {
@@ -34,6 +35,15 @@ namespace Jinget.Core.ExtensionMethods.Expressions.Tests
             Expression<Func<TestClass, TestClass>> result = ExpressionUtility.CreateMemberInitExpression<TestClass>(parameterName, inputs);
 
             Assert.AreEqual(expectedExpression.Type, result.Type);
+        }
+
+        [TestMethod()]
+        public void should_create_a_equal_condition_expression()
+        {
+            Expression<Func<TestClass, bool>> expectedResult = x => x.Property1 == 1;
+            var result = ExpressionUtility.CreateEqualCondition<TestClass, int>("Property1", 1, "x");
+
+            Assert.AreEqual(expectedResult.Type, result.Type);
         }
 
         #region null or empty filters

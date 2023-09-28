@@ -280,5 +280,53 @@ namespace Jinget.Core.Utilities.Expressions
                 _ => throw new JingetException($"Operator of type {@operator} is not supported by Jinget!"),
             };
         }
+
+        public static Expression<Func<T, bool>> CreateEqualCondition<T, TValueType>(string propertyName, object value, string parameterName = "Param_0")
+        {
+            ParameterExpression parameter = Expression.Parameter(typeof(T), parameterName);
+
+            Type valueType = typeof(TValueType);
+
+            var rightExpression = Expression.Constant(value, valueType.IsNullable() ? Nullable.GetUnderlyingType(valueType) : valueType);
+
+            MemberExpression propertyAccess = GetMemberAccessExpression(parameter, propertyName, typeof(T));
+            if (valueType.IsNullable())
+            {
+                MemberExpression propertyValueAccess = GetMemberAccessExpression(parameter, $"{propertyName}.Value", typeof(T));
+                MemberExpression hasValueAccess = GetMemberAccessExpression(parameter, $"{propertyName}.HasValue", typeof(T));
+                return Expression.Lambda<Func<T, bool>>(
+                    Expression.Condition(hasValueAccess, Expression.Equal(propertyValueAccess, rightExpression), Expression.Constant(false)), parameter);
+            }
+
+            return Expression.Lambda<Func<T, bool>>(Expression.Equal(propertyAccess, rightExpression), parameter);
+        }
+
+        private static MemberExpression GetMemberAccessExpression(Expression expression, string members, Type type)
+        {
+            List<string> memberList = members.Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            string firstMember = memberList.First();
+            MemberExpression memberExpression = CreateMemberAccessExpression(type, expression, firstMember);
+
+            foreach (var item in memberList.Skip(1))
+            {
+                memberExpression = CreateMemberAccessExpression(((PropertyInfo)memberExpression.Member).PropertyType, memberExpression, item);
+            }
+            return memberExpression;
+        }
+
+        private static MemberExpression CreateMemberAccessExpression(Type type, Expression expression, string member)
+        {
+            var membersInfo = type.GetMember(member);
+            if (membersInfo.Any())
+            {
+                MemberInfo memberInfo = membersInfo.FirstOrDefault();
+                if (memberInfo != null)
+                    return Expression.MakeMemberAccess(expression, memberInfo);
+
+                throw new JingetException($"Jinget Says: {type.Name} does not {member} member.", 1000);
+            }
+
+            throw new JingetException($"Jinget Says: {type.Name} does not {member} member.", 1000);
+        }
     }
 }
