@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Jinget.Core.Attributes;
+using Jinget.Core.Utilities;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Jinget.Core.ExtensionMethods.Reflection
@@ -38,6 +40,13 @@ namespace Jinget.Core.ExtensionMethods.Reflection
                     TypeName = Regex.Replace(x.Name, normalizingPattern, string.Empty, RegexOptions.IgnoreCase), //x.Name.Replace("Controller", string.Empty).Trim(),
                     AssemblyName = assembly.GetName().Name
                 }).ToList();
+        }
+
+        public static List<Type> GetTypes(this Assembly assembly, Expression<Func<Type, bool>> filter = null)
+        {
+            return assembly.GetTypes()
+                .Where(c => c.IsClass && !c.IsGenericTypeDefinition && !c.IsAbstract && !c.IsNested)
+                .Where(filter?.Compile() ?? BooleanUtility.TrueCondition<object>().Compile()).ToList();
         }
 
         /// <summary>
