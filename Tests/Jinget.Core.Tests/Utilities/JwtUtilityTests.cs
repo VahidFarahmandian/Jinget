@@ -1,7 +1,7 @@
-﻿using Jinget.Core.Utilities;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -56,6 +56,16 @@ namespace Jinget.Core.Utilities.Tests
             var tokenInfo = JwtUtility.Read(result);
             Assert.AreEqual(tokenInfo.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value, "vahid");
             Assert.AreEqual(tokenInfo.Claims.First(x => x.Type == ClaimTypes.Role).Value, "role1,role2");
+        }
+
+        [TestMethod()]
+        public void should_return_specific_claim_from_token()
+        {
+            string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaXNzIjoiSmluZ2V0IiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjIwMTYyMzkwMjIsImF1ZCI6IkppbmdldC5UZXN0In0.e-GVmjCsuP6sv7csybQZbVp5HenQ1UT5AhzafYSlMFU";
+            string expectedResult = "1234567890";
+            var result = JwtUtility.GetClaim(token, JwtRegisteredClaimNames.Sub);
+
+            Assert.AreEqual(expectedResult, result.First().Value);
         }
     }
 }

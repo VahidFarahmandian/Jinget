@@ -13,7 +13,7 @@ namespace Jinget.Core.Utilities
 {
     public class JwtUtility
     {
-        public static JwtSecurityToken Read(string token, string scheme = "Bearer")
+        public static JwtSecurityToken? Read(string token, string scheme = "Bearer")
         {
             try
             {
@@ -34,8 +34,8 @@ namespace Jinget.Core.Utilities
         /// <param name="validissuer">Expected issuer. It is expected that token was issued for this issuer</param>
         /// <param name="minuteOffset">The given token is valid if it is valid for the next <paramref name="minuteOffset" /> minute(s)</param>
         public static async Task<bool> IsValidAsync(string token,
-            IEnumerable<string> validAudiences = null,
-            string validissuer = null,
+            IEnumerable<string>? validAudiences = null,
+            string? validissuer = null,
             int minuteOffset = 5)
         {
             var result = await new JwtSecurityTokenHandler().ValidateTokenAsync(token, new TokenValidationParameters()
@@ -54,7 +54,7 @@ namespace Jinget.Core.Utilities
 
                 ValidateAudience = true,
                 ValidAudiences = validAudiences,
-                AudienceValidator = (IEnumerable<string> audiences, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
+                AudienceValidator = (IEnumerable<string>? audiences, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
                 {
                     if (validAudiences != null && validAudiences.Any())
                     {
@@ -89,16 +89,30 @@ namespace Jinget.Core.Utilities
         }
 
         /// <summary>
+        /// get given claim info stored inside the given token
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<Claim>? GetClaim(string token, string claim)
+        {
+            try
+            {
+                var info = Read(token);
+                if (info != null)
+                    return info.Claims.Where(x => x.Type == claim);
+                else
+                    return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Create a new JWT token
         /// </summary>
         public static string Generate(string username, string[] roles, JwtModel options, int expirationInMinute = 15)
         {
-            if (string.IsNullOrWhiteSpace(options.SecretKey) || options.SecretKey.Length < 32)
-            {
-                throw new Exception("key should be a string with at least 32 chars");
-            }
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.SecretKey));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier,username),
@@ -107,12 +121,27 @@ namespace Jinget.Core.Utilities
             {
                 claims.Add(new Claim(ClaimTypes.Role, item));
             }
-            var token = new JwtSecurityToken(options.Issuer,
+            return Generate(claims, options, expirationInMinute);
+        }
+
+        /// <summary>
+        /// Create a new JWT token
+        /// </summary>
+        public static string Generate(IEnumerable<Claim> claims, JwtModel options, int expirationInMinute = 15)
+        {
+            if (string.IsNullOrWhiteSpace(options.SecretKey) || options.SecretKey.Length < 32)
+            {
+                throw new Exception("key should be a string with at least 32 chars");
+            }
+            var token = new JwtSecurityToken(
+                options.Issuer,
                 options.Audience,
                 claims,
-                expires: DateTime.Now.AddMinutes(expirationInMinute),
-                signingCredentials: credentials);
-
+                options.NotBefore,
+                DateTime.Now.AddMinutes(expirationInMinute),
+                new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.SecretKey)),
+                    SecurityAlgorithms.HmacSha256));
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
