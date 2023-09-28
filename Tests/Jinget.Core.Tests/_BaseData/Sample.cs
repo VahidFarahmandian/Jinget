@@ -7,8 +7,22 @@ namespace Jinget.Core.Tests._BaseData
     {
 
     }
+    public class Type1
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string LastName { get; set; }
+    }
+    public class Type2
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string SurName { get; set; }
+    }
     public class TestClass
     {
+        public string GetInfo<T>(string s1, int i1) => $"string is: {s1}, integer is: {i1}, generic type is: {typeof(T).Name}";
+
         public class InnerClass
         {
             public int InnerProperty1 { get; set; }

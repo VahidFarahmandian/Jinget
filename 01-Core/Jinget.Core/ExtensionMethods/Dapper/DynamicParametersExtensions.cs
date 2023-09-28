@@ -23,19 +23,18 @@ namespace Jinget.Core.ExtensionMethods.Dapper
         public static List<dynamic> GetSQLValues(this DynamicParameters parameters)
         {
             List<object> lstValues = new();
-
             var t = parameters.GetType().GetField("parameters", BindingFlags.NonPublic | BindingFlags.Instance);
 
             if (t == null)
                 return lstValues;
             foreach (DictionaryEntry dictionaryEntry in (IDictionary)t.GetValue(parameters))
             {
-                var dbType = (DbType)dictionaryEntry.Value?.GetType().GetProperty("DbType")?.GetValue(dictionaryEntry.Value);
-                if (dbType.IsBooleanType())
+                var dbType = (DbType)dictionaryEntry.Value.GetValue("DbType");
+                if (dbType.IsBooleanDbType())
                     lstValues.Add(parameters.Get<dynamic>(dictionaryEntry.Key.ToString()) == true ? 1 : 0);
-                else if (dbType.IsNumericType())
+                else if (dbType.IsNumericDbType())
                     lstValues.Add(parameters.Get<dynamic>(dictionaryEntry.Key.ToString()));
-                else if (dbType.IsUnicodeType())
+                else if (dbType.IsUnicodeDbType())
                     lstValues.Add("N'" + parameters.Get<dynamic>(dictionaryEntry.Key.ToString()) + "'");
                 else
                     lstValues.Add("'" + parameters.Get<dynamic>(dictionaryEntry.Key.ToString()) + "'");

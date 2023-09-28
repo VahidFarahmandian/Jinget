@@ -7,7 +7,7 @@ namespace Jinget.Core.ExtensionMethods.Enums
         /// <summary>
         /// Check if given <seealso cref="DbType"/> is a numeric type or not
         /// </summary>
-        public static bool IsNumericType(this DbType type)
+        public static bool IsNumericDbType(this DbType type)
         {
 #if NET5_0_OR_GREATER
             return type switch
@@ -56,16 +56,16 @@ namespace Jinget.Core.ExtensionMethods.Enums
         /// <summary>
         /// Check if the given type is an unicode string type such as 'nchar' or 'nvarchar'
         /// </summary>
-        public static bool IsUnicodeType(this DbType type) => type == DbType.String;
+        public static bool IsUnicodeDbType(this DbType type) => type == DbType.String;
 
         /// <summary>
         /// Check if the given type is a non-unicode string type such as 'char' or 'varchar'
         /// </summary>
-        public static bool IsNonUnicodeType(this DbType type) => type == DbType.AnsiString;
+        public static bool IsNonUnicodeDbType(this DbType type) => type == DbType.AnsiString;
 
         /// <summary>
         /// Check if the given type is a boolean type
         /// </summary>
-        public static bool IsBooleanType(this DbType type) => type == DbType.Boolean;
+        public static bool IsBooleanDbType(this DbType type) => type == DbType.Boolean;
     }
 }
