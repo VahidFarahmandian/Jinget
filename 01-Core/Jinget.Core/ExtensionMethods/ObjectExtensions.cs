@@ -23,8 +23,8 @@ namespace Jinget.Core.ExtensionMethods
             }
             public bool IgnoreNull { get; set; }
             public bool IgnoreExpressions { get; set; }
-            public bool IgnoreExpr2SQLPagings { get; set; }
-            public bool IgnoreExpr2SQLOrderBys { get; set; }
+            public bool IgnoreExpr2SQLPagings { get; set; } = true;
+            public bool IgnoreExpr2SQLOrderBys { get; set; } = true;
         }
 
 
