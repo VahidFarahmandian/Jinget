@@ -1,22 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Jinget.Logger.Entities;
+using Jinget.Logger.Entities.Log.Base;
+using Jinget.Logger.ViewModels;
 
 namespace Jinget.Logger.Handlers.CommandHandlers
 {
-    public interface IElasticSearchBaseDomainService<TModelType, TKeyType>
-        where TModelType : BaseEntity<TKeyType>
+    public interface IElasticSearchBaseDomainService<TModelType>
+        where TModelType : LogBaseEntity
     {
         Task<TModelType> FetchLatestAsync();
 
         Task<bool> CreateAsync(TModelType param);
 
         Task<bool> BulkCreateAsync(IList<TModelType> @params);
-
-        //Task<(IReadOnlyCollection<TModelType> Records, long TotalRecordCount)> FetchAllAsync(
-        //    Func<QueryContainerDescriptor<TModelType>, QueryContainer> filter = null,
-        //    Func<SortDescriptor<TModelType>, IPromise<IList<ISort>>> orderBy = null,
-        //    int? pageSize = 0,
-        //    int? pageIndex = -1);
+        Task<List<LogSearchViewModel>> SearchAsync(string partitionKey, string searchString, int pageNumber, int pageSize, string username = "");
     }
 }

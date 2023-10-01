@@ -1,11 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Jinget.Core.Security.AES;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 
 namespace Jinget.Core.Security.AES.Tests
 {

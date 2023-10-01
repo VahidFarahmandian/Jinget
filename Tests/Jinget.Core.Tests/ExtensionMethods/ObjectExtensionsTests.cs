@@ -1,10 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Jinget.Core.ExtensionMethods;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Jinget.Core.Tests._BaseData;
 using static Jinget.Core.ExtensionMethods.ObjectExtensions;
 

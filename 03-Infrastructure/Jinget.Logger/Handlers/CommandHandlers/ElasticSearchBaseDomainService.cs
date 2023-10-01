@@ -1,26 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Jinget.Logger.Entities;
+using Jinget.Logger.Entities.Log.Base;
+using Jinget.Logger.ViewModels;
 
 namespace Jinget.Logger.Handlers.CommandHandlers
 {
-    public class ElasticSearchBaseDomainService<TModelType, TKeyType> :
-        IElasticSearchBaseDomainService<TModelType, TKeyType>
-        where TModelType : BaseEntity<TKeyType>
+    public class ElasticSearchBaseDomainService<TModelType> :
+        IElasticSearchBaseDomainService<TModelType>
+        where TModelType : LogBaseEntity
     {
-        protected readonly IElasticSearchRepository<TModelType, TKeyType> Repository;
+        protected readonly IElasticSearchRepository<TModelType> Repository;
 
-        public ElasticSearchBaseDomainService(IElasticSearchRepository<TModelType, TKeyType> repository) => Repository = repository;
+        public ElasticSearchBaseDomainService(IElasticSearchRepository<TModelType> repository) => Repository = repository;
 
         public virtual async Task<bool> CreateAsync(TModelType param) => await Repository.IndexAsync(param);
         public virtual async Task<bool> BulkCreateAsync(IList<TModelType> @params) => await Repository.BulkIndexAsync(@params);
-
         public virtual async Task<TModelType> FetchLatestAsync() => await Repository.GetLatestAsync();
-
-        //public virtual async Task<(IReadOnlyCollection<TModelType> Records, long TotalRecordCount)> FetchAllAsync(
-        //       Func<QueryContainerDescriptor<TModelType>, QueryContainer> filter = null,
-        //       Func<SortDescriptor<TModelType>, IPromise<IList<ISort>>> orderBy = null,
-        //       int? pageSize = 0,
-        //       int? pageIndex = -1) => await Repository.QueryAsync(filter, orderBy, pageSize, pageIndex);
+        public virtual async Task<List<LogSearchViewModel>> SearchAsync(string partitionKey, string searchString, int pageNumber, int pageSize, string username = "") => await Repository.SearchAsync(partitionKey, searchString, pageNumber, pageSize, username);
     }
 }
