@@ -70,6 +70,7 @@ namespace Jinget.Logger.Members
 
             var model = new OperationLog
             {
+                ParitionKey = context.Items["jinget.log.partitionkey"] != null ? context.Items["jinget.log.partitionkey"].ToString() : "",
                 UserName = context.User.Identity.Name,
                 When = DateTime.Now,
                 Method = context.Request.Method,

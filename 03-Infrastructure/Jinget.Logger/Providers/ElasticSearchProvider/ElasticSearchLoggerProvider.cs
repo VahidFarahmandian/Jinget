@@ -22,9 +22,9 @@ namespace Jinget.Logger.Providers.ElasticSearchProvider
         where TCustomEntity : CustomLog, new()
     {
         private readonly IServiceProvider _serviceProvider;
-        private IElasticSearchBaseDomainService<TOperationalEntity, int> _operationLogService;
-        private IElasticSearchBaseDomainService<TErrorEntity, int> _errorLogService;
-        private IElasticSearchBaseDomainService<TCustomEntity, int> _customLogService;
+        private IElasticSearchBaseDomainService<TOperationalEntity> _operationLogService;
+        private IElasticSearchBaseDomainService<TErrorEntity> _errorLogService;
+        private IElasticSearchBaseDomainService<TCustomEntity> _customLogService;
 
         public ElasticSearchLoggerProvider(
             IOptions<ElasticSearchLoggerOptions> options,
@@ -32,9 +32,9 @@ namespace Jinget.Logger.Providers.ElasticSearchProvider
 
         protected override async Task WriteMessagesAsync(IEnumerable<LogMessage> messages, CancellationToken cancellationToken)
         {
-            _errorLogService = _serviceProvider.GetJingetService<IElasticSearchBaseDomainService<TErrorEntity, int>>();
-            _operationLogService = _serviceProvider.GetJingetService<IElasticSearchBaseDomainService<TOperationalEntity, int>>();
-            _customLogService = _serviceProvider.GetJingetService<IElasticSearchBaseDomainService<TCustomEntity, int>>();
+            _errorLogService = _serviceProvider.GetJingetService<IElasticSearchBaseDomainService<TErrorEntity>>();
+            _operationLogService = _serviceProvider.GetJingetService<IElasticSearchBaseDomainService<TOperationalEntity>>();
+            _customLogService = _serviceProvider.GetJingetService<IElasticSearchBaseDomainService<TCustomEntity>>();
 
             foreach (var group in messages.GroupBy(GetGrouping))
             {

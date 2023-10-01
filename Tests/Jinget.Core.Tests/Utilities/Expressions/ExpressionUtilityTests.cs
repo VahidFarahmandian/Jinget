@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Jinget.Core.Utilities.Expressions;
 using Jinget.Core.Types;
-using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace Jinget.Core.ExtensionMethods.Expressions.Tests
 {

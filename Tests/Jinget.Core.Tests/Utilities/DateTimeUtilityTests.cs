@@ -1,5 +1,4 @@
-﻿using Jinget.Core.Utilities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
 namespace Jinget.Core.Utilities.Tests

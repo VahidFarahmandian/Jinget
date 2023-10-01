@@ -22,15 +22,22 @@ namespace Jinget.Logger.ExceptionHandler
         {
             ErrorLog logEntity = new()
             {
-                Description = $"" +
-                    $"Error Message: {ex.Message + Environment.NewLine} " +
-                    $"Details: {JsonConvert.SerializeObject(details) + Environment.NewLine} " +
-                    $"StackTrace:{ex.StackTrace}"
+                Description = JsonConvert.SerializeObject(new
+                {
+                    ex.Message,
+                    Details = JsonConvert.SerializeObject(details),
+                    ex.StackTrace
+                }),
+
+                ParitionKey =
+                _accessor.HttpContext.Items["jinget.log.partitionkey"] != null ?
+                _accessor.HttpContext.Items["jinget.log.partitionkey"].ToString() :
+                "",
+                Severity = LogLevel.Error.ToString()
             };
             if (details is LogBaseEntity entity)
             {
                 logEntity.RequestId = entity.RequestId;
-                logEntity.Severity = LogLevel.Error.ToString();
                 logEntity.SubSystem = entity.SubSystem;
                 logEntity.When = entity.When;
                 logEntity.Url = entity.Url;
@@ -38,7 +45,6 @@ namespace Jinget.Logger.ExceptionHandler
             else
             {
                 logEntity.RequestId = new Guid(_accessor.HttpContext.Response.Headers["RequestId"].ToString());
-                logEntity.Severity = LogLevel.Error.ToString();
                 logEntity.SubSystem = AppDomain.CurrentDomain.FriendlyName;
                 logEntity.When = DateTime.Now;
             }

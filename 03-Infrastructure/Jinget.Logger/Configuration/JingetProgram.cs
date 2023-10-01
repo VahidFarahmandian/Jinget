@@ -21,6 +21,13 @@ namespace Jinget.Logger.Configuration
                 f.BlackListStrings = blackList;
             }));
 
+        public static IHostBuilder LogToElasticSearch(this IHostBuilder webHostBuilder, string[] blackList)
+            =>
+            webHostBuilder.ConfigureLogging(builder => builder.AddElasticSearch(f =>
+            {
+                f.BlackListStrings = blackList;
+            }));
+
         public static IHostBuilder LogToFile(this IHostBuilder webHostBuilder, string[] blackList, string fileNamePrefix = "Log", string logDirectory = "Logs", int retainFileCountLimit = 5, int fileSizeLimit = 10) =>
             webHostBuilder.ConfigureLogging(builder => builder.AddFile(f =>
             {

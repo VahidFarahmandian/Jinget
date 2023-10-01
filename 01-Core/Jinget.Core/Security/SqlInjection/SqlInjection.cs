@@ -1,6 +1,4 @@
-﻿using System.Text.Encodings.Web;
-
-namespace Jinget.Core.Security.SqlInjection
+﻿namespace Jinget.Core.Security.SqlInjection
 {
     /// <summary>
     /// SqlInjection preventation class
