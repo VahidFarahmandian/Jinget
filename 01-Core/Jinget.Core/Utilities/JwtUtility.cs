@@ -115,7 +115,8 @@ namespace Jinget.Core.Utilities
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier,username),
+                new(ClaimTypes.NameIdentifier,username),
+                new(ClaimTypes.Name,username),
             };
             foreach (var item in roles)
             {

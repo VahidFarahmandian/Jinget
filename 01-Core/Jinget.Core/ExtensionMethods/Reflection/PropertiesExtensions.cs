@@ -59,7 +59,7 @@ namespace Jinget.Core.ExtensionMethods.Reflection
                 {
                     return true;
                 }
-                if(t == typeof(byte[]))
+                if (t == typeof(byte[]))
                 {
                     return true;
                 }

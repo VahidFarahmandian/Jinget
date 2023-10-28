@@ -1,5 +1,6 @@
 ﻿using Jinget.Core.Utilities.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 
 namespace Jinget.Core.Tests.Utilities.Parser.DatabaseParser
 {
@@ -36,6 +37,27 @@ namespace Jinget.Core.Tests.Utilities.Parser.DatabaseParser
             string nullJsonString = "";
             result = JsonUtility.IsValid(nullJsonString);
             Assert.IsFalse(result);
+        }
+
+        [TestMethod()]
+        public void should_unescape_escaped_json_string()
+        {
+            string escapedString = "{\\\"Id\\\":\\\"i1\\\"}";
+            string expectedResult = "{\"Id\":\"i1\"}";
+            var result = JsonUtility.Unescape(escapedString);
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod()]
+        public void should_merge_two_json_string()
+        {
+            string json1 = "{\"Id\":\"i1\"}";
+            string json2 = "{\"Id\":\"i2\"}";
+            string expectedResult = "{\"Id\":\"i1\",\"p1\":{\"Id\":\"i2\"}}";
+            var result = JsonUtility.Merge(json1, json2, "p1");
+
+            Assert.AreEqual(JToken.Parse(expectedResult).ToString(), JToken.Parse(result).ToString());
         }
     }
 }
