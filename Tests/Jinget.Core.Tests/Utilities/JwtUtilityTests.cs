@@ -22,7 +22,7 @@ namespace Jinget.Core.Utilities.Tests
         }
 
         [TestMethod()]
-        public async Task should_validate_token_with_lifetime_sigingkey()
+        public async Task should_validate_token_with_lifetime_sigingkeyAsync()
         {
             string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaXNzIjoiSmluZ2V0IiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjIwMTYyMzkwMjIsImF1ZCI6IkppbmdldC5UZXN0In0.e-GVmjCsuP6sv7csybQZbVp5HenQ1UT5AhzafYSlMFU";
             var result = await JwtUtility.IsValidAsync(token);
@@ -30,7 +30,7 @@ namespace Jinget.Core.Utilities.Tests
         }
 
         [TestMethod()]
-        public async Task should_validate_token_with_lifetime_sigingkey_audience_issuer()
+        public async Task should_validate_token_with_lifetime_sigingkey_audience_issuerAsync()
         {
             string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaXNzIjoiSmluZ2V0IiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjIwMTYyMzkwMjIsImF1ZCI6IkppbmdldC5UZXN0In0.e-GVmjCsuP6sv7csybQZbVp5HenQ1UT5AhzafYSlMFU";
             string validIssuer = "Jinget";
@@ -52,7 +52,7 @@ namespace Jinget.Core.Utilities.Tests
         [TestMethod()]
         public void should_create_a_valid_jwt_token()
         {
-            var result = JwtUtility.Generate("vahid", new[] { "role1,role2" }, new Types.JwtModel { SecretKey = "12345678901234567890123456789012" });
+            var result = JwtUtility.Generate("vahid", ["role1,role2"], new Types.JwtModel { SecretKey = "12345678901234567890123456789012" });
             var tokenInfo = JwtUtility.Read(result);
             Assert.AreEqual(tokenInfo.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value, "vahid");
             Assert.AreEqual(tokenInfo.Claims.First(x => x.Type == ClaimTypes.Role).Value, "role1,role2");

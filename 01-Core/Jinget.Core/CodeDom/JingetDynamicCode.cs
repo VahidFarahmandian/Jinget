@@ -26,11 +26,11 @@ namespace Jinget.Core.CodeDom
             /// <param name="jingetSource">During the dynamic code execution process, given sourceCode might change. Changed version of the sourceCode are stored in this output parameter</param>
             /// <param name="isTopLevelStatement">C# 9.0 enables you to write top level statements.</param>
             /// <param name="references">In order to compile the given sourceCode, some external references might needed to be added. Required references are being passed using this parameter</param>
-            internal byte[] Compile(string sourceCode, MethodOptions args, out List<string> errors, out string jingetSource,
-                bool isTopLevelStatement = true, List<string> references = null)
+            internal byte[]? Compile(string sourceCode, MethodOptions? args, out List<string> errors, out string jingetSource,
+                bool isTopLevelStatement = true, List<string>? references = null)
             {
                 jingetSource = string.Empty;
-                errors = new List<string>();
+                errors = [];
 
                 sourceCode = sourceCode.Trim();
                 sourceCode = sourceCode.StartsWith(Environment.NewLine)
@@ -70,7 +70,7 @@ namespace Jinget.Core.CodeDom
 
                 var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
 
-                externalReferences ??= new List<string>();
+                externalReferences ??= [];
 
                 var defaultReferences = new[] { "System.Private.CoreLib", "netstandard", "System.Runtime" };
 
@@ -92,9 +92,9 @@ namespace Jinget.Core.CodeDom
             /// Generate source code using given expression. This method tries to put the given expression inside a method in a class
             /// so that it could be invoked
             /// </summary>
-            string GenerateSourceCode(string expression, MethodOptions methodOptions)
+            static string GenerateSourceCode(string expression, MethodOptions? methodOptions)
             {
-                CodeNamespace globalCodeNamespace = new CodeNamespace();
+                CodeNamespace globalCodeNamespace = new();
                 //add default using: using System;
                 globalCodeNamespace.Imports.Add(new CodeNamespaceImport("System"));
 
@@ -113,8 +113,8 @@ namespace Jinget.Core.CodeDom
                     }
                 }
 
-                CodeNamespace myNamespace = new CodeNamespace("JingetDynamic");
-                CodeTypeDeclaration classDeclaration = new CodeTypeDeclaration
+                CodeNamespace myNamespace = new("JingetDynamic");
+                CodeTypeDeclaration classDeclaration = new()
                 {
                     IsClass = true,
                     Name = "DynamicInvoker",
@@ -122,7 +122,7 @@ namespace Jinget.Core.CodeDom
 
                 };
 
-                CodeMemberMethod myMethod = new CodeMemberMethod
+                CodeMemberMethod myMethod = new()
                 {
                     Name = "DynamicInvoke",
                     Attributes = MemberAttributes.Public | MemberAttributes.Final,
@@ -141,7 +141,7 @@ namespace Jinget.Core.CodeDom
 
                 myNamespace.Types.Add(classDeclaration);
 
-                CodeCompileUnit codeCompileUnit = new CodeCompileUnit();
+                CodeCompileUnit codeCompileUnit = new();
                 codeCompileUnit.Namespaces.Add(globalCodeNamespace);
                 codeCompileUnit.Namespaces.Add(myNamespace);
 
@@ -149,7 +149,7 @@ namespace Jinget.Core.CodeDom
                 using (var sw = new StringWriter(source))
                 {
                     ICodeGenerator generator = new CSharpCodeProvider().CreateGenerator(sw);
-                    CodeGeneratorOptions codeOpts = new CodeGeneratorOptions();
+                    CodeGeneratorOptions codeOpts = new();
                     generator.GenerateCodeFromCompileUnit(codeCompileUnit, sw, codeOpts);
                     sw.Flush();
                     sw.Close();
@@ -169,7 +169,7 @@ namespace Jinget.Core.CodeDom
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public object Execute(string sourceCode, out List<string> errors, out string compiledSourceCode, MethodOptions options = null, bool isTopLevelStatement = true, bool compileOnly = false, List<string> references = null)
+        public object? Execute(string sourceCode, out List<string> errors, out string compiledSourceCode, MethodOptions? options = null, bool isTopLevelStatement = true, bool compileOnly = false, List<string>? references = null)
         {
             if (sourceCode.Length > 10000)
             {
@@ -190,7 +190,7 @@ namespace Jinget.Core.CodeDom
 
             return method?.Invoke(instance, options?.Parameters.Select(x => x.Value).ToArray());
         }
-
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public class MethodOptions
         {
             /// <summary>
@@ -202,7 +202,8 @@ namespace Jinget.Core.CodeDom
             /// <summary>
             /// What are the input parameters for dynamically injected Invoke method?
             /// </summary>
-            public List<ParameterOptions> Parameters { get; set; } = new List<ParameterOptions>();
+            public List<ParameterOptions> Parameters { get; set; } = [];
+
             public class ParameterOptions
             {
                 public Type Type { get; set; }
@@ -210,5 +211,6 @@ namespace Jinget.Core.CodeDom
                 public object Value { get; set; }
             }
         }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     }
 }

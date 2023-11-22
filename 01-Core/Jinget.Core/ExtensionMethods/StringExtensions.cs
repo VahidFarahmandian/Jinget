@@ -4,10 +4,10 @@ namespace Jinget.Core.ExtensionMethods
 {
     public static class StringExtensions
     {
-        static readonly char[] ArabicYeChar = { (char)1610, 'ي' };
+        static readonly char[] ArabicYeChar = [(char)1610, 'ي'];
         const char PersianYeChar = (char)1740;
 
-        static readonly char[] ArabicKeChar = { (char)1603, 'ك' };
+        static readonly char[] ArabicKeChar = [(char)1603, 'ك'];
         const char PersianKeChar = (char)1705;
 
         /// <summary>

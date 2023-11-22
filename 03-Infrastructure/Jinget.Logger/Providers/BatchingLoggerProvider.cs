@@ -50,7 +50,7 @@ namespace Jinget.Logger.Providers
 
         protected abstract Task WriteMessagesAsync(IEnumerable<LogMessage> messages, CancellationToken token);
 
-        private async Task ProcessLogQueue(object state)
+        private async Task ProcessLogQueueAsync(object state)
         {
             while (!_cancellationTokenSource.IsCancellationRequested)
             {
@@ -108,7 +108,7 @@ namespace Jinget.Logger.Providers
 
             _cancellationTokenSource = new CancellationTokenSource();
             _outputTask = Task.Factory.StartNew(
-                ProcessLogQueue,
+                ProcessLogQueueAsync,
                 null,
                 TaskCreationOptions.LongRunning);
         }

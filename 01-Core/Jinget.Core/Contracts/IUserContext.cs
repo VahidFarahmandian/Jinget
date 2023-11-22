@@ -18,13 +18,13 @@ namespace Jinget.Core.Contracts
         /// <param name="apiName">Name of the API.</param>
         /// <param name="actionTitle">The action title.</param>
         /// <param name="claim">The claim.</param>
-        Task<bool> HasAccess(string userIdentifier, string subSystemName, string apiName, string actionTitle, string claim);
+        Task<bool> HasAccessAsync(string userIdentifier, string subSystemName, string apiName, string actionTitle, string claim);
 
         /// <summary>
         /// Determines whether the token is valid for the given user or not.
         /// </summary>
         /// <param name="userIdentifier">The user identifier.</param>
         /// <param name="token">The token.</param>
-        Task<bool> IsTokenValid(string userIdentifier, string token);
+        Task<bool> IsTokenValidAsync(string userIdentifier, string token);
     }
 }

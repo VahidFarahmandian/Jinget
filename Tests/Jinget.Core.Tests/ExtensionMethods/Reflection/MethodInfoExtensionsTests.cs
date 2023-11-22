@@ -1,11 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Jinget.Core.ExtensionMethods.Reflection;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using Jinget.Core.Tests._BaseData;
 
 namespace Jinget.Core.ExtensionMethods.Reflection.Tests
@@ -13,10 +9,10 @@ namespace Jinget.Core.ExtensionMethods.Reflection.Tests
     [TestClass()]
     public class MethodInfoExtensionsTests
     {
-        async Task<List<Type1>> GetAsync(string name) => new List<Type1> {
-            new Type1 {Id = 1, Name=name},
-            new Type1 {Id = 2, Name="Ali"}
-        };
+        async Task<List<Type1>> GetAsync(string name) => await Task.FromResult<List<Type1>>([
+            new() {Id = 1, Name=name},
+            new() {Id = 2, Name="Ali"}
+        ]);
         [TestMethod()]
         public void Should_call_async_method_and_return_result()
         {

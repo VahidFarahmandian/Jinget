@@ -38,14 +38,14 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
         public void should_return_stringfied_order_by_clause()
         {
             Paging paging = null;
-            List<OrderBy> lstOrderBy = new()
-            {
+            List<OrderBy> lstOrderBy =
+            [
                 new OrderBy
                 {
                     Name = x=>((TestClass)x).Property1,
                     Direction = Enumerations.OrderByDirection.Descending
                 }
-            };
+            ];
             string expectedResult = "ORDER BY [Property1] DESC ";
 
             var result = paging.GetPaging(lstOrderBy);
@@ -61,8 +61,8 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
                 PageNumber = 1,
                 PageSize = 10
             };
-            List<OrderBy> lstOrderBy = new()
-            {
+            List<OrderBy> lstOrderBy =
+            [
                 new OrderBy
                 {
                     Name = x=>((TestClass)x).Property1,
@@ -73,7 +73,7 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
                     Name = x=>((TestClass)x).Property2,
                     Direction = Enumerations.OrderByDirection.Ascending
                 }
-            };
+            ];
 
             string expectedResult = "ORDER BY [Property1] DESC,[Property2] ASC OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY";
 

@@ -9,7 +9,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests
     public class JingetServiceHandlerTests
     {
         [TestMethod()]
-        public async Task should_configure_httpclientfactory_by_timeout()
+        public async Task Should_configure_httpclientfactory_by_timeoutAsync()
         {
             var jingetServiceHandler = new JingetServiceHandler<List<SampleGetResponse>>("https://jinget.ir", TimeSpan.FromSeconds(1));
 
@@ -23,7 +23,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests
             Assert.IsTrue(result is null);
         }
         [TestMethod()]
-        public async Task should_call_get_restapi()
+        public async Task Should_call_get_restapiAsync()
         {
             var jingetServiceHandler = new JingetServiceHandler<List<SampleGetResponse>>("https://jsonplaceholder.typicode.com");
             jingetServiceHandler.Events.ServiceCalled += (object sender, HttpResponseMessage e) =>
@@ -49,7 +49,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests
         }
 
         [TestMethod()]
-        public async Task should_call_post_restapi()
+        public async Task Should_call_post_restapiAsync()
         {
             var jingetServiceHandler = new JingetServiceHandler<SamplePostResponse>("https://jsonplaceholder.typicode.com", true);
             jingetServiceHandler.Events.ServiceCalled += (object sender, HttpResponseMessage e) =>
@@ -85,7 +85,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests
         }
 
         [TestMethod()]
-        public async Task should_call_send_restapi()
+        public async Task Should_call_send_restapiAsync()
         {
             var jingetServiceHandler = new JingetServiceHandler<SamplePutResponse>("https://jsonplaceholder.typicode.com", true);
             jingetServiceHandler.Events.ServiceCalled += (object sender, HttpResponseMessage e) =>
@@ -125,7 +125,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests
         }
 
         [TestMethod()]
-        public async Task should_call_get_soap()
+        public async Task Should_call_get_soapAsync()
         {
             var jingetServiceHandler = new JingetServiceHandler<AddResponse>("http://www.dneonline.com/calculator.asmx");
             jingetServiceHandler.Events.ServiceCalled += (object sender, HttpResponseMessage e) =>
@@ -159,7 +159,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests
         }
 
         //[TestMethod]
-        public async Task should_post_multipart_formdata()
+        public async Task Should_post_multipart_formdataAsync()
         {
             var jingetServiceHandler = new JingetServiceHandler<SamplePostResponse>("https://localhost:7027/api/upload", true);
             jingetServiceHandler.Events.ServiceCalled += (object sender, HttpResponseMessage e) =>
@@ -171,10 +171,10 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests
                 Assert.IsFalse(e is null);
             };
 
-            List<FileInfo> files = new() {
+            List<FileInfo> files = [
                 new FileInfo("Sample Upload File1.txt") ,
                 new FileInfo("Sample Upload File2.txt")
-            };
+            ];
 
             var response = await jingetServiceHandler.UploadFileAsync("something", files);
 

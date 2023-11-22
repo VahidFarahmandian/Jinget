@@ -12,7 +12,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
         private readonly int? _take;
         private readonly Table _table;
 
-        public Where<T, R> Where(Expression<Func<T, bool>> predicate) => new Where<T, R>(this, predicate);
+        public Where<T, R> Where(Expression<Func<T, bool>> predicate) => new(this, predicate);
 
         internal Select(Expression<Func<T, R>> select, int? take, Table table)
         {
@@ -21,7 +21,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
             _table = table;
         }
 
-        internal override (QueryBuilder query, Dictionary<string, object> parameters) ToSql(QueryBuilder query)
+        internal override (QueryBuilder query, Dictionary<string, object>? parameters) ToSql(QueryBuilder query)
         {
             if (_take.HasValue)
             {

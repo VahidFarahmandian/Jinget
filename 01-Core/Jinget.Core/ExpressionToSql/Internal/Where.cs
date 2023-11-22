@@ -35,7 +35,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
             return (query, @where.Parameters);
         }
 
-        private WherePart Recurse(ref int i, Expression expression, bool isUnary = false, string prefix = null, string postfix = null)
+        private WherePart Recurse(ref int i, Expression expression, bool isUnary = false, string? prefix = null, string? postfix = null)
         {
             if (expression is UnaryExpression unary)
             {
@@ -89,17 +89,17 @@ namespace Jinget.Core.ExpressionToSql.Internal
             if (expression is MethodCallExpression methodCall)
             {
                 // %xxx LIKE queries:
-                if (methodCall.Method == typeof(string).GetMethod("StartsWith", new[] { typeof(string) }))
+                if (methodCall.Method == typeof(string).GetMethod("StartsWith", [typeof(string)]))
                 {
                     return WherePart.Concat(Recurse(ref i, methodCall.Object), "LIKE", Recurse(ref i, methodCall.Arguments[0], postfix: "%"));
                 }
                 // xxx% LIKE queries:
-                if (methodCall.Method == typeof(string).GetMethod("EndsWith", new[] { typeof(string) }))
+                if (methodCall.Method == typeof(string).GetMethod("EndsWith", [typeof(string)]))
                 {
                     return WherePart.Concat(Recurse(ref i, methodCall.Object), "LIKE", Recurse(ref i, methodCall.Arguments[0], prefix: "%"));
                 }
                 // %xxx% LIKE queries:
-                if (methodCall.Method == typeof(string).GetMethod("Contains", new[] { typeof(string) }))
+                if (methodCall.Method == typeof(string).GetMethod("Contains", [typeof(string)]))
                 {
                     return WherePart.Concat(Recurse(ref i, methodCall.Object), "LIKE", Recurse(ref i, methodCall.Arguments[0], prefix: "%", postfix: "%"));
                 }
@@ -176,88 +176,66 @@ namespace Jinget.Core.ExpressionToSql.Internal
 
         private static string NodeTypeToString(ExpressionType nodeType)
         {
-            switch (nodeType)
+            return nodeType switch
             {
-                case ExpressionType.Add:
-                    return "+";
-                case ExpressionType.And:
-                    return "&";
-                case ExpressionType.AndAlso:
-                    return "AND";
-                case ExpressionType.Divide:
-                    return "/";
-                case ExpressionType.Equal:
-                    return "=";
-                case ExpressionType.ExclusiveOr:
-                    return "^";
-                case ExpressionType.GreaterThan:
-                    return ">";
-                case ExpressionType.GreaterThanOrEqual:
-                    return ">=";
-                case ExpressionType.LessThan:
-                    return "<";
-                case ExpressionType.LessThanOrEqual:
-                    return "<=";
-                case ExpressionType.Modulo:
-                    return "%";
-                case ExpressionType.Multiply:
-                    return "*";
-                case ExpressionType.Negate:
-                    return "-";
-                case ExpressionType.Not:
-                    return "NOT";
-                case ExpressionType.NotEqual:
-                    return "<>";
-                case ExpressionType.Or:
-                    return "|";
-                case ExpressionType.OrElse:
-                    return "OR";
-                case ExpressionType.Subtract:
-                    return "-";
-            }
-            throw new JingetException($"Jinget Says: Unsupported node type: {nodeType}");
+                ExpressionType.Add => "+",
+                ExpressionType.And => "&",
+                ExpressionType.AndAlso => "AND",
+                ExpressionType.Divide => "/",
+                ExpressionType.Equal => "=",
+                ExpressionType.ExclusiveOr => "^",
+                ExpressionType.GreaterThan => ">",
+                ExpressionType.GreaterThanOrEqual => ">=",
+                ExpressionType.LessThan => "<",
+                ExpressionType.LessThanOrEqual => "<=",
+                ExpressionType.Modulo => "%",
+                ExpressionType.Multiply => "*",
+                ExpressionType.Negate => "-",
+                ExpressionType.Not => "NOT",
+                ExpressionType.NotEqual => "<>",
+                ExpressionType.Or => "|",
+                ExpressionType.OrElse => "OR",
+                ExpressionType.Subtract => "-",
+                _ => throw new JingetException($"Jinget Says: Unsupported node type: {nodeType}"),
+            };
         }
     }
 
     public class WherePart
     {
-        public string Sql { get; set; }
-        public Dictionary<string, object> Parameters { get; set; } = new Dictionary<string, object>();
+        public string? Sql { get; set; }
+        public Dictionary<string, object?> Parameters { get; set; } = [];
 
-        public static WherePart IsSql(string sql) => new WherePart
+        public static WherePart IsSql(string sql) => new()
         {
-            Parameters = new Dictionary<string, object>(),
+            Parameters = [],
             Sql = sql
         };
 
         private static string ToSqlSyntax(string method, int len = 0)
         {
-            switch (method.ToLower())
+            return method.ToLower() switch
             {
-                case "tolower":
-                    return "LOWER(@P1)";
-                case "toupper":
-                    return "UPPER(@P1)";
-                case "tostring":
-                    return $"NVARCHAR({(len <= 0 ? "MAX" : len.ToString())})";
-                default:
-                    return string.Empty;
-            }
+                "tolower" => "LOWER(@P1)",
+                "toupper" => "UPPER(@P1)",
+                "tostring" => $"NVARCHAR({(len <= 0 ? "MAX" : len.ToString())})",
+                _ => string.Empty,
+            };
         }
 
         public static WherePart Cast(string column, string method) =>
-            new WherePart
+            new()
             {
                 Sql = $"CAST({column} AS {ToSqlSyntax(method)})"
             };
 
         public static WherePart IsFunction(string column, string method) =>
-            new WherePart
+            new()
             {
                 Sql = $"{ToSqlSyntax(method).Replace("@P1", column)}"
             };
 
-        public static WherePart IsParameter(int count, object value) => new WherePart
+        public static WherePart IsParameter(int count, object? value) => new()
         {
             Parameters = { { count.ToString(), value } },
             Sql = $"@{count}"
@@ -265,7 +243,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
 
         public static WherePart IsCollection(ref int countStart, IEnumerable values)
         {
-            var parameters = new Dictionary<string, object>();
+            var parameters = new Dictionary<string, object?>();
             var sql = new StringBuilder("(");
             foreach (object value in values)
             {
@@ -277,7 +255,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
             {
                 sql.Append("null,");
             }
-            sql[sql.Length - 1] = ')';
+            sql[^1] = ')';//sql[len -1]
             return new WherePart
             {
                 Parameters = parameters,
@@ -285,7 +263,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
             };
         }
 
-        public static WherePart Concat(string @operator, WherePart operand) => new WherePart
+        public static WherePart Concat(string @operator, WherePart operand) => new()
         {
             Parameters = operand.Parameters,
             Sql = $"({@operator} {operand.Sql})"
@@ -294,7 +272,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
         public static WherePart Concat(WherePart left, string @operator, WherePart right)
         {
             //these operators does not need to append @
-            List<string> excludedList = new List<string> { "IN", "AND", "OR" };
+            List<string> excludedList = ["IN", "AND", "OR"];
             var rightExpr = !excludedList.Contains(@operator) && !right.Sql.StartsWith("@")
                 ? "@" + right.Sql.Replace("[", "").Replace("]", "")
                 : right.Sql;
@@ -306,6 +284,6 @@ namespace Jinget.Core.ExpressionToSql.Internal
             };
         }
 
-        public override string ToString() => Sql;
+        public override string? ToString() => Sql;
     }
 }

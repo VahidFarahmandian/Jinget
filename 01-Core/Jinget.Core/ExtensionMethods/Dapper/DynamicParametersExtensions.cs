@@ -22,14 +22,18 @@ namespace Jinget.Core.ExtensionMethods.Dapper
         /// <returns></returns>
         public static List<dynamic> GetSQLValues(this DynamicParameters parameters)
         {
-            List<object> lstValues = new();
+            List<object> lstValues = [];
             var t = parameters.GetType().GetField("parameters", BindingFlags.NonPublic | BindingFlags.Instance);
 
             if (t == null)
                 return lstValues;
+#pragma warning disable CS8604 // Possible null reference argument.
+
             foreach (DictionaryEntry dictionaryEntry in (IDictionary)t.GetValue(parameters))
             {
+#pragma warning disable CS8605 // Unboxing a possibly null value.
                 var dbType = (DbType)dictionaryEntry.Value.GetValue("DbType");
+#pragma warning restore CS8605 // Unboxing a possibly null value.
                 if (dbType.IsBooleanDbType())
                     lstValues.Add(parameters.Get<dynamic>(dictionaryEntry.Key.ToString()) == true ? 1 : 0);
                 else if (dbType.IsNumericDbType())
@@ -39,6 +43,7 @@ namespace Jinget.Core.ExtensionMethods.Dapper
                 else
                     lstValues.Add("'" + parameters.Get<dynamic>(dictionaryEntry.Key.ToString()) + "'");
             }
+#pragma warning restore CS8604 // Possible null reference argument.
 
             return lstValues;
         }

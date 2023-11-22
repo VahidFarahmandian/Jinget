@@ -8,12 +8,12 @@ namespace Jinget.Core.ExtensionMethods.Expressions
         /// <summary>
         /// Converts a <seealso cref="LambdaExpression"/> to string
         /// </summary>
-        public static string Stringfy(this LambdaExpression expression)
+        public static string? Stringfy(this LambdaExpression expression)
         {
             if (expression is null)
                 return null;
-            ExpressionUtility.TryParseExpression(expression.Body, out var path);
-            return path;
+            var result = ExpressionUtility.TryParseExpression(expression.Body, out var path);
+            return result ? path : null;
         }
     }
 }

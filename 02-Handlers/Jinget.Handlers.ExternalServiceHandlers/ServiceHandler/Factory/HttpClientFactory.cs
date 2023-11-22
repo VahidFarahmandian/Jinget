@@ -38,7 +38,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
             client.Timeout = timeout;
         }
 
-        private Uri GetUrl(string url) => new Uri($"{client.BaseAddress.ToString().TrimEnd('/')}/{url}".TrimEnd('/'));
+        private Uri GetUrl(string url) => new($"{client.BaseAddress.ToString().TrimEnd('/')}/{url}".TrimEnd('/'));
 
 #nullable enable
         private void SetHeaders(Dictionary<string, string>? headers)

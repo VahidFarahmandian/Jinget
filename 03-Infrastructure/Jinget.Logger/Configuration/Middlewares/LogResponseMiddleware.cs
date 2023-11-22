@@ -16,6 +16,6 @@ namespace Jinget.Logger.Configuration.Middlewares
             IOptions<WhiteListHeader> whiteListHeaders)
             => _logger = new ResponseLogger<LogResponseMiddleware>(next, logger, blackListHeaders, whiteListHeaders);
 
-        public async Task Invoke(HttpContext context) => await _logger.Log(context);
+        public async Task InvokeAsync(HttpContext context) => await _logger.LogAsync(context);
     }
 }

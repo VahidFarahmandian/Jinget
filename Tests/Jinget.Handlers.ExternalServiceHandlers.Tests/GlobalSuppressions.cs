@@ -5,7 +5,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests.JingetServiceHandlerTests.should_call_get_restapi~System.Threading.Tasks.Task")]
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests.JingetServiceHandlerTests.should_call_get_soap~System.Threading.Tasks.Task")]
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests.JingetServiceHandlerTests.should_call_post_restapi~System.Threading.Tasks.Task")]
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests.JingetServiceHandlerTests.should_call_send_restapi~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests.JingetServiceHandlerTests.Should_call_get_restapi~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests.JingetServiceHandlerTests.Should_call_get_soap~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests.JingetServiceHandlerTests.Should_call_post_restapi~System.Threading.Tasks.Task")]
+[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests.JingetServiceHandlerTests.Should_call_send_restapi~System.Threading.Tasks.Task")]

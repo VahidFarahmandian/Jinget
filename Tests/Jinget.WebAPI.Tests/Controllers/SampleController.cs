@@ -4,14 +4,9 @@ namespace Jinget.WebAPI.Tests.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class SampleController : ControllerBase
+    public class SampleController(ILogger<SampleController> logger) : ControllerBase
     {
-        public SampleController(ILogger<SampleController> logger)
-        {
-            Logger = logger;
-        }
-
-        public ILogger<SampleController> Logger { get; }
+        public ILogger<SampleController> Logger { get; } = logger;
 
         [HttpPost]
         public SampleModel Save(SampleModel model)

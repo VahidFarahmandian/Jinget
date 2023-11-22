@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 using System.Linq;
 using Jinget.Core.Tests._BaseData;
 using static Jinget.Core.ExtensionMethods.ObjectExtensions;
@@ -20,7 +19,7 @@ namespace Jinget.Core.ExtensionMethods.Tests
             result = name.IsNumericType();
             Assert.IsFalse(result);
 
-            TestClass obj = new TestClass();
+            TestClass obj = new();
             result = obj.IsNumericType();
             Assert.IsFalse(result);
         }
@@ -36,13 +35,12 @@ namespace Jinget.Core.ExtensionMethods.Tests
                 {
                     InnerProperty1 = 456
                 },
-                InnerListProperty = new List<TestClass.InnerClass>
-                {
-                    new TestClass.InnerClass
-                    {
+                InnerListProperty =
+                [
+                    new() {
                         InnerProperty1=789
                     }
-                }
+                ]
             };
             var result = obj.ToDictionary(new Options
             {

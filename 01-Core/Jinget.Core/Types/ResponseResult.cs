@@ -10,7 +10,7 @@ namespace Jinget.Core.Types
 
         public List<TResponseModel> Data { get; }
 
-        public ResponseResult() { Data = new List<TResponseModel>(); }
+        public ResponseResult() { Data = []; }
 
         public ResponseResult(TResponseModel data) : this() => Data.Add(data);
         public ResponseResult(IEnumerable<TResponseModel> data) : this() => Data.AddRange(data);

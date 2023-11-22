@@ -36,7 +36,7 @@ namespace Jinget.Core.ExtensionMethods
             var orderBy = Expression.Call(
                 typeof(Queryable),
                 direction == OrderByDirection.Ascending ? "OrderBy" : "OrderByDescending",
-                new[] { typeof(T), memberAccess.Type },
+                [typeof(T), memberAccess.Type],
                 query.Expression,
                 Expression.Quote(keySelector));
 

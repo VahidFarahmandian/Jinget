@@ -6,8 +6,10 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
 {
     public static class PagingExtensions
     {
-        public static string GetPaging(this Paging paging, List<OrderBy> lstOrderBy)
+        public static string GetPaging(this Paging paging, List<OrderBy>? lstOrderBy)
         {
+            lstOrderBy ??= [];
+
             string strOrderby = lstOrderBy.GetSorting();
 
             if (string.IsNullOrEmpty(strOrderby) && paging != null)

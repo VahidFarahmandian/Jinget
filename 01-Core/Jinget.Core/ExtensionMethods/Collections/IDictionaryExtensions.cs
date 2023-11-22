@@ -11,8 +11,15 @@ namespace Jinget.Core.ExtensionMethods.Collections
         /// in the first collection will be merged and duplicate keys will be ignored
         /// </summary>
         /// <param name="overwrite">if set to true, then duplicate keys from second collection will be overwritten to the first collection</param>
-        public static IDictionary<string, TValue> Merge<TValue>(this IDictionary<string, TValue> first, IDictionary<string, TValue> second, bool overwrite = false)
+        public static IDictionary<string, TValue>? Merge<TValue>(this IDictionary<string, TValue>? first, IDictionary<string, TValue>? second, bool overwrite = false)
         {
+            if (first == null && second == null)
+                return null;
+            if (first == null)
+                return second;
+            if (second == null)
+                return first;
+
             foreach (var member in second)
             {
                 if (overwrite)

@@ -73,11 +73,11 @@ namespace JingetDynamic {
             var result = new JingetDynamicCode().Execute(source, out List<string> errors, out string compiledSourceCode,
                 new JingetDynamicCode.MethodOptions
                 {
-                    Parameters = new List<JingetDynamicCode.MethodOptions.ParameterOptions>
-                {
-                    new JingetDynamicCode.MethodOptions.ParameterOptions {Name = "a",Type = typeof(int)},
-                    new JingetDynamicCode.MethodOptions.ParameterOptions {Name = "b",Type = typeof(double)}
-                }
+                    Parameters =
+                [
+                    new() {Name = "a",Type = typeof(int)},
+                    new() {Name = "b",Type = typeof(double)}
+                ]
                 });
 
             Assert.IsFalse(errors.Any());
@@ -93,11 +93,11 @@ namespace JingetDynamic {
             var result = new JingetDynamicCode().Execute(source, out List<string> errors, out string compiledSourceCode,
                 new JingetDynamicCode.MethodOptions
                 {
-                    Parameters = new List<JingetDynamicCode.MethodOptions.ParameterOptions>
-                {
-                    new JingetDynamicCode.MethodOptions.ParameterOptions {Name = "a",Type = typeof(int)},
-                    new JingetDynamicCode.MethodOptions.ParameterOptions {Name = "b",Type = typeof(double)}
-                }
+                    Parameters =
+                [
+                    new() {Name = "a",Type = typeof(int)},
+                    new() {Name = "b",Type = typeof(double)}
+                ]
                 });
 
             Assert.IsTrue(errors.Any());
@@ -122,17 +122,16 @@ namespace JingetDynamic {
                 options: new JingetDynamicCode.MethodOptions
                 {
                     ReturnType = typeof(string),
-                    Parameters = new List<JingetDynamicCode.MethodOptions.ParameterOptions>
-                    {
-                        new JingetDynamicCode.MethodOptions.ParameterOptions
-                        {
+                    Parameters =
+                    [
+                        new() {
                             Name="dt",
                             Value=new DateTime(2020, 10, 12),
                             Type = typeof(DateTime)
                         }
-                    }
+                    ]
                 },
-                references: new List<string> { typeof(Utilities.DateTimeUtility).Assembly.Location });
+                references: [typeof(Utilities.DateTimeUtility).Assembly.Location]);
 
             Assert.IsFalse(errors.Any());
             Assert.IsFalse(string.IsNullOrEmpty(compiledSourceCode));
@@ -153,17 +152,16 @@ namespace JingetDynamic {
                 options: new JingetDynamicCode.MethodOptions
                 {
                     ReturnType = typeof(string),
-                    Parameters = new List<JingetDynamicCode.MethodOptions.ParameterOptions>
-                    {
-                        new JingetDynamicCode.MethodOptions.ParameterOptions
-                        {
+                    Parameters =
+                    [
+                        new() {
                             Name="dt",
                             Value=new DateTime(2020, 10, 12),
                             Type = typeof(DateTime)
                         }
-                    }
+                    ]
                 },
-                references: new List<string> { typeof(Utilities.DateTimeUtility).Assembly.Location });
+                references: [typeof(Utilities.DateTimeUtility).Assembly.Location]);
 
             Assert.IsFalse(errors.Any());
             Assert.IsFalse(string.IsNullOrEmpty(compiledSourceCode));
@@ -181,21 +179,19 @@ namespace JingetDynamic {
                 new JingetDynamicCode.MethodOptions()
                 {
                     ReturnType = typeof(int),
-                    Parameters = new List<JingetDynamicCode.MethodOptions.ParameterOptions>
-                    {
-                        new JingetDynamicCode.MethodOptions.ParameterOptions
-                        {
+                    Parameters =
+                    [
+                        new() {
                             Name = "a",
                             Value = 2,
                             Type = typeof(int)
                         },
-                        new JingetDynamicCode.MethodOptions.ParameterOptions
-                        {
+                        new() {
                             Name = "b",
                             Value = 3,
                             Type = typeof(int)
                         }
-                    }
+                    ]
                 });
 
             Assert.IsFalse(errors.Any());

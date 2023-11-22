@@ -18,7 +18,7 @@ namespace Jinget.Core.ExtensionMethods.Expressions
         private static (Expression LeftExpression, Expression RightExpression) Visit<T>(Expression<Func<T, bool>> leftExpression,
             Expression<Func<T, bool>> rightExpression, ParameterExpression parameter)
         {
-            ReplaceExpressionVisitor leftVisitor = new ReplaceExpressionVisitor(leftExpression.Parameters[0], parameter);
+            ReplaceExpressionVisitor leftVisitor = new(leftExpression.Parameters[0], parameter);
             Expression left = leftVisitor.Visit(leftExpression.Body);
 
             var rightVisitor = new ReplaceExpressionVisitor(rightExpression.Parameters[0], parameter);

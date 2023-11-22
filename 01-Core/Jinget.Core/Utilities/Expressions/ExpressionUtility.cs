@@ -23,9 +23,13 @@ namespace Jinget.Core.Utilities.Expressions
         {
             if (source.Type != type && source is NewExpression newExpr && newExpr.Members.Count > 0)
             {
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 return Expression.MemberInit(Expression.New(type), newExpr.Members
                     .Select(m => type.GetProperty(m.Name))
                     .Zip(newExpr.Arguments, (m, e) => Expression.Bind(m, Transform(e, m.PropertyType))));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8604 // Possible null reference argument.
             }
             else if (source.Type != type && source is MethodCallExpression listCall && listCall.Method.IsStatic
                 && listCall.Method.DeclaringType == typeof(Enumerable) &&
@@ -47,7 +51,7 @@ namespace Jinget.Core.Utilities.Expressions
                 if (type.IsAssignableFrom(result.Type))
                     return result;
                 return Expression.Call(
-                    typeof(Enumerable), nameof(Enumerable.ToList), new[] { targetElementType },
+                    typeof(Enumerable), nameof(Enumerable.ToList), [targetElementType],
                     result);
             }
             return source;
@@ -57,14 +61,14 @@ namespace Jinget.Core.Utilities.Expressions
         /// Try parse an expression and return a string representation of the expression in form of 'A.B.C.etc'
         /// </summary>
         /// <exception cref="JingetException"></exception>
-        internal static bool TryParseExpression(Expression expression, out string path)
+        internal static bool TryParseExpression(Expression expression, out string? path)
         {
             path = null;
             var withoutConvert = RemoveConvert(expression);
 
             if (withoutConvert is ConstantExpression constant)
             {
-                path = constant.Value.ToString();
+                path = constant.Value?.ToString();
             }
             else if (withoutConvert is MemberExpression memberExpression)
             {
@@ -102,8 +106,10 @@ namespace Jinget.Core.Utilities.Expressions
                 }
                 else if (callExpression.Method.Name == "ToString")
                 {
+#pragma warning disable CS8604 // Possible null reference argument.
                     return TryParseExpression(
                         callExpression.Arguments.Any() ? callExpression.Arguments.First() : callExpression.Object, out path);
+#pragma warning restore CS8604 // Possible null reference argument.
                 }
                 else if (new[] { "ToLower", "ToUpper" }.Contains(callExpression.Method.Name))
                 {
@@ -154,7 +160,7 @@ namespace Jinget.Core.Utilities.Expressions
         {
             var paramExpression = Expression.Parameter(typeof(T), parameterName);
 
-            List<MemberAssignment> bindings = new List<MemberAssignment>();
+            List<MemberAssignment> bindings = [];
 
             foreach (var property in properties)
             {
@@ -164,7 +170,9 @@ namespace Jinget.Core.Utilities.Expressions
                     ));
             }
 
-            var memberinit = Expression.MemberInit(Expression.New(typeof(T).GetDefaultConstructor()), bindings);
+            var ctor = typeof(T).GetDefaultConstructor()
+                ?? throw new Exception($"Default conxtructor not found on type {typeof(T).Name}");
+            var memberinit = Expression.MemberInit(Expression.New(ctor), bindings);
 
             return Expression.Lambda<Func<T, T>>(memberinit, paramExpression);
         }
@@ -276,7 +284,7 @@ namespace Jinget.Core.Utilities.Expressions
                 Operator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(left, right),
                 Operator.LowerThanOrEqual => Expression.LessThanOrEqual(left, right),
                 Operator.NotEqual => Expression.NotEqual(left, right),
-                Operator.Contains => Expression.Call(left, typeof(string).GetMethod("Contains", new[] { typeof(string) }), right),
+                Operator.Contains => Expression.Call(left, typeof(string).GetMethod("Contains", [typeof(string)]), right),
                 _ => throw new JingetException($"Operator of type {@operator} is not supported by Jinget!"),
             };
         }
@@ -303,7 +311,7 @@ namespace Jinget.Core.Utilities.Expressions
 
         private static MemberExpression GetMemberAccessExpression(Expression expression, string members, Type type)
         {
-            List<string> memberList = members.Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<string> memberList = [.. members.Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries)];
             string firstMember = memberList.First();
             MemberExpression memberExpression = CreateMemberAccessExpression(type, expression, firstMember);
 

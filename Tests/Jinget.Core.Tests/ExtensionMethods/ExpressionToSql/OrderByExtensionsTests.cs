@@ -21,8 +21,8 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
         [TestMethod()]
         public void should_return_stringfied_order_by_clause()
         {
-            List<OrderBy> lstOrderBy = new()
-            {
+            List<OrderBy> lstOrderBy =
+            [
                 new OrderBy
                 {
                     Name = x=>((TestClass)x).Property1,
@@ -33,7 +33,7 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
                     Name = x=>((TestClass)x).Property2,
                     Direction = Enumerations.OrderByDirection.Ascending
                 }
-            };
+            ];
 
             string expectedResult = "ORDER BY [Property1] DESC,[Property2] ASC";
 
@@ -45,14 +45,14 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
         [TestMethod()]
         public void should_return_stringfied_order_by_clause_complex_type()
         {
-            List<OrderBy> lstOrderBy = new()
-            {
+            List<OrderBy> lstOrderBy =
+            [
                 new OrderBy
                 {
                     Name = x=>((TestClass)x).InnerSingularProperty.InnerProperty1,
                     Direction = Enumerations.OrderByDirection.Descending
                 }
-            };
+            ];
 
             string expectedResult = "ORDER BY [InnerSingularProperty.InnerProperty1] DESC";
 
@@ -64,14 +64,14 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
         [TestMethod()]
         public void should_return_stringfied_order_by_clause_stringfied_type_name()
         {
-            List<OrderBy> lstOrderBy = new()
-            {
+            List<OrderBy> lstOrderBy =
+            [
                 new OrderBy
                 {
                     Name = x=>"Property3",
                     Direction = Enumerations.OrderByDirection.Descending
                 }
-            };
+            ];
 
             string expectedResult = "ORDER BY [Property3] DESC";
 
@@ -83,13 +83,13 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
         [TestMethod()]
         public void should_return_stringfied_order_by_clause_using_string_name()
         {
-            List<OrderBy> lstOrderBy = new()
-            {
+            List<OrderBy> lstOrderBy =
+            [
                 new OrderBy("Property3")
                 {
                     Direction = Enumerations.OrderByDirection.Descending
                 }
-            };
+            ];
 
             string expectedResult = "ORDER BY [Property3] DESC";
 

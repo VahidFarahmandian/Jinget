@@ -56,7 +56,10 @@ namespace Jinget.Core.ExtensionMethods.Enums
                         description,
                         StringComparison.CurrentCultureIgnoreCase)
                     )
-                    return (TEnum)field.GetValue(null);
+                {
+                    var value = field.GetValue(null);
+                    return value == null ? default : (TEnum)value;
+                }
             }
 
             throw new InvalidEnumArgumentException($"Enum member with description/name '{description}', not found!");
@@ -75,7 +78,7 @@ namespace Jinget.Core.ExtensionMethods.Enums
             if (!type.IsEnum)
                 throw new InvalidOperationException();
 
-            List<TEnum> results = new List<TEnum>();
+            List<TEnum> results = [];
 
             foreach (var field in type.GetFields())
             {
@@ -86,7 +89,10 @@ namespace Jinget.Core.ExtensionMethods.Enums
                         displayName,
                         StringComparison.CurrentCultureIgnoreCase)
                     )
-                    results.Add((TEnum)field.GetValue(null));
+                {
+                    var value = field.GetValue(null);
+                    results.Add(value == null ? default : (TEnum)value);
+                }
             }
             if (results.Any())
                 return results;

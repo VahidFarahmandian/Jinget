@@ -8,10 +8,9 @@ namespace Jinget.Core.Utilities.Json
     /// <summary>
     /// ignore the given properties, while serializing an object
     /// </summary>
-    public class IgnorePropertiesResolver : DefaultContractResolver
+    public class IgnorePropertiesResolver(IEnumerable<string> propNamesToIgnore) : DefaultContractResolver
     {
-        private readonly HashSet<string> _ignoreProps;
-        public IgnorePropertiesResolver(IEnumerable<string> propNamesToIgnore) => _ignoreProps = new HashSet<string>(propNamesToIgnore);
+        private readonly HashSet<string> _ignoreProps = new HashSet<string>(propNamesToIgnore);
 
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {

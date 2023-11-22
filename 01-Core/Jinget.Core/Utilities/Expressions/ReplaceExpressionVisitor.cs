@@ -7,18 +7,12 @@ namespace Jinget.Core.Utilities.Expressions
     /// <summary>
     /// Replaces one expression with another in given expression tree.
     /// </summary>
-    internal class ReplaceExpressionVisitor : ExpressionVisitor
+    /// <param name="oldValue">The parameter is to be replaced by a new parameter(<paramref name="newValue"/>)</param>
+    /// <param name="newValue">The parameter is to replace the old parameter(<paramref name="oldValue"/>)</param>
+    internal class ReplaceExpressionVisitor(Expression oldValue, Expression newValue) : ExpressionVisitor
     {
-        private readonly Expression _oldValue;
-        private readonly Expression _newValue;
-
-        /// <param name="oldValue">The parameter is to be replaced by a new parameter(<paramref name="newValue"/>)</param>
-        /// <param name="newValue">The parameter is to replace the old parameter(<paramref name="oldValue"/>)</param>
-        public ReplaceExpressionVisitor(Expression oldValue, Expression newValue)
-        {
-            _oldValue = oldValue;
-            _newValue = newValue;
-        }
+        private readonly Expression _oldValue = oldValue;
+        private readonly Expression _newValue = newValue;
 
         /// <summary>
         /// Traverse the expression tree untill current node is equal to _oldValue, then it will swip _newValue with node

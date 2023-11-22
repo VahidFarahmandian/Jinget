@@ -3,7 +3,6 @@ using Jinget.Logger.Configuration.Middlewares.ElasticSearch;
 using Jinget.Logger.Entities.Log;
 using Jinget.Logger.Entities.Log.Base;
 using Jinget.Logger.ViewModels;
-using Microsoft.Extensions.Options;
 using Nest;
 using System;
 using System.Collections.Generic;

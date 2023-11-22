@@ -14,15 +14,10 @@ namespace Jinget.Core.ExtensionMethods
 {
     public static class ObjectExtensions
     {
-        public class Options
+        public class Options(bool ignoreNull = true, bool ignoreExpressions = true)
         {
-            public Options(bool ignoreNull = true, bool ignoreExpressions = true)
-            {
-                IgnoreNull = ignoreNull;
-                IgnoreExpressions = ignoreExpressions;
-            }
-            public bool IgnoreNull { get; set; }
-            public bool IgnoreExpressions { get; set; }
+            public bool IgnoreNull { get; set; } = ignoreNull;
+            public bool IgnoreExpressions { get; set; } = ignoreExpressions;
             public bool IgnoreExpr2SQLPagings { get; set; } = true;
             public bool IgnoreExpr2SQLOrderBys { get; set; } = true;
         }
@@ -50,15 +45,17 @@ namespace Jinget.Core.ExtensionMethods
         /// <summary>
         /// Convert source object to dictionary(key=property name, value=property value)
         /// </summary>
-        public static Dictionary<string, object> ToDictionary(this object source, Options? options = null)
+        public static Dictionary<string, object> ToDictionary(this object? source, Options? options = null)
         {
+            if (source == null)
+                return [];
             options ??= new Options();
 
-            Dictionary<string, object> result = new();
+            Dictionary<string, object> result = [];
 
             foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(source))
             {
-                object value = property.GetValue(source);
+                object? value = property.GetValue(source);
                 if (options.IgnoreNull && value == null)
                     continue;
                 else if (options.IgnoreExpressions && value is Expression)
@@ -70,7 +67,9 @@ namespace Jinget.Core.ExtensionMethods
                 string key = property.Name;
                 if (!result.ContainsKey(key))
                 {
+#pragma warning disable CS8604 // Possible null reference argument.
                     result.Add(key, value);
+#pragma warning restore CS8604 // Possible null reference argument.
                 }
             }
 
@@ -80,17 +79,17 @@ namespace Jinget.Core.ExtensionMethods
         /// <summary>
         /// Get the value of the given property
         /// </summary>
-        public static object GetValue(this object obj, string propertyName)
-            => obj.GetType().GetProperty(propertyName).GetValue(obj);
+        public static object? GetValue(this object obj, string propertyName)
+            => obj.GetType().GetProperty(propertyName)?.GetValue(obj);
 
         /// <summary>
         /// Convert two unrelated objects to each other.
         /// </summary>
-        public static T ToType<T>(this object obj, bool suppressError = false) where T : class
+        public static T? ToType<T>(this object obj, bool suppressError = false) where T : class
         {
             Type type = typeof(T);
 
-            T newObj = type.InvokeDefaultConstructor<T>();
+            var newObj = type.InvokeDefaultConstructor<T>();
 
             if (obj == null)
                 return newObj;
@@ -118,7 +117,7 @@ namespace Jinget.Core.ExtensionMethods
                     {
                         var referenceTypeValue = typeof(ObjectExtensions).Call(
                             name: nameof(ToType),
-                            parameters: new[] { value },
+                            parameters: [value],
                             generics: property.PropertyType);
 
                         property.SetValue(newObj, referenceTypeValue);
@@ -133,7 +132,7 @@ namespace Jinget.Core.ExtensionMethods
                         {
                             var referenceTypeValue = typeof(ObjectExtensions).Call(
                                 name: nameof(ToType),
-                                parameters: new[] { item },
+                                parameters: [item],
                                 generics: property.PropertyType.GetGenericArguments()[0]);
 
                             if (property.PropertyType.GetGenericTypeDefinition() != typeof(ICollection<>))
@@ -163,12 +162,12 @@ namespace Jinget.Core.ExtensionMethods
                                         var instance = typeof(List<>)
                                             .MakeGenericType(property.PropertyType.GetGenericArguments()[0])
                                             .GetConstructor(Type.EmptyTypes)
-                                            .Invoke(null);
+                                            ?.Invoke(null);
 
                                         field.SetValue(newObj, instance);
                                     }
 
-                                    field.FieldType.GetMethod("Add").Invoke(field.GetValue(newObj), new object[] { referenceTypeValue });
+                                    field.FieldType.GetMethod("Add")?.Invoke(field.GetValue(newObj), [referenceTypeValue]);
                                 }
                                 else
                                 {

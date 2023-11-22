@@ -24,7 +24,7 @@ namespace Jinget.Core.ExtensionMethods.Reflection.Tests
         [TestMethod()]
         public void Should_return_all_writable_primitive_properties()
         {
-            Dictionary<string, PropertyInfo> expectedResult = new Dictionary<string, PropertyInfo>()
+            Dictionary<string, PropertyInfo> expectedResult = new()
             {
                 {"Property1", typeof(TestClass).GetProperty("Property1") },
                 {"Property2", typeof(TestClass).GetProperty("Property2") }

@@ -13,7 +13,7 @@ namespace Jinget.Core.ExtensionMethods.ExpressionToSql
 
         public static string GetSorting(this List<OrderBy> lstOrderBy)
         {
-            lstOrderBy ??= new List<OrderBy>();
+            lstOrderBy ??= [];
 
             return lstOrderBy.Any() ? lstOrderBy.Stringfy() : string.Empty;
         }

@@ -41,7 +41,7 @@ namespace Jinget.Core.Utilities.Compression
                 {
                     var fileName = Path.GetFileNameWithoutExtension(file.Name);
 
-                    using ZipFile zip = new ZipFile();
+                    using ZipFile zip = new();
 
                     if (!string.IsNullOrWhiteSpace(password))
                         zip.Password = password;
@@ -97,7 +97,7 @@ namespace Jinget.Core.Utilities.Compression
                     throttler.Release();
                 }));
             }
-            Task.WaitAll(allTasks.ToArray());
+            Task.WaitAll([.. allTasks]);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Jinget.Core.Utilities.Http
         private const string Dot = ".";
         private const string QuestionMark = "?";
         private const string DefaultMimeType = MediaTypeNames.Application.Octet;
-        private static readonly Lazy<IDictionary<string, string>> _mappings = new Lazy<IDictionary<string, string>>(BuildMappings);
+        private static readonly Lazy<IDictionary<string, string>> _mappings = new(BuildMappings);
 
         private static IDictionary<string, string> BuildMappings()
         {
@@ -737,7 +737,7 @@ namespace Jinget.Core.Utilities.Http
         /// <param name="mimeType">The variable to store the MIME type.</param>
         /// <returns>The MIME type.</returns>
         /// <exception cref="ArgumentNullException" />
-        public static bool TryGetMimeType(string name, out string mimeType)
+        public static bool TryGetMimeType(string name, out string? mimeType)
         {
             if (name == null)
             {
@@ -770,10 +770,7 @@ namespace Jinget.Core.Utilities.Http
         /// <param name="str">The filename or extension.</param>
         /// <returns>The MIME type.</returns>
         /// <exception cref="ArgumentNullException" />
-        public static string GetMimeType(string str)
-        {
-            return TryGetMimeType(str, out var result) ? result : DefaultMimeType;
-        }
+        public static string? GetMimeType(string str) => TryGetMimeType(str, out string? result) ? result : DefaultMimeType;
 
         /// <summary>
         /// Gets the extension from the provided MIME type.
@@ -795,7 +792,7 @@ namespace Jinget.Core.Utilities.Http
                 throw new ArgumentException("Requested mime type is not valid: " + mimeType);
             }
 
-            if (_mappings.Value.TryGetValue(mimeType, out string extension))
+            if (_mappings.Value.TryGetValue(mimeType, out string? extension))
             {
                 return extension;
             }

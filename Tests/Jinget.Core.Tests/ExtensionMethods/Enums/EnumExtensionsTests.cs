@@ -47,7 +47,7 @@ namespace Jinget.Core.Tests.ExtensionMethods.Enums
         public void should_return_enum_value_where_display_name_provided()
         {
             string enumDisplayName = "C#";
-            List<ProgrammingLanguage> expected = new() { ProgrammingLanguage.CSharp, ProgrammingLanguage.VB };
+            List<ProgrammingLanguage> expected = [ProgrammingLanguage.CSharp, ProgrammingLanguage.VB];
 
             List<ProgrammingLanguage> result = EnumExtensions.GetValueFromDisplayName<ProgrammingLanguage>(enumDisplayName);
 
@@ -58,7 +58,7 @@ namespace Jinget.Core.Tests.ExtensionMethods.Enums
         public void should_return_enum_value_where_display_name_not_provided()
         {
             string enumDisplayName = "Golang";
-            List<ProgrammingLanguage> expected = new() { ProgrammingLanguage.Golang };
+            List<ProgrammingLanguage> expected = [ProgrammingLanguage.Golang];
 
             List<ProgrammingLanguage> result = EnumExtensions.GetValueFromDisplayName<ProgrammingLanguage>(enumDisplayName);
 

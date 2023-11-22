@@ -39,20 +39,20 @@ namespace Jinget.Core.ExpressionToSql.Internal
         /// </summary>
         public QueryBuilder AddAttribute(string attributeName, string aliasName = AliasName)
         {
-            _sb.Append(" ");
+            _sb.Append(' ');
 
             if (!string.IsNullOrWhiteSpace(aliasName))
             {
-                _sb.Append(aliasName).Append(".");
+                _sb.Append(aliasName).Append('.');
             }
 
             AppendEscapedValue(attributeName);
             return this;
         }
 
-        public QueryBuilder AddValue(object value)
+        public QueryBuilder AddValue(object? value)
         {
-            _sb.Append(" ").Append(value);
+            _sb.Append(' ').Append(value);
             return this;
         }
 
@@ -61,7 +61,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
         /// </summary>
         public QueryBuilder AddSeparator()
         {
-            _sb.Append(",");
+            _sb.Append(',');
             return this;
         }
 
@@ -81,7 +81,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
             if (!string.IsNullOrWhiteSpace(table.Schema))
             {
                 AppendEscapedValue(table.Schema);
-                _sb.Append(".");
+                _sb.Append('.');
             }
 
             AppendEscapedValue(table.Name);
@@ -107,14 +107,14 @@ namespace Jinget.Core.ExpressionToSql.Internal
             }
 
             // Table value function. [ and ] should added to function name only, not to its parameters 
-            if (attributeName.Contains("(") && attributeName.Contains(")"))
+            if (attributeName.Contains('(') && attributeName.Contains(')'))
             {
                 string functionName = attributeName[..attributeName.IndexOf("(", StringComparison.Ordinal)];
                 string functionParameters = attributeName[attributeName.IndexOf("(", StringComparison.Ordinal)..];
-                _sb.Append("[").Append(functionName).Append("]").Append(functionParameters);
+                _sb.Append('[').Append(functionName).Append(']').Append(functionParameters);
             }
             else
-                _sb.Append("[").Append(attributeName).Append("]");
+                _sb.Append('[').Append(attributeName).Append(']');
         }
     }
 }

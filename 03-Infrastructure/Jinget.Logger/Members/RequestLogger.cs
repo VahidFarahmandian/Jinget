@@ -25,7 +25,7 @@ namespace Jinget.Logger.Members
             IOptions<WhiteListHeader> whiteListHeaders)
             : base(next, logger, blackListHeaders, whiteListHeaders) => _exception = exception;
 
-        public async Task Log(HttpContext context)
+        public async Task LogAsync(HttpContext context)
         {
             string requestBodyText;
             Stream originalRequestBody = null;
@@ -45,7 +45,7 @@ namespace Jinget.Logger.Members
 
                 requestBodyStream.Seek(0, SeekOrigin.Begin);
 
-                requestBodyText = new StreamReader(requestBodyStream).ReadToEnd();
+                requestBodyText = await new StreamReader(requestBodyStream).ReadToEndAsync();
 
                 requestBodyStream.Seek(0, SeekOrigin.Begin);
                 context.Request.Body = requestBodyStream;

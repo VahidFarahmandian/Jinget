@@ -142,7 +142,7 @@ namespace Jinget.Core.ExpressionToSql.Tests
         public void Should_return_select_single_column_from_table_where_one_string_column_equal_to_itself()
         {
             var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ([FirstName] = @FirstName)";
-            Dictionary<string, object> expectedParameters = new();
+            Dictionary<string, object> expectedParameters = [];
 
             var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == x.FirstName).ToSql();
 
@@ -158,7 +158,7 @@ namespace Jinget.Core.ExpressionToSql.Tests
         public void Should_return_select_single_column_from_table_where_one_string_column_equal_to_other_column()
         {
             var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ([FirstName] = @LastName)";
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>();
+            Dictionary<string, object> expectedParameters = [];
 
             var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == x.LastName).ToSql();
 
@@ -248,7 +248,7 @@ namespace Jinget.Core.ExpressionToSql.Tests
         public void Should_return_select_single_column_from_table_where_one_string_column_like_end()
         {
             var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ([FirstName] LIKE @1)";
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object> { { "1", "%vahid" } };
+            Dictionary<string, object> expectedParameters = new() { { "1", "%vahid" } };
 
             var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName.EndsWith("vahid")).ToSql();
 
@@ -411,7 +411,7 @@ namespace Jinget.Core.ExpressionToSql.Tests
             string sampleField = "testFieldValue";
             SampleProperty = "testPropertyValue";
             var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE (([FirstName] = @1) OR ([LastName] = @2))";
-            Dictionary<string, object> expectedParameters = new Dictionary<string, object>() { { "1", "testFieldValue" }, { "2", "testPropertyValue" } };
+            Dictionary<string, object> expectedParameters = new() { { "1", "testFieldValue" }, { "2", "testPropertyValue" } };
 
             var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == sampleField || x.LastName == SampleProperty).ToSql();
 

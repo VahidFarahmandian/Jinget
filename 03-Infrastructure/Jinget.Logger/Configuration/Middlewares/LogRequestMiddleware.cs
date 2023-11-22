@@ -20,6 +20,6 @@ namespace Jinget.Logger.Configuration.Middlewares
             => _logger =
             new RequestLogger<LogRequestMiddleware>(next, logger, serviceProvider.GetJingetService<IExceptionHandler<LogRequestMiddleware>>(), blackListHeaders, whiteListHeaders);
 
-        public async Task Invoke(HttpContext context) => await _logger.Log(context);
+        public async Task InvokeAsync(HttpContext context) => await _logger.LogAsync(context);
     }
 }

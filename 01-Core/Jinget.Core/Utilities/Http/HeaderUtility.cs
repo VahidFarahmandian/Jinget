@@ -26,7 +26,7 @@ namespace Jinget.Core.Utilities.Http
             {
                 return headers.FirstOrDefault(x => string.Equals(x.Key, "Content-Type", StringComparison.OrdinalIgnoreCase)).Value;
             }
-            return null;
+            return "";
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Jinget.Core.Utilities.Http
         {
             if (headers != null && HasContentType(headers))
                 return headers.FirstOrDefault(x => string.Equals(x.Key, "Content-Type", StringComparison.OrdinalIgnoreCase)).Key;
-            return null;
+            return "";
         }
 
         /// <summary>

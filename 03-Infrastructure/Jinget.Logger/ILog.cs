@@ -5,6 +5,6 @@ namespace Jinget.Logger
 {
     public interface ILog
     {
-        Task Log(HttpContext context);
+        Task LogAsync(HttpContext context);
     }
 }

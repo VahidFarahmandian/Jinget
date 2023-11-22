@@ -22,8 +22,8 @@ namespace Jinget.Core.Utilities.Tests
                 {
                     Data = "Sample Data"
                 },
-                InnerSampleList = new()
-                {
+                InnerSampleList =
+                [
                     new XmlSample.InnerXmlSample()
                     {
                         Data="Sample List Data 1"
@@ -32,7 +32,7 @@ namespace Jinget.Core.Utilities.Tests
                     {
                         Data="Sample List Data 2"
                     }
-                }
+                ]
             };
             samplesoap = new()
             {
@@ -81,7 +81,7 @@ namespace Jinget.Core.Utilities.Tests
             "<?xml version=\"1.0\" encoding=\"utf-16\"?><XmlSample xmlns:MyNS=\"https://jinget.ir\"><Id>10</Id><Name>Vahid</Name><InnerSample><Data>Sample Data</Data></InnerSample><InnerSampleList><InnerXmlSample><Data>Sample List Data 1</Data></InnerXmlSample><InnerXmlSample><Data>Sample List Data 2</Data></InnerXmlSample></InnerSampleList></XmlSample>\r\n"
             );
 
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            XmlSerializerNamespaces ns = new();
             ns.Add("MyNS", "https://jinget.ir");
 
             var result = XmlUtility.SerializeToXml(samplexml, ns: ns);
@@ -95,8 +95,8 @@ namespace Jinget.Core.Utilities.Tests
         [TestMethod()]
         public void should_deserialize_xml_descendants_to_custom_type_and_return_all_of_them()
         {
-            List<XmlSample.InnerXmlSample> expectedObjects = new()
-            {
+            List<XmlSample.InnerXmlSample> expectedObjects =
+            [
                     new XmlSample.InnerXmlSample()
                     {
                         Data="Sample List Data 1"
@@ -105,7 +105,7 @@ namespace Jinget.Core.Utilities.Tests
                     {
                         Data="Sample List Data 2"
                     }
-                };
+                ];
 
             string input = "<?xml version=\"1.0\" encoding=\"utf-16\"?><XmlSample xmlns:MyNS=\"https://jinget.ir\"><Id>10</Id><Name>Vahid</Name><InnerSample><Data>Sample Data</Data></InnerSample><InnerSampleList><InnerXmlSample><Data>Sample List Data 1</Data></InnerXmlSample><InnerXmlSample><Data>Sample List Data 2</Data></InnerXmlSample></InnerSampleList></XmlSample>\r\n";
 

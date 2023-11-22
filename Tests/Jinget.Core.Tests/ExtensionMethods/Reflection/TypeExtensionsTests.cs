@@ -31,7 +31,7 @@ namespace Jinget.Core.ExtensionMethods.Reflection.Tests
             var result = typeof(TestClass).Call(
                 caller: new TestClass(),
                 name: nameof(TestClass.GetInfo),
-                parameters: new object[] { "vahid", 123 },
+                parameters: ["vahid", 123],
                 generics: typeof(SubType));
 
             Assert.AreEqual(expectedResult, result);
