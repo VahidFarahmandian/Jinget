@@ -11,11 +11,11 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests
         [TestMethod()]
         public async Task should_configure_httpclientfactory_by_timeout()
         {
-            var jingetServiceHandler = new JingetServiceHandler<List<SampleGetResponse>>("https://jinget.ir", TimeSpan.FromSeconds(3));
+            var jingetServiceHandler = new JingetServiceHandler<List<SampleGetResponse>>("https://jinget.ir", TimeSpan.FromSeconds(1));
 
             jingetServiceHandler.Events.ExceptionOccurred += (object sender, Exception e) =>
             {
-                Assert.IsTrue(e.Message.Contains("Timeout of 3 seconds"));
+                Assert.IsTrue(e.Message.Contains("Timeout of 1 seconds"));
             };
 
             var result = await jingetServiceHandler.GetAsync("users");

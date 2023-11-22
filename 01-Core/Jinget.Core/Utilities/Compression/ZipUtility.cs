@@ -59,7 +59,7 @@ namespace Jinget.Core.Utilities.Compression
                 }));
             }
 
-            Task.WaitAll(allTasks.ToArray());
+            Task.WaitAll([.. allTasks]);
         }
 
         /// <param name="files">list of files to extract</param>
