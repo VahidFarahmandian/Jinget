@@ -36,17 +36,27 @@ namespace Jinget.Core.Utilities.Json
         public static string Unescape(string json, bool removeNewLine = true)
         {
             json = json
-             .Replace(@"\\\""", "\"")
-             .Replace(@"\""", "\"")
-             .Replace("\"[{\"", "[{\"")
-             .Replace("\"}]\"", "\"}]")
-             .Replace("\"{", "{")
-             .Replace("}\"", "}")
-             .Replace("\"[", "[")
-             .Replace("]\"", "]");
-            
+             .Replace(@"\\\""", "\"") // ==? \\"" ==> " 
+             .Replace(@"\""", "\"") //==> "" ==> "
+             .Replace("\"[{\"", "[{\"")//==> "[{" ==> [{"
+             .Replace("\"}]\"", "\"}]") //==> "}]" ==> "}]
+             .Replace("\"{", "{")// =="{ ==> {
+             .Replace("}\"", "}")//==> }" ==> }
+             .Replace("\"[", "[")//==> "[ ==> [
+             .Replace("]\"", "]") //==> ]" ==> ]
+
+             //order of the follwoings are matter!
+             .Replace(":\"\",", ":\"---\",")//==> :"", ==> :"---",
+             .Replace(":\"\"}", ":\"---\"}")//==> :""} ==> :"---"}
+             .Replace(":\"\"", ":\"")//==> :"" ==> :"
+             .Replace("\"\",", "\",");//==> "" ==> "
+
             if (removeNewLine)
-                json = json.Replace(System.Environment.NewLine, "");
+            {
+                json = json
+                    .Replace(System.Environment.NewLine, "")
+                    .Replace(@"\r\n", "");
+            }
 
             return json;
         }
