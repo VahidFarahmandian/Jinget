@@ -20,7 +20,7 @@ jobs:
 
     # publishes Blazor project to the release-folder
     - name: Publish .NET Project
-      run: dotnet publish 04-Presentation/Jinget.Blazor/Jinget.Blazor.csproj -c Release -o release --nologo
+      run: dotnet publish Tests/Jinget.Blazor.Test/Jinget.Blazor.Test.csproj -c Release -o release --nologo
     
     # changes the base-tag in index.html from '/' to 'Jinget' to match GitHub Pages repository subdirectory
     - name: Change base-tag in index.html from / to Jinget
