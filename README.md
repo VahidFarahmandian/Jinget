@@ -5,7 +5,7 @@
 
 **We are currently in the way to make Jinget an open source project, during this journey we will publish different parts of Jinget**
 
-Jinget is a framework written using .NetStandard2.1, and built using DDD+CQRS. Jinget boosts your productivity by providing robust infrastructure for source codesCurrently 
+Jinget is a framework written using .NET 6.0 , and built using DDD+CQRS. Jinget boosts your productivity by providing robust infrastructure for source codesCurrently 
 
 Jinget provides the following benefits:
 
@@ -22,6 +22,7 @@ Jinget provides the following benefits:
 - Jinget.Core: Contains some very useful extension methods and helper classes.
 - Jinget.Handlers.ExternalServiceHandlers: Helps you to consume different types of Web APIs and SOAP web services with ease of use.
 - Jinget.Logger: Helps you to store your log messages into Elasticsearch or files
+- Jinget.Blazor: Contains some useful components optimised for RTL languages (On the way to open source)
 
 # How to install
 In order to install Jinget please refer to [nuget.org](https://www.nuget.org/profiles/Jinget "nuget.org")
