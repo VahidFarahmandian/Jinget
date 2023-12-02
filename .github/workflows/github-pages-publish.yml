@@ -22,9 +22,9 @@ jobs:
     - name: Publish .NET Project
       run: dotnet publish 04-Presentation/Jinget.Blazor/Jinget.Blazor.csproj -c Release -o release --nologo
     
-    # changes the base-tag in index.html from '/' to 'Jinget.Blazor' to match GitHub Pages repository subdirectory
+    # changes the base-tag in index.html from '/' to 'Jinget' to match GitHub Pages repository subdirectory
     - name: Change base-tag in index.html from / to Jinget.Blazor
-      run: sed -i 's/<base href="\/" \/>/<base href="\/Jinget.Blazor\/" \/>/g' release/wwwroot/index.html
+      run: sed -i 's/<base href="\/" \/>/<base href="\/Jinget\/" \/>/g' release/wwwroot/index.html
     
     # copy index.html to 404.html to serve the same file when a file is not found
     - name: copy index.html to 404.html
