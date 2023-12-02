@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<Authors>Vahid Farahmandian</Authors>
+		<RepositoryUrl>https://github.com/VahidFarahmandian/Jinget</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Description>Contains useful Blazor components optimised for RTL languages.</Description>
+		<Copyright>All Rights Reserved</Copyright>
+		<PackageIcon>icon.png</PackageIcon>
+		<Company>Jinget</Company>
+		<Product>Jinget</Product>
+		<Title>Jinget Blazor</Title>
+		<PackageProjectUrl>https://github.com/VahidFarahmandian/Jinget</PackageProjectUrl>
+		<PackageTags>jinget;blazor;component;farsi,persian,rtl,arabic</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+
+	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Blazor.Bootstrap" Version="1.10.4" />
+		<PackageReference Include="Jinget.Core" Version="6.0.2" />
+		<PackageReference Include="MudBlazor" Version="6.11.1" />
+		<PackageReference Include="SkiaSharp" Version="2.88.6" />
+		<PackageReference Include="Texnomic.Blazor.JsonViewer" Version="0.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="README.md">
+			<PackagePath>\</PackagePath>
+			<Pack>True</Pack>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="assets\icon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\01-Core\Jinget.Core\Jinget.Core.csproj" />
+	</ItemGroup>
+
+</Project>
