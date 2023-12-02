@@ -7,6 +7,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 var app = builder.Build();
+app.UsePathBase("/Jinget.Blazor.Test");
 
 app.UseHttpsRedirection();
 

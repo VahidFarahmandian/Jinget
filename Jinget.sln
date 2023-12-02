@@ -32,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04-Presentation", "04-Prese
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Blazor", "04-Presentation\Jinget.Blazor\Jinget.Blazor.csproj", "{A3E2F74D-AEB2-4D7A-8B75-F8198BF5FBE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jinget.Blazor.Test", "Tests\Jinget.Blazor.Test\Jinget.Blazor.Test.csproj", "{4BFE23D5-F786-4349-9481-A7D4A884CBEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Blazor.Test", "Tests\Jinget.Blazor.Test\Jinget.Blazor.Test.csproj", "{4BFE23D5-F786-4349-9481-A7D4A884CBEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
