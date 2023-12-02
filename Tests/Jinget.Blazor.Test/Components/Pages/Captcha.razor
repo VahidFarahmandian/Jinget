@@ -1,7 +1,11 @@
 ﻿@page "/captcha"
 @using Jinget.Blazor.Captcha
 @using static Jinget.Blazor.Captcha.JingetCaptcha
-
+<style>
+    .divCaptcha > img {
+        vertical-align: unset !important;
+    }
+</style>
 <div class="container">
     English Captcha
     <div class="row">

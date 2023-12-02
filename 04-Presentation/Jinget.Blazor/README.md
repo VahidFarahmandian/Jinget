@@ -23,10 +23,10 @@ You can also use other methods supported by NuGet. Check [Here](https://www.nuge
 
 ***References:***
 
-Add reference to `jinget.captcha.css` in your `_Host.razor` or `App.razor` files.
+Add reference to `jinget.core.css` in your `_Host.razor` or `App.razor` files.
 
 ```
-<link href="_content/Jinget.Blazor/css/jinget.captcha.css" rel="stylesheet" />
+<link href="_content/Jinget.Blazor/css/jinget.core.css" rel="stylesheet" />
 ```
 
 Add the `JingetCaptcha` to your page and start using it;-)

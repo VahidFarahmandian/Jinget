@@ -3,10 +3,6 @@
     flex-wrap: nowrap;
 }
 
-.divCaptcha > img {
-    vertical-align: unset;
-}
-
 .btn-refresh {
     border: none;
     cursor: pointer;
