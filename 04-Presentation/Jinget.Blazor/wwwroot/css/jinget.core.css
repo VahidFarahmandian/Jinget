@@ -1,4 +1,42 @@
 ﻿@import url('fonts/fa/font-awesome.min.css');
 @import url('fonts/iransans/iransans.css');
 @import url('jinget.bootstrap.icons.css');
+
+@import url('../../../_content/MudBlazor/MudBlazor.min.css');
+
 @import url('jinget.captcha.css');
+@import url('jinget.jalali.picker.date.css');
+@import url('jinget.jalali.picker.daterange.css');
+
+/*MudBlazor*/
+.mud-typography, .mud-picker {
+    font-family: IRANSans ;
+}
+
+.mud-input-label-inputcontrol {
+    left: unset;
+}
+
+.mud-picker-content {
+    direction: rtl !important;
+}
+
+.mud-picker-calendar-header-switch > .mud-button-root {
+    transform: rotateY(180deg) !important;
+}
+
+.mud-picker-calendar-header-switch > .mud-picker-calendar-header-transition {
+    direction: ltr !important;
+}
+
+.mud-picker-calendar .mud-day.mud-range.mud-range-selection:hover:not(.mud-range-start-selected) {
+    border-radius: 50% 0% 0% 50% !important;
+}
+
+.mud-button-label {
+    font-family: IRANSans !important;
+}
+
+.mud-alert-message {
+    width: 100% !important;
+}

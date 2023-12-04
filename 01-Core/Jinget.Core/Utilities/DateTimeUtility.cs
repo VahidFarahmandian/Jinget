@@ -53,5 +53,27 @@ namespace Jinget.Core.Utilities
 
             else return false;
         }
+
+        public static string[] GetJalaliDayNames()
+        {
+            return ["یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"];
+        }
+
+        public static string[] GetJalaliDayAbbrNames()
+        {
+            return ["ی", "د", "س", "چ", "پ", "ج", "ش"];
+        }
+
+        public static string[] GetJalaliMonthNames()
+        {
+            return
+            [
+                "فروردین","اردیبهشت","خرداد",
+                "تیر","مرداد","شهریور",
+                "مهر","آبان","آذر",
+                "دی","بهمن","اسفند",
+                "",
+            ];
+        }
     }
 }

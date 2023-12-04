@@ -66,7 +66,7 @@ Add the `JingetCaptcha` to your page and start using it;-)
 
 ***Methods:***
 
-`IsValid`: Checks if the given input text is squal to the image's text
+`IsValid`: Checks if the given input text is equal to the image's text
 
 `GetNewCaptchaAsync`: Draw a new captcha image
 

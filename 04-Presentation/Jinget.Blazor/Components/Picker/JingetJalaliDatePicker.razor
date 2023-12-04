@@ -1,0 +1,60 @@
+﻿@using Jinget.Blazor.Components.Picker.CultureService
+@using MudBlazor
+
+<MudDatePicker Label=@Label
+               Editable=@Editable
+               ImmediateText=@Editable
+               Clearable=@Clearable
+               MinDate=@MinDate
+               MaxDate=@MaxDate
+               Date="Value"
+               Culture="@CalendarService.GetCulture(Culture)"
+               TitleDateFormat="yyyy/MM/dd"
+               PickerClosed="DateChangedAsync"
+               TextChanged="TextChangedAsync" />
+
+@code {
+
+    [Parameter] public DateTime? Value { get; set; }
+    [Parameter] public DateTime? MinDate { get; set; }
+    [Parameter] public DateTime? MaxDate { get; set; }
+    [Parameter] public string Culture { get; set; } = "fa-IR";
+    [Parameter] public string Label { get; set; } = "تاریخ";
+
+    [Parameter] public bool Clearable { get; set; } = true;
+    [Parameter] public bool Editable { get; set; } = true;
+
+    [Parameter] public EventCallback<DateTime?> DateChanged { get; set; }
+
+    async Task DateChangedAsync(object e)
+    {
+        var component = (MudDatePicker)e;
+        await DateChanged.InvokeAsync(component.Date).ConfigureAwait(false);
+    }
+
+    async Task TextChangedAsync(string e)
+    {
+        if (Clearable && string.IsNullOrWhiteSpace(e))
+            Value = null;
+
+        if (e == null || e.Length < 10)
+        {
+            if (e != null && e.Length >= 8)
+            {
+                var parts = e.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                if (parts[0].Length < 2)
+                    parts[0] = $"0{parts[0]}";
+                if (parts[1].Length < 2)
+                    parts[1] = $"0{parts[1]}";
+
+                e = string.Join('/', parts);
+            }
+            else
+            {
+                return;
+            }
+        }
+        Value = Culture == "fa-IR" ? Jinget.Core.Utilities.DateTimeUtility.ToGregorianDate(e) : Convert.ToDateTime(e);
+        await Task.CompletedTask;
+    }
+}

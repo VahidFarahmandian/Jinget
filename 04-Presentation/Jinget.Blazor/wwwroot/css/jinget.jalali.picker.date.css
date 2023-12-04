@@ -1,0 +1,885 @@
+﻿.blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item-disable, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view input, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item-disable, .blue-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-calendar, .blue-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-close, .blue-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-submit, .blue-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-today, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item-disable, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view input, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item-disable, .cheerup-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-calendar, .cheerup-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-submit, .cheerup-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-today, .clear-btn, .clear-btn:hover, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item-disable, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view input, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item-disable, .dark-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-calendar, .dark-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-submit, .dark-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-today, .dark-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-pwt-btn-close, .datepicker-plot-area .datepicker-day-view .table-days td span, .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .datepicker-plot-area .datepicker-month-view .month-item, .datepicker-plot-area .datepicker-month-view .month-item-disable, .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .datepicker-plot-area .datepicker-time-view .down-btn, .datepicker-plot-area .datepicker-time-view .up-btn, .datepicker-plot-area .datepicker-time-view input, .datepicker-plot-area .datepicker-time-view > .time-segment, .datepicker-plot-area .datepicker-year-view .year-item, .datepicker-plot-area .datepicker-year-view .year-item-disable, .datepicker-plot-area .toolbox .pwt-btn-calendar, .datepicker-plot-area .toolbox .pwt-btn-submit, .datepicker-plot-area .toolbox .pwt-btn-today, .datepicker-plot-area .toolbox .pwt-pwt-btn-close, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item-disable, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view input, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item-disable, .redblack-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-calendar, .redblack-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-close, .redblack-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-submit, .redblack-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-today {
+    cursor: pointer
+}
+
+.datepicker-plot-area {
+    -moz-user-select: none;
+    -webkit-user-select: none
+}
+
+    .datepicker-plot-area.datepicker-time-view.down-btn, .datepicker-plot-area.datepicker-time-view.up-btn {
+        transition: .1s
+    }
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item-disable, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item-disable, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item-disable, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item-disable, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item-disable, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item-disable, .datepicker-plot-area, .datepicker-plot-area .datepicker-month-view .month-item, .datepicker-plot-area .datepicker-month-view .month-item-disable, .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .datepicker-plot-area .datepicker-year-view .year-item, .datepicker-plot-area .datepicker-year-view .year-item-disable, .datepicker-plot-area.datepicker-day-view.table-days td span, .datepicker-plot-area.datepicker-day-view.table-days td.disabled span, .datepicker-plot-area.datepicker-time-view.down-btn, .datepicker-plot-area.datepicker-time-view.up-btn, .datepicker-plot-area.datepicker-time-view > .time-segment, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item-disable, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item-disable {
+        border-radius: 0
+    }
+
+        .datepicker-plot-area .datepicker-day-view .table-days td span, .datepicker-plot-area .datepicker-month-view .month-item, .datepicker-plot-area .datepicker-year-view .year-item {
+            font-size: 14px;
+            background-color: #fff;
+            color: #333;
+            border: 0;
+            text-shadow: none
+        }
+
+        .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .datepicker-plot-area .datepicker-month-view .month-item-disable, .datepicker-plot-area .datepicker-year-view .year-item-disable {
+            background-color: #f1f1f1;
+            color: #ccc;
+            border: none;
+            text-shadow: none;
+            cursor: default
+        }
+
+        .datepicker-plot-area .datepicker-day-view .table-days td.today span {
+            background-color: #333;
+            color: #fff;
+            border: 0;
+            text-shadow: none
+        }
+
+        .datepicker-plot-area .datepicker-day-view .table-days td span.other-month {
+            color: #ccc;
+            border: none;
+            text-shadow: none
+        }
+
+        .datepicker-plot-area .datepicker-day-view .table-days td.selected span, .datepicker-plot-area .datepicker-month-view .month-item.selected, .datepicker-plot-area .datepicker-year-view .year-item.selected {
+            background-color: #005299;
+            color: #fff;
+            border: none;
+            text-shadow: 1px 1px 1px #000
+        }
+
+            .datepicker-plot-area .datepicker-day-view .table-days td span:hover, .datepicker-plot-area .datepicker-day-view .table-days td.selected span .datepicker-plot-area .datepicker-day-view .table-days td:hover, .datepicker-plot-area .datepicker-month-view .month-item:hover, .datepicker-plot-area .datepicker-year-view .year-item:hover {
+                background-color: #007be6;
+                color: #fff;
+                border: 0;
+                text-shadow: none
+            }
+
+.datepicker-container {
+    display: block;
+    position: absolute;
+    z-index: 100000;
+    top: 0;
+    direction: rtl
+}
+
+    .blue-theme.datepicker-container .datepicker-container.pwt-hide, .blue-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian .datepicker-time-view > .meridian-divider, .blue-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .meridian-divider, .blue-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .second-divider, .blue-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-second .datepicker-time-view > .second-divider, .cheerup-theme.datepicker-container .datepicker-container.pwt-hide, .cheerup-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian .datepicker-time-view > .meridian-divider, .cheerup-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .meridian-divider, .cheerup-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .second-divider, .cheerup-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-second .datepicker-time-view > .second-divider, .dark-theme.datepicker-container .datepicker-container.pwt-hide, .dark-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian .datepicker-time-view > .meridian-divider, .dark-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .meridian-divider, .dark-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .second-divider, .dark-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-second .datepicker-time-view > .second-divider, .datepicker-container.pwt-hide, .datepicker-plot-area.datepicker-state-no-meridian .datepicker-time-view > .meridian-divider, .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .meridian-divider, .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .second-divider, .datepicker-plot-area.datepicker-state-no-second .datepicker-time-view > .second-divider, .redblack-theme.datepicker-container .datepicker-container.pwt-hide, .redblack-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian .datepicker-time-view > .meridian-divider, .redblack-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .meridian-divider, .redblack-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .second-divider, .redblack-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-second .datepicker-time-view > .second-divider {
+        display: none
+    }
+
+.datepicker-plot-area {
+    box-shadow: 0 5px 10px #000;
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    box-sizing: border-box;
+    overflow: hidden;
+    min-height: 70px;
+    display: block;
+    width: 200px;
+    min-width: 200px;
+    padding: 3px;
+    position: absolute;
+    top: 1.5px;
+    font: 12px tahoma;
+    border: 1px solid #ccc;
+    background-color: #fff
+}
+
+    .datepicker-plot-area .header {
+        background-color: #fff;
+        min-height: auto;
+        border-bottom: none
+    }
+
+    .blue-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time, .cheerup-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time, .dark-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time, .datepicker-plot-area.datepicker-state-only-time, .redblack-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time {
+        padding: 0
+    }
+
+    .blue-theme.datepicker-container .datepicker-plot-area table, .blue-theme.datepicker-container .datepicker-plot-area td, .blue-theme.datepicker-container .datepicker-plot-area th, .cheerup-theme.datepicker-container .datepicker-plot-area table, .cheerup-theme.datepicker-container .datepicker-plot-area td, .cheerup-theme.datepicker-container .datepicker-plot-area th, .dark-theme.datepicker-container .datepicker-plot-area table, .dark-theme.datepicker-container .datepicker-plot-area td, .dark-theme.datepicker-container .datepicker-plot-area th, .datepicker-plot-area table, .datepicker-plot-area td, .datepicker-plot-area th, .redblack-theme.datepicker-container .datepicker-plot-area table, .redblack-theme.datepicker-container .datepicker-plot-area td, .redblack-theme.datepicker-container .datepicker-plot-area th {
+        border: 0;
+        background: 0 0
+    }
+
+    .datepicker-plot-area * {
+        text-align: center;
+        color: #333
+    }
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-month-view, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-year-view, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-month-view, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-year-view, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-month-view, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-year-view, .datepicker-plot-area .datepicker-day-view, .datepicker-plot-area .datepicker-month-view, .datepicker-plot-area .datepicker-year-view, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-month-view, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-year-view {
+        display: block;
+        width: 100%;
+        float: left;
+        min-height: 200px;
+        margin: 0
+    }
+
+.blue-theme.datepicker-container .datepicker-plot-area-inline-view, .cheerup-theme.datepicker-container .datepicker-plot-area-inline-view, .dark-theme.datepicker-container .datepicker-plot-area-inline-view, .datepicker-plot-area-inline-view, .redblack-theme.datepicker-container .datepicker-plot-area-inline-view {
+    display: block;
+    width: 100%;
+    position: static;
+    float: left
+}
+
+.datepicker-plot-area .datepicker-time-view {
+    display: block;
+    float: left;
+    width: 100%;
+    padding: 5px;
+    background: #f9f9f9;
+    border-top: 1px solid #f1f1f1
+}
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment, .datepicker-plot-area .datepicker-time-view > .time-segment, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment {
+        display: block;
+        width: 22%;
+        float: left;
+        overflow: hidden
+    }
+
+        .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment:hover .down-btn, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment:hover .up-btn, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment:hover .down-btn, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment:hover .up-btn, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment:hover .down-btn, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment:hover .up-btn, .datepicker-plot-area .datepicker-time-view > .time-segment:hover .down-btn, .datepicker-plot-area .datepicker-time-view > .time-segment:hover .up-btn, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment:hover .down-btn, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment:hover .up-btn {
+            font-weight: 700
+        }
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .divider, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .divider, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .divider, .datepicker-plot-area .datepicker-time-view .divider, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .divider {
+        display: block;
+        width: 3%;
+        height: 60px;
+        line-height: 60px;
+        float: left;
+        overflow: hidden;
+        font: 12px bold
+    }
+
+        .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .divider span, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .divider span, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .divider span, .datepicker-plot-area .datepicker-time-view .divider span, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .divider span {
+            height: 60px;
+            line-height: 60px
+        }
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn, .datepicker-plot-area .datepicker-time-view .down-btn, .datepicker-plot-area .datepicker-time-view .up-btn, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn {
+        display: block;
+        float: left;
+        width: 100%;
+        margin: 0;
+        height: 20px;
+        line-height: 22px;
+        color: #ccc
+    }
+
+        .datepicker-plot-area .datepicker-time-view .down-btn:hover, .datepicker-plot-area .datepicker-time-view .up-btn:hover {
+            background-color: rgba(250,250,250,.3);
+            color: #807f7f
+        }
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view input, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view input, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view input, .datepicker-plot-area .datepicker-time-view input, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view input {
+        display: block;
+        width: 90%;
+        margin: 0 5%;
+        height: 20px;
+        padding: 0;
+        outline: 0;
+        border: none;
+        background: 0 0
+    }
+
+.blue-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view, .cheerup-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view, .dark-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view, .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view, .redblack-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view {
+    padding: 0 5px;
+    margin: 0
+}
+
+    .blue-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view > .divider, .blue-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view > .time-segment, .cheerup-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view > .divider, .cheerup-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view > .time-segment, .dark-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view > .divider, .dark-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view > .time-segment, .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view > .divider, .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view > .time-segment, .redblack-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view > .divider, .redblack-theme.datepicker-container .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view > .time-segment {
+        padding: 5px 0
+    }
+
+.blue-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian .datepicker-time-view > .time-segment, .blue-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-second .datepicker-time-view > .time-segment, .cheerup-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian .datepicker-time-view > .time-segment, .cheerup-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-second .datepicker-time-view > .time-segment, .dark-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian .datepicker-time-view > .time-segment, .dark-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-second .datepicker-time-view > .time-segment, .datepicker-plot-area.datepicker-state-no-meridian .datepicker-time-view > .time-segment, .datepicker-plot-area.datepicker-state-no-second .datepicker-time-view > .time-segment, .redblack-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian .datepicker-time-view > .time-segment, .redblack-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-second .datepicker-time-view > .time-segment {
+    width: 31.33%
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .time-segment, .cheerup-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .time-segment, .dark-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .time-segment, .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .time-segment, .redblack-theme.datepicker-container .datepicker-plot-area.datepicker-state-no-meridian.datepicker-state-no-second .datepicker-time-view > .time-segment {
+    width: 48%
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days, .datepicker-plot-area .datepicker-day-view .table-days, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days {
+    width: 100%;
+    float: left;
+    direction: rtl
+}
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td, .datepicker-plot-area .datepicker-day-view .table-days td, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td {
+        width: 14.2%;
+        height: 26px;
+        padding: 0;
+        margin: 0;
+        position: relative
+    }
+
+        .datepicker-plot-area .datepicker-day-view .table-days td .alter-calendar-day {
+            font-style: normal;
+            position: absolute;
+            font-size: 8.5px;
+            bottom: 0;
+            right: 2px;
+            color: #f1f1f1
+        }
+
+        .blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .datepicker-plot-area .datepicker-day-view .table-days td span, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span {
+            display: block;
+            width: 100%;
+            height: 26px;
+            line-height: 26px;
+            padding: 0;
+            margin: 0
+        }
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box, .datepicker-plot-area .datepicker-day-view .month-grid-box, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box {
+    display: block;
+    width: 100%;
+    float: right;
+    min-height: 180px;
+    margin: 8px 0
+}
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box .header, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box .header, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box .header, .datepicker-plot-area .datepicker-day-view .month-grid-box .header, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box .header {
+        display: block;
+        width: 100%;
+        float: left;
+        padding-bottom: 8px
+    }
+
+        .blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row, .datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row {
+            display: block;
+            width: 100%;
+            height: 25px;
+            float: left
+        }
+
+        .datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row-cell {
+            display: block;
+            width: 14.2%;
+            height: 25px;
+            float: right;
+            line-height: 25px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #333
+        }
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-month-view, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-year-view, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-month-view, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-year-view, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-month-view, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-year-view, .datepicker-plot-area .datepicker-month-view, .datepicker-plot-area .datepicker-year-view, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-month-view, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-year-view {
+    padding-top: 10px
+}
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item, .datepicker-plot-area .datepicker-month-view .month-item, .datepicker-plot-area .datepicker-year-view .year-item, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item {
+        display: block;
+        width: 33.33333%;
+        margin: 2px 0 0;
+        float: right;
+        height: 42px;
+        line-height: 42px
+    }
+
+.blue-theme.datepicker-container .datepicker-plot-area .toolbox, .cheerup-theme.datepicker-container .datepicker-plot-area .toolbox, .dark-theme.datepicker-container .datepicker-plot-area .toolbox, .datepicker-plot-area .toolbox, .redblack-theme.datepicker-container .datepicker-plot-area .toolbox {
+    display: block;
+    float: left;
+    width: 100%;
+    margin-top: 5px
+}
+
+    .datepicker-plot-area .toolbox .pwt-btn-calendar, .datepicker-plot-area .toolbox .pwt-btn-submit, .datepicker-plot-area .toolbox .pwt-btn-today, .datepicker-plot-area .toolbox .pwt-pwt-btn-close {
+        background-color: rgba(250,250,250,.1);
+        float: right;
+        display: block;
+        font-weight: 700;
+        font-size: 11px;
+        height: 24px;
+        line-height: 24px;
+        white-space: nowrap;
+        margin: 0 auto 0 5px;
+        padding: 0 5px;
+        min-width: 50px
+    }
+
+        .datepicker-plot-area .datepicker-navigator .pwt-btn-next:hover, .datepicker-plot-area .datepicker-navigator .pwt-btn-prev:hover, .datepicker-plot-area .datepicker-navigator .pwt-btn-switch:hover, .datepicker-plot-area .toolbox .pwt-btn-calendar:hover, .datepicker-plot-area .toolbox .pwt-btn-submit:hover, .datepicker-plot-area .toolbox .pwt-btn-today:hover, .datepicker-plot-area .toolbox .pwt-pwt-btn-close:hover {
+            background-color: rgba(250,250,250,.3)
+        }
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator, .datepicker-plot-area .datepicker-navigator, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator {
+    display: block;
+    width: 100%;
+    float: left
+}
+
+    .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .datepicker-plot-area .datepicker-navigator .pwt-btn-switch {
+        height: 28px;
+        line-height: 28px;
+        font-weight: 700;
+        background-color: rgba(250,250,250,.1);
+        color: #333
+    }
+
+    .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .datepicker-plot-area .datepicker-navigator .pwt-btn-prev {
+        transform: rotateY(180deg);
+        font-family: webyekan;
+        font-size: 13px
+    }
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev {
+        display: block;
+        width: 15%;
+        float: left
+    }
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch {
+        display: block;
+        width: 66%;
+        margin: 0 2%;
+        float: left
+    }
+
+.blue-theme.datepicker-container .datepicker-container.pwt-mobile-view, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view, .datepicker-container.pwt-mobile-view, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    overflow: hidden;
+    transition: 1s
+}
+
+    .blue-theme.datepicker-container .datepicker-container.pwt-mobile-view.pwt-hide, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view.pwt-hide, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view.pwt-hide, .datepicker-container.pwt-mobile-view.pwt-hide, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view.pwt-hide {
+        top: 100vh;
+        height: 0
+    }
+
+    .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .pwt-btn-submit {
+        color: #fff;
+        background: #ccc;
+        margin-right: 5px
+    }
+
+    .blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area, .datepicker-container.pwt-mobile-view .datepicker-plot-area, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0
+    }
+
+.blue-theme.datepicker-container .datepicker-plot-area, .dark-theme.datepicker-container .datepicker-plot-area {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    box-sizing: border-box;
+    overflow: hidden;
+    min-height: 70px;
+    display: block;
+    width: 200px;
+    min-width: 200px;
+    padding: 3px;
+    position: absolute
+}
+
+.blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .table-days td, .blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .table-days td span, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .table-days td, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .table-days td span, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .table-days td, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .table-days td span, .datepicker-container.pwt-mobile-view .datepicker-plot-area .table-days td, .datepicker-container.pwt-mobile-view .datepicker-plot-area .table-days td span, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .table-days td, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .table-days td span {
+    height: 44px;
+    line-height: 44px;
+    font-size: 14px
+}
+
+.blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .datepicker-month-view .month-item, .blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .datepicker-year-view .year-item, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .datepicker-month-view .month-item, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .datepicker-year-view .year-item, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .datepicker-month-view .month-item, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .datepicker-year-view .year-item, .datepicker-container.pwt-mobile-view .datepicker-plot-area .datepicker-month-view .month-item, .datepicker-container.pwt-mobile-view .datepicker-plot-area .datepicker-year-view .year-item, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .datepicker-month-view .month-item, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .datepicker-year-view .year-item {
+    height: 70px;
+    line-height: 70px
+}
+
+.blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area [class*=pwt-btn], .blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .down-btn, .blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .up-btn, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area [class*=pwt-btn], .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .down-btn, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .up-btn, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area [class*=pwt-btn], .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .down-btn, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .up-btn, .datepicker-container.pwt-mobile-view .datepicker-plot-area [class*=pwt-btn], .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .down-btn, .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .up-btn, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area [class*=pwt-btn], .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .down-btn, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .up-btn {
+    height: 48px;
+    line-height: 48px
+}
+
+.blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .pwt-btn-today, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .pwt-btn-today, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .pwt-btn-today, .datepicker-container.pwt-mobile-view .datepicker-plot-area .pwt-btn-today, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area .pwt-btn-today {
+    float: left
+}
+
+.datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time {
+    background-color: rgba(0,0,0,.7);
+    border: 0;
+    padding-top: 60%
+}
+
+    .blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view input, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view input, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view input, .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view input, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view input {
+        height: 40px;
+        line-height: 40px;
+        font-size: 24px;
+        margin: 5px 0
+    }
+
+    .blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .divider, .blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .divider span, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .divider, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .divider span, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .divider, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .divider span, .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .divider, .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .divider span, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .divider, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .datepicker-time-view .divider span {
+        font-size: 16px;
+        display: block;
+        height: 144px;
+        line-height: 144px
+    }
+
+.blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view input, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view input, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view input, .datepicker-container.pwt-mobile-view .datepicker-time-view input, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view input {
+    height: 32px;
+    line-height: 34px;
+    font-size: 18px
+}
+
+.blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .divider, .blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .divider span, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .divider, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .divider span, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .divider, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .divider span, .datepicker-container.pwt-mobile-view .datepicker-time-view .divider, .datepicker-container.pwt-mobile-view .datepicker-time-view .divider span, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .divider, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .divider span {
+    height: 120px;
+    line-height: 120px
+}
+
+.blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .down-btn, .blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .up-btn, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .down-btn, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .up-btn, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .down-btn, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .up-btn, .datepicker-container.pwt-mobile-view .datepicker-time-view .down-btn, .datepicker-container.pwt-mobile-view .datepicker-time-view .up-btn, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .down-btn, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-time-view .up-btn {
+    height: 40px;
+    line-height: 40px
+}
+
+.blazor-datepicker.form-control[readonly] {
+    background-color: #fff
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn {
+    transition: .1s;
+    border-radius: 6px 6px 0 0
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn {
+    border-radius: 0 0 6px 6px
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment, .cheerup-theme.datepicker-container .datepicker-plot-area, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment, .dark-theme.datepicker-container .datepicker-plot-area, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment, .redblack-theme.datepicker-container .datepicker-plot-area, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view > .time-segment {
+    border-radius: 6px
+}
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item {
+        border-radius: 3px
+    }
+
+.dark-theme.datepicker-container .datepicker-plot-area {
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    font: 12px tahoma;
+    border: 1px solid #ccc;
+    background-color: #2d2d2d
+}
+
+    .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item {
+        background-color: #2d2d2d;
+        color: #fff;
+        border: 0;
+        text-shadow: none
+    }
+
+    .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item-disable, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item-disable, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item-disable, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item-disable, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item-disable, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item-disable {
+        background-color: #393939;
+        color: #ccc;
+        border: none;
+        text-shadow: none;
+        cursor: default
+    }
+
+    .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.today span {
+        background-color: #fff;
+        color: #2d2d2d;
+        border: 0;
+        text-shadow: none
+    }
+
+    .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span.other-month, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span.other-month, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span.other-month {
+        background-color: "";
+        color: #ccc;
+        border: none;
+        text-shadow: none
+    }
+
+    .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.selected span, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item.selected, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item.selected {
+        background-color: #d68e3a;
+        color: #fff;
+        border: none;
+        text-shadow: 1px 1px 1px #000
+    }
+
+        .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span:hover, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.selected span .datepicker-plot-area .datepicker-day-view .table-days td:hover, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item:hover, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item:hover, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span:hover, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.selected span .datepicker-plot-area .datepicker-day-view .table-days td:hover, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item:hover, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item:hover, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span:hover, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.selected span .datepicker-plot-area .datepicker-day-view .table-days td:hover, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item:hover, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item:hover {
+            background-color: #393939;
+            color: "";
+            border: 0;
+            text-shadow: none
+        }
+
+.blue-theme.datepicker-container .datepicker-container, .cheerup-theme.datepicker-container .datepicker-container, .dark-theme.datepicker-container .datepicker-container, .redblack-theme.datepicker-container .datepicker-container {
+    display: block;
+    position: absolute;
+    z-index: 100000;
+    top: 0;
+    direction: ltr
+}
+
+.dark-theme.datepicker-container .datepicker-plot-area .header {
+    background-color: #2d2d2d;
+    min-height: auto;
+    border-bottom: none
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area *, .cheerup-theme.datepicker-container .datepicker-plot-area *, .dark-theme.datepicker-container .datepicker-plot-area *, .redblack-theme.datepicker-container .datepicker-plot-area * {
+    text-align: center;
+    color: #fff
+}
+
+.dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view {
+    display: block;
+    float: left;
+    width: 100%;
+    padding: 5px;
+    background: #393939;
+    border-top: 1px solid #393939
+}
+
+    .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn:hover, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn:hover, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn:hover, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn:hover, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn:hover, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn:hover {
+        background-color: #393939;
+        color: #807f7f
+    }
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td .alter-calendar-day, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td .alter-calendar-day, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td .alter-calendar-day, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td .alter-calendar-day {
+    font-style: normal;
+    position: absolute;
+    font-size: 8.5px;
+    bottom: 0;
+    right: 2px;
+    color: #fff
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row-cell, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row-cell, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row-cell, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .month-grid-box .header .header-row-cell {
+    display: block;
+    width: 14.2%;
+    height: 25px;
+    float: right;
+    line-height: 25px;
+    font-weight: 700;
+    color: #fff
+}
+
+.dark-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-calendar, .dark-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-submit, .dark-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-today, .dark-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-pwt-btn-close {
+    background-color: #2d2d2d;
+    float: right;
+    display: block;
+    font-weight: 700;
+    font-size: 11px;
+    height: 24px;
+    line-height: 24px;
+    white-space: nowrap;
+    margin: 0 auto 0 5px;
+    padding: 0 5px;
+    min-width: 50px
+}
+
+    .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next:hover, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev:hover, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch:hover, .cheerup-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-calendar:hover, .cheerup-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-close:hover, .cheerup-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-submit:hover, .cheerup-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-today:hover, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next:hover, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev:hover, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch:hover, .dark-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-calendar:hover, .dark-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-submit:hover, .dark-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-today:hover, .dark-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-pwt-btn-close:hover, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next:hover, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev:hover, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch:hover, .redblack-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-calendar:hover, .redblack-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-close:hover, .redblack-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-submit:hover, .redblack-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-today:hover {
+        background-color: #393939
+    }
+
+.dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .dark-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch {
+    height: 28px;
+    line-height: 28px;
+    font-weight: 700;
+    background-color: #2d2d2d;
+    color: #fff
+}
+
+.dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .pwt-btn-submit {
+    color: #2d2d2d;
+    background: #ccc;
+    margin-right: 5px
+}
+
+.blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time, .cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time, .dark-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time, .redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time {
+    background: rgba(0,0,0,.7);
+    border: 0;
+    padding-top: 60%
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area {
+    box-shadow: none;
+    font: 12px tahoma;
+    border: none;
+    background-color: #1a3347
+}
+
+.cheerup-theme.datepicker-container .datepicker-plot-area, .redblack-theme.datepicker-container .datepicker-plot-area {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    box-sizing: border-box;
+    overflow: hidden;
+    min-height: 70px;
+    width: 200px;
+    min-width: 200px;
+    padding: 3px;
+    position: absolute;
+    border: 1px solid #ccc;
+    display: block
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item {
+    background-color: #1a3347;
+    color: #fff;
+    border: 0;
+    text-shadow: none
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.disabled span, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item-disable, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item-disable {
+    background-color: #204b6e;
+    color: #00aae2;
+    border: none;
+    text-shadow: none;
+    cursor: default
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.today span {
+    background-color: #fff;
+    color: #1a3347;
+    border: 0;
+    text-shadow: none
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span.other-month {
+    background-color: "";
+    color: #00aae2;
+    border: none;
+    text-shadow: none
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.selected span, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item.selected, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item.selected {
+    background-color: #0085b2;
+    color: #fff;
+    border: none;
+    text-shadow: 1px 1px 1px #000
+}
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span:hover, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.selected span .datepicker-plot-area .datepicker-day-view .table-days td:hover, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item:hover, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item:hover {
+        background-color: #0095c6;
+        color: #fff;
+        border: 0;
+        text-shadow: none
+    }
+
+.blue-theme.datepicker-container .datepicker-plot-area .header {
+    background-color: #1a3347;
+    min-height: auto;
+    border-bottom: none
+}
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view {
+    display: block;
+    float: left;
+    width: 100%;
+    padding: 5px;
+    background: #204b6e;
+    border-top: 1px solid #204b6e
+}
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .down-btn:hover, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-time-view .up-btn:hover {
+        background-color: #0095c6;
+        color: #807f7f
+    }
+
+.blue-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-calendar, .blue-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-close, .blue-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-submit, .blue-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-today {
+    background-color: #1a3347;
+    float: right;
+    display: block;
+    font-weight: 700;
+    font-size: 11px;
+    height: 24px;
+    line-height: 24px;
+    white-space: nowrap;
+    margin: 0 auto 0 5px;
+    padding: 0 5px;
+    min-width: 50px
+}
+
+    .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next:hover, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev:hover, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch:hover, .blue-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-calendar:hover, .blue-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-close:hover, .blue-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-submit:hover, .blue-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-today:hover {
+        background-color: #0095c6
+    }
+
+.blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .blue-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch {
+    height: 28px;
+    line-height: 28px;
+    font-weight: 700;
+    background-color: #1a3347;
+    color: #fff
+}
+
+.blue-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .pwt-btn-submit {
+    color: #1a3347;
+    background: #00aae2;
+    margin-right: 5px
+}
+
+.cheerup-theme.datepicker-container .datepicker-plot-area {
+    font: 12px tahoma;
+    background-color: #556270
+}
+
+    .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item {
+        background-color: #556270;
+        color: #fff;
+        border: 0;
+        text-shadow: none
+    }
+
+    .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.today span {
+        background-color: #fff;
+        color: #556270;
+        border: 0;
+        text-shadow: none
+    }
+
+    .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.selected span, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item.selected, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item.selected {
+        background-color: #c44d58;
+        color: #fff;
+        border: none;
+        text-shadow: 1px 1px 1px #000
+    }
+
+    .cheerup-theme.datepicker-container .datepicker-plot-area .header {
+        background-color: #556270;
+        min-height: auto;
+        border-bottom: none
+    }
+
+    .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-time-view, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-time-view {
+        display: block;
+        float: left;
+        width: 100%;
+        padding: 5px;
+        background: #444;
+        border-top: 1px solid #393939
+    }
+
+    .cheerup-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-calendar, .cheerup-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-close, .cheerup-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-submit, .cheerup-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-today {
+        background-color: #556270;
+        float: right;
+        display: block;
+        font-weight: 700;
+        font-size: 11px;
+        height: 24px;
+        line-height: 24px;
+        white-space: nowrap;
+        margin: 0 auto 0 5px;
+        padding: 0 5px;
+        min-width: 50px
+    }
+
+    .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .cheerup-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch {
+        height: 28px;
+        line-height: 28px;
+        font-weight: 700;
+        background-color: #556270;
+        color: #fff
+    }
+
+.cheerup-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .pwt-btn-submit {
+    color: #556270;
+    background: #ccc;
+    margin-right: 5px
+}
+
+.redblack-theme.datepicker-container .datepicker-plot-area {
+    font: 12px tahoma;
+    background-color: #222
+}
+
+    .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td span, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item {
+        background-color: #222;
+        color: #fff;
+        border: 0;
+        text-shadow: none
+    }
+
+    .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.today span {
+        background-color: #fff;
+        color: #222;
+        border: 0;
+        text-shadow: none
+    }
+
+    .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-day-view .table-days td.selected span, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-month-view .month-item.selected, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-year-view .year-item.selected {
+        background-color: #f26161;
+        color: #fff;
+        border: none;
+        text-shadow: 1px 1px 1px #000
+    }
+
+    .redblack-theme.datepicker-container .datepicker-plot-area .header {
+        background-color: #222;
+        min-height: auto;
+        border-bottom: none
+    }
+
+    .redblack-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-calendar, .redblack-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-close, .redblack-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-submit, .redblack-theme.datepicker-container .datepicker-plot-area .toolbox .pwt-btn-today {
+        background-color: #222;
+        float: right;
+        display: block;
+        font-weight: 700;
+        font-size: 11px;
+        height: 24px;
+        line-height: 24px;
+        white-space: nowrap;
+        margin: 0 auto 0 5px;
+        padding: 0 5px;
+        min-width: 50px
+    }
+
+    .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-next, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-prev, .redblack-theme.datepicker-container .datepicker-plot-area .datepicker-navigator .pwt-btn-switch {
+        height: 28px;
+        line-height: 28px;
+        font-weight: 700;
+        background-color: #222;
+        color: #fff
+    }
+
+.redblack-theme.datepicker-container .datepicker-container.pwt-mobile-view .datepicker-plot-area.datepicker-state-only-time .pwt-btn-submit {
+    color: #222;
+    background: #ccc;
+    margin-right: 5px
+}
+
+.persian-datepicker-right-icon {
+    background: url(../images/calendar_icon.png) 0 0/22px 60% no-repeat #fff;
+    background-position: calc(100% - 6px) 49%;
+    padding: 0 33px 0 28px
+}
+
+.persian-datepicker-left-icon {
+    background: url(../images/calendar_icon.png) 6px 49%/22px 60% no-repeat #fff;
+    padding-left: 33px
+}
+
+.datepicker_wrapp {
+    display: flex;
+    position: relative !important
+}
+
+.clear-btn {
+    position: absolute;
+    top: -5px;
+    opacity: .6;
+    height: 100%;
+    width: 35px;
+    font-size: 25px;
+    color: #b3b3b3;
+    text-align: center;
+    line-height: 50px
+}
+
+    .clear-btn.right {
+        right: 0
+    }
+
+    .clear-btn.left {
+        left: 0
+    }

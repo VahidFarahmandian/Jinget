@@ -56,7 +56,9 @@
                            Height="50"
                            CharCount="5"
                            CharSetType="CharSetTypeOptions.Custom"
-                           CustomCharSet="abcdefxyz">
+                           CustomCharSet="אבגדהחטש"
+                           IsRtlCharSet=true
+                           FontFamilies=@(new string[]{"Calibri"})>
             </JingetCaptcha>
             <input type="text" class="form-control" id="captcha" @bind-value="@captcha3Value" />
             <button @onclick="IsValid_Captcha3" class="btn btn-primary">Validate</button>

@@ -1,0 +1,8 @@
+﻿/*MudBlazor*/
+.mud-picker-calendar .mud-day.mud-range.mud-range-start-selected {
+    border-radius: 0% 50% 50% 0% !important;
+}
+
+.mud-picker-calendar .mud-day.mud-range.mud-range-end-selected {
+    border-radius: 50% 0% 0% 50% !important;
+}

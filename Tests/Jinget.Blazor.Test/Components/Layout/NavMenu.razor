@@ -13,6 +13,42 @@
                 Captcha
             </NavLink>
         </div>
+        <NavLink class="nav-link" @onclick="()=>expandPickerSubNav = !expandPickerSubNav">
+            <span class="oi oi-plus" aria-hidden="true"></span> Pickers
+        </NavLink>
+        @if (expandPickerSubNav)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/datepicker" Match="NavLinkMatch.All">
+                    Date Picker
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/daterangepicker" Match="NavLinkMatch.All">
+                    Date Range Picker
+                </NavLink>
+            </div>
+        }
     </nav>
 </div>
+@code {
+    bool expandPickerSubNav;
+    bool collapsePickerSubNav = true;
 
+    string? NavMenuCssClass
+    {
+        get
+        {
+            if (collapsePickerSubNav)
+                return collapsePickerSubNav ? "collapse" : null;
+            else
+                return "";
+        }
+    }
+
+    void ToggleNavMenu()
+    {
+        if (collapsePickerSubNav)
+            collapsePickerSubNav = !collapsePickerSubNav;
+    }
+}
