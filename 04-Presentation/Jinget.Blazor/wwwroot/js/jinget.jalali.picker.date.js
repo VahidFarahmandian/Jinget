@@ -1,4 +1,24 @@
-﻿function blazorReady(
+﻿
+function toEnglishNumber(id) {
+    const targetNode = document.querySelector("body");
+    const config = { attributes: true, childList: true, subtree: true };
+    var observer = new MutationObserver(() => {
+        var CONTROL_INTERVAL = setInterval(function () {
+            if (document.getElementById(id) != undefined) {
+                [...document.querySelectorAll("[id='" + id + "'] *")].forEach((el) => {
+                    el.setAttribute('style', 'font-family:sans-serif !important;');
+                });
+                [...document.querySelectorAll("[id='" + id + "'] .mud-picker-calendar-transition *")].forEach((el) => {
+                    el.setAttribute('style', 'font-family:sans-serif !important;direction:ltr !important')
+                });
+                clearInterval(CONTROL_INTERVAL);
+            }
+        }, 100);
+    });
+    observer.observe(targetNode, config);
+}
+
+function blazorReady(
     dotnetReference,
     elementId,
     calendarType,
@@ -28,6 +48,7 @@
                 },
                 toolbox: {
                     calendarSwitch: {
+                        enabled: calendarSwitchEnabled,
                         enabled: calendarSwitchEnabled,
                         onSwitch: function () {
                             var elementId = $datePicker.attr('id');

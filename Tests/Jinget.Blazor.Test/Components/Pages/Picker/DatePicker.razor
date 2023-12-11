@@ -1,33 +1,41 @@
 ﻿@page "/datepicker"
 @using Jinget.Blazor.Components.Picker
+@using System.Globalization
+@using Jinget.Blazor.Components.Picker.CultureService
+@using MudBlazor;
+@inject IJSRuntime JS;
 
 <div class="container">
     <div class="row">
         Default Label
         <div class="form-group input-group">
-            <JingetJalaliDatePicker Value=selectedDate_1 DateChanged="OnDateChanged_1">
+            <JingetJalaliDatePicker Value=selectedDate_1
+                                    DateChanged="OnDateChanged_1">
             </JingetJalaliDatePicker>
         </div>
     </div>
     @if (selectedDate_1.HasValue)
     {
         <div class="row">
-            <p>Selected Date: @selectedDate_1.Value/@Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(selectedDate_1.Value)</p>
+            <p>Selected Date: @selectedDate_1.Value.ToString("yyyy/MM/dd")/@DateTimeUtility.ToSolarDate(selectedDate_1.Value)</p>
         </div>
     }
     <hr />
     <div class="row">
         Set Selected Date Programmatically
         <div class="form-group input-group">
-            <JingetJalaliDatePicker @ref=datePicker2 Value=selectedDate_2 DateChanged="OnDateChanged_2">
+            <JingetJalaliDatePicker Value=selectedDate_2
+                                    DateChanged="OnDateChanged_2">
             </JingetJalaliDatePicker>
-            <button @onclick="SetJalaliDate" class="btn btn-primary">Set Jalali Date(1402/09/13)</button>
+            <button @onclick=@SetJalaliDate class="btn btn-primary">Set Jalali Date(Random)</button>
         </div>
     </div>
     @if (selectedDate_2.HasValue)
     {
         <div class="row">
-            <p>Selected Date: @selectedDate_2.Value/@Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(selectedDate_2.Value)</p>
+            <p>
+                Selected Date: @selectedDate_2.Value.ToString("yyyy/MM/dd") /@DateTimeUtility.ToSolarDate(selectedDate_2.Value)
+            </p>
         </div>
     }
     <hr />
@@ -37,6 +45,7 @@
             <JingetJalaliDatePicker Value=selectedDate_3
                                     DateChanged="OnDateChanged_3"
                                     Culture="en-US"
+                                    EnglishNumber=true
                                     Label="Select a Date:">
             </JingetJalaliDatePicker>
         </div>
@@ -44,37 +53,115 @@
     @if (selectedDate_3.HasValue)
     {
         <div class="row">
-            <p>Selected Date: @selectedDate_3.Value/@Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(selectedDate_3.Value)</p>
+            <p>Selected Date: @selectedDate_3.Value.ToString("yyyy/MM/dd")/@DateTimeUtility.ToSolarDate(selectedDate_3.Value)</p>
+        </div>
+    }
+    <hr />
+    <div class="row">
+        Arabic Date Picker(Saudi Arabia)
+        <div class="form-group input-group">
+            <JingetJalaliDatePicker Value=selectedDate_4
+                                    DateChanged="OnDateChanged_4"
+                                    Culture="ar-SA">
+            </JingetJalaliDatePicker>
+        </div>
+    </div>
+    @if (selectedDate_4.HasValue)
+    {
+        <div class="row">
+            <p>
+                Selected Date: @selectedDate_4.Value.ToString("yyyy/MM/dd")/
+                @DateTimeUtility.ToSolarDate(selectedDate_4.Value) /
+                @selectedDate_4.Value.ToString("yyyy-MM-dd", new CultureInfo("ar-SA"))
+            </p>
+        </div>
+    }
+    <hr />
+    <div class="row">
+        Chinese Date Picker
+        <div class="form-group input-group">
+            <JingetJalaliDatePicker Value=selectedDate_5
+                                    DateChanged="OnDateChanged_5"
+                                    EnglishNumber=true
+                                    Culture="zh-Hans">
+            </JingetJalaliDatePicker>
+        </div>
+    </div>
+    @if (selectedDate_5.HasValue)
+    {
+        <div class="row">
+            <p>
+                Selected Date: @selectedDate_5.Value.ToString("yyyy/MM/dd") /
+                @DateTimeUtility.ToSolarDate(selectedDate_5.Value)
+            </p>
         </div>
     }
     <hr />
     <div class="row">
         Min/Max Selectabel date
         <div class="form-group input-group">
-            <JingetJalaliDatePicker MinDate="new DateTime(2023,09,01)" MaxDate="DateTime.Now">
+            <JingetJalaliDatePicker Value=@selectedDate_6
+                                    MinDate="new DateTime(2023,09,01)"
+                                    DateChanged="OnDateChanged_6"
+                                    MaxDate="DateTime.Now">
             </JingetJalaliDatePicker>
         </div>
     </div>
+    @if (selectedDate_6.HasValue)
+    {
+        <div class="row">
+            <p>
+                Selected Date: @selectedDate_6.Value.ToString("yyyy/MM/dd") /
+                @DateTimeUtility.ToSolarDate(selectedDate_6.Value)
+            </p>
+        </div>
+    }
+    <hr />
+    <div class="row">
+        Disable 15th day of each month
+        <div class="form-group input-group">
+            <JingetJalaliDatePicker Value=@selectedDate_7
+                                    Culture="en-US"
+                                    EnglishNumber=true
+                                    DateChanged="OnDateChanged_7"
+                                    DisabledDateFunc="@((DateTime dt)=>(dt.Day==15))"
+                                    CustomDateStyle=@((DateTime dt) => (dt.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday ? "red-text text-accent-4" : ""))>
+            </JingetJalaliDatePicker>
+        </div>
+    </div>
+    @if (selectedDate_7.HasValue)
+    {
+        <div class="row">
+            <p>
+                Selected Date: @selectedDate_7.Value.ToString("yyyy/MM/dd") /
+                @DateTimeUtility.ToSolarDate(selectedDate_7.Value)
+            </p>
+        </div>
+    }
 </div>
 @code {
-    JingetJalaliDatePicker datePicker2;
 
     DateTime? selectedDate_1;
     DateTime? selectedDate_2;
     DateTime? selectedDate_3;
+    DateTime? selectedDate_4;
+    DateTime? selectedDate_5;
+    DateTime? selectedDate_6;
+    DateTime? selectedDate_7;
 
     void OnDateChanged_1(DateTime? selectedDate) => selectedDate_1 = selectedDate;
-
     void OnDateChanged_2(DateTime? selectedDate) => selectedDate_2 = selectedDate;
-
     void OnDateChanged_3(DateTime? selectedDate) => selectedDate_3 = selectedDate;
+    void OnDateChanged_4(DateTime? selectedDate) => selectedDate_4 = selectedDate;
+    void OnDateChanged_5(DateTime? selectedDate) => selectedDate_5 = selectedDate;
+    void OnDateChanged_6(DateTime? selectedDate) => selectedDate_6 = selectedDate;
+    void OnDateChanged_7(DateTime? selectedDate) => selectedDate_7 = selectedDate;
 
     void SetJalaliDate()
     {
-        Random randomYear = new Random();
-        Random randomMonth = new Random();
-        Random randomDay = new Random();
-        selectedDate_2 = Jinget.Core.Utilities.DateTimeUtility
-        .ToGregorianDate($"{randomYear.Next(1398, 1402)}/{randomMonth.Next(1, 12)}/{randomDay.Next(1, 29)}");
+        Random rnd = new Random();
+        var selectedDate = $"{rnd.Next(1398, 1402)}/{rnd.Next(1, 12)}/{rnd.Next(1, 9)}";
+        selectedDate_2 = Jinget.Core.Utilities.DateTimeUtility.ToGregorianDate(selectedDate);
     }
+
 }

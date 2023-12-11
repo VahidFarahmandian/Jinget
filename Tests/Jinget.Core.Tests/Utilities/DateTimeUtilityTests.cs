@@ -19,6 +19,14 @@ namespace Jinget.Core.Utilities.Tests
         }
 
         [TestMethod()]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void should_throw_exception_for_out_of_supported_range_date()
+        {
+            DateTime input = DateTime.MinValue;
+            DateTimeUtility.ToSolarDate(input);
+        }
+
+        [TestMethod()]
         public void should_return_gregorian_date()
         {
             DateTime expectedResult = new(2020, 10, 12);
@@ -93,6 +101,32 @@ namespace Jinget.Core.Utilities.Tests
 
             input = "14040101";
             Assert.IsFalse(DateTimeUtility.IsValidPersianDate(input, maxAcceptableDate: maxDate));
+        }
+
+        [TestMethod()]
+        public void Should_format_string_based_on_newFormat_slash()
+        {
+            string input = "14020901";
+            string currentFormat = "yyyyMMdd";
+            string newFormat = "yyyy/MM/dd";
+            string expectedResult = "1402/09/01";
+
+            string result = DateTimeUtility.Format(input, currentFormat, newFormat);
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [TestMethod()]
+        public void Should_format_string_based_on_newFormat_hyphen()
+        {
+            string input = "1402/09/01";
+            string currentFormat = "yyyy/MM/dd";
+            string newFormat = "yyyy-MM-dd";
+            string expectedResult = "1402-09-01";
+
+            string result = DateTimeUtility.Format(input, currentFormat, newFormat);
+
+            Assert.AreEqual(expectedResult, result);
         }
     }
 }

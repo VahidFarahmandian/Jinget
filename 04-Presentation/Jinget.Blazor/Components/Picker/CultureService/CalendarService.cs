@@ -4,10 +4,11 @@
     {
         public static CultureInfo GetCulture(string culture)
         {
-            return culture switch
+            return culture.ToLowerInvariant() switch
             {
-                "fa-IR" => FaIRCultureService.GetCulture(),
-                _ => EnUSCultureService.GetCulture(),
+                "fa-ir" => FaIRCultureService.GetCulture(),
+                "ar-sa" => ArSACultureService.GetCulture(),
+                _ => CultureInfo.GetCultureInfo(culture),
             };
         }
 

@@ -26,7 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Jinget.Core" Version="6.0.2" />
+		<PackageReference Include="Jinget.Core" Version="6.1.0" />
 		<PackageReference Include="MudBlazor" Version="6.11.1" />
 		<PackageReference Include="SkiaSharp" Version="2.88.6" />
 	</ItemGroup>

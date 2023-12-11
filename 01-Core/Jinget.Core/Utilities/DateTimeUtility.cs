@@ -6,13 +6,17 @@ namespace Jinget.Core.Utilities
     public static class DateTimeUtility
     {
         /// <summary>
-        /// Converts given Gregorian date to its Solar equalivant
+        /// Converts given Gregorian date to its Solar equalivant.
+        /// Minimum supported Gregorian date is: year: 622,month: 3,day: 22. 
+        /// See also: <seealso cref="PersianCalendar.MinSupportedDateTime"/>
         /// </summary>
         public static string ToSolarDate(DateTime gregorianDate)
         {
             var calendar = new PersianCalendar();
+            if (gregorianDate < calendar.MinSupportedDateTime)
+                throw new ArgumentOutOfRangeException($"Date should be after {calendar.MinSupportedDateTime} ");
             return
-                $"{calendar.GetYear(gregorianDate)}/{calendar.GetMonth(gregorianDate):D2}/{calendar.GetDayOfMonth(gregorianDate):D2}";
+            $"{calendar.GetYear(gregorianDate)}/{calendar.GetMonth(gregorianDate):D2}/{calendar.GetDayOfMonth(gregorianDate):D2}";
         }
 
         /// <summary>
@@ -20,7 +24,7 @@ namespace Jinget.Core.Utilities
         /// </summary>
         public static DateTime ToGregorianDate(string persianDate)
         {
-            if (persianDate.Length == 8 && !persianDate.Contains("/"))
+            if (persianDate.Length == 8 && !persianDate.Contains('/'))
                 persianDate = $"{persianDate[..4]}/{persianDate.Substring(4, 2)}/{persianDate.Substring(6, 2)}";
             return DateTime.Parse(persianDate, new CultureInfo("fa-IR"));
         }
@@ -54,26 +58,43 @@ namespace Jinget.Core.Utilities
             else return false;
         }
 
-        public static string[] GetJalaliDayNames()
+        /// <summary>
+        /// format given input based on the given format string.
+        /// </summary>
+        public static string Format(string input, string currentFormat = "yyyyMMdd", string newFormat = "yyyy/MM/dd")
         {
-            return ["یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"];
+            var isDate = DateTime.TryParseExact(
+            input.ToString(),
+            currentFormat,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out DateTime date);
+
+            return isDate ? date.ToString(newFormat) : input.ToString();
         }
 
-        public static string[] GetJalaliDayAbbrNames()
-        {
-            return ["ی", "د", "س", "چ", "پ", "ج", "ش"];
-        }
+        public static string[] GetJalaliDayNames() => ["یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"];
 
-        public static string[] GetJalaliMonthNames()
-        {
-            return
-            [
+        public static string[] GetJalaliDayAbbrNames() => ["ی", "د", "س", "چ", "پ", "ج", "ش"];
+
+        public static string[] GetJalaliMonthNames() => [
                 "فروردین","اردیبهشت","خرداد",
                 "تیر","مرداد","شهریور",
                 "مهر","آبان","آذر",
                 "دی","بهمن","اسفند",
                 "",
             ];
-        }
+
+        public static string[] GetArabicDayNames() => ["الأحَد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+
+        public static string[] GetArabicDayAbbrNames() => ["أح", "إث", "ث", "أر", "خ", "ج", "س"];
+
+        public static string[] GetArabicMonthNames() => [
+                "ٱلْمُحَرَّم","صَفَر","رَبِيع ٱلْأَوَّل",
+                "رَبِيع ٱلثَّانِي","جُمَادَىٰ ٱلْأُولَىٰ","جُمَادَىٰ ٱلثَّانِيَة",
+                "رَجَب","شَعْبَان","رَمَضَان",
+                "شَوَّال","ذُو ٱلْقَعْدَة","ذُو ٱلْحِجَّة",
+                "",
+            ];
     }
 }

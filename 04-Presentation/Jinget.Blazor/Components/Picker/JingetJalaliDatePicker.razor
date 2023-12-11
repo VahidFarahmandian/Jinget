@@ -1,60 +1,53 @@
 ﻿@using Jinget.Blazor.Components.Picker.CultureService
-@using MudBlazor
-
-<MudDatePicker Label=@Label
+@using Microsoft.JSInterop
+@using MudBlazor;
+@inject IJSRuntime JS;
+@inherits JingetDatePickerBase;
+<MudDatePicker id=@id @ref=_datePicker
+               Disabled=@Disabled
+               ReadOnly=@ReadOnly
+               Label=@Label
                Editable=@Editable
-               ImmediateText=@Editable
+               ImmediateText=false
                Clearable=@Clearable
                MinDate=@MinDate
                MaxDate=@MaxDate
-               Date="Value"
-               Culture="@CalendarService.GetCulture(Culture)"
-               TitleDateFormat="yyyy/MM/dd"
-               PickerClosed="DateChangedAsync"
-               TextChanged="TextChangedAsync" />
+               Date=@Value
+               Required=@Required
+               RequiredError="@RequiredError"
+               Culture=@CalendarService.GetCulture(Culture)
+               TitleDateFormat=@DateFormat
+               DateFormat=@DateFormat
+               Mask=@(new DateMask(DateFormat))
+               AdditionalDateClassesFunc=@CustomDateStyle
+               IsDateDisabledFunc=@DisabledDateFunc
+               DateChanged=@DateChangedAsync
+               PickerOpened=@OnOpen />
 
 @code {
+    MudDatePicker _datePicker;
 
     [Parameter] public DateTime? Value { get; set; }
-    [Parameter] public DateTime? MinDate { get; set; }
-    [Parameter] public DateTime? MaxDate { get; set; }
-    [Parameter] public string Culture { get; set; } = "fa-IR";
-    [Parameter] public string Label { get; set; } = "تاریخ";
-
-    [Parameter] public bool Clearable { get; set; } = true;
-    [Parameter] public bool Editable { get; set; } = true;
-
+    [Parameter] public override string Label { get; set; } = "تاریخ";
     [Parameter] public EventCallback<DateTime?> DateChanged { get; set; }
 
-    async Task DateChangedAsync(object e)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var component = (MudDatePicker)e;
-        await DateChanged.InvokeAsync(component.Date).ConfigureAwait(false);
+        if (EnglishNumber)
+            await JS.InvokeVoidAsync("toEnglishNumber", id);
     }
 
-    async Task TextChangedAsync(string e)
+    async Task DateChangedAsync(DateTime? e)
     {
-        if (Clearable && string.IsNullOrWhiteSpace(e))
-            Value = null;
-
-        if (e == null || e.Length < 10)
+        if (e != null && e.HasValue)
         {
-            if (e != null && e.Length >= 8)
-            {
-                var parts = e.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                if (parts[0].Length < 2)
-                    parts[0] = $"0{parts[0]}";
-                if (parts[1].Length < 2)
-                    parts[1] = $"0{parts[1]}";
-
-                e = string.Join('/', parts);
-            }
-            else
-            {
-                return;
-            }
+            await _datePicker.GoToDate(e.Value);
         }
-        Value = Culture == "fa-IR" ? Jinget.Core.Utilities.DateTimeUtility.ToGregorianDate(e) : Convert.ToDateTime(e);
-        await Task.CompletedTask;
+        await DateChanged.InvokeAsync(e).ConfigureAwait(false);
+    }
+
+    async Task OnOpen()
+    {
+        await JS.InvokeVoidAsync("refreshDatePicker");
     }
 }
