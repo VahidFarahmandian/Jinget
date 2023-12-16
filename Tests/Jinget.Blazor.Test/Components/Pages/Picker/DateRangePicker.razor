@@ -1,0 +1,184 @@
+﻿@page "/daterangepicker"
+@using Jinget.Blazor.Components.Picker
+@using System.Globalization
+@using Jinget.Blazor.Components.Picker.CultureService
+@using Jinget.Core.Utilities
+@using MudBlazor
+
+<div class="container">
+    <div class="row">
+        Default Label
+        <div class="form-group input-group">
+            <JingetJalaliDateRangePicker Value=selectedDateRange_1.DateRange
+                                         DateRangeChanged="OnDateRangeChanged_1">
+            </JingetJalaliDateRangePicker>
+        </div>
+    </div>
+    @if (selectedDateRange_1 != null)
+    {
+        <div class="row">
+            <p>
+                From: @selectedDateRange_1.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_1.DateRange?.End?.ToString("yyyy/MM/dd") /
+                From: @selectedDateRange_1.StartDateJalali To: @selectedDateRange_1.EndDateJalali
+            </p>
+        </div>
+    }
+
+    <hr />
+    <div class="row">
+        Set Selected Date Programmatically
+        <div class="form-group input-group">
+            <JingetJalaliDateRangePicker Value=selectedDateRange_2.DateRange
+                                         DateRangeChanged="OnDateRangeChanged_2">
+            </JingetJalaliDateRangePicker>
+            <button @onclick="SetJalaliDateRange" class="btn btn-primary">Set Jalali Date Range(Random)</button>
+
+        </div>
+    </div>
+    @if (selectedDateRange_2 != null)
+    {
+        <div class="row">
+            <p>
+                From: @selectedDateRange_2.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_2.DateRange?.End?.ToString("yyyy/MM/dd") /
+                From: @selectedDateRange_2.StartDateJalali To: @selectedDateRange_2.EndDateJalali
+            </p>
+        </div>
+    }
+    <hr />
+    <div class="row">
+        en-US culture with custom label
+        <div class="form-group input-group">
+            <JingetJalaliDateRangePicker Value=selectedDateRange_3.DateRange
+                                         DateRangeChanged="OnDateRangeChanged_3"
+                                         Culture="en-US"
+                                         EnglishNumber=true
+                                         Label="Select a Date Range:">
+            </JingetJalaliDateRangePicker>
+        </div>
+    </div>
+    @if (selectedDateRange_3 != null)
+    {
+        <div class="row">
+            <p>
+                From: @selectedDateRange_3.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_3.DateRange?.End?.ToString("yyyy/MM/dd") /
+                From: @selectedDateRange_3.StartDateJalali To: @selectedDateRange_3.EndDateJalali
+            </p>
+        </div>
+    }
+    <hr />
+    <div class="row">
+        Arabic Date Picker(Saudi Arabia)
+        <div class="form-group input-group">
+            <JingetJalaliDateRangePicker Value=selectedDateRange_4.DateRange
+                                         DateRangeChanged="OnDateRangeChanged_4"
+                                         Culture="ar-SA">
+            </JingetJalaliDateRangePicker>
+        </div>
+    </div>
+    @if (selectedDateRange_4 != null)
+    {
+        <div class="row">
+            <p>
+                From: @selectedDateRange_4.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_4.DateRange?.End?.ToString("yyyy/MM/dd") /
+                From: @selectedDateRange_4.StartDateJalali To: @selectedDateRange_4.EndDateJalali
+            </p>
+        </div>
+    }
+    <hr />
+    <div class="row">
+        Chinese Date Picker
+        <div class="form-group input-group">
+            <JingetJalaliDateRangePicker Value=selectedDateRange_5.DateRange
+                                         DateRangeChanged="OnDateRangeChanged_5"
+                                         EnglishNumber=true
+                                         Culture="zh-Hans">
+            </JingetJalaliDateRangePicker>
+        </div>
+    </div>
+    @if (selectedDateRange_5 != null)
+    {
+        <div class="row">
+            <p>
+                From: @selectedDateRange_5.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_5.DateRange?.End?.ToString("yyyy/MM/dd") /
+                From: @selectedDateRange_5.StartDateJalali To: @selectedDateRange_5.EndDateJalali
+            </p>
+        </div>
+    }
+    <hr />
+    <div class="row">
+        Min/Max Selectabel date
+        <div class="form-group input-group">
+            <JingetJalaliDateRangePicker Value=@selectedDateRange_6.DateRange
+                                         MinDate="new DateTime(2023,09,01)"
+                                         DateRangeChanged="OnDateRangeChanged_6"
+                                         MaxDate="DateTime.Now">
+            </JingetJalaliDateRangePicker>
+        </div>
+    </div>
+    @if (selectedDateRange_6 != null)
+    {
+        <div class="row">
+            <p>
+                From: @selectedDateRange_6.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_6.DateRange?.End?.ToString("yyyy/MM/dd") /
+                From: @selectedDateRange_6.StartDateJalali To: @selectedDateRange_6.EndDateJalali
+            </p>
+        </div>
+    }
+    <hr />
+    <div class="row">
+        Disable 15th day of each month
+        <div class="form-group input-group">
+            <JingetJalaliDateRangePicker Value=@selectedDateRange_7.DateRange
+                                         Culture="en-US"
+                                         EnglishNumber=true
+                                         DateRangeChanged=@OnDateRangeChanged_7
+                                         DisabledDateFunc="@((DateTime dt)=>(dt.Day==15))"
+                                         CustomDateStyleFunc=@((DateTime dt) => (dt.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday ? "red-text text-accent-4" : ""))>
+            </JingetJalaliDateRangePicker>
+        </div>
+    </div>
+    @if (selectedDateRange_7 != null)
+    {
+        <div class="row">
+            <p>
+                From: @selectedDateRange_7.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_7.DateRange?.End?.ToString("yyyy/MM/dd") /
+                From: @selectedDateRange_7.StartDateJalali To: @selectedDateRange_7.EndDateJalali
+            </p>
+        </div>
+    }
+</div>
+@code {
+
+    SelectedDateRangeModel selectedDateRange_1 = new();
+    SelectedDateRangeModel selectedDateRange_2 = new();
+    SelectedDateRangeModel selectedDateRange_3 = new();
+    SelectedDateRangeModel selectedDateRange_4 = new();
+    SelectedDateRangeModel selectedDateRange_5 = new();
+    SelectedDateRangeModel selectedDateRange_6 = new();
+    SelectedDateRangeModel selectedDateRange_7 = new();
+
+    void OnDateRangeChanged_1(SelectedDateRangeModel selectedDateRange) => selectedDateRange_1 = selectedDateRange;
+    void OnDateRangeChanged_2(SelectedDateRangeModel selectedDateRange) => selectedDateRange_2 = selectedDateRange;
+    void OnDateRangeChanged_3(SelectedDateRangeModel selectedDateRange) => selectedDateRange_3 = selectedDateRange;
+    void OnDateRangeChanged_4(SelectedDateRangeModel selectedDateRange) => selectedDateRange_4 = selectedDateRange;
+    void OnDateRangeChanged_5(SelectedDateRangeModel selectedDateRange) => selectedDateRange_5 = selectedDateRange;
+    void OnDateRangeChanged_6(SelectedDateRangeModel selectedDateRange) => selectedDateRange_6 = selectedDateRange;
+    void OnDateRangeChanged_7(SelectedDateRangeModel selectedDateRange) => selectedDateRange_7 = selectedDateRange;
+
+    void SetJalaliDateRange()
+    {
+        Random rnd = new Random();
+        var year = rnd.Next(1398, 1402);
+        var month = rnd.Next(1, 12);
+        var dayFrom = rnd.Next(1, 29);
+        var dayTo = rnd.Next(dayFrom, 29);
+        var selectedDateFrom = $"{year}/{month}/{dayFrom}";
+        var selectedDateTo = $"{year}/{month + 1}/{dayTo}";
+        selectedDateRange_2 = new SelectedDateRangeModel
+            {
+                DateRange = new DateRange(
+                                                    Jinget.Core.Utilities.DateTimeUtility.ToGregorianDate(selectedDateFrom),
+                                                    Jinget.Core.Utilities.DateTimeUtility.ToGregorianDate(selectedDateTo))
+            };
+    }
+}

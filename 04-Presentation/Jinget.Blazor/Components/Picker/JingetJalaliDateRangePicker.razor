@@ -1,24 +1,57 @@
 ﻿@using Jinget.Blazor.Components.Picker.CultureService
+@using Microsoft.JSInterop
 @using MudBlazor
+@inject IJSRuntime JS;
+@inherits JingetDatePickerBase;
 
-<MudDateRangePicker Label=@Label
-                    @bind-Date="Value"
-                    Culture="@CalendarService.GetCulture("fa-IR")"
-                    TitleDateFormat="dddd, dd MMMM"
-                    DateRangeChanged="(e)=>DateRangeChangedAsync(e)"/>
-
+<MudDateRangePicker id="@id" @ref=@_dateRangePicker
+                    Disabled=@Disabled
+                    ReadOnly=@ReadOnly
+                    Label=@Label
+                    Editable=false
+                    ImmediateText=false
+                    Clearable=@Clearable
+                    MinDate=@MinDate
+                    MaxDate=@MaxDate
+                    DateRange=@Value
+                    Required=@Required
+                    RequiredError="@RequiredError"
+                    Culture=@CalendarService.GetCulture(Culture)
+                    TitleDateFormat=@DateFormat
+                    DateFormat=@DateFormat
+                    Mask=@(new DateMask(DateFormat))
+                    AdditionalDateClassesFunc=@CustomDateStyleFunc
+                    IsDateDisabledFunc=@DisabledDateFunc
+                    DateRangeChanged=@DateRangeChangedAsync
+                    PickerOpened=@OnOpen />
 @code {
+    MudDateRangePicker _dateRangePicker;
+    [Parameter] public DateRange? Value { get; set; }
+    [Parameter] public override string Label { get; set; } = "بازه تاریخی";
 
-    [Parameter] public object? Value { get; set; }
-    [Parameter] public string Label { get; set; } = "بازه تاریخی";
     [Parameter] public EventCallback<SelectedDateRangeModel> DateRangeChanged { get; set; }
+    [Parameter] public EventCallback<DateRange> ValueChanged { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (EnglishNumber)
+            await JS.InvokeVoidAsync("toEnglishNumber", id);
+    }
 
     async Task DateRangeChangedAsync(DateRange e)
     {
-        await DateRangeChanged.InvokeAsync(new SelectedDateRangeModel(
-            e.Start,
-            e.End,
-            e.Start.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.Start.Value) : null,
-            e.End.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.End.Value) : null));
+        var dateRange = new DateRange(e.Start, e.End);
+        await DateRangeChanged.InvokeAsync(new SelectedDateRangeModel
+            {
+                DateRange = dateRange,
+                StartDateJalali = e.Start.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.Start.Value) : null,
+                EndDateJalali = e.End.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.End.Value) : null
+            }
+        );
+    }
+
+    async Task OnOpen()
+    {
+        await JS.InvokeVoidAsync("gotoDateRange", id);
     }
 }

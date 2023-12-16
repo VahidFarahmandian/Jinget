@@ -19,7 +19,7 @@
                TitleDateFormat=@DateFormat
                DateFormat=@DateFormat
                Mask=@(new DateMask(DateFormat))
-               AdditionalDateClassesFunc=@CustomDateStyle
+               AdditionalDateClassesFunc=@CustomDateStyleFunc
                IsDateDisabledFunc=@DisabledDateFunc
                DateChanged=@DateChangedAsync
                PickerOpened=@OnOpen />
@@ -34,7 +34,7 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (EnglishNumber)
-            await JS.InvokeVoidAsync("toEnglishNumber", id);
+            await JS.InvokeVoidAsync("toEnglishNumber", id );
     }
 
     async Task DateChangedAsync(DateTime? e)

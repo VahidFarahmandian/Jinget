@@ -125,7 +125,7 @@
                                     EnglishNumber=true
                                     DateChanged="OnDateChanged_7"
                                     DisabledDateFunc="@((DateTime dt)=>(dt.Day==15))"
-                                    CustomDateStyle=@((DateTime dt) => (dt.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday ? "red-text text-accent-4" : ""))>
+                                    CustomDateStyleFunc=@((DateTime dt) => (dt.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday ? "red-text text-accent-4" : ""))>
             </JingetJalaliDatePicker>
         </div>
     </div>
@@ -163,5 +163,4 @@
         var selectedDate = $"{rnd.Next(1398, 1402)}/{rnd.Next(1, 12)}/{rnd.Next(1, 9)}";
         selectedDate_2 = Jinget.Core.Utilities.DateTimeUtility.ToGregorianDate(selectedDate);
     }
-
 }

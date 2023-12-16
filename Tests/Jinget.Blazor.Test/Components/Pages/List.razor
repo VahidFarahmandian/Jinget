@@ -1,0 +1,22 @@
+﻿@page "/list"
+@using Jinget.Blazor.Captcha
+@using Jinget.Blazor.Components.List
+@using static Jinget.Blazor.Captcha.JingetCaptcha
+
+<div class="container">
+    <div class="row">
+        <div class="form-group input-group">
+            <JingetList Model=@Model Title="Sample List" HeaderCssClass="list-group-item-action active">
+            </JingetList>
+        </div>
+    </div>
+</div>
+
+@code {
+    IList<ListItem> Model = new List<ListItem>
+    {
+        new ListItem("Item 1","list-group-item-info"),
+        new ListItem("Item 2","list-group-item-secondary"),
+        new ListItem("Item 3"),
+    };
+}
