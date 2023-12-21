@@ -1,0 +1,68 @@
+﻿@page "/popup/modal"
+@using Jinget.Blazor.Components.Popup
+
+<button @onclick=@ShowModal1 class="btn btn-primary">Show Modal(LTR)</button>
+<button @onclick=@ShowModal2 class="btn btn-primary">Show Modal(RTL)</button>
+<button @onclick=@ShowModal3 class="btn btn-primary">Show Modal(Nested)</button>
+
+<JingetModal @ref="@modal1"
+             Title="Sample Header"
+             ShowFooter=true
+             ShowHeader=true
+             Rtl=false
+             CloseButtonText="Close">
+    <ChildContent>
+        <div class="alert alert-secondary" role="alert">
+            This is a sample modal
+        </div>
+    </ChildContent>
+</JingetModal>
+
+<JingetModal @ref="@modal2"
+             Title="مودال 1"
+             ShowFooter=true
+             ShowHeader=true
+             Rtl=true>
+    <ChildContent>
+        <div class="alert alert-secondary" role="alert">
+            این یک مودال آزمایشی است
+        </div>
+    </ChildContent>
+</JingetModal>
+
+<JingetModal @ref="@modal3"
+             Title="Outer modal"
+             ShowFooter=true
+             ShowHeader=true
+             Rtl=false
+             CloseButtonText="Close">
+    <ChildContent>
+        This is outer modal
+        <button @onclick=@ShowModal31 class="btn btn-primary">Show Modal(Nested-Inner)</button>
+
+        <JingetModal @ref="@modal31"
+                     Title="Inner modal"
+                     ShowFooter=true
+                     ShowHeader=true
+                     Rtl=false
+                     CloseButtonText="Close">
+            <ChildContent>
+                <div class="alert alert-secondary" role="alert">
+                    this is inner modal
+                </div>
+            </ChildContent>
+        </JingetModal>
+    </ChildContent>
+</JingetModal>
+
+@code {
+    JingetModal? modal1 { get; set; }
+    JingetModal? modal2 { get; set; }
+    JingetModal? modal3 { get; set; }
+    JingetModal? modal31 { get; set; }
+
+    async Task ShowModal1() => await modal1?.OpenAsync();
+    async Task ShowModal2() => await modal2?.OpenAsync();
+    async Task ShowModal3() => await modal3?.OpenAsync();
+    async Task ShowModal31() => await modal31?.OpenAsync();
+}

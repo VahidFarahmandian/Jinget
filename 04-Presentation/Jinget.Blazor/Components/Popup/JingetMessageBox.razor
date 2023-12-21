@@ -1,0 +1,99 @@
+﻿@using Jinget.Blazor.Components.List
+@using MudBlazor
+@using Newtonsoft.Json.Linq
+@using Jinget.Blazor.Components.Popup
+
+@inherits JingetPopupBase
+
+<JingetModal @ref="@modal" 
+    Title="@Title" 
+    OnOpen="OnOpenCallback" 
+    OnClose="OnCloseCallback">
+    <ChildContent>
+        @if (IsFancy)
+        {
+            <MudAlert Severity="Theme">
+                @((MarkupString)Content)
+            </MudAlert>
+        }
+        else
+        {
+            @Content
+        }
+
+        <JingetList ShowTitle=false
+                    Model=@verboseItems>
+        </JingetList>
+    </ChildContent>
+</JingetModal>
+
+@code {
+    JingetModal modal { get; set; } = new JingetModal();
+    
+    string? Title { get; set; }
+    string Content { get; set; } 
+    IList<ListItem> verboseItems { get; set; }
+    bool IsFancy { get; set; }
+    Severity Theme { get; set; }
+
+    [Parameter] public Func<bool>? ShowVerboseFunc { get; set; }
+
+    /// <param name="title">message box title</param>
+    /// <param name="content">message box body content in string</param>
+    /// <param name="verboseContent">message box detailed description text in body</param>
+    /// <param name="verboseEligibleRole">which users are eligible to view the <paramref name="verboseContent"/></param>
+    /// <param name="verboseKey">if <paramref name="verboseContent"/> is a json string, then <paramref name="verboseKey"/> defines the key in which its content should be parsed as <paramref name="verboseContent"/></param>
+    /// <param name="theme"></param>
+    /// <param name="isFancy"></param>
+    public async Task OpenAsync(
+        string title = "",
+        string content = "",
+        string verboseContent = "",
+        string verboseEligibleRole = "admin.generics",
+        string verboseKey = "error",
+        Severity theme = Severity.Warning,
+        bool isFancy = true)
+    {
+        this.Title = title;
+        this.Content = content;
+        if (verboseItems != null)
+            verboseItems.Clear();
+        if (!string.IsNullOrWhiteSpace(verboseContent))
+        {
+            verboseItems = new List<ListItem>();
+
+            var shouldShowVerbose=ShowVerboseFunc==null?false: ShowVerboseFunc.Invoke();
+
+            // var authState = await AuthProvider.GetAuthenticationStateAsync().ConfigureAwait(false);
+            // if (authState.User.IsInRole(verboseEligibleRole))
+            if(shouldShowVerbose)
+            {
+                if (
+                    Jinget.Core.Utilities.Json.JsonUtility.IsValid(verboseContent) &&
+                    JObject.Parse(verboseContent).ContainsKey(verboseKey))
+                {
+                    verboseItems.Add(new ListItem(
+                        JObject.Parse(verboseContent)[verboseKey].ToString(),
+                        "list-group-item list-group-item-danger"
+                    ));
+                }
+                else
+                    verboseItems.Add(new ListItem(verboseContent, "list-group-item list-group-item-danger"));
+            }
+        }
+
+        Theme = theme;
+        IsFancy = isFancy;
+        await modal.OpenAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+    public async Task CloseAsync()
+    {
+        await modal.CloseAsync();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    async Task OnOpenCallback() => await OnOpen.InvokeAsync();
+
+    async Task OnCloseCallback() => await OnClose.InvokeAsync();
+}
