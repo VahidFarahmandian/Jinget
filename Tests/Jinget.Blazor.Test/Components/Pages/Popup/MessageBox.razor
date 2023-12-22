@@ -1,28 +1,53 @@
 ﻿@page "/popup/messageBox"
 @using Jinget.Blazor.Components.Popup
+@using MudBlazor
+<div class="container">
+    <div class="row">
+        <div class="form-group input-group">
+            <button @onclick=@ShowMBox1 class="btn btn-primary">Show Message Box(LTR)</button>
+            <button @onclick=@ShowMBox2 class="btn btn-primary">Show Message Box(RTL)</button>
 
-<button @onclick=@ShowModal1 class="btn btn-primary">Show Message Box(LTR)</button>
+            <MudBlazor.MudCheckBox T="bool"
+                                   Checked=@showVerbose
+                                   CheckedChanged=@OnChecked
+                                   Label="Show Verbose"
+                                   LabelPosition="LabelPosition.Start"
+                                   Color="Color.Secondary">
+            </MudBlazor.MudCheckBox>
+        </div>
+    </div>
+</div>
 
-
-<JingetMessageBox @ref=@mbox1
-                  ShowVerboseFunc="@ShowVerboseCondition"
-                  Rtl=false
-                  CloseButtonText="Close">
-
+<JingetMessageBox @ref=@messageBox OnOpen=Opened>
 </JingetMessageBox>
 
 @code {
-    JingetMessageBox? mbox1 { get; set; }
+    JingetMessageBox? messageBox { get; set; }
 
-    async Task ShowModal1() => await mbox1?.OpenAsync(
-        title: "Sample message box",
-        content: "This is sample message box",
-        verboseContent: "This is vebose content",
-        isFancy: false,
-        theme: MudBlazor.Severity.Normal);
+    bool showVerbose { get; set; }
 
-    bool ShowVerboseCondition()
+    void Opened() => messageBox.CloseButtonText = messageBox.Rtl ? "بستن" : "Close";
+
+    async Task ShowMBox1()
     {
-        return true;
+        messageBox.ShowVerboseFunc = ShowVerboseCondition;
+        await messageBox?.ShowErrorAsync(
+            title: "Sample message box",
+            content: "This is sample message box",
+            verboseContent: "This is vebose content",
+            rtl: false);
     }
+
+    async Task ShowMBox2()
+    {
+        messageBox.ShowVerboseFunc = ShowVerboseCondition;
+        await messageBox?.ShowErrorAsync(
+            title: "پیغام تستی",
+            content: "این یک محتوای تستی است",
+            verboseContent: "توضیحات بیشتر تستی");
+    }
+
+    bool ShowVerboseCondition() => showVerbose;
+
+    void OnChecked() => showVerbose = !showVerbose;
 }

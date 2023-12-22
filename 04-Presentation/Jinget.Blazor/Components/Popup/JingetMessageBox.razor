@@ -6,7 +6,9 @@
 @inherits JingetPopupBase
 
 <JingetModal @ref="@modal" 
-    Title="@Title" 
+    Title=@Title
+    CloseButtonText=@CloseButtonText
+    Rtl=@Rtl
     OnOpen="OnOpenCallback" 
     OnClose="OnCloseCallback">
     <ChildContent>
@@ -29,7 +31,7 @@
 
 @code {
     JingetModal modal { get; set; } = new JingetModal();
-    
+
     string? Title { get; set; }
     string Content { get; set; } 
     IList<ListItem> verboseItems { get; set; }
@@ -41,7 +43,7 @@
     /// <param name="title">message box title</param>
     /// <param name="content">message box body content in string</param>
     /// <param name="verboseContent">message box detailed description text in body</param>
-    /// <param name="verboseEligibleRole">which users are eligible to view the <paramref name="verboseContent"/></param>
+    // /// <param name="verboseEligibleRole">which users are eligible to view the <paramref name="verboseContent"/></param>
     /// <param name="verboseKey">if <paramref name="verboseContent"/> is a json string, then <paramref name="verboseKey"/> defines the key in which its content should be parsed as <paramref name="verboseContent"/></param>
     /// <param name="theme"></param>
     /// <param name="isFancy"></param>
@@ -49,7 +51,7 @@
         string title = "",
         string content = "",
         string verboseContent = "",
-        string verboseEligibleRole = "admin.generics",
+        // string verboseEligibleRole = "admin.generics",
         string verboseKey = "error",
         Severity theme = Severity.Warning,
         bool isFancy = true)
@@ -87,12 +89,42 @@
         await modal.OpenAsync();
         await InvokeAsync(StateHasChanged);
     }
+
     public async Task CloseAsync()
     {
         await modal.CloseAsync();
         await InvokeAsync(StateHasChanged);
     }
 
+    public async Task ShowErrorAsync(
+        string title = "",
+        string content = "",
+        string verboseContent = "",
+        bool isFancy = true,
+        bool rtl=true){
+            Rtl = rtl;
+            await OpenAsync(title,content,verboseContent,theme:Severity.Error, isFancy:isFancy);
+        }
+
+    public async Task ShowWarningAsync(
+        string title = "",
+        string content = "",
+        string verboseContent = "",
+        bool isFancy = true,
+        bool rtl=true){
+            Rtl = rtl;
+            await OpenAsync(title,content,verboseContent,theme:Severity.Warning, isFancy:isFancy);
+        }
+
+    public async Task ShowInfoAsync(
+        string title = "",
+        string content = "",
+        string verboseContent = "",
+        bool isFancy = true,
+        bool rtl=true){
+            Rtl = rtl;
+            await OpenAsync(title,content,verboseContent,theme:Severity.Info, isFancy:isFancy);
+        }
     async Task OnOpenCallback() => await OnOpen.InvokeAsync();
 
     async Task OnCloseCallback() => await OnClose.InvokeAsync();
