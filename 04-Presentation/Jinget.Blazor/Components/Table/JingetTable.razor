@@ -1,0 +1,151 @@
+﻿@using Jinget.Blazor.Attributes
+@using Jinget.Blazor.Services
+@using MudBlazor
+@using System.Reflection
+@using Jinget.Core.Utilities.Expressions;
+@typeparam T
+
+<MudRTLProvider RightToLeft=true>
+    <MudTable @ref=table
+              Items="Model.Items"
+              ServerData="@ServerReload"
+              Hover="true">
+        <ToolBarContent>
+            @if (ShowSearchBar)
+            {
+                <MudTextField Clearable=true T="string" ValueChanged="@(s=>OnSearch(s))"
+                              Placeholder=@SearchPlaceHolderText
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              IconSize="MudBlazor.Size.Medium"></MudTextField>
+                @if (SearchBarContent != null)
+                {
+                    @SearchBarContent
+                }
+            }
+        </ToolBarContent>
+        <NoRecordsContent>
+            @NoRecordText
+        </NoRecordsContent>
+        <HeaderContent>
+            
+            @foreach (var item in columns)
+            {
+               @*  <MudTh>
+                    <MudTableSortLabel T=object SortLabel=@item.Name 
+                    >
+                            @item.DisplayText
+                    </MudTableSortLabel>
+                </MudTh> *@
+                <MudTh>@item.DisplayText</MudTh>
+            }
+            @if (ActionContent != null)
+            {
+                <MudTh></MudTh>
+            }
+        </HeaderContent>
+        <RowTemplate>
+            @foreach (var cell in columns)
+            {
+                <MudTd DataLabel="@cell.Name">@context.GetType().GetProperty(cell.Name).GetValue(context)</MudTd>
+            }
+            @if (ActionContent != null)
+            {
+                <MudTd>
+                    @ActionContent(context)
+                </MudTd>
+            }
+        </RowTemplate>
+        <PagerContent>
+            @if (ShowPagination)
+            {
+                <MudTablePager AllItemsText=@PaginationSetting.AllItemsText
+                               HorizontalAlignment=@PaginationSetting.HorizontalAlignment
+                               RowsPerPageString=@PaginationSetting.RowsPerPageString
+                               InfoFormat=@PaginationSetting.InfoFormat/>
+            }
+        </PagerContent>
+
+    </MudTable>
+</MudRTLProvider>
+
+@code {
+    [Parameter] public TableData<T> Model { get; set; }
+    [Parameter] public bool ShowSearchBar { get; set; } = true;
+    [Parameter] public bool ShowPagination { get; set; } = true;
+    [Parameter] public RenderFragment<object?>? ActionContent { get; set; }
+    [Parameter] public RenderFragment? SearchBarContent { get; set; }
+    [Parameter] public Func<TableState, string, Task<TableData<T>>> SearchProviderAsync { get; set; }
+
+    [Parameter] public PaginationSettingModel PaginationSetting { get; set; } = new PaginationSettingModel();
+
+    [Parameter] public string NoRecordText { get; set; } = "رکوردی برای نمایش وجود ندارد!";
+
+    [Parameter] public string SearchPlaceHolderText { get; set; } = "جستجو";
+
+    public class PaginationSettingModel
+    {
+        public string RowsPerPageString { get; set; } = "اندازه صفحه:";
+        public string InfoFormat { get; set; } = "{first_item}-{last_item} از {all_items}";
+        public string AllItemsText { get; set; } = "همه";    
+        public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Center;    
+    }
+
+    MudTable<T> table;
+    List<(string DisplayText, string Name)> columns = [];
+    string? searchString;
+
+    protected override void OnInitialized() 
+    { 
+        if(Model==null)
+        Model = JingetObjectFactory<T>.EmptyTableData.Instance;
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        columns = new List<(string DisplayText, string Name)>();
+        if (Model != null)
+        {
+            var genericType = Model.GetType().GetGenericArguments().FirstOrDefault();
+            Type modelType;
+            if (genericType != null)
+            {
+                modelType = genericType;
+            }
+            else
+            {
+                modelType = Model.GetType();
+            }
+            if (modelType.IsDefined(typeof(JingetTable), true))
+            {
+                var properties = modelType.GetProperties()
+                        .Where(x => x.IsDefined(typeof(JingetTableMember), true))
+                        .OrderBy(x => x.GetCustomAttribute<JingetTableMember>().Order).ToList();
+
+                foreach (var item in properties)
+                {
+                    var cellColumn = item.GetCustomAttribute<JingetTableMember>().DisplayName;
+                    cellColumn = string.IsNullOrWhiteSpace(cellColumn) ? item.Name : cellColumn;
+                    columns.Add((cellColumn, item.Name));
+                }
+            }
+        }
+        await Task.CompletedTask;
+    }
+
+    async Task<TableData<T>> ServerReload(TableState state)
+    {
+        if (SearchProviderAsync != null)
+        {
+            Model = await SearchProviderAsync.Invoke(state, searchString);
+        }
+        return Model;
+    }
+
+    void OnSearch(string text)
+    {
+        searchString = text;
+        Reload();
+    }
+
+    public void Reload() => table.ReloadServerData();
+}

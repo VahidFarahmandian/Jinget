@@ -8,6 +8,7 @@
 @import url('jinget.jalali.picker.date.css');
 @import url('jinget.jalali.picker.daterange.css');
 @import url('jinget.modal.css');
+@import url('jinget.table.css');
 
 /*MudBlazor*/
 .mud-typography, .mud-picker {

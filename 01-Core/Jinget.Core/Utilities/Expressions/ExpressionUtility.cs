@@ -9,6 +9,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Jinget.Core.ExtensionMethods.Collections;
+using System.IO;
+using AutoMapper.Execution;
 
 namespace Jinget.Core.Utilities.Expressions
 {
@@ -142,13 +144,29 @@ namespace Jinget.Core.Utilities.Expressions
             return expression;
         }
 
+        /// <summary>
+        /// example return: x=>"id"
+        /// </summary>
         public static Expression<Func<T, T>> ToExpression<T>(string property, string parameterName = "Param_0")
         {
+
             var paramExpression = Expression.Parameter(typeof(T), parameterName);
 
             var memberExpression = Expression.Constant(property);
 
             return Expression.Lambda<Func<T, T>>(memberExpression, paramExpression);
+        }
+
+        /// <summary>
+        /// example return: x=>x.id
+        /// </summary>
+        public static Func<T, object> ToSelectorExpression<T>(string property, string parameterName = "Param_0")
+        {
+            var item = Expression.Parameter(typeof(T), parameterName);
+            var body = property.Split('.').Aggregate((Expression)item, Expression.PropertyOrField);
+            var lambda = Expression.Lambda(body, item);
+
+            return Expression.Lambda<Func<T, object>>(lambda, item).Compile();
         }
 
         /// <summary>

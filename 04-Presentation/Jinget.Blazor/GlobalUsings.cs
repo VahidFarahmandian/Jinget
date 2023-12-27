@@ -9,3 +9,5 @@ global using System.Reflection;
 
 //Jinget
 global using Jinget.Core.Utilities;
+global using Jinget.Blazor.Attributes.Core;
+global using Jinget.Blazor.Models;

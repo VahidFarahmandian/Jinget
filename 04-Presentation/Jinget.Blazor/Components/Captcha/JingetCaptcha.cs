@@ -1,6 +1,6 @@
 ﻿using SkiaSharp;
 
-namespace Jinget.Blazor.Captcha
+namespace Jinget.Blazor.Components.Captcha
 {
     public class JingetCaptcha : ComponentBase
     {

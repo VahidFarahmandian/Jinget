@@ -1,0 +1,150 @@
+﻿@page "/table"
+@using Jinget.Blazor.Components.Table
+@using Jinget.Blazor.Components.Popup
+@using Jinget.Blazor.Services
+@using Jinget.Blazor.Attributes
+@using MudBlazor;
+@using Jinget.Core.Enumerations;
+@using Jinget.Core.ExtensionMethods.Collections;
+<JingetMessageBox @ref=@messageBox ShowVerboseFunc=@(()=>true)></JingetMessageBox>
+<div class="container">
+    <div class="row">
+        <div class="form-group input-group">
+            <JingetTable Model=@Model
+                         SearchProviderAsync=@SearchAsync
+                         ShowPagination=true
+                         ShowSearchBar=true
+            PaginationSetting=@(new JingetTable<SampleData>.PaginationSettingModel{
+AllItemsText="All",
+InfoFormat="{first_item}-{last_item} from {all_items}",
+RowsPerPageString="Page Size:"
+                })>
+                         <ActionContent>
+                             <MudButton OnClick=ShowDetail 
+                                 ButtonType="ButtonType.Reset"
+                             Color="Color.Warning">Detail...</MudButton>
+                         </ActionContent>
+            </JingetTable>
+        </div>
+    </div>
+</div>
+
+@code {
+    JingetMessageBox messageBox;
+    TableData<SampleData> Model;
+
+    TableData<SampleData> GetData()
+    {
+        var data = new List<SampleData>
+            {
+                new SampleData(1,"Vahid","Farahmandian",34,true),
+                new SampleData(1,"Ali","Ahmadi",40,true),
+                new SampleData(1,"John","Jackson",18,true),
+                new SampleData(1,"Peter","Romanson",24,false),
+                new SampleData(1,"Sara","Daniel",37,false),
+                new SampleData(1,"Albert","McJeremy",29,true),
+                new SampleData(1,"Mohammad","Alizade",54,true),
+                new SampleData(1,"Al","Pacino",41,true),
+                new SampleData(1,"Paul","Washington",19,true),
+                new SampleData(1,"Mari","Anderson",38,false),
+                new SampleData(1,"Lizza","Paul",47,false),
+                new SampleData(1,"Jack","Nicklson",26,true),
+                new SampleData(1,"Andrew","Tompson",71,true),
+                new SampleData(1,"Saman","Saudi",30,false),
+                new SampleData(1,"Yasser","Vahidi",25,true),
+                new SampleData(1,"Jack","Taylor",31,false),
+                new SampleData(1,"Jason","Newton",18,false),
+                new SampleData(1,"Pit","McLaren",24,true),
+            };
+        return new TableData<SampleData>
+            {
+                Items = data,
+                TotalItems = data.Count
+            };
+    }
+
+    protected override void OnInitialized() => Model = GetData();
+
+
+    async Task ShowDetail()
+    {
+        await messageBox.ShowInfoAsync("Detail", "...");
+    }
+
+    async Task<TableData<SampleData>> SearchAsync(TableState state, string? searchString = null)
+    {
+        try
+        {
+            IQueryable<SampleData> data;
+            if (searchString == null)
+                data=GetData().Items.AsQueryable();
+            else
+                data = GetData().Items
+                .Where(x =>
+                    x.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) ||
+                    x.LastName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).AsQueryable();
+
+            int totalCount =data==null?0: data.Count();
+
+            if(!string.IsNullOrWhiteSpace(state.SortLabel)){
+                var sortDirection = state.SortDirection == SortDirection.Ascending ?
+                OrderByDirection.Ascending :
+                OrderByDirection.Descending;
+                
+                data = data.OrderByDynamic(state.SortLabel,Jinget.Core.Enumerations.OrderByDirection.Ascending);
+            }
+
+            var response= data
+            .Skip(state.Page*state.PageSize)
+            .Take(state.PageSize).ToList();
+
+            if (response == null || response.Count==0)
+                return JingetObjectFactory<SampleData>.EmptyTableData.Instance;
+
+            return await Task.FromResult( 
+                new TableData<SampleData>
+                {
+                    Items = response,
+                    TotalItems = totalCount
+                });
+        }
+        catch (Exception ex)
+        {
+            await messageBox.ShowErrorAsync("Error", "Unable to search data", ex.Message);
+        }
+        return JingetObjectFactory<SampleData>.EmptyTableData.Instance;
+    }
+
+    [JingetTable]
+    class SampleData
+    {
+        public SampleData()
+        {
+            
+        }
+        public SampleData(int id, string name, string lastname,int age, bool isActive)
+        {
+            Id=id;
+            Name=name;
+            LastName=lastname;
+            Age = age;
+            IsActive = isActive;
+        }
+
+        [JingetTableMember(DisplayName = "#")]
+        public int Id { get; set; }
+        
+        [JingetTableMember(DisplayName = "First Name")]
+        public string Name{get;set;}
+
+        [JingetTableMember(DisplayName = "Last Name")]
+        public string LastName{get;set;}
+
+        [JingetTableMember(DisplayName = "Age")]
+        public int Age{get;set;}
+
+        [JingetTableMember(DisplayName = "Status(Active)")]
+        public bool IsActive{get;set;}
+    }
+
+}

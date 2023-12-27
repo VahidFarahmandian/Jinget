@@ -1,0 +1,11 @@
+﻿.mud-table-page-number-information {
+    direction: rtl !important;
+}
+
+.mud-table-pagination-toolbar .mud-tablepager-right {
+    flex-direction: row !important;
+}
+
+.mud-table-pagination-information {
+    direction: rtl;
+}

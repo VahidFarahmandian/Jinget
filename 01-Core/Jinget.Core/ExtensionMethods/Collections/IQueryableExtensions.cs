@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using Jinget.Core.Enumerations;
 using Jinget.Core.Exceptions;
 
-namespace Jinget.Core.ExtensionMethods
+namespace Jinget.Core.ExtensionMethods.Collections
 {
     public static class IQueryableExtensions
     {
