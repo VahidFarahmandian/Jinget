@@ -2,6 +2,7 @@
 @using MudBlazor
 @using Newtonsoft.Json.Linq
 @using Jinget.Blazor.Components.Popup
+@using Texnomic.Blazor.JsonViewer
 
 @inherits JingetPopupBase
 
@@ -23,6 +24,7 @@
             @Content
         }
 
+        <JsonViewer @ref="@JsonViewer"></JsonViewer>
         <JingetList ShowTitle=false
                     Model=@verboseItems>
         </JingetList>
@@ -31,6 +33,7 @@
 
 @code {
     JingetModal modal { get; set; } = new JingetModal();
+    JsonViewer JsonViewer { get; set; }
 
     string? Title { get; set; }
     string Content { get; set; } 
@@ -51,7 +54,6 @@
         string title = "",
         string content = "",
         string verboseContent = "",
-        // string verboseEligibleRole = "admin.generics",
         string verboseKey = "error",
         Severity theme = Severity.Warning,
         bool isFancy = true)
@@ -66,8 +68,6 @@
 
             var shouldShowVerbose=ShowVerboseFunc==null?false: ShowVerboseFunc.Invoke();
 
-            // var authState = await AuthProvider.GetAuthenticationStateAsync().ConfigureAwait(false);
-            // if (authState.User.IsInRole(verboseEligibleRole))
             if(shouldShowVerbose)
             {
                 if (
@@ -80,7 +80,14 @@
                     ));
                 }
                 else
+                if (Jinget.Core.Utilities.Json.JsonUtility.IsValid(verboseContent))
+                {
+                    await JsonViewer.Render(verboseContent);
+                }
+                else
+                {
                     verboseItems.Add(new ListItem(verboseContent, "list-group-item list-group-item-danger"));
+                }
             }
         }
 

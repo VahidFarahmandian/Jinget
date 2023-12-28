@@ -2,6 +2,5 @@
 {
     public class JingetEmailBox : JingetFormElement
     {
-        public override string ToString() => "email";
     }
 }

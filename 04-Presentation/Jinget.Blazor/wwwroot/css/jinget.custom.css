@@ -1,0 +1,63 @@
+﻿/*MudBlazor START*/
+.mud-typography, .mud-picker {
+    font-family: IRANSans;
+}
+
+.mud-input-label-inputcontrol {
+    left: unset;
+}
+
+.mud-button-label {
+    font-family: IRANSans !important;
+}
+
+.mud-alert-message {
+    width: 100% !important;
+}
+
+.rtl {
+    direction: rtl !important;
+    font-family: IranSans;
+}
+
+.ltr {
+    direction: ltr !important;
+}
+/*MudBlazor END*/
+
+/*Selectize START*/
+.selectize-control.single .selectize-input {
+    height: 55px !important;
+    margin-top: 4px !important;
+}
+
+.selectize-input > * {
+    padding-top: 10px !important;
+}
+
+.selectize-control.rtl .selectize-input > input {
+    padding-top: 10px !important;
+}
+
+.overlayed-label {
+    transform: translate(-4px, -6px) scale(0.83);
+    background-color: white !important;
+    padding: 0 5px !important;
+    position: absolute;
+    z-index: 2 !important;
+    color: rgb(66 66 66,1) !important;
+}
+/*Selectize END*/
+
+/*JingetList START*/
+.list-group-item {
+    overflow-wrap: break-word;
+}
+/*JingetList END*/
+
+/*JsonViewer START*/
+json-viewer {
+    direction: ltr !important;
+    overflow-wrap: break-word !important;
+}
+/*JsonViewer END*/

@@ -1,17 +1,8 @@
-﻿.rtl {
-    direction: rtl !important;
-    font-family: IranSans;
+﻿.rtl > .modal-header > button.btn-close {
+    margin: unset !important;
+    height: 30px;
 }
 
-    .rtl > .modal-header > button.btn-close {
-        margin: unset !important;
-        height: 30px;
-    }
-
-.ltr {
-    direction: ltr !important;
+.ltr > .modal-header > button.btn-close {
+    height: 30px;
 }
-
-    .ltr > .modal-header > button.btn-close {
-        height: 30px;
-    }

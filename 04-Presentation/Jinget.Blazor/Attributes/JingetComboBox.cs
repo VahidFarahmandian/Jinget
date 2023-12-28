@@ -2,6 +2,8 @@
 {
     public class JingetComboBox : JingetFormElement
     {
+        public string DefaultText { get; set; } = "---انتخاب کنید---";
+
         public bool Searchable { get; set; }
         /// <summary>
         /// set a method which will be called automatically while binding the element

@@ -1,0 +1,227 @@
+﻿@using Jinget.Blazor.Attributes
+@using Jinget.Blazor.Attributes.Input
+@using Jinget.Blazor.Attributes.Picker
+@using Jinget.Blazor.Models
+@using MudBlazor
+@using Jinget.Blazor.Components.Picker
+@using Microsoft.JSInterop
+@using System.Reflection;
+@using System.Runtime.CompilerServices;
+@using Microsoft.VisualStudio.Threading;
+@using Jinget.Core.ExtensionMethods.Reflection;
+@using System.Globalization
+@using Jinget.Blazor;
+
+@inject IJSRuntime JS;
+@inject IServiceProvider serviceProvider;
+
+@if (Attribute.HasLabel)
+{
+    <label class="@Attribute.LabelCssClass">@Attribute.DisplayName</label>
+}
+
+@if (Attribute is Jinget.Blazor.Attributes.Picker.JingetJalaliDatePicker jalaliDatePicker)
+{
+    <JingetJalaliDatePicker 
+        Value="@(Value==null?null:Convert.ToDateTime(Value))"
+        Label="@Attribute.DisplayName"
+        Culture=@jalaliDatePicker.Culture
+        EnglishNumber=jalaliDatePicker.EnglishNumber
+        DateChanged="@((e)=>OnChange(new ChangeEventArgs(){Value=e}))"
+        />
+
+}
+else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetJalaliDateRangePicker jalaliDateRangePicker)
+{
+    <JingetJalaliDateRangePicker 
+        Value="@((DateRange)Value)"
+        Label="@Attribute.DisplayName"
+        Culture=@jalaliDateRangePicker.Culture
+        EnglishNumber=jalaliDateRangePicker.EnglishNumber
+        DateRangeChanged="((e)=>OnChange(new ChangeEventArgs(){Value=e}))">
+    </JingetJalaliDateRangePicker>
+}
+else if (Attribute is JingetComboBox comboBox && comboBox.Searchable == false)
+{
+    <MudSelect T="string"
+               Value="Value==null?default: Value.ToString()"
+               HelperText="@comboBox.HelperText"
+               Strict=true
+               Label="@comboBox.DisplayName"
+               Variant="Variant.Outlined"
+               ValueChanged="OnItemSelected">
+        <MudSelectItem Disabled=true Value="0.ToString()">@comboBox.DefaultText</MudSelectItem>
+        @foreach (DropDownItemModel item in GetData())
+        {
+            <MudSelectItem Value="@item.Value.ToString()">@item.Text</MudSelectItem>
+        }
+    </MudSelect>
+}
+else if (Attribute is JingetComboBox searchableComboBox && searchableComboBox.Searchable == true)
+{
+    <select id="@Id" onchange=@OnChange class="@Attribute.CssClass">
+        <option value="">@searchableComboBox.DefaultText</option>
+        @foreach (var item in GetData())
+        {
+            bool selected = item.Selected == true || (item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString()));
+            if (selected)
+            {
+                Task.Run(() => JS.InvokeVoidAsync("selectItem", Id, Value).GetAwaiter().GetResult());
+            }
+            <option value="@item.Value" selected="@selected">@item.Text</option>
+        }
+    </select>
+}
+else if (Attribute is JingetLabel label)
+{
+    <MudField HelperText="@label.HelperText"
+              Label="@label.DisplayName"
+              Variant="Variant.Outlined">@labelText</MudField>
+}
+else if (Attribute is JingetTextBox textbox)
+{
+    <MudTextField Converter="@StringConverter"
+                  @bind-Value="Value"
+                  Label="@textbox.DisplayName"
+                  HelperText="@textbox.HelperText"
+                  Variant="Variant.Outlined"
+                  TextChanged="OnTextChanged" />
+}
+else if (Attribute is JingetTextArea textArea)
+{
+        <MudTextField Converter="@StringConverter"
+                  @bind-Value="Value"
+                  Label="@textArea.DisplayName"
+                  HelperText="@textArea.HelperText"
+                  Variant="Variant.Outlined"
+                  Lines=@textArea.Rows
+                  TextChanged="OnTextChanged" />
+}
+else if (Attribute is JingetPasswordBox passwordBox)
+{
+        <MudTextField Converter="@StringConverter"
+                  @bind-Value="Value"
+                  Label="@passwordBox.DisplayName"
+                  HelperText="@passwordBox.HelperText"
+                  Variant="Variant.Outlined"
+                  InputType=@InputType.Password
+                  TextChanged="OnTextChanged" />
+}
+else if (Attribute is JingetNumberBox numberBox)
+{
+        <MudTextField Converter="@StringConverter"
+                  @bind-Value="Value"
+                  Label="@numberBox.DisplayName"
+                  HelperText="@numberBox.HelperText"
+                  Variant="Variant.Outlined"
+                  InputType=@InputType.Number
+                  TextChanged="OnTextChanged" />
+}
+else if (Attribute is JingetEmailBox emailBox)
+{
+        <MudTextField Converter="@StringConverter"
+                  @bind-Value="Value"
+                  Label="@emailBox.DisplayName"
+                  HelperText="@emailBox.HelperText"
+                  Variant="Variant.Outlined"
+                  InputType=@InputType.Email
+                  TextChanged="OnTextChanged" />
+}
+else if (Attribute is JingetTelephoneBox telephoneBox)
+{
+        <MudTextField Converter="@StringConverter"
+                  @bind-Value="Value"
+                  Label="@telephoneBox.DisplayName"
+                  HelperText="@telephoneBox.HelperText"
+                  Variant="Variant.Outlined"
+                  InputType=@InputType.Telephone
+                  TextChanged="OnTextChanged" />
+}
+else
+{
+        <input id="@Id" type="@Attribute.ToString()" value="@Value" onchange="@OnChange" class="@Attribute.CssClass" />
+}
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public JingetFormElement? Attribute { get; set; }
+    [Parameter] public object? Value { get; set; }
+    [Parameter] public PropertyInfo? Binding { get; set; }
+    [Parameter] public EventCallback<object> ValueChanged { get; set; }
+
+    private DotNetObjectReference<JingetDynamicField>? dotNetObjRef;
+    string labelText = "";
+
+    protected override Task OnInitializedAsync()
+    {
+        if (Attribute is JingetLabel label)
+        {
+#pragma warning disable CS8601 // Nonnull field must contain value
+            labelText = (Value == null ? "" : Value.ToString());
+#pragma warning restore CS8601 // Nonnull field must contain value
+        }
+        dotNetObjRef = DotNetObjectReference.Create(this);
+        return base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Attribute is JingetComboBox comboBox && comboBox.Searchable)
+        {
+            await JS.InvokeVoidAsync("convertToSearchable", dotNetObjRef, Id);
+        }
+    }
+
+    [JSInvokable]
+    public void OnItemSelected(object value) => OnChange(new ChangeEventArgs() { Value = value });
+    void OnTextChanged(string value) => OnChange(new ChangeEventArgs() { Value = value });
+
+    async void OnChange(ChangeEventArgs e) => await ValueChanged.InvokeAsync(e.Value);
+
+    List<DropDownItemModel> GetData()
+    {
+#pragma warning disable CS8602
+#pragma warning disable CS8604
+        var method = Binding?.DeclaringType?.GetMethod((Attribute as JingetComboBox).BindingFunction);
+#pragma warning restore CS8602
+#pragma warning restore CS8604
+        if (method != null)
+        {
+            object? callerObject = null;
+            if (Binding?.DeclaringType != null)
+            {
+                if (Binding.DeclaringType.GetConstructor(new[] { typeof(IServiceProvider) }) != null)
+                    callerObject = Activator.CreateInstance(Binding.DeclaringType, new object[] { serviceProvider });
+                else if (Binding.DeclaringType.GetConstructor(Type.EmptyTypes) != null)
+                    callerObject = Activator.CreateInstance(Binding.DeclaringType, null);
+                else
+                    throw new Exception("Properties with JingetComboBox attribute should have a constructor with IServieProvider parameter or should have a parameterless constructor.");
+            }
+
+            object? data = null;
+
+            if (callerObject != null)
+            {
+                if (method.GetCustomAttribute(typeof(AsyncStateMachineAttribute)) != null)
+                {
+                    data = method.InvokeAsync(callerObject);
+                }
+                else
+                {
+                    data = method.Invoke(callerObject, null);
+                }
+            }
+
+            if (data != null)
+                return (List<DropDownItemModel>)data;
+        }
+
+        return new List<DropDownItemModel>();
+    }
+
+    Converter<object?> StringConverter = new Converter<object?>
+        {
+            SetFunc = value => value?.ToString(),
+            GetFunc = text => text?.ToString(),
+        };
+}

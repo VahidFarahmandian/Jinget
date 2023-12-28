@@ -5,72 +5,69 @@
 @using Jinget.Core.Utilities.Expressions;
 @typeparam T
 
-<MudRTLProvider RightToLeft=true>
-    <MudTable @ref=table
-              Items="Model.Items"
-              ServerData="@ServerReload"
-              Hover="true">
-        <ToolBarContent>
-            @if (ShowSearchBar)
+<MudTable @ref=table
+            Items="Model.Items"
+            ServerData="@ServerReload"
+            Hover="true"
+            Class=@(Rtl?"rtl":"ltr")>
+    <ToolBarContent>
+        @if (ShowSearchBar)
+        {
+            <MudTextField Clearable=true T="string" ValueChanged="@(s=>OnSearch(s))"
+                            Placeholder=@SearchPlaceHolderText
+                            AdornmentIcon="@Icons.Material.Filled.Search"
+                            IconSize="MudBlazor.Size.Medium"></MudTextField>
+            @if (SearchBarContent != null)
             {
-                <MudTextField Clearable=true T="string" ValueChanged="@(s=>OnSearch(s))"
-                              Placeholder=@SearchPlaceHolderText
-                              AdornmentIcon="@Icons.Material.Filled.Search"
-                              IconSize="MudBlazor.Size.Medium"></MudTextField>
-                @if (SearchBarContent != null)
-                {
-                    @SearchBarContent
-                }
+                @SearchBarContent
             }
-        </ToolBarContent>
-        <NoRecordsContent>
-            @NoRecordText
-        </NoRecordsContent>
-        <HeaderContent>
+        }
+    </ToolBarContent>
+    <NoRecordsContent>@NoRecordText</NoRecordsContent>
+    <HeaderContent>
             
-            @foreach (var item in columns)
-            {
-               @*  <MudTh>
-                    <MudTableSortLabel T=object SortLabel=@item.Name 
-                    >
-                            @item.DisplayText
-                    </MudTableSortLabel>
-                </MudTh> *@
-                <MudTh>@item.DisplayText</MudTh>
-            }
-            @if (ActionContent != null)
-            {
-                <MudTh></MudTh>
-            }
-        </HeaderContent>
-        <RowTemplate>
-            @foreach (var cell in columns)
-            {
-                <MudTd DataLabel="@cell.Name">@context.GetType().GetProperty(cell.Name).GetValue(context)</MudTd>
-            }
-            @if (ActionContent != null)
-            {
-                <MudTd>
-                    @ActionContent(context)
-                </MudTd>
-            }
-        </RowTemplate>
-        <PagerContent>
-            @if (ShowPagination)
-            {
-                <MudTablePager AllItemsText=@PaginationSetting.AllItemsText
-                               HorizontalAlignment=@PaginationSetting.HorizontalAlignment
-                               RowsPerPageString=@PaginationSetting.RowsPerPageString
-                               InfoFormat=@PaginationSetting.InfoFormat/>
-            }
-        </PagerContent>
+        @foreach (var item in columns)
+        {
+            <MudTh>
+                <MudTableSortLabel 
+                    T=T 
+                    Enabled=@item.Sortable
+                    SortLabel=@item.Name>
+                        @item.DisplayText
+                </MudTableSortLabel>
+            </MudTh>
+        }
+        @if (ActionContent != null)
+        {
+            <MudTh></MudTh>
+        }
+    </HeaderContent>
+    <RowTemplate>
+        @foreach (var cell in columns)
+        {
+            <MudTd DataLabel="@cell.Name">@context.GetType().GetProperty(cell.Name).GetValue(context)</MudTd>
+        }
+        @if (ActionContent != null)
+        {
+            <MudTd>@ActionContent(context)</MudTd>
+        }
+    </RowTemplate>
+    <PagerContent>
+        @if (ShowPagination)
+        {
+            <MudTablePager AllItemsText=@PaginationSetting.AllItemsText
+                            HorizontalAlignment=@PaginationSetting.HorizontalAlignment
+                            RowsPerPageString=@PaginationSetting.RowsPerPageString
+                            InfoFormat=@PaginationSetting.InfoFormat/>
+        }
+    </PagerContent>
 
-    </MudTable>
-</MudRTLProvider>
+</MudTable>
 
 @code {
     [Parameter] public TableData<T> Model { get; set; }
     [Parameter] public bool ShowSearchBar { get; set; } = true;
+    [Parameter] public bool Rtl { get; set; } 
     [Parameter] public bool ShowPagination { get; set; } = true;
     [Parameter] public RenderFragment<object?>? ActionContent { get; set; }
     [Parameter] public RenderFragment? SearchBarContent { get; set; }
@@ -91,18 +88,18 @@
     }
 
     MudTable<T> table;
-    List<(string DisplayText, string Name)> columns = [];
+    List<(string DisplayText, string Name, bool Sortable)> columns = [];
     string? searchString;
 
     protected override void OnInitialized() 
     { 
         if(Model==null)
-        Model = JingetObjectFactory<T>.EmptyTableData.Instance;
+            Model = JingetObjectFactory<T>.EmptyTableData.Instance;
     }
 
     protected async override Task OnParametersSetAsync()
     {
-        columns = new List<(string DisplayText, string Name)>();
+        columns = new List<(string DisplayText, string Name, bool Sortable)>();
         if (Model != null)
         {
             var genericType = Model.GetType().GetGenericArguments().FirstOrDefault();
@@ -124,8 +121,9 @@
                 foreach (var item in properties)
                 {
                     var cellColumn = item.GetCustomAttribute<JingetTableMember>().DisplayName;
+                    var sortable = item.GetCustomAttribute<JingetTableMember>().Sortable;
                     cellColumn = string.IsNullOrWhiteSpace(cellColumn) ? item.Name : cellColumn;
-                    columns.Add((cellColumn, item.Name));
+                    columns.Add((cellColumn, item.Name, sortable));
                 }
             }
         }
@@ -136,6 +134,8 @@
     {
         if (SearchProviderAsync != null)
         {
+            if (state.SortDirection == SortDirection.None)
+                state.SortDirection = SortDirection.Ascending;
             Model = await SearchProviderAsync.Invoke(state, searchString);
         }
         return Model;

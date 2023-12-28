@@ -1,24 +1,4 @@
-﻿function toEnglishNumber(id) {
-    const targetNode = document.querySelector("body");
-    const config = { attributes: true, childList: true, subtree: true };
-    var observer = new MutationObserver(() => {
-        var CONTROL_INTERVAL = setInterval(function () {
-            if (document.getElementById(id) != undefined) {// && container != undefined) {
-                [...document.querySelectorAll("[id='" + id + "'] *")].forEach((el) => {
-                    el.setAttribute('style', 'font-family:sans-serif !important;');
-                });
-                [...document.querySelectorAll("[id='" + id + "'] .mud-picker-calendar-transition *")].forEach((el) => {
-                    el.setAttribute('style', 'font-family:sans-serif !important;');
-                });
-                clearInterval(CONTROL_INTERVAL);
-                observer.disconnect();
-            }
-        }, 100);
-    });
-    observer.observe(targetNode, config);
-}
-
-function blazorReady(
+﻿function blazorReady(
     dotnetReference,
     elementId,
     calendarType,

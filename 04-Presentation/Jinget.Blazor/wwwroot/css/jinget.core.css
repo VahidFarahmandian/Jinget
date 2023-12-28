@@ -3,26 +3,11 @@
 @import url('jinget.bootstrap.icons.css');
 
 @import url('../../../_content/MudBlazor/MudBlazor.min.css');
-
 @import url('jinget.captcha.css');
 @import url('jinget.jalali.picker.date.css');
 @import url('jinget.jalali.picker.daterange.css');
 @import url('jinget.modal.css');
 @import url('jinget.table.css');
+@import url('jinget.selectize.css');
 
-/*MudBlazor*/
-.mud-typography, .mud-picker {
-    font-family: IRANSans;
-}
-
-.mud-input-label-inputcontrol {
-    left: unset;
-}
-
-.mud-button-label {
-    font-family: IRANSans !important;
-}
-
-.mud-alert-message {
-    width: 100% !important;
-}
+@import url('jinget.custom.css');

@@ -1,0 +1,96 @@
+﻿@using System.Reflection;
+@using Jinget.Core.Utilities
+@using MudBlazor
+@using Jinget.Blazor.Components.Picker
+
+@typeparam T
+
+<MudRTLProvider RightToLeft=@Rtl>
+    <MudGrid>
+        @foreach (var p in Properties)
+        {
+            <MudItem lg="6" md="6" xs="12" sm="6" Style=@(Rtl?"font-family:IRANSans":"")>
+                <JingetDynamicField Id="@(string.IsNullOrWhiteSpace(p.Attribute?.Id)?Guid.NewGuid().ToString():p.Attribute.Id)"
+                                       Value=@(p.Property.DeclaringType==typeof(string) && p.Property.GetValue(Model)==null?"":p.Property.GetValue(Model))
+                                       Attribute="@p.Attribute"
+                                       Binding="@p.Property"
+                                       ValueChanged="@((e)=>OnValueChanged(p.Property.Name, e))" />
+            </MudItem>
+        }
+    </MudGrid>
+</MudRTLProvider>
+@code {
+    [Parameter] public T? Model { get; set; }
+    [Parameter] public bool Rtl { get; set; }
+    [Parameter] public EventCallback<Dictionary<string, object?>> OnModelChanged { get; set; }
+
+    public HashSet<(PropertyInfo Property, JingetFormElement? Attribute)> Properties { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        if (Model != null)
+        {
+            IOrderedEnumerable<PropertyInfo> props = Model.GetType().GetProperties()
+            .Where(x => x.IsDefined(typeof(JingetFormElement)))
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            .OrderBy(x => x.GetCustomAttribute<JingetFormElement>().Order);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            foreach (var p in props)
+            {
+                Properties.Add(new(
+                    p,
+                    p.GetCustomAttribute<JingetFormElement>()));
+            }
+        }
+    }
+
+    void OnValueChanged(string prop, object value)
+    {
+        if (Model != null)
+        {
+            var p = Model.GetType().GetProperty(prop);
+            var previousValue = p?.GetValue(Model);
+            object? convertedValue = null;
+
+            try
+            {
+#pragma warning disable CS8602
+                Type t = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
+                if (value is not IConvertible && t == typeof(string))
+                {
+                    value = value.ToString();
+                }
+
+                if (value is SelectedDateRangeModel dateRangeValue)
+                {
+                    convertedValue = Convert.ChangeType(dateRangeValue.DateRange, t);
+                }
+                else
+                {
+                    if (value is IConvertible)
+                    {
+                        convertedValue = (value == null) ? null : Convert.ChangeType(value, t);
+                    }
+                    else
+                    {
+                        convertedValue = (value == null) ? null : Convert.ChangeType(value.ToString(), t);
+                    }
+                }
+#pragma warning restore CS8602
+                p?.SetValue(Model, convertedValue);
+                StateHasChanged();
+            }
+            catch { }
+
+            Dictionary<string, object?> info = new Dictionary<string, object?>
+            {
+                {"Model",Model},
+                {"PreviousValue",previousValue},
+                {"CurrentValue",value},
+                {"ConvertedValue",convertedValue},
+                {"PropertyName",prop}
+            };
+            OnModelChanged.InvokeAsync(info);
+        }
+    }
+}
