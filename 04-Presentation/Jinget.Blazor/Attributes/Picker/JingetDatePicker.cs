@@ -1,9 +1,7 @@
 ﻿namespace Jinget.Blazor.Attributes.Picker
 {
 
-    public abstract class JingetDatePicker : JingetFormElement
+    public class JingetDatePicker : JingetDatePickerBase
     {
-        public string Culture { get; set; }
-        public bool EnglishNumber { get; set; }
     }
 }

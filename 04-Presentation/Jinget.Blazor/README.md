@@ -3,13 +3,13 @@ Blazor components optimised for RTL languaged such as Farsi, Arabic etc.
 
 **Components list:**
 - [x] **Captcha**
-- [ ] Jalali Date Picker (*On the way to open source*)
-- [ ] Jalali Date Range Picker (*On the way to open source*)
-- [ ] Message Box (*On the way to open source*)
-- [ ] Modal (*On the way to open source*)
-- [ ] List (*On the way to open source*)
-- [ ] Table (*On the way to open source*)
-- [ ] Dynamic Form (*On the way to open source*)
+- [x] **Date Picker**
+- [x] **Date Range Picker**
+- [x] **Message Box**
+- [x] **Modal**
+- [x] **List**
+- [x] **Table**
+- [x] **Dynamic Form**
 
 ## How to Use:
 
@@ -19,8 +19,6 @@ You can also use other methods supported by NuGet. Check [Here](https://www.nuge
 
 ## Configuration
 
-**Jinget Captcha component**
-
 ***References:***
 
 Add reference to `jinget.core.css` in your `_Host.razor` or `App.razor` files.
@@ -28,6 +26,14 @@ Add reference to `jinget.core.css` in your `_Host.razor` or `App.razor` files.
 ```
 <link href="_content/Jinget.Blazor/css/jinget.core.css" rel="stylesheet" />
 ```
+
+Add reference to `jinget.core.js` in your `_Host.razor` or `App.razor` files.
+
+```
+<script src="_content/Jinget.Blazor/js/jinget.core.js" id="jinget"></script>
+```
+
+**Jinget Captcha component**
 
 Add the `JingetCaptcha` to your page and start using it;-)
 
@@ -69,6 +75,503 @@ Add the `JingetCaptcha` to your page and start using it;-)
 `IsValid`: Checks if the given input text is equal to the image's text
 
 `GetNewCaptchaAsync`: Draw a new captcha image
+
+------------
+
+**Jinget DatePicker component**
+
+Add the `JingetDatePicker` to your page and start using it;-)
+
+```
+<JingetDatePicker 
+    Value=selectedDate_1
+    DateChanged="OnDateChanged_1">
+</JingetDatePicker>
+...
+@code {
+    DateTime? selectedDate_1;
+    void OnDateChanged_1(DateTime? selectedDate) => selectedDate_1 = selectedDate;
+}
+```
+
+***Parameters:***
+
+`Value`: Defines the picker's value
+
+`Culture`: Defines the date picker culture. For Jalali calendar you can set this to fa-IR, for Hijri calendar you can set this to arabic cultures such as ar-SA, for gregorian calendar you can set this to an appropriate calendar such as en-US. Other cultures are also supported such as chinese: zh-Hans
+
+`Disabled`: If set to true, then the calendar will be disabled.
+
+`ReadOnly`: If set to true, then the calendar will be rendered in readonly mode.
+
+`Editable`: If set to true, user can select date using keyboard.(Default is true. for fa-IR and ar-SA cultures this property is set to false)
+
+`Clearable`: If set ti true, clear button will be shown for clearing the selected date.
+
+`MinDate`: Defines the minimum acceptable date.
+
+`MaxDate`: Defines the maximum acceptable date.
+
+`Required`: Defines whether the input is required or optional.
+
+`RequiredError`: Error message used to show when the input is required and remained empty or unselected.
+
+`EnglishNumber`: Defines whether the numbers in calendar should be rendred as English numbers or not.
+
+`Label`: Label for the component.
+
+`DisabledDateFunc`: Defines a Func delegate to disable the specific date(s)
+
+`CustomDateStyleFunc`: Defines a Func delegate to use custom styles for decorating cusotm dates
+
+***Callbacks:***
+
+`DateChanged`: Fires a callback whenever the selected date is changed
+
+------------
+
+**Jinget DateRangePicker component**
+
+Add the `JingetDateRangePicker` to your page and start using it;-)
+
+```
+<JingetDateRangePicker 
+    Value=selectedDateRange_1.DateRange
+    DateRangeChanged="OnDateRangeChanged_1">
+</JingetDateRangePicker>
+...
+@code {
+    SelectedDateRangeModel selectedDateRange_1 = new();
+    void OnDateRangeChanged_1(SelectedDateRangeModel selectedDateRange) => selectedDateRange_1 = selectedDateRange;
+}
+```
+
+***Parameters:***
+
+`Value`: Defines the picker's value
+
+`Culture`: Defines the date picker culture. For Jalali calendar you can set this to fa-IR, for Hijri calendar you can set this to arabic cultures such as ar-SA, for gregorian calendar you can set this to an appropriate calendar such as en-US. Other cultures are also supported such as chinese: zh-Hans
+
+`Disabled`: If set to true, then the calendar will be disabled.
+
+`ReadOnly`: If set to true, then the calendar will be rendered in readonly mode.
+
+`Editable`: If set to true, user can select date using keyboard.(Default is true. for fa-IR and ar-SA cultures this property is set to false)
+
+`Clearable`: If set ti true, clear button will be shown for clearing the selected date.
+
+`MinDate`: Defines the minimum acceptable date.
+
+`MaxDate`: Defines the maximum acceptable date.
+
+`Required`: Defines whether the input is required or optional.
+
+`RequiredError`: Error message used to show when the input is required and remained empty or unselected.
+
+`EnglishNumber`: Defines whether the numbers in calendar should be rendred as English numbers or not.
+
+`Label`: Label for the component.
+
+`DisabledDateFunc`: Defines a Func delegate to disable the specific date(s)
+
+`CustomDateStyleFunc`: Defines a Func delegate to use custom styles for decorating cusotm dates
+
+
+***Callbacks:***
+
+`DateRangeChanged`: Fires a callback whenever the selected date range is changed.
+
+------------
+
+**Jinget Modal component**
+
+Add the `JingetModal` to your page and start using it;-)
+
+```
+<JingetModal @ref="@modal1"
+             Title="Sample Header"
+             ShowFooter=true
+             ShowHeader=true
+             Rtl=false
+             CloseButtonText="Close">
+    <ChildContent>
+        <div class="alert alert-secondary" role="alert">
+            This is a sample modal
+        </div>
+    </ChildContent>
+</JingetModal>
+...
+@code {
+    JingetModal? modal1 { get; set; }
+    async Task ShowModal1() => await modal1?.OpenAsync();
+}
+```
+
+***Parameters:***
+
+`ShowHeader`: Defines whether to show the header or not.
+
+`ShowFooter`: Defines whether to show the footer or not.
+
+`Title`: Dfines the modal title.
+
+`ChildContent`: Defines the content which should be rendered as component's child.
+
+`FooterContent`: Defines the content which should be rendered as component's footer.
+
+`Rtl`: If set to true, the the modal content will be rendred Right-to-Left.
+
+`CloseButtonText`: Defines the close button text.
+
+***Callbacks:***
+
+`OnOpen`: Fires a callback whenever the modal is being opened.
+
+`OnClose`: Fires a callback whenever the modal is being closed.
+
+------------
+
+**Jinget MessageBox component**
+
+Add the `JingetMessageBox` to your page and start using it;-)
+
+```
+<JingetMessageBox @ref=@messageBox OnOpen=Opened>
+</JingetMessageBox>
+...
+@code {
+    void Opened() => messageBox.CloseButtonText = messageBox.Rtl ? "بستن" : "Close";
+}
+```
+
+***Parameters:***
+
+`ShowVerboseFunc`: Defines a Func delegate to show the verbose content
+
+`Rtl`: If set to true, the the modal content will be rendred Right-to-Left.
+
+`CloseButtonText`: Defines the close button text.
+
+***Callbacks:(shared with JingetMessageBox Component)***
+
+`OnOpen`: Fires a callback whenever the modal is being opened.
+
+`OnClose`: Fires a callback whenever the modal is being closed.
+
+***Methods:***
+
+`OpenAsync`: Opens the message box.
+
+`CloseAsync`: Closes the message box.
+
+`ShowErrorAsync`: Opens the message box using Error theme.
+
+`ShowWarningAsync`: Opens the message box using Warning theme.
+
+`ShowInfoAsync`: Opens the message box using Info theme.
+
+------------
+
+**Jinget List component**
+
+Add the `JingetList` to your page and start using it;-)
+
+```
+<JingetList 
+    Model=@Model 
+    Title="Sample List" 
+    HeaderCssClass="list-group-item-action active">
+</JingetList>
+...
+@code {
+    IList<ListItem> Model = new List<ListItem>
+    {
+        new ListItem("Item 1","list-group-item-info"),
+        new ListItem("Item 2","list-group-item-secondary"),
+        new ListItem("Item 3"),
+    };
+}
+```
+
+***Parameters:***
+
+`Model`: Model used to bind to the component.
+
+`Title`: If `ShowTitle` is set to true, then `Title` will be rendered as list's header text.
+
+`ShowTitle`: Defines whether to show the `Title` or not.
+
+`HeaderCssClass`: Defines a custom css class used to decorate the list's header.
+
+------------
+
+**Jinget Table component**
+
+Add the `JingetTable` to your page and start using it;-)
+
+```
+<JingetTable 
+    Model=@ModelRtl
+    Rtl=true
+    SearchProviderAsync=@SearchAsyncRtl
+    ShowPagination=true
+    ShowSearchBar=true>
+        <ActionContent>
+            <MudButton 
+                OnClick=@(async ()=> await ShowDetailFarsi((SampleDataFarsi)context))
+                ButtonType="ButtonType.Reset"
+                Color="Color.Warning">جزئیات...
+            </MudButton>
+            </ActionContent>
+</JingetTable>
+...
+@code {
+    JingetMessageBox messageBox;
+    TableData<SampleDataFarsi> ModelRtl;
+    protected override void OnInitialized() { 
+        ModelRtl = GetDataFarsi();
+    }
+
+    async Task ShowDetailFarsi(SampleDataFarsi data){
+        messageBox.CloseButtonText =  "بستن";
+        await messageBox.ShowInfoAsync(
+        data.Id.ToString(), 
+        $"{data.Name} {data.LastName}",
+        System.Text.Json.JsonSerializer.Serialize(data), rtl:true);
+    }
+
+    async Task<TableData<SampleDataFarsi>> SearchAsyncRtl(TableState state, string? searchString = null)
+    {
+        try
+        {
+            IQueryable<SampleDataFarsi> data;
+            if (searchString == null)
+                data=GetDataFarsi().Items.AsQueryable();
+            else
+                data = GetDataFarsi().Items
+                .Where(x =>
+                    x.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) ||
+                    x.LastName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).AsQueryable();
+
+            int totalCount =data==null?0: data.Count();
+
+            if(!string.IsNullOrWhiteSpace(state.SortLabel)){
+                var sortDirection = state.SortDirection == SortDirection.Ascending ?
+                OrderByDirection.Ascending:
+                OrderByDirection.Descending;
+                
+                data = data.OrderByDynamic(state.SortLabel,sortDirection);
+            }
+
+            var response= data
+            .Skip(state.Page*state.PageSize)
+            .Take(state.PageSize).ToList();
+
+            if (response == null || response.Count==0)
+                return JingetObjectFactory<SampleDataFarsi>.EmptyTableData.Instance;
+
+            return await Task.FromResult( 
+                new TableData<SampleDataFarsi>
+                {
+                    Items = response,
+                    TotalItems = totalCount
+                });
+        }
+        catch (Exception ex)
+        {
+            await messageBox.ShowErrorAsync("Error", "Unable to search data", ex.Message);
+        }
+        return JingetObjectFactory<SampleDataFarsi>.EmptyTableData.Instance;
+    }
+
+    TableData<SampleDataFarsi> GetDataFarsi()
+    {
+        var data = new List<SampleDataFarsi>
+            {
+                new SampleDataFarsi(1,"وحید","فرهمندیان",34,true),
+                new SampleDataFarsi(2,"علی","احمدی",40,true),
+                new SampleDataFarsi(3,"محسن","نوروزی",18,true),
+                new SampleDataFarsi(4,"قانعی","مریم",24,false),
+                new SampleDataFarsi(5,"سارا","حسین زاده",37,false),
+                new SampleDataFarsi(6,"امیر","رحمانی",29,true),
+                new SampleDataFarsi(7,"سید رحمان","رئوفی اصل",54,true),
+                new SampleDataFarsi(8,"سامان","صادقی",41,true),
+                new SampleDataFarsi(9,"ابوالفضل","بهنام پور",19,true),
+                new SampleDataFarsi(10,"ژاله","علیزاده",38,false),
+                new SampleDataFarsi(11,"سیدرضا","ابوالفتحی",47,false),
+                new SampleDataFarsi(12,"مهتاب","آسمانی",26,true),
+                new SampleDataFarsi(13,"ستاره","فضائی",71,true),
+                new SampleDataFarsi(14,"امیررضا","عسکری",30,false),
+                new SampleDataFarsi(15,"عرفان","طباطبائی",25,true),
+                new SampleDataFarsi(16,"پانته آ","قوام",31,false),
+                new SampleDataFarsi(17,"یحیی","فرهمند",18,false),
+                new SampleDataFarsi(18,"ناصر","ملک زاده",24,true),
+            };
+        return new TableData<SampleDataFarsi>
+            {
+                Items = data,
+                TotalItems = data.Count
+            };
+    }
+
+    [JingetTable]
+    class SampleDataFarsi
+    {
+        public SampleDataFarsi(int id, string name, string lastname,int age, bool isActive)
+        {
+            Id=id;
+            Name=name;
+            LastName=lastname;
+            Age = age;
+            IsActive = isActive;
+        }
+
+        [JingetTableMember(DisplayName = "#")]
+        public int Id { get; set; }
+        
+        [JingetTableMember(DisplayName = "نام")]
+        public string Name{get;set;}
+
+        [JingetTableMember(DisplayName = "نام خانوادگی")]
+        public string LastName{get;set;}
+
+        [JingetTableMember(DisplayName = "سن", Sortable=true)]
+        public int Age{get;set;}
+
+        [JingetTableMember(DisplayName = "وضعیت")]
+        public bool IsActive{get;set;}
+    }
+
+}
+```
+
+***Parameters:***
+
+`Model`: Model used to bind to the component.
+
+`ShowSearchBar`: Defines whether to show the search bar or not
+
+`Rtl`: If set to true, the the modal content will be rendred Right-to-Left.
+
+`ShowPagination`: Defines whether to show the pagination bar or not
+
+`ActionContent`: Defines the content which should be rendered in each rows as custom actions.
+
+`SearchBarContent`: Defines the custom content which should be rendered in search bar.
+
+`SearchProviderAsync`: Defines a Func delegate to do the search action.
+
+`PaginationSetting`: Settings used for table's pagination section.
+
+`NoRecordText`: Text used to show when there is no data to display in table.
+
+`SearchPlaceHolderText`: Text used to shown in search bar input box.
+
+***Methods:***
+
+`Reload`: Used to reload the data into the table.
+
+------------
+
+**Jinget DynamicForm component**
+
+Add the `JingetDynamicForm` to your page and start using it;-)
+
+```
+<JingetDynamicForm Model=@Model Rtl=true></JingetDynamicForm>
+...
+@code {
+    public SampleModel Model { get; set; }
+    protected override void OnInitialized() => Model = new();
+
+    public record SampleModel
+    {
+        public SampleModel() { }
+        public SampleModel(IServiceProvider serviceProvider) { }
+
+        [JingetTextBox(DisplayName = "نام", HelperText = "نام خود را منطبق با اطلاعات کارت ملی وارد نمایید", Order =1)]
+        public string Name { get; set; }
+
+        [JingetPasswordBox(DisplayName = "رمز عبور", Order =3)]
+        public string Password { get; init; }
+
+        [JingetEmailBox(DisplayName = "پست الکترونیکی",Order =4)]
+        public string EMail { get; init; }
+
+        [JingetDatePicker(DisplayName = "تاریخ تولد",Culture ="fa-IR", Order =5)]
+        public string DoB { get; init; }
+
+        [JingetDateRangePicker(DisplayName = "بازه زمانی سفر",Culture ="fa-IR", Order =6)]
+        public DateRange TravelDate { get; init; }
+
+        [JingetLabel(DisplayName = "امتیاز اکتسابی", HasLabel = false)]
+        public int Score { get; init; } = 1850;
+
+        [JingetTextArea(DisplayName = "اطلاعات بیشتر", Rows =3)]
+        public string Description { get; init; }
+
+        [JingetNumberBox(DisplayName = "سن", Order =7)]
+        public int Age { get; set; }
+
+        [JingetComboBox(DisplayName = "وضعیت", BindingFunction = nameof(GetStatusAsync), 
+        Searchable =true,DefaultText ="---انتخاب کنید---",HasLabel =true, LabelCssClass = "overlayed-label", Order =8)]
+        public int? Status { get; init; }
+        public async Task<List<DropDownItemModel>> GetStatusAsync()
+            => await new JingetComboBox().BindAsync<StatusModel>(async () =>
+            {
+                return await Task.FromResult(new List<StatusModel>
+                                        {
+                        new StatusModel{Code= 1,Title= "فعال" },
+                        new StatusModel{Code= 2,Title= "غیرفعال" },
+                        new StatusModel{Code= 3,Title= "نامشخص" }
+                                        });
+            });
+
+
+        class StatusModel : BaseTypeModel
+        {
+
+        }
+
+    }
+}
+```
+
+***Parameters:***
+
+`Model`: Model used to decorate the form. two-way binding is also supported.
+
+`Rtl`: If set to true, the the form will be rendred Right-to-Left.
+
+***Callbacks:***
+
+`OnModelChanged`: Fires a callback whenever the model is changed.
+
+***Attributes:***
+
+`JingetTextBox`: Render a textbox on the page.
+
+`JingetTextArea`: Render a textarea on the page. Using `Rows` property you can set the textarea rows.
+
+`JingetEmailBox`: Render an email input on the page.
+
+`JingetNumberBox`: Render a number input on the page.
+
+`JingetPasswordBox`: Render a password input on the page.
+
+`JingetTelephoneBox`: Render a tel input on the page.
+
+`JingetDatePicker`: Render a JingetDatePicker on the page. You can set `Culture` and `EnglishNumber` properties.
+
+`JingetDateRangePicker`: Render a JingetDateRangePicker on the page. You can set `Culture` and `EnglishNumber` properties.
+
+`JingetComboBox`: Render a select input on the page. If `Searchable` is set to true, then the user can do search among combobox items. Using `BindingFunction` user can define a method to bind data into combobox.
+
+`JingetLabel`: Render a label on the page.
+
+`JingetList`: Render a JingetList on the page. List's items are defined using `BodyMember` property. items should be passed as json string to this property.
+
+`JingetTable`: Render a JingetTable on the page.(Used in JingetTable component, for more info go to JingetTable component section)
 
 ------------
 ## How to install

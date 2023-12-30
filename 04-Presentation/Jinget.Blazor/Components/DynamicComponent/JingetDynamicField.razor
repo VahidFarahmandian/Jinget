@@ -20,26 +20,26 @@
     <label class="@Attribute.LabelCssClass">@Attribute.DisplayName</label>
 }
 
-@if (Attribute is Jinget.Blazor.Attributes.Picker.JingetJalaliDatePicker jalaliDatePicker)
+@if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDatePicker datePicker)
 {
-    <JingetJalaliDatePicker 
+    <JingetDatePicker 
         Value="@(Value==null?null:Convert.ToDateTime(Value))"
         Label="@Attribute.DisplayName"
-        Culture=@jalaliDatePicker.Culture
-        EnglishNumber=jalaliDatePicker.EnglishNumber
+        Culture=@datePicker.Culture
+        EnglishNumber=datePicker.EnglishNumber
         DateChanged="@((e)=>OnChange(new ChangeEventArgs(){Value=e}))"
         />
 
 }
-else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetJalaliDateRangePicker jalaliDateRangePicker)
+else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePicker dateRangePicker)
 {
-    <JingetJalaliDateRangePicker 
+    <JingetDateRangePicker 
         Value="@((DateRange)Value)"
         Label="@Attribute.DisplayName"
-        Culture=@jalaliDateRangePicker.Culture
-        EnglishNumber=jalaliDateRangePicker.EnglishNumber
+        Culture=@dateRangePicker.Culture
+        EnglishNumber=dateRangePicker.EnglishNumber
         DateRangeChanged="((e)=>OnChange(new ChangeEventArgs(){Value=e}))">
-    </JingetJalaliDateRangePicker>
+    </JingetDateRangePicker>
 }
 else if (Attribute is JingetComboBox comboBox && comboBox.Searchable == false)
 {

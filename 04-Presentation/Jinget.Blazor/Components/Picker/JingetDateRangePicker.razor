@@ -30,7 +30,6 @@
     [Parameter] public override string Label { get; set; } = "بازه تاریخی";
 
     [Parameter] public EventCallback<SelectedDateRangeModel> DateRangeChanged { get; set; }
-    [Parameter] public EventCallback<DateRange> ValueChanged { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

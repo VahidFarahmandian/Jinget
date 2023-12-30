@@ -9,9 +9,10 @@
     <div class="row">
         Default Label
         <div class="form-group input-group">
-            <JingetJalaliDatePicker Value=selectedDate_1
-                                    DateChanged="OnDateChanged_1">
-            </JingetJalaliDatePicker>
+            <JingetDatePicker 
+                Value=selectedDate_1
+                DateChanged="OnDateChanged_1">
+            </JingetDatePicker>
         </div>
     </div>
     @if (selectedDate_1.HasValue)
@@ -24,9 +25,9 @@
     <div class="row">
         Set Selected Date Programmatically
         <div class="form-group input-group">
-            <JingetJalaliDatePicker Value=selectedDate_2
+            <JingetDatePicker Value=selectedDate_2
                                     DateChanged="OnDateChanged_2">
-            </JingetJalaliDatePicker>
+            </JingetDatePicker>
             <button @onclick=@SetJalaliDate class="btn btn-primary">Set Jalali Date(Random)</button>
         </div>
     </div>
@@ -42,12 +43,12 @@
     <div class="row">
         en-US culture with custom label
         <div class="form-group input-group">
-            <JingetJalaliDatePicker Value=selectedDate_3
+            <JingetDatePicker Value=selectedDate_3
                                     DateChanged="OnDateChanged_3"
                                     Culture="en-US"
                                     EnglishNumber=true
                                     Label="Select a Date:">
-            </JingetJalaliDatePicker>
+            </JingetDatePicker>
         </div>
     </div>
     @if (selectedDate_3.HasValue)
@@ -60,10 +61,10 @@
     <div class="row">
         Arabic Date Picker(Saudi Arabia)
         <div class="form-group input-group">
-            <JingetJalaliDatePicker Value=selectedDate_4
+            <JingetDatePicker Value=selectedDate_4
                                     DateChanged="OnDateChanged_4"
                                     Culture="ar-SA">
-            </JingetJalaliDatePicker>
+            </JingetDatePicker>
         </div>
     </div>
     @if (selectedDate_4.HasValue)
@@ -80,11 +81,11 @@
     <div class="row">
         Chinese Date Picker
         <div class="form-group input-group">
-            <JingetJalaliDatePicker Value=selectedDate_5
+            <JingetDatePicker Value=selectedDate_5
                                     DateChanged="OnDateChanged_5"
                                     EnglishNumber=true
                                     Culture="zh-Hans">
-            </JingetJalaliDatePicker>
+            </JingetDatePicker>
         </div>
     </div>
     @if (selectedDate_5.HasValue)
@@ -100,11 +101,11 @@
     <div class="row">
         Min/Max Selectabel date
         <div class="form-group input-group">
-            <JingetJalaliDatePicker Value=@selectedDate_6
+            <JingetDatePicker Value=@selectedDate_6
                                     MinDate="new DateTime(2023,09,01)"
                                     DateChanged="OnDateChanged_6"
                                     MaxDate="DateTime.Now">
-            </JingetJalaliDatePicker>
+            </JingetDatePicker>
         </div>
     </div>
     @if (selectedDate_6.HasValue)
@@ -120,13 +121,13 @@
     <div class="row">
         Disable 15th day of each month
         <div class="form-group input-group">
-            <JingetJalaliDatePicker Value=@selectedDate_7
+            <JingetDatePicker Value=@selectedDate_7
                                     Culture="en-US"
                                     EnglishNumber=true
                                     DateChanged="OnDateChanged_7"
                                     DisabledDateFunc="@((DateTime dt)=>(dt.Day==15))"
                                     CustomDateStyleFunc=@((DateTime dt) => (dt.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday ? "red-text text-accent-4" : ""))>
-            </JingetJalaliDatePicker>
+            </JingetDatePicker>
         </div>
     </div>
     @if (selectedDate_7.HasValue)

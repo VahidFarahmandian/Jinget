@@ -4,7 +4,6 @@
     {
         protected string id = Guid.NewGuid().ToString("N");
 
-
         public string DateFormat { get; set; } = "yyyy/MM/dd";
 
         [Parameter] public string Culture { get; set; } = "fa-IR";
