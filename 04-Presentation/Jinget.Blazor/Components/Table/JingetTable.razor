@@ -2,9 +2,11 @@
 @using Jinget.Blazor.Services
 @using MudBlazor
 @using System.Reflection
+@using Microsoft.JSInterop
 @using Jinget.Core.Utilities.Expressions;
-@typeparam T
+@inject IJSRuntime JS;
 
+@typeparam T
 <MudTable @ref=table
             Items="Model.Items"
             ServerData="@ServerReload"
@@ -55,16 +57,20 @@
     <PagerContent>
         @if (ShowPagination)
         {
+            <div id=@id>
             <MudTablePager AllItemsText=@PaginationSetting.AllItemsText
                             HorizontalAlignment=@PaginationSetting.HorizontalAlignment
                             RowsPerPageString=@PaginationSetting.RowsPerPageString
                             InfoFormat=@PaginationSetting.InfoFormat/>
+                            </div>
         }
     </PagerContent>
 
 </MudTable>
 
 @code {
+    string id = Guid.NewGuid().ToString("N");
+
     [Parameter] public TableData<T> Model { get; set; }
     [Parameter] public bool ShowSearchBar { get; set; } = true;
     [Parameter] public bool Rtl { get; set; } 
@@ -95,6 +101,14 @@
     { 
         if(Model==null)
             Model = JingetObjectFactory<T>.EmptyTableData.Instance;
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!Rtl)
+        {
+            await JS.InvokeVoidAsync("toLtr", id );
+        }
     }
 
     protected async override Task OnParametersSetAsync()

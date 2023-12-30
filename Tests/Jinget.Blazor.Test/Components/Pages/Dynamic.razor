@@ -75,7 +75,8 @@
         [JingetNumberBox(DisplayName = "سن", Order =7)]
         public int Age { get; set; }
 
-        [JingetComboBox(DisplayName = "وضعیت", BindingFunction = nameof(GetStatusAsync), Searchable =true,DefaultText ="---انتخاب کنید---", Order =8)]
+        [JingetComboBox(DisplayName = "وضعیت", BindingFunction = nameof(GetStatusAsync), 
+        Searchable =true,DefaultText ="---انتخاب کنید---",HasLabel =true, LabelCssClass = "overlayed-label", Order =8)]
         public int? Status { get; init; }
         public async Task<List<DropDownItemModel>> GetStatusAsync()
             => await new JingetComboBox().BindAsync<StatusModel>(async () =>

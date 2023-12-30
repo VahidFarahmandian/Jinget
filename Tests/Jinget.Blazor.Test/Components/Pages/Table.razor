@@ -9,7 +9,29 @@
 <JingetMessageBox @ref=@messageBox ShowVerboseFunc=@(()=>true)></JingetMessageBox>
 <div class="container">
     <div class="row">
-        <div class="form-group input-group">
+          RTL Table:
+          <div class="form-group input-group">
+            <JingetTable 
+                Model=@ModelRtl
+                Rtl=true
+                SearchProviderAsync=@SearchAsyncRtl
+                ShowPagination=true
+                ShowSearchBar=true>
+                    <ActionContent>
+                        <MudButton 
+                            OnClick=@(async ()=> await ShowDetailFarsi((SampleDataFarsi)context))
+                            ButtonType="ButtonType.Reset"
+                            Color="Color.Warning">جزئیات...
+                        </MudButton>
+                        </ActionContent>
+            </JingetTable>
+            
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+            LTR Table:
+                    <div class="form-group input-group">
             <JingetTable Model=@ModelLtr
                 Rtl=false
                          SearchProviderAsync=@SearchAsyncLtr
@@ -29,25 +51,6 @@
                                  ButtonType="ButtonType.Reset"
                              Color="Color.Warning">Detail...</MudButton>
                          </ActionContent>
-            </JingetTable>
-        </div>
-    </div>
-    <hr/>
-    <div class="row">
-        <div class="form-group input-group">
-            <JingetTable 
-                Model=@ModelRtl
-                Rtl=true
-                SearchProviderAsync=@SearchAsyncRtl
-                ShowPagination=true
-                ShowSearchBar=true>
-                    <ActionContent>
-                        <MudButton 
-                            OnClick=@(async ()=> await ShowDetailFarsi((SampleDataFarsi)context))
-                            ButtonType="ButtonType.Reset"
-                            Color="Color.Warning">جزئیات...
-                        </MudButton>
-                        </ActionContent>
             </JingetTable>
         </div>
     </div>
