@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Jinget.Core.Enumerations;
 using Jinget.Core.Tests._BaseData;
+using Jinget.Core.ExtensionMethods.Collections;
 using static Jinget.Core.Tests._BaseData.TestClass;
 
 namespace Jinget.Core.ExtensionMethods.Tests

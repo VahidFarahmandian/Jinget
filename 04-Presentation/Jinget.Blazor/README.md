@@ -447,7 +447,7 @@ Add the `JingetTable` to your page and start using it;-)
 
 ***Parameters:***
 
-`Model`: Model used to bind to the component. Class defining the model should have `JingetTable` attributes. Also each property used to rendered as table's column should have `JingetTableMember` attribute.
+`Model`: Model used to bind to the component. Class defining the model should have `JingetTable` attributes. Also each property used to rendered as table's column should have `JingetTableMember` attribute. 
 
 `ShowSearchBar`: Defines whether to show the search bar or not
 
