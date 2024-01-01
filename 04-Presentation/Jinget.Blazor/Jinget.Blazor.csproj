@@ -33,11 +33,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="assets\icon.png">
+		<None Include="assets\icon.png">
 		  <Pack>True</Pack>
 		  <PackagePath>\</PackagePath>
 		</None>
-		<None Update="README.md">
+		<None Include="README.md">
 			<PackagePath>\</PackagePath>
 			<Pack>True</Pack>
 		</None>
