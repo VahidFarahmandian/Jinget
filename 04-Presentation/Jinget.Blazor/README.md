@@ -27,6 +27,18 @@ Add reference to `jinget.core.css` in your `_Host.razor` or `App.razor` files.
 <link href="_content/Jinget.Blazor/css/jinget.core.css" rel="stylesheet" />
 ```
 
+Install `MudBlazor` and add reference to `MudBlazor.min.js` in your `_Host.razor` or `App.razor` files.
+
+```
+<script src="_content/MudBlazor/MudBlazor.min.js"></script>
+```
+
+Install `Texnomic.Blazor.JsonViewer` and add reference to `jsonViewer.js` in your `_Host.razor` or `App.razor` files.
+
+```
+<script src="_content/Texnomic.Blazor.JsonViewer/scripts/jsonViewer.js"></script>
+```
+
 Add reference to `jinget.core.js` in your `_Host.razor` or `App.razor` files.
 
 ```
