@@ -22,10 +22,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Include="assets\icon.png" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
