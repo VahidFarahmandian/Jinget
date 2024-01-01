@@ -16,17 +16,17 @@
 }
 
 loadScript({
-    url: '../_content/MudBlazor/MudBlazor.min.js',
+    //url: '../_content/MudBlazor/MudBlazor.min.js',
+    //callback: loadScript({
+    url: '_content/Jinget.Blazor/js/jinget.selectize.js',
     callback: loadScript({
-        url: '_content/Jinget.Blazor/js/jinget.selectize.js',
+        url: '_content/Jinget.Blazor/js/jinget.jalali.picker.date.js',
         callback: loadScript({
-            url: '_content/Jinget.Blazor/js/jinget.jalali.picker.date.js',
-            callback: loadScript({
-                url: '_content/Texnomic.Blazor.JsonViewer/scripts/jsonViewer.js',
-                callback: loadScript({
-                    url: '_content/Jinget.Blazor/js/jinget.custom.js'
-                })
-            })
+            //url: '_content/Texnomic.Blazor.JsonViewer/scripts/jsonViewer.js',
+            //callback: loadScript({
+            url: '_content/Jinget.Blazor/js/jinget.custom.js'
+            /*})*/
         })
     })
+    //})
 });

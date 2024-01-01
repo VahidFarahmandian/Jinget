@@ -22,12 +22,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Include="assets\icon.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Jinget.Core" Version="6.1.0" />
-		<PackageReference Include="MudBlazor" Version="6.11.1" />
+		<PackageReference Include="MudBlazor" Version="6.11.2" />
 		<PackageReference Include="SkiaSharp" Version="2.88.6" />
 		<PackageReference Include="Texnomic.Blazor.JsonViewer" Version="0.1.0" />
 	</ItemGroup>
@@ -36,12 +40,6 @@
 		<None Update="README.md">
 			<PackagePath>\</PackagePath>
 			<Pack>True</Pack>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="assets\icon.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
 	<ItemGroup>
