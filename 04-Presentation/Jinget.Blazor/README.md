@@ -258,7 +258,7 @@ Add the `JingetMessageBox` to your page and start using it;-)
 
 ***Parameters:***
 
-`ShowVerboseFunc`: Defines a Func delegate to show the verbose content
+`ShowVerboseFuncAsync`: Defines a Func delegate to show the verbose content
 
 `Rtl`: If set to true, the the modal content will be rendred Right-to-Left.
 
@@ -553,7 +553,7 @@ Add the `JingetDynamicForm` to your page and start using it;-)
 
 `Model`: Model used to decorate the form. two-way binding is also supported.
 
-`Rtl`: If set to true, the the form will be rendred Right-to-Left.
+`Rtl`: If set to true, the the form will be rendred Right-to-Left. Default is `true`.
 
 ***Callbacks:***
 

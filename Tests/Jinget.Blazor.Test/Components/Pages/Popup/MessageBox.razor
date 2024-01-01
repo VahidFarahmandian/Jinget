@@ -30,7 +30,7 @@
 
     async Task ShowMBox1()
     {
-        messageBox.ShowVerboseFunc = ShowVerboseCondition;
+        messageBox.ShowVerboseFuncAsync = ShowVerboseCondition;
         await messageBox?.ShowErrorAsync(
             title: "Sample message box",
             content: "This is sample message box",
@@ -40,14 +40,14 @@
 
     async Task ShowMBox2()
     {
-        messageBox.ShowVerboseFunc = ShowVerboseCondition;
+        messageBox.ShowVerboseFuncAsync = ShowVerboseCondition;
         await messageBox?.ShowErrorAsync(
             title: "پیغام تستی",
             content: "این یک محتوای تستی است",
             verboseContent: "توضیحات بیشتر تستی");
     }
 
-    bool ShowVerboseCondition() => showVerbose;
+    async Task<bool> ShowVerboseCondition() => await Task.FromResult<bool>(showVerbose);
 
     void OnChecked() => showVerbose = !showVerbose;
 }

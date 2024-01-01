@@ -21,7 +21,7 @@
 </MudRTLProvider>
 @code {
     [Parameter] public T? Model { get; set; }
-    [Parameter] public bool Rtl { get; set; }
+    [Parameter] public bool Rtl { get; set; } = true;
     [Parameter] public EventCallback<Dictionary<string, object?>> OnModelChanged { get; set; }
 
     public HashSet<(PropertyInfo Property, JingetFormElement? Attribute)> Properties { get; set; } = new();
@@ -54,7 +54,6 @@
 
             try
             {
-#pragma warning disable CS8602
                 Type t = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
                 if (value is not IConvertible && t == typeof(string))
                 {
@@ -76,7 +75,6 @@
                         convertedValue = (value == null) ? null : Convert.ChangeType(value.ToString(), t);
                     }
                 }
-#pragma warning restore CS8602
                 p?.SetValue(Model, convertedValue);
                 StateHasChanged();
             }

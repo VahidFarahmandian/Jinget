@@ -41,7 +41,7 @@
     bool IsFancy { get; set; }
     Severity Theme { get; set; }
 
-    [Parameter] public Func<bool>? ShowVerboseFunc { get; set; }
+    [Parameter] public Func<Task<bool>>? ShowVerboseFuncAsync { get; set; }
 
     /// <param name="title">message box title</param>
     /// <param name="content">message box body content in string</param>
@@ -66,7 +66,7 @@
         {
             verboseItems = new List<ListItem>();
 
-            var shouldShowVerbose=ShowVerboseFunc==null?false: ShowVerboseFunc.Invoke();
+            var shouldShowVerbose=ShowVerboseFuncAsync==null?false: (await ShowVerboseFuncAsync.Invoke());
 
             if(shouldShowVerbose)
             {
