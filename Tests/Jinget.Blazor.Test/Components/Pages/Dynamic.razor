@@ -10,6 +10,7 @@
 @using MudBlazor;
 @using Jinget.Core.Enumerations;
 @using Jinget.Core.ExtensionMethods.Collections;
+@using Jinget.Blazor.Components.Picker
 <JingetMessageBox @ref=@messageBox 
     ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true)) ></JingetMessageBox>
     <hr />
@@ -33,8 +34,8 @@
 @code {
     public class InquiryByDateFromViewModel
     {
-        [JingetDatePicker(DisplayName = "تاریخ", HasLabel = false, Culture = "fa-IR")]
-        public DateTime? Date { get; set; }
+        [Attributes.Picker.JingetDateRangePicker(DisplayName = "تاریخ", HasLabel = false, Culture = "fa-IR")]
+        public SelectedDateRangeModel? Date { get; set; }
     }
 
     JingetMessageBox messageBox;
@@ -85,10 +86,10 @@
         [JingetEmailBox(DisplayName = "پست الکترونیکی",Order =4)]
         public string EMail { get; init; }
 
-        [JingetDatePicker(DisplayName = "تاریخ تولد",Culture ="fa-IR", Order =5)]
+        [Attributes.Picker.JingetDatePicker(DisplayName = "تاریخ تولد",Culture ="fa-IR", Order =5)]
         public string DoB { get; init; }
 
-        [JingetDateRangePicker(DisplayName = "بازه زمانی سفر",Culture ="fa-IR", Order =6)]
+        [Attributes.Picker.JingetDateRangePicker(DisplayName = "بازه زمانی سفر",Culture ="fa-IR", Order =6)]
         public DateRange TravelDate { get; init; }
 
         [JingetLabel(DisplayName = "امتیاز اکتسابی", HasLabel = false)]

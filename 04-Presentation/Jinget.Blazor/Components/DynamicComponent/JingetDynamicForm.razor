@@ -62,7 +62,14 @@
 
                 if (value is SelectedDateRangeModel dateRangeValue)
                 {
-                    convertedValue = Convert.ChangeType(dateRangeValue.DateRange, t);
+                    if (t == typeof(DateRange))
+                    {
+                        convertedValue = Convert.ChangeType(dateRangeValue.DateRange, t);
+                    }
+                    else
+                    {
+                        convertedValue = Convert.ChangeType(dateRangeValue, t);
+                    }
                 }
                 else
                 {

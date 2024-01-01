@@ -29,6 +29,9 @@
 
 @code {
     MudDatePicker _datePicker;
+    
+    DateTime? _previousValue;
+    DateTime? _currentValue;
 
     [Parameter]
     public DateTime? Value
@@ -43,8 +46,6 @@
     [Parameter] public override string Label { get; set; } = "تاریخ";
     [Parameter] public EventCallback<DateTime?> DateChanged { get; set; }
 
-    DateTime? _previousValue;
-    DateTime? _currentValue;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

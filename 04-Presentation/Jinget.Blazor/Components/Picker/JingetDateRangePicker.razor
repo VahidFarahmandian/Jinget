@@ -26,7 +26,20 @@
                     PickerOpened=@OnOpen />
 @code {
     MudDateRangePicker _dateRangePicker;
-    [Parameter] public DateRange? Value { get; set; }
+
+    DateRange? _previousValue;
+    DateRange? _currentValue;
+
+    [Parameter]
+    public DateRange? Value
+    {
+        get => _currentValue;
+        set
+        {
+            _previousValue = Value;
+            _currentValue = value;
+        }
+    }
     [Parameter] public override string Label { get; set; } = "بازه تاریخی";
 
     [Parameter] public EventCallback<SelectedDateRangeModel> DateRangeChanged { get; set; }
@@ -39,6 +52,8 @@
 
     async Task DateRangeChangedAsync(DateRange e)
     {
+        if (e == _previousValue || e == _currentValue)
+            return;
         var dateRange = new DateRange(e.Start, e.End);
         await DateRangeChanged.InvokeAsync(new SelectedDateRangeModel
             {

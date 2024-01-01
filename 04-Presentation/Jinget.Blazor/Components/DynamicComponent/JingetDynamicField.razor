@@ -34,7 +34,7 @@
 else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePicker dateRangePicker)
 {
     <JingetDateRangePicker 
-        Value="@((DateRange)Value)"
+        Value="@(Value is SelectedDateRangeModel?((SelectedDateRangeModel)Value).DateRange: (DateRange)Value)"
         Label="@Attribute.DisplayName"
         Culture=@dateRangePicker.Culture
         EnglishNumber=dateRangePicker.EnglishNumber
