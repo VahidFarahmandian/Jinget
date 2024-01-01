@@ -44,7 +44,7 @@
         }
     }
 
-    void OnValueChanged(string prop, object value)
+    void OnValueChanged(string prop, object? value)
     {
         if (Model != null)
         {
@@ -57,7 +57,7 @@
                 Type t = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
                 if (value is not IConvertible && t == typeof(string))
                 {
-                    value = value.ToString();
+                    value = value==null?null:value?.ToString();
                 }
 
                 if (value is SelectedDateRangeModel dateRangeValue)

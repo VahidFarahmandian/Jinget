@@ -324,7 +324,6 @@ Add the `JingetTable` to your page and start using it;-)
 ```
 <JingetTable 
     Model=@ModelRtl
-    Rtl=true
     SearchProviderAsync=@SearchAsyncRtl
     ShowPagination=true
     ShowSearchBar=true>
@@ -463,7 +462,7 @@ Add the `JingetTable` to your page and start using it;-)
 
 `ShowSearchBar`: Defines whether to show the search bar or not
 
-`Rtl`: If set to true, the the modal content will be rendred Right-to-Left.
+`Rtl`: If set to true, the the modal content will be rendred Right-to-Left. Default is `true`
 
 `ShowPagination`: Defines whether to show the pagination bar or not
 

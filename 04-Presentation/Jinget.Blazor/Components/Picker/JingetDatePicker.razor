@@ -1,9 +1,11 @@
 ﻿@using Jinget.Blazor.Components.Picker.CultureService
 @using Microsoft.JSInterop
 @using MudBlazor;
+@using System.Runtime.CompilerServices
 @inject IJSRuntime JS;
 @inherits JingetDatePickerBase;
-<MudDatePicker id=@id @ref=_datePicker
+<MudDatePicker id=@id
+               @ref=_datePicker
                Disabled=@Disabled
                ReadOnly=@ReadOnly
                Label=@Label
@@ -21,24 +23,44 @@
                Mask=@(new DateMask(DateFormat))
                AdditionalDateClassesFunc=@CustomDateStyleFunc
                IsDateDisabledFunc=@DisabledDateFunc
-               DateChanged=@DateChangedAsync
-               PickerOpened=@OnOpen />
+               DateChanged=@((e)=>DateChangedAsync(e))
+               PickerOpened=@OnOpen>
+</MudDatePicker>
 
 @code {
     MudDatePicker _datePicker;
 
-    [Parameter] public DateTime? Value { get; set; }
+    [Parameter]
+    public DateTime? Value
+    {
+        get => _currentValue;
+        set
+        {
+            _previousValue = Value;
+            _currentValue = value;
+        }
+    }
     [Parameter] public override string Label { get; set; } = "تاریخ";
     [Parameter] public EventCallback<DateTime?> DateChanged { get; set; }
+
+    DateTime? _previousValue;
+    DateTime? _currentValue;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (EnglishNumber)
-            await JS.InvokeVoidAsync("toEnglishNumber", id );
+            await JS.InvokeVoidAsync("toEnglishNumber", id);
+
+        if (firstRender)
+        {
+            _datePicker.GoToDate();
+        }
     }
 
     async Task DateChangedAsync(DateTime? e)
     {
+        if (e == _previousValue || e == _currentValue)
+            return;
         if (e != null && e.HasValue)
         {
             await _datePicker.GoToDate(e.Value);
@@ -49,5 +71,6 @@
     async Task OnOpen()
     {
         await JS.InvokeVoidAsync("refreshDatePicker");
+        await JS.InvokeVoidAsync("gotoDate", id);
     }
 }

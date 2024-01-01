@@ -73,7 +73,7 @@
 
     [Parameter] public TableData<T> Model { get; set; }
     [Parameter] public bool ShowSearchBar { get; set; } = true;
-    [Parameter] public bool Rtl { get; set; } 
+    [Parameter] public bool Rtl { get; set; } = true;
     [Parameter] public bool ShowPagination { get; set; } = true;
     [Parameter] public RenderFragment<object?>? ActionContent { get; set; }
     [Parameter] public RenderFragment? SearchBarContent { get; set; }

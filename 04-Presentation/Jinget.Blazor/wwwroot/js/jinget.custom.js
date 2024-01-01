@@ -14,8 +14,8 @@ window.selectItem = (id, value) => {
 };
 /*Selectize END*/
 
-/*Picker START*/
-function gotoDateRange(id) {
+/*DateRange/Date Picker START*/
+function gotoDate(id) {
 
     var done = false;
     const targetNode = document.querySelector("body");
@@ -77,6 +77,8 @@ function gotoDateRange(id) {
     });
     observer.observe(targetNode, config);
 }
+
+
 function GetMonthNumber(monthName) {
     switch (monthName) {
 
@@ -102,6 +104,7 @@ function refreshDatePicker() {
     var observer = new MutationObserver(() => {
         var CONTROL_INTERVAL = setInterval(function () {
             if (document.querySelectorAll('.mud-picker-calendar-day:not(.mud-hidden)').length > 0) {
+                //if month days are not start from 1
                 if (document.querySelectorAll('.mud-picker-calendar-day:not(.mud-hidden)')[0].textContent != '1') {
                     if (done == false) {
                         document.getElementsByClassName('mud-picker-nav-button-next')[0].click();
@@ -119,6 +122,8 @@ function refreshDatePicker() {
     });
     observer.observe(targetNode, config);
 }
+
+
 function toEnglishNumber(id) {
     const targetNode = document.querySelector("body");
     const config = { attributes: true, childList: true, subtree: true };
