@@ -5,7 +5,7 @@
 
 **We are currently in the way to make Jinget an open source project, during this journey we will publish different parts of Jinget**
 
-Jinget is a framework written using .NET 6.0 , and built using DDD+CQRS. Jinget boosts your productivity by providing robust infrastructure for source codesCurrently 
+Jinget is a framework written using .NET 6.0 , and built using DDD+CQRS. Jinget boosts your productivity by providing robust infrastructure for source codes.
 
 Jinget provides the following benefits:
 
