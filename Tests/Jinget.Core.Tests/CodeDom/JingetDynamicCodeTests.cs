@@ -88,6 +88,17 @@ namespace JingetDynamic {
         [TestMethod]
         public void should_compile_and_return_error()
         {
+            string expectedSource = @"
+using System;
+namespace JingetDynamic {
+    internal sealed class DynamicInvoker {
+        public void DynamicInvoke(int a, double b) {
+            c = a*b;
+        }
+    }
+}
+";
+
             string source = @"c = a*b;";
 
             var result = new JingetDynamicCode().Execute(source, out List<string> errors, out string compiledSourceCode,
@@ -102,6 +113,7 @@ namespace JingetDynamic {
 
             Assert.IsTrue(errors.Any());
             Assert.IsNull(result);
+            Assert.AreEqual(expectedSource.Trim(), compiledSourceCode);
         }
 
         [TestMethod]

@@ -11,8 +11,6 @@ var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, t
 
 var blacklist = config.GetSection("logging:BlackList").Get<string[]>();
 
-//builder.Host.LogToElasticSearch<OperationLog, ErrorLog, CustomLog>(blacklist);
-//builder.Services.ConfigureElasticSearchLogger<OperationLog, ErrorLog, CustomLog>(
 builder.Host.LogToElasticSearch(blacklist);
 var elasticSearchSetting = new ElasticSearchSettingModel
 {
@@ -21,8 +19,6 @@ var elasticSearchSetting = new ElasticSearchSettingModel
     Password = "123456",
     Url = "localhost:9200",
     UseSsl = false
-    //RegisterDefaultLogModels = false,
-    //DiscoveryTypes = new List<Type> { typeof(OperationLog) }
 };
 builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
 builder.Services.AddControllers();
@@ -57,7 +53,7 @@ app.MapControllers();
 
 app.MapGet("/logs/{search}/{page}", async (IElasticSearchBaseDomainService<OperationLog> domainService, string search, int page) =>
 {
-    return await domainService.SearchAsync("test.ccs", search, 1, page);
+    return await domainService.SearchAsync("test.ccs", search, 1, page).ConfigureAwait(false);
 });
 
 app.Run();
