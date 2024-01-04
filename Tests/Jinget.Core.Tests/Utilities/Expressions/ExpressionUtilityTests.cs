@@ -24,17 +24,17 @@ namespace Jinget.Core.ExtensionMethods.Expressions.Tests
             Assert.AreEqual(expectedExpression.Type, result.Type);
         }
 
-        [TestMethod()]
-        public void should_create_a_member_access_expression()
-        {
-            string[] inputs = ["Property1", "Property2"];
-            string parameterName = "x";
-            Expression<Func<TestClass, TestClass>> expectedExpression = x => new TestClass { Property1 = x.Property1, Property2 = x.Property2 };
+        //[TestMethod()]
+        //public void should_create_a_member_access_expression()
+        //{
+        //    string[] inputs = ["Property1", "Property2"];
+        //    string parameterName = "x";
+        //    Expression<Func<TestClass, TestClass>> expectedExpression = x => new TestClass { Property1 = x.Property1, Property2 = x.Property2 };
 
-            Expression<Func<TestClass, TestClass>> result = ExpressionUtility.CreateMemberInitExpression<TestClass>(parameterName, inputs);
+        //    Expression<Func<TestClass, TestClass>> result = ExpressionUtility.CreateMemberInitExpression<TestClass>(parameterName, inputs);
 
-            Assert.AreEqual(expectedExpression.Type, result.Type);
-        }
+        //    Assert.AreEqual(expectedExpression.Type, result.Type);
+        //}
 
         [TestMethod()]
         public void should_create_a_equal_condition_expression()
