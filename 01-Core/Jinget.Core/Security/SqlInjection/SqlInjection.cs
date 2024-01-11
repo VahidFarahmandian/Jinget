@@ -1,4 +1,8 @@
-﻿namespace Jinget.Core.Security.SqlInjection
+﻿using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+
+namespace Jinget.Core.Security.SqlInjection
 {
     /// <summary>
     /// SqlInjection preventation class
@@ -9,19 +13,26 @@
         /// Immunize the given string and remove the dangerouse characters from this string
         /// </summary>
         /// <param name="replaceTagQuoteAndSemiColon">if set to <c>true</c> tag quote and semicolon characters will be removed from the input string</param>
-        public static string SecureString(this string insecureString, bool replaceTagQuoteAndSemiColon = true)
+        /// <param name="removeHtmlTags">if set to <c>true</c> html tags will be removed from the input string</param>
+        public static string SecureString(this string insecureString, bool replaceTagQuoteAndSemiColon = true, bool removeHtmlTags = true)
         {
+            StringBuilder sb = new(insecureString);
+
             if (replaceTagQuoteAndSemiColon)
             {
-                insecureString = insecureString
-                    .Replace("'", "''")
-                    .Replace(";", string.Empty);
+                sb.Replace("'", "''")
+                  .Replace(";", string.Empty);
             }
-            
-            return insecureString
-                .Replace("--", string.Empty)
-                .Replace("<script", string.Empty)
-                .Replace("script>", string.Empty)
+
+            if (removeHtmlTags)
+            {
+                Regex regex = new("<.*?>");
+                var tags = regex.Matches(sb.ToString()).ToList();
+                tags.ForEach(p => sb.Replace(p.Value, string.Empty));
+            }
+
+            return sb
+                .Replace("--", string.Empty).ToString()
                 .Trim();
         }
     }
