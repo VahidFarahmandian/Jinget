@@ -9,7 +9,7 @@ namespace Jinget.Core.Security.SqlInjection.Tests
         public void should_immunize_string()
         {
             string input = "<script>var x=0;</script>";
-            string expectedResult = ">var x=0</";
+            string expectedResult = "var x=0";
             string result = SqlInjection.SecureString(input);
 
             Assert.AreEqual(expectedResult, result);
