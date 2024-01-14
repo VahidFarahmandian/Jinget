@@ -6,9 +6,10 @@ using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
-using Jinget.Core.Utilities;
-using Jinget.Core.Utilities.Http;
 using Newtonsoft.Json;
+using static Jinget.Core.Utilities.Http.HeaderUtility;
+using static Jinget.Core.Utilities.XmlUtility;
+using static Jinget.Core.Utilities.HumanizerUtility;
 
 namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
 {
@@ -48,19 +49,18 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
                 return;
             foreach (var header in headers)
             {
-                if (header.Key == "Authorization")
-                {
-                    if (header.Value.StartsWith("Bearer ", StringComparison.InvariantCultureIgnoreCase))
-                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", header.Value[7..]);
-                    else if (header.Value.StartsWith("Basic ", StringComparison.InvariantCultureIgnoreCase))
-                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", header.Value[6..]);
-                    else if (header.Value.StartsWith("Digest ", StringComparison.InvariantCultureIgnoreCase))
-                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Digest", header.Value[7..]);
-                }
-                else
+                if (Not(header.Key.Equals("Authorization", StringComparison.InvariantCultureIgnoreCase)))
                 {
                     client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
+                    continue;
                 }
+
+                if (header.Value.StartsWith("Bearer ", StringComparison.InvariantCultureIgnoreCase))
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", header.Value[7..]);
+                else if (header.Value.StartsWith("Basic ", StringComparison.InvariantCultureIgnoreCase))
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", header.Value[6..]);
+                else if (header.Value.StartsWith("Digest ", StringComparison.InvariantCultureIgnoreCase))
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Digest", header.Value[7..]);
             }
         }
 
@@ -82,7 +82,7 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
 
         public async Task<HttpResponseMessage> PostAsync(string url, object content = null, Dictionary<string, string> headers = null)
         {
-            if (!string.IsNullOrWhiteSpace(url) && url.StartsWith('/'))
+            if (Not(string.IsNullOrWhiteSpace(url)) && url.StartsWith('/'))
                 url = url.TrimStart('/');
             if (content is MultipartFormDataContent)
             {
@@ -90,21 +90,21 @@ namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory
             }
 
             StringContent bodyContent = null;
-            if (content != null)
+            if (content is not null)
             {
-                if (HeaderUtility.IsXmlContentType(headers))
+                if (IsXmlContentType(headers))
                 {
-                    bodyContent = new StringContent(content is string ? content.ToString() : XmlUtility.SerializeToXml(content), Encoding.UTF8, headers["Content-Type"]);
+                    bodyContent = new StringContent(content is string ? content.ToString() : SerializeToXml(content), Encoding.UTF8, headers["Content-Type"]);
                 }
-                else if (HeaderUtility.IsJsonContentType(headers))
+                else if (IsJsonContentType(headers))
                 {
                     bodyContent = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, MediaTypeNames.Application.Json);
                 }
                 else
                 {
-                    bodyContent = new StringContent(content.ToString(), Encoding.UTF8, HeaderUtility.GetContentTypeValue(headers));
+                    bodyContent = new StringContent(content.ToString(), Encoding.UTF8, GetContentTypeValue(headers));
                 }
-                headers?.Remove(HeaderUtility.GetContentTypeHeaderName(headers));
+                headers?.Remove(GetContentTypeHeaderName(headers));
             }
 
             SetHeaders(headers);
