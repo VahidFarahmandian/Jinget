@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Jinget.Core.Exceptions;
 
+#pragma warning disable CS8604 // Possible null reference argument.
 namespace Jinget.Core.ExpressionToSql.Internal
 {
     public class Where<T, R> : Query
@@ -21,29 +22,29 @@ namespace Jinget.Core.ExpressionToSql.Internal
             _where = where;
         }
 
-        internal override (QueryBuilder query, Dictionary<string, object> parameters) ToSql(QueryBuilder query)
+        internal override (QueryBuilder query, Dictionary<string, object?> parameters) ToSql(QueryBuilder query)
         {
             _select.ToSql(query);
 
             var i = 1;
 
             if (_where is null)
-                return (query, new Dictionary<string, object>());
+                return (query, new Dictionary<string, object?>());
 
-            var where = Recurse(ref i, _where.Body, true);
-            query.AppendCondition(@where.ToString());
+            var where = Where<T, R>.Recurse(ref i, _where.Body, true);
+            query.AppendCondition(where.ToString());
             return (query, @where.Parameters);
         }
 
-        private WherePart Recurse(ref int i, Expression expression, bool isUnary = false, string? prefix = null, string? postfix = null)
+        private static WherePart Recurse(ref int i, Expression expression, bool isUnary = false, string? prefix = null, string? postfix = null)
         {
             if (expression is UnaryExpression unary)
             {
-                return WherePart.Concat(NodeTypeToString(unary.NodeType), Recurse(ref i, unary.Operand, true));
+                return WherePart.Concat(NodeTypeToString(unary.NodeType), Where<T, R>.Recurse(ref i, unary.Operand, true));
             }
             if (expression is BinaryExpression binary)
             {
-                return WherePart.Concat(Recurse(ref i, binary.Left), NodeTypeToString(binary.NodeType), Recurse(ref i, binary.Right));
+                return WherePart.Concat(Where<T, R>.Recurse(ref i, binary.Left), NodeTypeToString(binary.NodeType), Where<T, R>.Recurse(ref i, binary.Right));
             }
             if (expression is ConstantExpression constant)
             {
@@ -65,7 +66,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
                     case PropertyInfo property:
                         if (isUnary && member.Type == typeof(bool))
                         {
-                            return WherePart.Concat(Recurse(ref i, member), "=", WherePart.IsParameter(i++, true));
+                            return WherePart.Concat(Where<T, R>.Recurse(ref i, member), "=", WherePart.IsParameter(i++, true));
                         }
 
                         if (((MemberExpression)expression).Expression.NodeType == ExpressionType.Constant)
@@ -91,17 +92,17 @@ namespace Jinget.Core.ExpressionToSql.Internal
                 // %xxx LIKE queries:
                 if (methodCall.Method == typeof(string).GetMethod("StartsWith", [typeof(string)]))
                 {
-                    return WherePart.Concat(Recurse(ref i, methodCall.Object), "LIKE", Recurse(ref i, methodCall.Arguments[0], postfix: "%"));
+                    return WherePart.Concat(Where<T, R>.Recurse(ref i, methodCall.Object), "LIKE", Where<T, R>.Recurse(ref i, methodCall.Arguments[0], postfix: "%"));
                 }
                 // xxx% LIKE queries:
                 if (methodCall.Method == typeof(string).GetMethod("EndsWith", [typeof(string)]))
                 {
-                    return WherePart.Concat(Recurse(ref i, methodCall.Object), "LIKE", Recurse(ref i, methodCall.Arguments[0], prefix: "%"));
+                    return WherePart.Concat(Where<T, R>.Recurse(ref i, methodCall.Object), "LIKE", Where<T, R>.Recurse(ref i, methodCall.Arguments[0], prefix: "%"));
                 }
                 // %xxx% LIKE queries:
                 if (methodCall.Method == typeof(string).GetMethod("Contains", [typeof(string)]))
                 {
-                    return WherePart.Concat(Recurse(ref i, methodCall.Object), "LIKE", Recurse(ref i, methodCall.Arguments[0], prefix: "%", postfix: "%"));
+                    return WherePart.Concat(Where<T, R>.Recurse(ref i, methodCall.Object), "LIKE", Where<T, R>.Recurse(ref i, methodCall.Arguments[0], prefix: "%", postfix: "%"));
                 }
                 // IN queries:
                 if (methodCall.Method.Name == "Contains")
@@ -123,7 +124,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
                         throw new JingetException("Jinget Says: Unsupported method call: " + methodCall.Method.Name);
                     }
                     var values = (IEnumerable)GetValue(collection);
-                    return WherePart.Concat(Recurse(ref i, property), "IN", WherePart.IsCollection(ref i, values));
+                    return WherePart.Concat(Where<T, R>.Recurse(ref i, property), "IN", WherePart.IsCollection(ref i, values));
                 }
                 // column.ToString() OR Convert.ToString(column) queries
                 if (methodCall.Method.Name == "ToString")
@@ -156,7 +157,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
                         //column.SomeMethod().ToUpper() AND SomeMethod(column).ToUpper()
                         if (methodCall.Object.NodeType == ExpressionType.Call)
                         {
-                            return WherePart.IsFunction(Recurse(ref i, methodCall.Object).Sql, methodCall.Method.Name);
+                            return WherePart.IsFunction(Where<T, R>.Recurse(ref i, methodCall.Object).Sql, methodCall.Method.Name);
                         }
                     }
                 }
@@ -229,11 +230,15 @@ namespace Jinget.Core.ExpressionToSql.Internal
                 Sql = $"CAST({column} AS {ToSqlSyntax(method)})"
             };
 
-        public static WherePart IsFunction(string column, string method) =>
-            new()
+        public static WherePart IsFunction(string? column, string method)
+        {
+            if (string.IsNullOrWhiteSpace(column))
+                return new WherePart();
+            return new()
             {
                 Sql = $"{ToSqlSyntax(method).Replace("@P1", column)}"
             };
+        }
 
         public static WherePart IsParameter(int count, object? value) => new()
         {
@@ -287,3 +292,4 @@ namespace Jinget.Core.ExpressionToSql.Internal
         public override string? ToString() => Sql;
     }
 }
+#pragma warning restore CS8604 // Possible null reference argument.

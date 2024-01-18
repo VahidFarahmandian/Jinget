@@ -9,8 +9,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Jinget.Core.ExtensionMethods.Collections;
-using System.IO;
-using AutoMapper.Execution;
 
 namespace Jinget.Core.Utilities.Expressions
 {
@@ -63,9 +61,11 @@ namespace Jinget.Core.Utilities.Expressions
         /// Try parse an expression and return a string representation of the expression in form of 'A.B.C.etc'
         /// </summary>
         /// <exception cref="JingetException"></exception>
-        internal static bool TryParseExpression(Expression expression, out string? path)
+        internal static bool TryParseExpression(Expression? expression, out string? path)
         {
             path = null;
+            if (expression == null)
+                return true;
             var withoutConvert = RemoveConvert(expression);
 
             if (withoutConvert is ConstantExpression constant)
@@ -108,10 +108,8 @@ namespace Jinget.Core.Utilities.Expressions
                 }
                 else if (callExpression.Method.Name == "ToString")
                 {
-#pragma warning disable CS8604 // Possible null reference argument.
                     return TryParseExpression(
                         callExpression.Arguments.Any() ? callExpression.Arguments.First() : callExpression.Object, out path);
-#pragma warning restore CS8604 // Possible null reference argument.
                 }
                 else if (new[] { "ToLower", "ToUpper" }.Contains(callExpression.Method.Name))
                 {
@@ -182,10 +180,12 @@ namespace Jinget.Core.Utilities.Expressions
 
             foreach (var property in properties)
             {
+#pragma warning disable CS8604 // Possible null reference argument.
                 bindings.Add(Expression.Bind(
                     member: typeof(T).GetProperty(property),
                     expression: Expression.Property(paramExpression, property)
                     ));
+#pragma warning restore CS8604 // Possible null reference argument.
             }
 
             var ctor = typeof(T).GetDefaultConstructor()

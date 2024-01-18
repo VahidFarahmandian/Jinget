@@ -7,9 +7,9 @@ namespace Jinget.Blazor.Components.Captcha
         class Letter
         {
             public int Angle { get; set; }
-            public string Value { get; set; }
+            public string? Value { get; set; }
             public SKColor ForeColor { get; set; }
-            public string FontFamily { get; set; }
+            public string? FontFamily { get; set; }
         }
 
         public enum CharSetCaseSensitivityOptions : byte
@@ -185,7 +185,7 @@ namespace Jinget.Blazor.Components.Captcha
         [Parameter] public EventCallback<string> CaptchaChanged { get; set; }
 
         string? captchaWord;
-        Random randomValue;
+        Random? randomValue;
         List<Letter> letters = [];
         SKColor bgColor;
 

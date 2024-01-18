@@ -89,21 +89,21 @@
     </div>
 </div>
 @code {
-    string captcha1Value;
-    string captcha2Value;
-    string captcha3Value;
-    string captcha4Value;
+    string? captcha1Value;
+    string? captcha2Value;
+    string? captcha3Value;
+    string? captcha4Value;
 
-    JingetCaptcha captcha1;
-    JingetCaptcha captcha2;
-    JingetCaptcha captcha3;
-    JingetCaptcha captcha4;
+    JingetCaptcha? captcha1;
+    JingetCaptcha? captcha2;
+    JingetCaptcha? captcha3;
+    JingetCaptcha? captcha4;
 
-    string captcha1ValidationResult;
-    string captcha2ValidationResult;
-    string captcha3ValidationResult;
-    string captcha4ValidationResult;
-    string captcha4Message;
+    string? captcha1ValidationResult;
+    string? captcha2ValidationResult;
+    string? captcha3ValidationResult;
+    string? captcha4ValidationResult;
+    string? captcha4Message;
 
 
     async Task IsValid_Captcha1()

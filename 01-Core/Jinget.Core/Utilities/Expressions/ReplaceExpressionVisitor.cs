@@ -11,8 +11,8 @@ namespace Jinget.Core.Utilities.Expressions
     /// <param name="newValue">The parameter is to replace the old parameter(<paramref name="oldValue"/>)</param>
     internal class ReplaceExpressionVisitor(Expression oldValue, Expression newValue) : ExpressionVisitor
     {
-        private readonly Expression _oldValue = oldValue;
-        private readonly Expression _newValue = newValue;
+        private readonly Expression? _oldValue = oldValue;
+        private readonly Expression? _newValue = newValue;
 
         /// <summary>
         /// Traverse the expression tree untill current node is equal to _oldValue, then it will swip _newValue with node
@@ -24,6 +24,6 @@ namespace Jinget.Core.Utilities.Expressions
         /// </example>
         /// <param name="node">Expression tree that should be traversed</param>
         /// <returns></returns>
-        public override Expression Visit(Expression node) => node == _oldValue ? _newValue : base.Visit(node);
+        public override Expression? Visit(Expression? node) => node == _oldValue ? _newValue : base.Visit(node);
     }
 }

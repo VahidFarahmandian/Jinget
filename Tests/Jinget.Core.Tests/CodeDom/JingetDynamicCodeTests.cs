@@ -23,7 +23,7 @@ namespace JingetDynamic {
 ";
             string source = @"int x = 2*2";
 
-            var result = new JingetDynamicCode().Execute(source, out List<string> errors, out string compiledSourceCode);
+            var result = JingetDynamicCode.Execute(source, out List<string> errors, out string compiledSourceCode);
 
             Assert.IsNull(result);
             Assert.IsFalse(errors.Any());
@@ -46,7 +46,7 @@ namespace JingetDynamic {
 ";
             string source = @"return 2*2";
 
-            var result = new JingetDynamicCode().Execute(source, out List<string> errors, out string compiledSourceCode,
+            var result = JingetDynamicCode.Execute(source, out List<string> errors, out string compiledSourceCode,
                 new JingetDynamicCode.MethodOptions { ReturnType = typeof(int) });
 
             Assert.IsFalse(errors.Any());
@@ -70,7 +70,7 @@ namespace JingetDynamic {
 ";
             string source = @"using System.Linq; double c = a*b;";
 
-            var result = new JingetDynamicCode().Execute(source, out List<string> errors, out string compiledSourceCode,
+            var result = JingetDynamicCode.Execute(source, out List<string> errors, out string compiledSourceCode,
                 new JingetDynamicCode.MethodOptions
                 {
                     Parameters =
@@ -101,7 +101,7 @@ namespace JingetDynamic {
 
             string source = @"c = a*b;";
 
-            var result = new JingetDynamicCode().Execute(source, out List<string> errors, out string compiledSourceCode,
+            var result = JingetDynamicCode.Execute(source, out List<string> errors, out string compiledSourceCode,
                 new JingetDynamicCode.MethodOptions
                 {
                     Parameters =
@@ -128,7 +128,7 @@ namespace JingetDynamic {
                           {
                                 return Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(dt);
                           }";
-            var result = new JingetDynamicCode().Execute(
+            var result = JingetDynamicCode.Execute(
                 code,
                 out List<string> errors, out string compiledSourceCode,
                 options: new JingetDynamicCode.MethodOptions
@@ -157,7 +157,7 @@ namespace JingetDynamic {
 
             string code = @"using Jinget.Core;return ConvertDate(dt);string ConvertDate(DateTime dt){return Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(dt);}";
 
-            var result = new JingetDynamicCode().Execute(
+            var result = JingetDynamicCode.Execute(
                 code,
                 out List<string> errors,
                 out string compiledSourceCode,
@@ -187,7 +187,7 @@ namespace JingetDynamic {
 
             string code = @"return GetValue(a, b);int GetValue(int a, int b){return a*b;}";
 
-            var result = new JingetDynamicCode().Execute(code, out List<string> errors, out string compiledSourceCode,
+            var result = JingetDynamicCode.Execute(code, out List<string> errors, out string compiledSourceCode,
                 new JingetDynamicCode.MethodOptions()
                 {
                     ReturnType = typeof(int),
@@ -218,7 +218,7 @@ namespace JingetDynamic {
             string source = "";
             for (int i = 0; i < 10001; i++) source += "c = a*b;";
 
-            new JingetDynamicCode().Execute(source, out List<string> _, out string _);
+            JingetDynamicCode.Execute(source, out List<string> _, out string _);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
             _table = table;
         }
 
-        internal override (QueryBuilder query, Dictionary<string, object>? parameters) ToSql(QueryBuilder query)
+        internal override (QueryBuilder query, Dictionary<string, object?>? parameters) ToSql(QueryBuilder query)
         {
             if (_take.HasValue)
             {
@@ -50,7 +50,7 @@ namespace Jinget.Core.ExpressionToSql.Internal
                     var propertyInfos = type.GetWritableProperties();
                     return propertyInfos.Values.Select(pi => Expression.Property(body, pi));
                 default:
-                    return new[] { body };
+                    return [body];
             }
         }
 

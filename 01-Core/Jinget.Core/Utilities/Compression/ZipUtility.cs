@@ -33,7 +33,7 @@ namespace Jinget.Core.Utilities.Compression
 
             var threadCount = files.Length < maxDOP ? files.Length : maxDOP;
             var throttler = new SemaphoreSlim(threadCount);
-
+            CancellationToken token = new();
             foreach (var file in files)
             {
                 await throttler.WaitAsync();
@@ -56,7 +56,7 @@ namespace Jinget.Core.Utilities.Compression
                     zip.Save(Path.Combine(path, $"{file.Name}.zip"));
 
                     throttler.Release();
-                }));
+                }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default));
             }
 
             Task.WaitAll([.. allTasks]);
@@ -75,7 +75,7 @@ namespace Jinget.Core.Utilities.Compression
             var allTasks = new List<Task>();
             var threadCount = files.Length < maxDOP ? files.Length : maxDOP;
             var throttler = new SemaphoreSlim(threadCount);
-
+            var token = new CancellationToken();
             foreach (var file in files)
             {
                 await throttler.WaitAsync();
@@ -95,7 +95,7 @@ namespace Jinget.Core.Utilities.Compression
 
                     }
                     throttler.Release();
-                }));
+                }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default));
             }
             Task.WaitAll([.. allTasks]);
         }

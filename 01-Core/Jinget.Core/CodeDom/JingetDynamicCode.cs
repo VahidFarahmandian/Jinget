@@ -16,19 +16,16 @@ namespace Jinget.Core.CodeDom
 {
     public sealed class JingetDynamicCode
     {
-        private readonly Compiler _compiler;
-
-        public JingetDynamicCode() => _compiler = new Compiler();
-
         private class Compiler
         {
             /// <param name="errors">Compilation might be ended with some errors. The compile time errors are stored in this output parameter</param>
             /// <param name="jingetSource">During the dynamic code execution process, given sourceCode might change. Changed version of the sourceCode are stored in this output parameter</param>
             /// <param name="isTopLevelStatement">C# 9.0 enables you to write top level statements.</param>
             /// <param name="references">In order to compile the given sourceCode, some external references might needed to be added. Required references are being passed using this parameter</param>
-            internal byte[]? Compile(string sourceCode, MethodOptions? args, out List<string> errors, out string jingetSource,
+            internal static byte[]? Compile(string sourceCode, MethodOptions? args, out List<string> errors, out string jingetSource,
                 bool isTopLevelStatement = true, List<string>? references = null)
             {
+                references ??= [];
                 jingetSource = string.Empty;
                 errors = [];
 
@@ -63,7 +60,7 @@ namespace Jinget.Core.CodeDom
             /// <summary>
             /// Generaetes new dynamic dll, based on the given source code. this dll created on the fly
             /// </summary>
-            CSharpCompilation GenerateAssembly(string sourceCode, List<string> externalReferences)
+            static CSharpCompilation GenerateAssembly(string sourceCode, List<string> externalReferences)
             {
                 var codeString = SourceText.From(sourceCode);
                 var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
@@ -80,7 +77,7 @@ namespace Jinget.Core.CodeDom
                 references.AddRange(externalReferences.Distinct().Select(x => MetadataReference.CreateFromFile(x)));
 
                 return CSharpCompilation.Create($"{Guid.NewGuid()}.dll",
-                    new[] { parsedSyntaxTree },
+                    [parsedSyntaxTree],
                     references: references,
                     options: new CSharpCompilationOptions(
                         OutputKind.DynamicallyLinkedLibrary,
@@ -169,14 +166,14 @@ namespace Jinget.Core.CodeDom
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public object? Execute(string sourceCode, out List<string> errors, out string compiledSourceCode, MethodOptions? options = null, bool isTopLevelStatement = true, bool compileOnly = false, List<string>? references = null)
+        public static object? Execute(string sourceCode, out List<string> errors, out string compiledSourceCode, MethodOptions? options = null, bool isTopLevelStatement = true, bool compileOnly = false, List<string>? references = null)
         {
             if (sourceCode.Length > 10000)
             {
                 throw new ArgumentException("Jinget says: sourceCode is too long. sourceCode max length is 10000 characters");
             }
 
-            var compiledCode = _compiler.Compile(sourceCode, options, out errors, out compiledSourceCode,
+            var compiledCode = Compiler.Compile(sourceCode, options, out errors, out compiledSourceCode,
                 isTopLevelStatement, references);
             if (compiledCode is null || compileOnly)
             {

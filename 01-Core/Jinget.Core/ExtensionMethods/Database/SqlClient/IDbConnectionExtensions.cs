@@ -25,7 +25,7 @@ namespace Jinget.Core.ExtensionMethods.Database.SqlClient
             connection.Open();
         }
 
-        private static (string queryText, Dictionary<string, object>? queryParameters) PrepareQuery(Query sql, object? param)
+        private static (string queryText, Dictionary<string, object?>? queryParameters) PrepareQuery(Query sql, object? param)
         {
             var query = sql.ToSql();
             var queryText = query.query.ToString();
@@ -74,7 +74,6 @@ namespace Jinget.Core.ExtensionMethods.Database.SqlClient
             Query sql,
             object? param,
             IDbTransaction? transaction,
-            bool buffered,
             int? commandTimeout,
             CommandType? commandType)
         {
@@ -93,10 +92,10 @@ namespace Jinget.Core.ExtensionMethods.Database.SqlClient
         public static async Task<(IEnumerable<R> Data, int TotalCount)> QueryAsync<T, R>(this IDbConnection cnn, Where<T, R> sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
             => await ExecQueryAsync<R>(cnn, sql, param, transaction, commandTimeout, commandType);
 
-        public static (IEnumerable<R> Data, int TotalCount) Query<T, R>(this IDbConnection cnn, Select<T, R> sql, object? param = null, IDbTransaction? transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
-            => ExecQuery<R>(cnn, sql, param, transaction, buffered, commandTimeout, commandType);
+        public static (IEnumerable<R> Data, int TotalCount) Query<T, R>(this IDbConnection cnn, Select<T, R> sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+            => ExecQuery<R>(cnn, sql, param, transaction, commandTimeout, commandType);
 
-        public static (IEnumerable<R> Data, int TotalCount) Query<T, R>(this IDbConnection cnn, Where<T, R> sql, object? param = null, IDbTransaction? transaction = null, bool buffered = true, int? commandTimeout = null, CommandType? commandType = null)
-            => ExecQuery<R>(cnn, sql, param, transaction, buffered, commandTimeout, commandType);
+        public static (IEnumerable<R> Data, int TotalCount) Query<T, R>(this IDbConnection cnn, Where<T, R> sql, object? param = null, IDbTransaction? transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+            => ExecQuery<R>(cnn, sql, param, transaction, commandTimeout, commandType);
     }
 }

@@ -10,12 +10,13 @@ namespace Jinget.Core.Utilities.Json
     /// </summary>
     public class IgnorePropertiesResolver(IEnumerable<string> propNamesToIgnore) : DefaultContractResolver
     {
-        private readonly HashSet<string> _ignoreProps = new HashSet<string>(propNamesToIgnore);
+        private readonly HashSet<string> _ignoreProps = new(propNamesToIgnore);
 
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             JsonProperty property = base.CreateProperty(member, memberSerialization);
-            if (_ignoreProps.Contains(property.PropertyName))
+            if (!string.IsNullOrWhiteSpace(property.PropertyName) &&
+                _ignoreProps.Contains(property.PropertyName))
             {
                 property.ShouldSerialize = _ => false;
             }
