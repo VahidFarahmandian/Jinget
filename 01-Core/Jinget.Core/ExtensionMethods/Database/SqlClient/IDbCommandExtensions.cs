@@ -24,7 +24,8 @@ namespace Jinget.Core.ExtensionMethods.Database.SqlClient
                     case DbType.String:
                     case DbType.StringFixedLength:
                     case DbType.Xml:
-                        parameter.Value = parameter.Value.ToString().ApplyCorrectYeKe();
+                        if (parameter.Value != null)
+                            parameter.Value = parameter.Value.ToString().ApplyCorrectYeKe();
                         break;
                 }
             }

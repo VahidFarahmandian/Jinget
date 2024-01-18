@@ -13,7 +13,7 @@ namespace Jinget.Core.ExtensionMethods
         /// <summary>
         /// Replace Arabic ي and ك characters with their Farsi equalivants
         /// </summary>
-        public static string ApplyCorrectYeKe(this string data)
+        public static string ApplyCorrectYeKe(this string? data)
         {
             if (string.IsNullOrWhiteSpace(data))
                 return string.Empty;

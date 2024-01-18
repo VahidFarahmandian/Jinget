@@ -12,7 +12,7 @@ namespace Jinget.Core.ExtensionMethods.Enums
         /// Get Name property of Display attribute for a specific enum value
         /// If no Name is set on a field, then the stringfied value will be returned
         /// </summary>
-        public static string GetDisplayName(this Enum value)
+        public static string? GetDisplayName(this Enum value)
         {
             var fi = value.GetType().GetField(value.ToString());
             if (fi is null)

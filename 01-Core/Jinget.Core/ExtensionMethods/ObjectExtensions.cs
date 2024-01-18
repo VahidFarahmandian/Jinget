@@ -45,13 +45,13 @@ namespace Jinget.Core.ExtensionMethods
         /// <summary>
         /// Convert source object to dictionary(key=property name, value=property value)
         /// </summary>
-        public static Dictionary<string, object> ToDictionary(this object? source, Options? options = null)
+        public static Dictionary<string, object?> ToDictionary(this object? source, Options? options = null)
         {
             if (source == null)
                 return [];
             options ??= new Options();
 
-            Dictionary<string, object> result = [];
+            Dictionary<string, object?> result = [];
 
             foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(source))
             {
@@ -67,9 +67,7 @@ namespace Jinget.Core.ExtensionMethods
                 string key = property.Name;
                 if (!result.ContainsKey(key))
                 {
-#pragma warning disable CS8604 // Possible null reference argument.
                     result.Add(key, value);
-#pragma warning restore CS8604 // Possible null reference argument.
                 }
             }
 

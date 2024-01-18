@@ -15,11 +15,11 @@ namespace Jinget.Core.ExtensionMethods.Expressions
         /// <summary>
         /// Visit a boolean expression
         /// </summary>
-        private static (Expression LeftExpression, Expression RightExpression) Visit<T>(Expression<Func<T, bool>> leftExpression,
+        private static (Expression? LeftExpression, Expression? RightExpression) Visit<T>(Expression<Func<T, bool>> leftExpression,
             Expression<Func<T, bool>> rightExpression, ParameterExpression parameter)
         {
             ReplaceExpressionVisitor leftVisitor = new(leftExpression.Parameters[0], parameter);
-            Expression left = leftVisitor.Visit(leftExpression.Body);
+            Expression? left = leftVisitor.Visit(leftExpression.Body);
 
             var rightVisitor = new ReplaceExpressionVisitor(rightExpression.Parameters[0], parameter);
             var right = rightVisitor.Visit(rightExpression.Body);
@@ -37,8 +37,10 @@ namespace Jinget.Core.ExtensionMethods.Expressions
             if (expr2 is null) return expr1;
             var parameter = Expression.Parameter(typeof(T), parameterName);
 
-            (Expression LeftExpression, Expression RightExpression) = Visit(expr1, expr2, parameter);
+            (Expression? LeftExpression, Expression? RightExpression) = Visit(expr1, expr2, parameter);
+#pragma warning disable CS8604 // Possible null reference argument.
             return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(LeftExpression, RightExpression), parameter);
+#pragma warning restore CS8604 // Possible null reference argument.
         }
 
         /// <summary>
@@ -51,8 +53,10 @@ namespace Jinget.Core.ExtensionMethods.Expressions
             if (expr2 is null) return expr1;
             var parameter = Expression.Parameter(typeof(T), parameterName);
 
-            (Expression LeftExpression, Expression RightExpression) = Visit(expr1, expr2, parameter);
+            (Expression? LeftExpression, Expression? RightExpression) = Visit(expr1, expr2, parameter);
+#pragma warning disable CS8604 // Possible null reference argument.
             return Expression.Lambda<Func<T, bool>>(Expression.OrElse(LeftExpression, RightExpression), parameter);
+#pragma warning restore CS8604 // Possible null reference argument.
         }
     }
 }

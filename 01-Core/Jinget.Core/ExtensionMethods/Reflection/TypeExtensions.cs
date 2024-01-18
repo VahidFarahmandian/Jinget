@@ -32,14 +32,14 @@ namespace Jinget.Core.ExtensionMethods.Reflection
         /// Call method dynamically at runtime. 
         /// This overload used to call the public instance method
         /// </summary>
-        public static object Call(this Type type, object? caller, string name, object?[] parameters, params Type[] generics)
+        public static object? Call(this Type type, object? caller, string name, object?[] parameters, params Type[] generics)
             => type.Call(caller, name, BindingFlags.Public | BindingFlags.Instance, parameters, generics);
 
         /// <summary>
         /// Call method dynamically at runtime. 
         /// This overload used to call the public static method
         /// </summary>
-        public static object Call(this Type type, string name, object?[] parameters, params Type[] generics)
+        public static object? Call(this Type type, string name, object?[] parameters, params Type[] generics)
             => type.Call(null, name, BindingFlags.Public | BindingFlags.Static, parameters, generics);
 
         /// <summary>
@@ -51,9 +51,11 @@ namespace Jinget.Core.ExtensionMethods.Reflection
         /// <param name="parameters">parameters used to pass to the method</param>
         /// <param name="generics">if the mthod is a generic method, then generic types should be specified</param>
         /// <returns>Invoke the method and return the method's return value</returns>
-        public static object Call(this Type type, object? caller, string name, BindingFlags bindingFlags, object?[] parameters, params Type[] generics)
+        public static object? Call(this Type type, object? caller, string name, BindingFlags bindingFlags, object?[] parameters, params Type[] generics)
         {
             var method = type.GetMethod(name, bindingFlags);
+            if (method == null)
+                return null;
             if (generics != null)
                 method = method.MakeGenericMethod(generics);
             try
@@ -107,7 +109,7 @@ namespace Jinget.Core.ExtensionMethods.Reflection
         {
             // Validate parameters.
             if (type == null)
-                throw new ArgumentNullException("Jinget Says: " + nameof(type));
+                ArgumentNullException.ThrowIfNull(type, nameof(type));
 
             // We want an Func<object> which returns the default.
             // Create that expression here.

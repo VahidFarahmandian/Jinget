@@ -57,9 +57,9 @@
 </div>
 
 @code {
-    JingetMessageBox messageBox;
-    TableData<SampleDataEnglish> ModelLtr;
-    TableData<SampleDataFarsi> ModelRtl;
+    JingetMessageBox? messageBox;
+    TableData<SampleDataEnglish>? ModelLtr;
+    TableData<SampleDataFarsi>? ModelRtl;
 
     protected override void OnInitialized() { 
         ModelLtr = GetDataEnglish();

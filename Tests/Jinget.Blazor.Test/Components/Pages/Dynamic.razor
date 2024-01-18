@@ -38,10 +38,10 @@
         public SelectedDateRangeModel? Date { get; set; }
     }
 
-    JingetMessageBox messageBox;
-    public InquiryByDateFromViewModel Model1 { get; set; }
+    JingetMessageBox? messageBox;
+    public InquiryByDateFromViewModel? Model1 { get; set; }
 
-    public SampleModel Model { get; set; }
+    public SampleModel? Model { get; set; }
 
     protected override void OnInitialized()
     {
@@ -75,28 +75,28 @@
 
         }
         [JingetTextBox(DisplayName = "نام", HelperText = "نام خود را منطبق با اطلاعات کارت ملی وارد نمایید", Order =1)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [JingetTextBox(DisplayName = "نام خانوادگی", HelperText = "نام خانوادگی خود را منطبق با اطلاعات کارت ملی وارد نمایید", Order =2)]
-        public string LastName { get; init; }
+        public string? LastName { get; init; }
 
         [JingetPasswordBox(DisplayName = "رمز عبور", Order =3)]
-        public string Password { get; init; }
+        public string? Password { get; init; }
 
         [JingetEmailBox(DisplayName = "پست الکترونیکی",Order =4)]
-        public string EMail { get; init; }
+        public string? EMail { get; init; }
 
         [Attributes.Picker.JingetDatePicker(DisplayName = "تاریخ تولد",Culture ="fa-IR", Order =5)]
-        public string DoB { get; init; }
+        public string? DoB { get; init; }
 
         [Attributes.Picker.JingetDateRangePicker(DisplayName = "بازه زمانی سفر",Culture ="fa-IR", Order =6)]
-        public DateRange TravelDate { get; init; }
+        public DateRange? TravelDate { get; init; }
 
         [JingetLabel(DisplayName = "امتیاز اکتسابی", HasLabel = false)]
         public int Score { get; init; } = 1850;
 
         [JingetTextArea(DisplayName = "اطلاعات بیشتر", Rows =3)]
-        public string Description { get; init; }
+        public string? Description { get; init; }
 
         [JingetNumberBox(DisplayName = "سن", Order =7)]
         public int Age { get; set; }

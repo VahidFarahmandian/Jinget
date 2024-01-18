@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.Threading;
 
 namespace Jinget.Logger.Providers
 {
@@ -42,7 +41,7 @@ namespace Jinget.Logger.Providers
 
         public void Dispose()
         {
-            Stop();
+            StopAsync().GetAwaiter().GetResult();
             GC.SuppressFinalize(this);
         }
 
@@ -50,7 +49,7 @@ namespace Jinget.Logger.Providers
 
         protected abstract Task WriteMessagesAsync(IEnumerable<LogMessage> messages, CancellationToken token);
 
-        private async Task ProcessLogQueueAsync(object state)
+        private async Task ProcessLogQueueAsync()
         {
             while (!_cancellationTokenSource.IsCancellationRequested)
             {
@@ -86,7 +85,7 @@ namespace Jinget.Logger.Providers
         internal void AddMessage(DateTimeOffset timestamp, LogMessage message)
 #pragma warning restore IDE0060 // Remove unused parameter
         {
-            if (message.Severity >= LogLevel.Information && _blacklistStrings.Any(message.ToString().Contains))
+            if (message.Severity >= Microsoft.Extensions.Logging.LogLevel.Information && _blacklistStrings.Any(message.ToString().Contains))
                 return;
 
             if (!_messageQueue.IsAddingCompleted)
@@ -109,18 +108,19 @@ namespace Jinget.Logger.Providers
             _cancellationTokenSource = new CancellationTokenSource();
             _outputTask = Task.Factory.StartNew(
                 ProcessLogQueueAsync,
-                null,
-                TaskCreationOptions.LongRunning);
+                _cancellationTokenSource.Token,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
         }
 
-        private void Stop()
+        private async Task StopAsync()
         {
             _cancellationTokenSource.Cancel();
             _messageQueue.CompleteAdding();
 
             try
             {
-                _outputTask.Wait(_interval);
+                await _outputTask.WaitAsync(_interval);
             }
             catch (TaskCanceledException)
             {

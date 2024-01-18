@@ -24,13 +24,15 @@ namespace Jinget.Core.ExpressionToSql.Internal
         /// </summary>
         public QueryBuilder Take(int count)
         {
-            _sb.Append(" TOP ").Append(count);
+            if (count >= 0)
+                _sb.Append(" TOP ").Append(count);
             return this;
         }
 
         public QueryBuilder AddParameter(string parameterName)
         {
-            _sb.Append(" @").Append(parameterName);
+            if (!string.IsNullOrWhiteSpace(parameterName))
+                _sb.Append(" @").Append(parameterName);
             return this;
         }
 
@@ -39,6 +41,9 @@ namespace Jinget.Core.ExpressionToSql.Internal
         /// </summary>
         public QueryBuilder AddAttribute(string attributeName, string aliasName = AliasName)
         {
+            if (string.IsNullOrWhiteSpace(attributeName))
+                return this;
+
             _sb.Append(' ');
 
             if (!string.IsNullOrWhiteSpace(aliasName))
@@ -67,7 +72,8 @@ namespace Jinget.Core.ExpressionToSql.Internal
 
         public QueryBuilder Remove(int count = 1)
         {
-            _sb.Length -= count;
+            if (count > 0)
+                _sb.Length -= count;
             return this;
         }
 
@@ -76,6 +82,9 @@ namespace Jinget.Core.ExpressionToSql.Internal
         /// </summary>
         public QueryBuilder AddTable(Table table, string aliasName = AliasName)
         {
+            if (table == null)
+                return this;
+
             _sb.Append(" FROM ");
 
             if (!string.IsNullOrWhiteSpace(table.Schema))
@@ -93,13 +102,20 @@ namespace Jinget.Core.ExpressionToSql.Internal
             return this;
         }
 
-        internal void AppendCondition(string condition) => _sb.Append(" WHERE ").Append(condition);
+        internal void AppendCondition(string condition)
+        {
+            if (!string.IsNullOrWhiteSpace(condition))
+                _sb.Append(" WHERE ").Append(condition);
+        }
 
         /// <summary>
         /// Add [ and ] to column, table and function names
         /// </summary>
         private void AppendEscapedValue(string attributeName)
         {
+            if (string.IsNullOrWhiteSpace(attributeName))
+                return;
+
             if (attributeName.StartsWith("[") && attributeName.EndsWith("]"))
             {
                 _sb.Append(attributeName);
