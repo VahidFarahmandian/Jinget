@@ -2,6 +2,7 @@
 # Jinget.Core.DiScanner
 Using this library, you can easily register your source code dependencies automatically without the need to write repetitive and annoying codes.
 
+Attention: This package is build based on `Autofac` assembly scanning. 
 
 ## How to Use:
 
