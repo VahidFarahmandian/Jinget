@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<Authors>Vahid Farahmandian</Authors>
+		<RepositoryUrl>https://github.com/VahidFarahmandian/Jinget</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Description>Explore your source code to register and resolve Dependency Injection automatically</Description>
+		<Copyright>All Rights Reserved</Copyright>
+		<PackageIcon>icon.png</PackageIcon>
+		<Company>Jinget</Company>
+		<Product>Jinget</Product>
+		<Title>Jinget Core</Title>
+		<PackageProjectUrl>https://github.com/VahidFarahmandian/Jinget</PackageProjectUrl>
+		<PackageTags>jinget, di, dependency injection, asp.net core, .net core, .net</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="8.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="assets\icon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+</Project>
