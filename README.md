@@ -19,11 +19,13 @@ Jinget provides the following benefits:
 - Auto injected security considerations based on OWASP Top 10
 
 # Which parts are available now:
+
 - Jinget.Core: Contains some very useful extension methods and helper classes.
+- Jinget.Core.DiScanner: Helps you to automatically register your source code dependencies without the need to write repetitive and annoying codes
 - Jinget.Handlers.ExternalServiceHandlers: Helps you to consume different types of Web APIs and SOAP web services with ease of use.
 - Jinget.Logger: Helps you to store your log messages into Elasticsearch or files
-- Jinget.Blazor: Contains some useful components optimised for RTL languages (On the way to open source)
-
+- Jinget.Blazor: Contains some useful components optimised for RTL languages.
+  
 # How to install
 In order to install Jinget please refer to [nuget.org](https://www.nuget.org/profiles/Jinget "nuget.org")
 
