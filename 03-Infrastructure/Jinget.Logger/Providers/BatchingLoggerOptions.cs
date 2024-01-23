@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 
 namespace Jinget.Logger.Providers
 {
@@ -8,6 +9,19 @@ namespace Jinget.Logger.Providers
         private int? _batchSize = 32;
         private string[] _blacklistStrings = Array.Empty<string>();
         private TimeSpan _flushPeriod = TimeSpan.FromSeconds(1);
+        private LogLevel[] allowedLogLevels;
+
+        public LogLevel[] AllowedLogLevels
+        {
+            get => allowedLogLevels;
+            set => allowedLogLevels = value ?? new LogLevel[] {
+                LogLevel.Debug,
+                LogLevel.Warning,
+                LogLevel.Trace,
+            LogLevel.Error,
+            LogLevel.Information,
+            LogLevel.Critical};
+        }
 
         /// <summary>
         ///     Gets or sets the period after which logs will be flushed to the store.

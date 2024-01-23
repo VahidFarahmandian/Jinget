@@ -11,7 +11,7 @@ var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, t
 
 var blacklist = config.GetSection("logging:BlackList").Get<string[]>();
 
-builder.Host.LogToElasticSearch(blacklist);
+builder.Host.LogToElasticSearch(blacklist, [LogLevel.Critical, LogLevel.Error]);
 var elasticSearchSetting = new ElasticSearchSettingModel
 {
     CreateIndexPerPartition = true,

@@ -11,6 +11,7 @@ namespace Jinget.Logger.Providers
 {
     public abstract class BatchingLoggerProvider : ILoggerProvider
     {
+        private readonly LogLevel[] _allowedLogLevels;
         private readonly int? _batchSize;
         private readonly string[] _blacklistStrings;
         private readonly List<LogMessage> _currentBatch = new();
@@ -35,6 +36,7 @@ namespace Jinget.Logger.Providers
             _batchSize = loggerOptions.BatchSize;
             _queueSize = loggerOptions.BackgroundQueueSize;
             _blacklistStrings = loggerOptions.BlackListStrings ?? Array.Empty<string>();
+            _allowedLogLevels = loggerOptions.AllowedLogLevels;
 
             Start();
         }
@@ -85,7 +87,12 @@ namespace Jinget.Logger.Providers
         internal void AddMessage(DateTimeOffset timestamp, LogMessage message)
 #pragma warning restore IDE0060 // Remove unused parameter
         {
-            if (message.Severity >= Microsoft.Extensions.Logging.LogLevel.Information && _blacklistStrings.Any(message.ToString().Contains))
+            //if log severity level is not allowed then ignore it
+            if (!_allowedLogLevels.Contains(message.Severity))
+                return;
+
+            //if log contains blacklist string then ignore it
+            if (_blacklistStrings.Any(message.ToString().Contains))
                 return;
 
             if (!_messageQueue.IsAddingCompleted)

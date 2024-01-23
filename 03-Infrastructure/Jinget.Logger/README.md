@@ -20,6 +20,8 @@ builder.Host.LogToElasticSearch<OperationLog, ErrorLog, CustomLog>(blacklist);
 ```
 `blacklist`: Log messages contain the blacklist array items will not logged.
 
+`allowedLoglevels`: Defines an array contains allowed log levels. If log's severity exists in this array, then it will be saved in elasticsearch otherwise it will be ignored. If this parameter not set, then all log levels will be allowed.
+
 After setting the logging destination, you need to configure Elasticsearch:
 ```csharp
 builder.Services.ConfigureElasticSearchLogger<OperationLog, ErrorLog, CustomLog>(
@@ -185,6 +187,8 @@ builder.Host.LogToFile(blacklist, fileNamePrefix: "Log-", logDirectory: "D:\\log
 ```
 
 `blacklist`: Log messages contain the blacklist array items will not logged.
+
+`allowedLoglevels`: Defines an array contains allowed log levels. If log's severity exists in this array, then it will be saved in file otherwise it will be ignored. If this parameter not set, then all log levels will be allowed.
 
 `fileNamePrefix`: Gets or sets the filename prefix to use for log files. Defaults is `logs-`
 

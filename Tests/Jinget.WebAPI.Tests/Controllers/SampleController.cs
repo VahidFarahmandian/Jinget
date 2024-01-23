@@ -11,7 +11,7 @@ public class SampleController(ILogger<SampleController> logger) : ControllerBase
     [HttpPost]
     public SampleModel Save(SampleModel model)
     {
-        Logger.LogDebug("Sample Custom message!");
+        Logger.LogInformation("Sample Custom message!");
         return model;
     }
 
