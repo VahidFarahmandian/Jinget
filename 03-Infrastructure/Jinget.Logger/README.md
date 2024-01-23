@@ -53,17 +53,16 @@ If you want to use partition key, instead of predefined/custom models, then you 
 ```csharp
 builder.Host.LogToElasticSearch(blacklist);
 ...
-builder.Services.ConfigureElasticSearchLogger(
-    new ElasticSearchSettingModel
-    {
-        CreateIndexPerPartition = true,
-        UserName = <authentication username>,
-        Password = <authentication password>,
-        Url = <ElasticSearch Url>,
-        UseSsl = <true|false>,
-        RegisterDefaultLogModels = <true|false>,
-        DiscoveryTypes = new List<Type> { typeof(OperationLog) }
-    });
+
+var elasticSearchSetting = new ElasticSearchSettingModel
+{
+    CreateIndexPerPartition = true,
+    UserName = <authentication username>,
+    Password = <authentication password>,
+    Url = <ElasticSearch Url>,
+    UseSsl = <true|false>
+};
+builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
 ```
 
 And finally you need to add the Jinget.Logger middleware to your pipeline:
@@ -71,14 +70,14 @@ And finally you need to add the Jinget.Logger middleware to your pipeline:
 app.UseJingetLogging();
 ```
 
-If you are using partition key, then you need to set your partition key before calling `app.UseJingetLogging()`. LIke below:
+If you are using partition key, then you need to set your partition key before calling `app.UseJingetLogging()`. Like below:
 ```csharp
 app.UseWhen(p => elasticSearchSetting.CreateIndexPerPartition, appBuilder =>
 {
     appBuilder.Use(async (context, next) =>
     {
+        //define the partitioning logic
         bool partitionKeyExists = context.Request.Headers.TryGetValue("jinget.client_id", out StringValues partitionKey);
-
         if (partitionKeyExists)
             context.Items.Add("jinget.log.partitionkey", $"test.{partitionKey}");
 
@@ -92,7 +91,7 @@ For example in the above code, logs will be partitioned based on the `jinget.cli
 $"{AppDomain.CurrentDomain.FriendlyName}.{typeof(TModelType).Name}".ToLower();
 ```
 
-Here is the complete configuration for a .NET 7.0 Web API application:
+Here is the complete configuration for a .NET Web API application:
 
 Without Partitioning:
 
@@ -108,16 +107,17 @@ var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, t
 var blacklist = config.GetSection("logging:BlackList").Get<string[]>();
 builder.Host.LogToElasticSearch<OperationLog, ErrorLog, CustomLog>(blacklist);
 
-builder.Services.ConfigureElasticSearchLogger<OperationLog, ErrorLog, CustomLog>(
-    new ElasticSearchSettingModel
-    {
-        UserName = "myuser",
-        Password = "mypass",
-        Url = "192.168.1.1:9200",
-        UseSsl = false,
-        RegisterDefaultLogModels = false,
-        DiscoveryTypes = new List<Type> { typeof(OperationLog) }
-    });
+var elasticSearchSetting = new ElasticSearchSettingModel
+{
+    UserName = "myuser",
+    Password = "mypass",
+    Url = "192.168.1.1:9200",
+    UseSsl = false,
+    RegisterDefaultLogModels = false,
+    DiscoveryTypes = new List<Type> { typeof(OperationLog) }
+};
+builder.Services.ConfigureElasticSearchLogger<OperationLog, ErrorLog, CustomLog>(elasticSearchSetting);
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -145,15 +145,16 @@ var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, t
 var blacklist = config.GetSection("logging:BlackList").Get<string[]>();
 
 builder.Host.LogToElasticSearch(blacklist);
-builder.Services.ConfigureElasticSearchLogger(
-    new ElasticSearchSettingModel
-    {
-        CreateIndexPerPartition = true,
-        UserName = "myuser",
-        Password = "mypass",
-        Url = "192.168.1.1:9200",
-        UseSsl = false
-    });
+var elasticSearchSetting = new ElasticSearchSettingModel
+{
+    CreateIndexPerPartition = true,
+    UserName = "myuser",
+    Password = "mypass",
+    Url = "192.168.1.1:9200",
+    UseSsl = false
+};
+builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -164,7 +165,6 @@ app.UseWhen(p => elasticSearchSetting.CreateIndexPerPartition, appBuilder =>
     appBuilder.Use(async (context, next) =>
     {
         bool partitionKeyExists = context.Request.Headers.TryGetValue("jinget.client_id", out StringValues partitionKey);
-
         if (partitionKeyExists)
             context.Items.Add("jinget.log.partitionkey", $"test.{partitionKey}");
 
@@ -185,17 +185,21 @@ builder.Host.LogToFile(blacklist, fileNamePrefix: "Log-", logDirectory: "D:\\log
 ```
 
 `blacklist`: Log messages contain the blacklist array items will not logged.
-`FileNamePrefix`: Gets or sets the filename prefix to use for log files. Defaults is `logs-`
-`LogDirectory`: The directory in which log files will be written, relative to the app process. Default is `Logs` directory.
-`RetainedFileCountLimit`: Gets or sets a strictly positive value representing the maximum retained file count or null for no limit. Defaults is 2 files.
-`FileSizeLimit`: Gets or sets a strictly positive value representing the maximum log size in MB or null for no limit. Once the log is full, no more messages will be appended. Defaults is `10MB`.
+
+`fileNamePrefix`: Gets or sets the filename prefix to use for log files. Defaults is `logs-`
+
+`logDirectory`: The directory in which log files will be written, relative to the app process. Default is `Logs` directory.
+
+`retainedFileCountLimit`: Gets or sets a strictly positive value representing the maximum retained file count or null for no limit. Defaults is 2 files.
+
+`fileSizeLimit`: Gets or sets a strictly positive value representing the maximum log size in MB or null for no limit. Once the log is full, no more messages will be appended. Defaults is `10MB`.
 
 After setting the logging destination, you need to configure Elasticsearch:
 ```csharp
 builder.Services.ConfigureFileLogger();
 ```
 
-Here is the complete configuration for a .NET 7.0 Web API application:
+Here is the complete configuration for a .NET Web API application:
 ```csharp
 using Jinget.Core.Filters;
 using Jinget.Logger.Configuration;
