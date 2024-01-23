@@ -47,7 +47,7 @@ When you are working with your own custom types, if you want to create index for
 
 `DiscoveryTypes`: Foreach type specified in this list, an index in Elasticsearch will be created
 
-`CreateIndexPerPartition`: Create index per partition using HttpContext.Items["jinget.log.partitionkey"] value. If this mode is selected, then `RegisterDefaultLogModels` and also `DiscoveryTypes` will not be used. If this mode is selected, then index creation will be deferred until the first document insertion. foeach partition key, a separated index will be created. all of the indexes will share the same data model. for request/response logs, `Entities.Log.OperationLog` will be used. for errors, `Entities.Log.ErrorLog` will be used. for custom logs, `Entities.Log.CustomLog` will be used.
+`CreateIndexPerPartition`: Create index per partition using HttpContext.Items["jinget.log.partitionkey"] value. If this mode is selected, then `RegisterDefaultLogModels` and also `DiscoveryTypes` will not be used. If this mode is selected, then index creation will be deferred until the first document insertion. foreach partition key, a separated index will be created. all of the indexes will share the same data model. for request/response logs, `Entities.Log.OperationLog` will be used. for errors, `Entities.Log.ErrorLog` will be used. for custom logs, `Entities.Log.CustomLog` will be used.
 
 If you want to use partition key, instead of predefined/custom models, then you do not need to pass the generic types. Just like below:
 ```csharp
