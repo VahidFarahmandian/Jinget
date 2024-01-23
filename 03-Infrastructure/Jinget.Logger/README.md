@@ -93,6 +93,19 @@ For example in the above code, logs will be partitioned based on the `jinget.cli
 $"{AppDomain.CurrentDomain.FriendlyName}.{typeof(TModelType).Name}".ToLower();
 ```
 
+When using partition key, index names will be constructed as below:
+
+```csharp
+//for operation log
+$"op.{partitionKey}".ToLower();
+
+//for error log
+$"err.{partitionKey}".ToLower();
+
+//for custom log
+$"cus.{partitionKey}".ToLower();
+```
+
 Here is the complete configuration for a .NET Web API application:
 
 Without Partitioning:
