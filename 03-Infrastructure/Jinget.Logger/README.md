@@ -185,10 +185,14 @@ builder.Host.LogToFile(blacklist, fileNamePrefix: "Log-", logDirectory: "D:\\log
 ```
 
 `blacklist`: Log messages contain the blacklist array items will not logged.
-`FileNamePrefix`: Gets or sets the filename prefix to use for log files. Defaults is `logs-`
-`LogDirectory`: The directory in which log files will be written, relative to the app process. Default is `Logs` directory.
-`RetainedFileCountLimit`: Gets or sets a strictly positive value representing the maximum retained file count or null for no limit. Defaults is 2 files.
-`FileSizeLimit`: Gets or sets a strictly positive value representing the maximum log size in MB or null for no limit. Once the log is full, no more messages will be appended. Defaults is `10MB`.
+
+`fileNamePrefix`: Gets or sets the filename prefix to use for log files. Defaults is `logs-`
+
+`logDirectory`: The directory in which log files will be written, relative to the app process. Default is `Logs` directory.
+
+`retainedFileCountLimit`: Gets or sets a strictly positive value representing the maximum retained file count or null for no limit. Defaults is 2 files.
+
+`fileSizeLimit`: Gets or sets a strictly positive value representing the maximum log size in MB or null for no limit. Once the log is full, no more messages will be appended. Defaults is `10MB`.
 
 After setting the logging destination, you need to configure Elasticsearch:
 ```csharp
