@@ -64,20 +64,19 @@ namespace Jinget.Logger.Configuration.Middlewares.ElasticSearch
 
         static ElasticClient CreateClient(ElasticSearchSettingModel elasticSearchSetting)
         {
-            Uri elasticUrl;
+            ConnectionSettings connectionSettings;
+            string protocol = elasticSearchSetting.UseSsl ? "https" : "http";
             if (string.IsNullOrEmpty(elasticSearchSetting.UserName) && string.IsNullOrEmpty(elasticSearchSetting.Password))
-                elasticUrl = new Uri(elasticSearchSetting.Url);
+                connectionSettings = new ConnectionSettings(new Uri($"{protocol}://{elasticSearchSetting.Url}"))
+                .DefaultDisableIdInference(true);
             else
             {
-                string protocol = elasticSearchSetting.UseSsl ? "https" : "http";
-                elasticUrl =
-                    new Uri(
-                        $"{protocol}://{elasticSearchSetting.UserName}:{elasticSearchSetting.Password}@{elasticSearchSetting.Url}");
+                connectionSettings = new ConnectionSettings(new Uri($"{protocol}://{elasticSearchSetting.Url}"))
+                .BasicAuthentication(elasticSearchSetting.UserName, elasticSearchSetting.Password)
+                .DefaultDisableIdInference(true);
             }
 
-            ConnectionSettings settings = new ConnectionSettings(elasticUrl).DefaultDisableIdInference(true);
-
-            var client = new ElasticClient(settings);
+            var client = new ElasticClient(connectionSettings);
 
             return client;
         }

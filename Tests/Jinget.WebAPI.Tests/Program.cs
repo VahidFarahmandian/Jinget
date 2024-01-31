@@ -16,7 +16,7 @@ var elasticSearchSetting = new ElasticSearchSettingModel
 {
     CreateIndexPerPartition = true,
     UserName = "elastic",
-    Password = "123456",
+    Password = "Aa@123456",
     Url = "localhost:9200",
     UseSsl = false
 };
