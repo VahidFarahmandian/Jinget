@@ -36,13 +36,13 @@ builder.Services.ConfigureElasticSearchLogger<OperationLog, ErrorLog, CustomLog>
     });
 ```
 
-`Url`: Elasticsearch service url. If authentication is enabled, this address should not contains the PROTOCOL itself. Use 'abc.com' instead of 'http://abc.com'
+`Url`: Elasticsearch service url. This address should not contains the PROTOCOL itself. Use 'abc.com:9200' instead of 'http://abc.com:9200'
 
-`UserName`: Username, if authentication enabled on Elasticsearch service
+`UserName`: Username, if basic authentication enabled on Elasticsearch search service
 
-`Password`: Password, if authentication enabled on Elasticsearch service
+`Password`: Password, if basic authentication enabled on Elasticsearch search service
 
-`UseSsl`: Use HTTP or HTTPS, if authentication enabled on Elasticsearch service.
+`UseSsl`: Set whether to use SSL while connecting to Elasticsearch or not
 
 `RegisterDefaultLogModels`: You can configure logging using your own models instead of `OperationLog`, `ErrorLog` or `CustomLog`. In order to do so, you can simple create derived types and use them instead of these types.
 When you are working with your own custom types, if you want to create index for default log models, you can set the `RegisterDefaultLogModels` property to `true`, otherwise you can set it as `false`.
