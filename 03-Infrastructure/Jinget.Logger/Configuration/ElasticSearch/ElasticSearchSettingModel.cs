@@ -6,22 +6,22 @@ namespace Jinget.Logger.Configuration.Middlewares.ElasticSearch
     public class ElasticSearchSettingModel
     {
         /// <summary>
-        /// elastic search service url. If authentication is enabled, this address should not contains the PROTOCOL itself. Use 'abc.com' instead of 'http://abc.com'
+        /// Elasticsearch service url. This address should not contains the PROTOCOL itself. Use 'abc.com:9200' instead of 'http://abc.com:9200'
         /// </summary>
-        public string Url { get; set; } = "http://localhost:9200";
+        public string Url { get; set; } = "localhost:9200";
 
         /// <summary>
-        /// username, if authentication enabled on elastic search service
+        /// username, if basic authentication enabled on Elasticsearch search service
         /// </summary>
         public string UserName { get; set; }
 
         /// <summary>
-        /// password, if authentication enabled on elastic search service
+        /// password, if basic authentication enabled on Elasticsearch search service
         /// </summary>
         public string Password { get; set; }
 
         /// <summary>
-        /// use HTTP or HTTPS, if authentication enabled on elastic search service
+        /// Set whether to use SSL while connecting to Elasticsearch or not
         /// </summary>
         public bool UseSsl { get; set; } = false;
 

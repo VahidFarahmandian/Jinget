@@ -66,12 +66,13 @@ namespace Jinget.Logger.Configuration.Middlewares.ElasticSearch
         {
             ConnectionSettings connectionSettings;
             string protocol = elasticSearchSetting.UseSsl ? "https" : "http";
+            Uri elasticUrl = new($"{protocol}://{elasticSearchSetting.Url}");
             if (string.IsNullOrEmpty(elasticSearchSetting.UserName) && string.IsNullOrEmpty(elasticSearchSetting.Password))
-                connectionSettings = new ConnectionSettings(new Uri($"{protocol}://{elasticSearchSetting.Url}"))
+                connectionSettings = new ConnectionSettings(elasticUrl)
                 .DefaultDisableIdInference(true);
             else
             {
-                connectionSettings = new ConnectionSettings(new Uri($"{protocol}://{elasticSearchSetting.Url}"))
+                connectionSettings = new ConnectionSettings(elasticUrl)
                 .BasicAuthentication(elasticSearchSetting.UserName, elasticSearchSetting.Password)
                 .DefaultDisableIdInference(true);
             }
