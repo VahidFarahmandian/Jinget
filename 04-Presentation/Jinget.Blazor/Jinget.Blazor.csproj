@@ -27,8 +27,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Jinget.Core" Version="6.1.0" />
-		<PackageReference Include="MudBlazor" Version="6.12.0" />
-		<PackageReference Include="SkiaSharp" Version="2.88.7" />
+		<PackageReference Include="MudBlazor" Version="6.19.1" />
+		<PackageReference Include="SkiaSharp" Version="2.88.8" />
 		<PackageReference Include="Texnomic.Blazor.JsonViewer" Version="0.1.0" />
 	</ItemGroup>
 
