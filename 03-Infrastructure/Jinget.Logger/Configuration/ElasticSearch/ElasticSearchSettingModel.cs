@@ -26,6 +26,11 @@ namespace Jinget.Logger.Configuration.Middlewares.ElasticSearch
         public bool UseSsl { get; set; } = false;
 
         /// <summary>
+        /// Set whether to validate ssl certificate or not.
+        /// </summary>
+        public bool BypassCertificateValidation { get; set; } = true;
+
+        /// <summary>
         /// foreach type specified in this list, an index in Elasticsearch will be created
         /// </summary>
         public List<Type> DiscoveryTypes { get; set; }

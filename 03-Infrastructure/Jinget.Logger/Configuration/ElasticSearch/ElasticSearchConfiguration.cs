@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using Elasticsearch.Net;
 using Jinget.Core.Attributes;
 using Jinget.Core.Exceptions;
 using Jinget.Logger.Entities;
@@ -72,9 +74,17 @@ namespace Jinget.Logger.Configuration.Middlewares.ElasticSearch
                 .DefaultDisableIdInference(true);
             else
             {
-                connectionSettings = new ConnectionSettings(elasticUrl)
-                .BasicAuthentication(elasticSearchSetting.UserName, elasticSearchSetting.Password)
-                .DefaultDisableIdInference(true);
+                if (elasticSearchSetting.UseSsl && elasticSearchSetting.BypassCertificateValidation)
+                {
+                    connectionSettings = new ConnectionSettings(elasticUrl)
+                        .BasicAuthentication(elasticSearchSetting.UserName, elasticSearchSetting.Password)
+                        .ServerCertificateValidationCallback(CertificateValidations.AllowAll)
+                        .DefaultDisableIdInference(true);
+                }
+                else
+                    connectionSettings = new ConnectionSettings(elasticUrl)
+                        .BasicAuthentication(elasticSearchSetting.UserName, elasticSearchSetting.Password)
+                        .DefaultDisableIdInference(true);
             }
 
             var client = new ElasticClient(connectionSettings);
