@@ -11,16 +11,21 @@ namespace Jinget.Logger.Providers
         private TimeSpan _flushPeriod = TimeSpan.FromSeconds(1);
         private LogLevel[] allowedLogLevels;
 
+        /// <summary>
+        /// Defines what log levels should processed
+        /// Defaults to <c>Trace, Debug, Information, Warning, Error, Critical</c>
+        /// </summary>
         public LogLevel[] AllowedLogLevels
         {
             get => allowedLogLevels;
             set => allowedLogLevels = value ?? new LogLevel[] {
-                LogLevel.Debug,
-                LogLevel.Warning,
                 LogLevel.Trace,
-            LogLevel.Error,
-            LogLevel.Information,
-            LogLevel.Critical};
+                LogLevel.Debug,
+                LogLevel.Information,
+                LogLevel.Warning,
+                LogLevel.Error,
+                LogLevel.Critical
+            };
         }
 
         /// <summary>

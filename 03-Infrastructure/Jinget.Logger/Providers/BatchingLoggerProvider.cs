@@ -36,7 +36,14 @@ namespace Jinget.Logger.Providers
             _batchSize = loggerOptions.BatchSize;
             _queueSize = loggerOptions.BackgroundQueueSize;
             _blacklistStrings = loggerOptions.BlackListStrings ?? Array.Empty<string>();
-            _allowedLogLevels = loggerOptions.AllowedLogLevels;
+            _allowedLogLevels = loggerOptions.AllowedLogLevels ?? new LogLevel[] {
+                LogLevel.Trace,
+                LogLevel.Debug,
+                LogLevel.Information,
+                LogLevel.Warning,
+                LogLevel.Error,
+                LogLevel.Critical
+            };
 
             Start();
         }
@@ -83,9 +90,7 @@ namespace Jinget.Logger.Providers
 
         protected virtual Task IntervalAsync(TimeSpan interval, CancellationToken cancellationToken) => Task.Delay(interval, cancellationToken);
 
-#pragma warning disable IDE0060 // Remove unused parameter
         internal void AddMessage(DateTimeOffset timestamp, LogMessage message)
-#pragma warning restore IDE0060 // Remove unused parameter
         {
             //if log severity level is not allowed then ignore it
             if (!_allowedLogLevels.Contains(message.Severity))
