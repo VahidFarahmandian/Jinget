@@ -1,7 +1,6 @@
-﻿namespace Jinget.Core.ResponseResults.Messages
+﻿namespace Jinget.Core.ResponseResults.Messages;
+
+public class CustomMessageModel(string message)
 {
-    public class CustomMessageModel(string message)
-    {
-        public string Error { get; } = message;
-    }
+    public string Error { get; } = message;
 }

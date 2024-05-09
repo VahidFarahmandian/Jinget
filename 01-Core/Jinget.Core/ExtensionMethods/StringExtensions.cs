@@ -1,38 +1,37 @@
 ﻿using System.Linq;
 
-namespace Jinget.Core.ExtensionMethods
+namespace Jinget.Core.ExtensionMethods;
+
+public static class StringExtensions
 {
-    public static class StringExtensions
+    static readonly char[] ArabicYeChar = [(char)1610, 'ي'];
+    const char PersianYeChar = (char)1740;
+
+    static readonly char[] ArabicKeChar = [(char)1603, 'ك'];
+    const char PersianKeChar = (char)1705;
+
+    /// <summary>
+    /// Replace Arabic ي and ك characters with their Farsi equalivants
+    /// </summary>
+    public static string ApplyCorrectYeKe(this string? data)
     {
-        static readonly char[] ArabicYeChar = [(char)1610, 'ي'];
-        const char PersianYeChar = (char)1740;
+        if (string.IsNullOrWhiteSpace(data))
+            return string.Empty;
 
-        static readonly char[] ArabicKeChar = [(char)1603, 'ك'];
-        const char PersianKeChar = (char)1705;
+        data = ArabicYeChar.Aggregate(data, (current, ye) => current.Replace(ye, PersianYeChar).Trim());
 
-        /// <summary>
-        /// Replace Arabic ي and ك characters with their Farsi equalivants
-        /// </summary>
-        public static string ApplyCorrectYeKe(this string? data)
-        {
-            if (string.IsNullOrWhiteSpace(data))
-                return string.Empty;
+        data = ArabicKeChar.Aggregate(data, (current, ke) => current.Replace(ke, PersianKeChar).Trim());
 
-            data = ArabicYeChar.Aggregate(data, (current, ye) => current.Replace(ye, PersianYeChar).Trim());
+        return data;
+    }
 
-            data = ArabicKeChar.Aggregate(data, (current, ke) => current.Replace(ke, PersianKeChar).Trim());
-
-            return data;
-        }
-
-        /// <summary>
-        /// Convert string to camelCase string
-        /// </summary>
-        public static string ToCamelCase(this string value)
-        {
-            if (string.IsNullOrEmpty(value))
-                return value;
-            return char.ToLowerInvariant(value[0]) + value[1..];
-        }
+    /// <summary>
+    /// Convert string to camelCase string
+    /// </summary>
+    public static string ToCamelCase(this string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return value;
+        return char.ToLowerInvariant(value[0]) + value[1..];
     }
 }

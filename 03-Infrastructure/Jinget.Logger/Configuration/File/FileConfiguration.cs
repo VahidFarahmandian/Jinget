@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Jinget.Logger.Configuration
+namespace Jinget.Logger.Configuration;
+
+public static class FileConfiguration
 {
-    public static class FileConfiguration
-    {
-        public static void ConfigureFileLogger(this IServiceCollection services) => services.ConfigurePrerequisites();
-    }
+    public static void ConfigureFileLogger(this IServiceCollection services) => services.ConfigurePrerequisites();
 }

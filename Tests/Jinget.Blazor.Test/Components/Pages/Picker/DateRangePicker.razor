@@ -16,14 +16,14 @@
         </div>
     </div>
     @if (selectedDateRange_1 != null)
-    {
-        <div class="row">
+{
+    <div class="row">
             <p>
                 From: @selectedDateRange_1.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_1.DateRange?.End?.ToString("yyyy/MM/dd") /
                 From: @selectedDateRange_1.StartDateJalali To: @selectedDateRange_1.EndDateJalali
             </p>
         </div>
-    }
+}
 
     <hr />
     <div class="row">
@@ -37,14 +37,14 @@
         </div>
     </div>
     @if (selectedDateRange_2 != null)
-    {
-        <div class="row">
+{
+    <div class="row">
             <p>
                 From: @selectedDateRange_2.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_2.DateRange?.End?.ToString("yyyy/MM/dd") /
                 From: @selectedDateRange_2.StartDateJalali To: @selectedDateRange_2.EndDateJalali
             </p>
         </div>
-    }
+}
     <hr />
     <div class="row">
         en-US culture with custom label
@@ -58,14 +58,14 @@
         </div>
     </div>
     @if (selectedDateRange_3 != null)
-    {
-        <div class="row">
+{
+    <div class="row">
             <p>
                 From: @selectedDateRange_3.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_3.DateRange?.End?.ToString("yyyy/MM/dd") /
                 From: @selectedDateRange_3.StartDateJalali To: @selectedDateRange_3.EndDateJalali
             </p>
         </div>
-    }
+}
     <hr />
     <div class="row">
         Arabic Date Picker(Saudi Arabia)
@@ -77,14 +77,14 @@
         </div>
     </div>
     @if (selectedDateRange_4 != null)
-    {
-        <div class="row">
+{
+    <div class="row">
             <p>
                 From: @selectedDateRange_4.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_4.DateRange?.End?.ToString("yyyy/MM/dd") /
                 From: @selectedDateRange_4.StartDateJalali To: @selectedDateRange_4.EndDateJalali
             </p>
         </div>
-    }
+}
     <hr />
     <div class="row">
         Chinese Date Picker
@@ -97,14 +97,14 @@
         </div>
     </div>
     @if (selectedDateRange_5 != null)
-    {
-        <div class="row">
+{
+    <div class="row">
             <p>
                 From: @selectedDateRange_5.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_5.DateRange?.End?.ToString("yyyy/MM/dd") /
                 From: @selectedDateRange_5.StartDateJalali To: @selectedDateRange_5.EndDateJalali
             </p>
         </div>
-    }
+}
     <hr />
     <div class="row">
         Min/Max Selectabel date
@@ -117,14 +117,14 @@
         </div>
     </div>
     @if (selectedDateRange_6 != null)
-    {
-        <div class="row">
+{
+    <div class="row">
             <p>
                 From: @selectedDateRange_6.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_6.DateRange?.End?.ToString("yyyy/MM/dd") /
                 From: @selectedDateRange_6.StartDateJalali To: @selectedDateRange_6.EndDateJalali
             </p>
         </div>
-    }
+}
     <hr />
     <div class="row">
         Disable 15th day of each month
@@ -139,47 +139,47 @@
         </div>
     </div>
     @if (selectedDateRange_7 != null)
-    {
-        <div class="row">
+{
+    <div class="row">
             <p>
                 From: @selectedDateRange_7.DateRange?.Start?.ToString("yyyy/MM/dd") To: @selectedDateRange_7.DateRange?.End?.ToString("yyyy/MM/dd") /
                 From: @selectedDateRange_7.StartDateJalali To: @selectedDateRange_7.EndDateJalali
             </p>
         </div>
-    }
+}
 </div>
 @code {
 
-    SelectedDateRangeModel selectedDateRange_1 = new();
-    SelectedDateRangeModel selectedDateRange_2 = new();
-    SelectedDateRangeModel selectedDateRange_3 = new();
-    SelectedDateRangeModel selectedDateRange_4 = new();
-    SelectedDateRangeModel selectedDateRange_5 = new();
-    SelectedDateRangeModel selectedDateRange_6 = new();
-    SelectedDateRangeModel selectedDateRange_7 = new();
+SelectedDateRangeModel selectedDateRange_1 = new();
+SelectedDateRangeModel selectedDateRange_2 = new();
+SelectedDateRangeModel selectedDateRange_3 = new();
+SelectedDateRangeModel selectedDateRange_4 = new();
+SelectedDateRangeModel selectedDateRange_5 = new();
+SelectedDateRangeModel selectedDateRange_6 = new();
+SelectedDateRangeModel selectedDateRange_7 = new();
 
-    void OnDateRangeChanged_1(SelectedDateRangeModel selectedDateRange) => selectedDateRange_1 = selectedDateRange;
-    void OnDateRangeChanged_2(SelectedDateRangeModel selectedDateRange) => selectedDateRange_2 = selectedDateRange;
-    void OnDateRangeChanged_3(SelectedDateRangeModel selectedDateRange) => selectedDateRange_3 = selectedDateRange;
-    void OnDateRangeChanged_4(SelectedDateRangeModel selectedDateRange) => selectedDateRange_4 = selectedDateRange;
-    void OnDateRangeChanged_5(SelectedDateRangeModel selectedDateRange) => selectedDateRange_5 = selectedDateRange;
-    void OnDateRangeChanged_6(SelectedDateRangeModel selectedDateRange) => selectedDateRange_6 = selectedDateRange;
-    void OnDateRangeChanged_7(SelectedDateRangeModel selectedDateRange) => selectedDateRange_7 = selectedDateRange;
+void OnDateRangeChanged_1(SelectedDateRangeModel selectedDateRange) => selectedDateRange_1 = selectedDateRange;
+void OnDateRangeChanged_2(SelectedDateRangeModel selectedDateRange) => selectedDateRange_2 = selectedDateRange;
+void OnDateRangeChanged_3(SelectedDateRangeModel selectedDateRange) => selectedDateRange_3 = selectedDateRange;
+void OnDateRangeChanged_4(SelectedDateRangeModel selectedDateRange) => selectedDateRange_4 = selectedDateRange;
+void OnDateRangeChanged_5(SelectedDateRangeModel selectedDateRange) => selectedDateRange_5 = selectedDateRange;
+void OnDateRangeChanged_6(SelectedDateRangeModel selectedDateRange) => selectedDateRange_6 = selectedDateRange;
+void OnDateRangeChanged_7(SelectedDateRangeModel selectedDateRange) => selectedDateRange_7 = selectedDateRange;
 
-    void SetJalaliDateRange()
-    {
-        Random rnd = new Random();
-        var year = rnd.Next(1398, 1402);
-        var month = rnd.Next(1, 12);
-        var dayFrom = rnd.Next(1, 29);
-        var dayTo = rnd.Next(dayFrom, 29);
-        var selectedDateFrom = $"{year}/{month}/{dayFrom}";
-        var selectedDateTo = $"{year}/{month + 1}/{dayTo}";
-        selectedDateRange_2 = new SelectedDateRangeModel
-            {
-                DateRange = new DateRange(
-                                                    Jinget.Core.Utilities.DateTimeUtility.ToGregorianDate(selectedDateFrom),
-                                                    Jinget.Core.Utilities.DateTimeUtility.ToGregorianDate(selectedDateTo))
-            };
-    }
+void SetJalaliDateRange()
+{
+    Random rnd = new Random();
+    var year = rnd.Next(1398, 1402);
+    var month = rnd.Next(1, 12);
+    var dayFrom = rnd.Next(1, 29);
+    var dayTo = rnd.Next(dayFrom, 29);
+    var selectedDateFrom = $"{year}/{month}/{dayFrom}";
+    var selectedDateTo = $"{year}/{month + 1}/{dayTo}";
+    selectedDateRange_2 = new SelectedDateRangeModel
+        {
+            DateRange = new DateRange(
+                                                Jinget.Core.Utilities.DateTimeUtility.ToGregorianDate(selectedDateFrom),
+                                                Jinget.Core.Utilities.DateTimeUtility.ToGregorianDate(selectedDateTo))
+        };
+}
 }

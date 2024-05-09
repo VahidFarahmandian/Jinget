@@ -1,19 +1,18 @@
 ﻿using Jinget.Core.Utilities.Expressions;
 using System.Linq.Expressions;
 
-namespace Jinget.Core.ExtensionMethods.Expressions
+namespace Jinget.Core.ExtensionMethods.Expressions;
+
+public static class LambdaExpressionExtensions
 {
-    public static class LambdaExpressionExtensions
+    /// <summary>
+    /// Converts a <seealso cref="LambdaExpression"/> to string
+    /// </summary>
+    public static string? Stringfy(this LambdaExpression expression)
     {
-        /// <summary>
-        /// Converts a <seealso cref="LambdaExpression"/> to string
-        /// </summary>
-        public static string? Stringfy(this LambdaExpression expression)
-        {
-            if (expression is null)
-                return null;
-            var result = ExpressionUtility.TryParseExpression(expression.Body, out var path);
-            return result ? path : null;
-        }
+        if (expression is null)
+            return null;
+        var result = ExpressionUtility.TryParseExpression(expression.Body, out var path);
+        return result ? path : null;
     }
 }

@@ -28,50 +28,50 @@
 </MudDatePicker>
 
 @code {
-    MudDatePicker? _datePicker;
-    
-    DateTime? _previousValue;
-    DateTime? _currentValue;
+MudDatePicker? _datePicker;
 
-    [Parameter]
-    public DateTime? Value
+DateTime? _previousValue;
+DateTime? _currentValue;
+
+[Parameter]
+public DateTime? Value
+{
+    get => _currentValue;
+    set
     {
-        get => _currentValue;
-        set
-        {
-            _previousValue = Value;
-            _currentValue = value;
-        }
+        _previousValue = Value;
+        _currentValue = value;
     }
-    [Parameter] public override string Label { get; set; } = "تاریخ";
-    [Parameter] public EventCallback<DateTime?> DateChanged { get; set; }
+}
+[Parameter] public override string Label { get; set; } = "تاریخ";
+[Parameter] public EventCallback<DateTime?> DateChanged { get; set; }
 
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+protected override async Task OnAfterRenderAsync(bool firstRender)
+{
+    if (EnglishNumber)
+        await JS.InvokeVoidAsync("toEnglishNumber", id);
+
+    if (firstRender)
     {
-        if (EnglishNumber)
-            await JS.InvokeVoidAsync("toEnglishNumber", id);
-
-        if (firstRender)
-        {
-            _datePicker.GoToDate();
-        }
+        _datePicker.GoToDate();
     }
+}
 
-    async Task DateChangedAsync(DateTime? e)
+async Task DateChangedAsync(DateTime? e)
+{
+    if (e == _previousValue || e == _currentValue)
+        return;
+    if (e != null && e.HasValue)
     {
-        if (e == _previousValue || e == _currentValue)
-            return;
-        if (e != null && e.HasValue)
-        {
-            await _datePicker.GoToDate(e.Value);
-        }
-        await DateChanged.InvokeAsync(e).ConfigureAwait(false);
+        await _datePicker.GoToDate(e.Value);
     }
+    await DateChanged.InvokeAsync(e).ConfigureAwait(false);
+}
 
-    async Task OnOpen()
-    {
-        await JS.InvokeVoidAsync("refreshDatePicker");
-        await JS.InvokeVoidAsync("gotoDate", id);
-    }
+async Task OnOpen()
+{
+    await JS.InvokeVoidAsync("refreshDatePicker");
+    await JS.InvokeVoidAsync("gotoDate", id);
+}
 }

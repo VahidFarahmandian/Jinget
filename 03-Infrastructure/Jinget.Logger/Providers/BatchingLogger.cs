@@ -1,41 +1,40 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 
-namespace Jinget.Logger.Providers
+namespace Jinget.Logger.Providers;
+
+public class BatchingLogger : ILogger
 {
-    public class BatchingLogger : ILogger
+    private readonly BatchingLoggerProvider _provider;
+
+    public BatchingLogger(BatchingLoggerProvider loggerProvider) => _provider = loggerProvider;
+
+    public IDisposable BeginScope<TState>(TState state) => null;
+
+    public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
+
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
+        Func<TState, Exception, string> formatter)
     {
-        private readonly BatchingLoggerProvider _provider;
+        if (!IsEnabled(logLevel))
+            return;
 
-        public BatchingLogger(BatchingLoggerProvider loggerProvider) => _provider = loggerProvider;
-
-        public IDisposable BeginScope<TState>(TState state) => null;
-
-        public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
-
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
-            Func<TState, Exception, string> formatter)
-        {
-            if (!IsEnabled(logLevel))
-                return;
-
-            Log(DateTime.Now, logLevel, eventId, state, exception, formatter);
-        }
+        Log(DateTime.Now, logLevel, eventId, state, exception, formatter);
+    }
 
 #pragma warning disable IDE0060 // Remove unused parameter
-        public void Log<TState>(DateTime timestamp, LogLevel logLevel, EventId eventId, TState state,
+    public void Log<TState>(DateTime timestamp, LogLevel logLevel, EventId eventId, TState state,
 #pragma warning restore IDE0060 // Remove unused parameter
-            Exception exception, Func<TState, Exception, string> formatter)
-        {
-            _provider.AddMessage(
-                timestamp,
-                new LogMessage
-                {
-                    Description = formatter(state, exception),
-                    Exception = exception == null ? "" : exception.ToString(),
-                    Severity = logLevel,
-                    Timestamp = timestamp
-                });
-        }
+        Exception exception, Func<TState, Exception, string> formatter)
+    {
+        _provider.AddMessage(
+            timestamp,
+            new LogMessage
+            {
+                Description = formatter(state, exception),
+                Exception = exception == null ? "" : exception.ToString(),
+                Severity = logLevel,
+                Timestamp = timestamp
+            });
     }
 }

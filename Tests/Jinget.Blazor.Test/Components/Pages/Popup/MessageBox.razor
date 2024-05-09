@@ -22,32 +22,32 @@
 </JingetMessageBox>
 
 @code {
-    JingetMessageBox? messageBox { get; set; }
+JingetMessageBox? messageBox { get; set; }
 
-    bool showVerbose { get; set; }
+bool showVerbose { get; set; }
 
-    void Opened() => messageBox.CloseButtonText = messageBox.Rtl ? "بستن" : "Close";
+void Opened() => messageBox.CloseButtonText = messageBox.Rtl ? "بستن" : "Close";
 
-    async Task ShowMBox1()
-    {
-        messageBox.ShowVerboseFuncAsync = ShowVerboseCondition;
-        await messageBox?.ShowErrorAsync(
-            title: "Sample message box",
-            content: "This is sample message box",
-            verboseContent: "This is vebose content",
-            rtl: false);
-    }
+async Task ShowMBox1()
+{
+    messageBox.ShowVerboseFuncAsync = ShowVerboseCondition;
+    await messageBox?.ShowErrorAsync(
+        title: "Sample message box",
+        content: "This is sample message box",
+        verboseContent: "This is vebose content",
+        rtl: false);
+}
 
-    async Task ShowMBox2()
-    {
-        messageBox.ShowVerboseFuncAsync = ShowVerboseCondition;
-        await messageBox?.ShowErrorAsync(
-            title: "پیغام تستی",
-            content: "این یک محتوای تستی است",
-            verboseContent: "توضیحات بیشتر تستی");
-    }
+async Task ShowMBox2()
+{
+    messageBox.ShowVerboseFuncAsync = ShowVerboseCondition;
+    await messageBox?.ShowErrorAsync(
+        title: "پیغام تستی",
+        content: "این یک محتوای تستی است",
+        verboseContent: "توضیحات بیشتر تستی");
+}
 
-    async Task<bool> ShowVerboseCondition() => await Task.FromResult<bool>(showVerbose);
+async Task<bool> ShowVerboseCondition() => await Task.FromResult<bool>(showVerbose);
 
-    void OnChecked() => showVerbose = !showVerbose;
+void OnChecked() => showVerbose = !showVerbose;
 }

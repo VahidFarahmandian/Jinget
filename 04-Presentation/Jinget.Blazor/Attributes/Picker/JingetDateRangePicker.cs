@@ -1,6 +1,5 @@
-﻿namespace Jinget.Blazor.Attributes.Picker
+﻿namespace Jinget.Blazor.Attributes.Picker;
+
+public class JingetDateRangePicker : JingetDatePickerBase
 {
-    public class JingetDateRangePicker : JingetDatePickerBase
-    {
-    }
 }

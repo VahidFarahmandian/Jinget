@@ -1,6 +1,5 @@
-﻿namespace Jinget.Blazor.Attributes
+﻿namespace Jinget.Blazor.Attributes;
+
+public class JingetLabel : JingetFormElement
 {
-    public class JingetLabel : JingetFormElement
-    {
-    }
 }

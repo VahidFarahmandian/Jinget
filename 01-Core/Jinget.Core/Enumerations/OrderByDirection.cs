@@ -1,18 +1,17 @@
 ﻿using System.ComponentModel;
 
-namespace Jinget.Core.Enumerations
-{
-    /// <summary>
-    /// Define order by directions used in query handling
-    /// </summary>
-    public enum OrderByDirection
-    {
-        /// <exclude />
-        [Description("ASC")]
-        Ascending,
+namespace Jinget.Core.Enumerations;
 
-        /// <exclude />
-        [Description("DESC")]
-        Descending
-    }
+/// <summary>
+/// Define order by directions used in query handling
+/// </summary>
+public enum OrderByDirection
+{
+    /// <exclude />
+    [Description("ASC")]
+    Ascending,
+
+    /// <exclude />
+    [Description("DESC")]
+    Descending
 }

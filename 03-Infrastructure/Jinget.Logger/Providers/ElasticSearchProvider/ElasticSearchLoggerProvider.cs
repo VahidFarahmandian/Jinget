@@ -10,97 +10,96 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Jinget.Core.ExtensionMethods;
 
-namespace Jinget.Logger.Providers.ElasticSearchProvider
+namespace Jinget.Logger.Providers.ElasticSearchProvider;
+
+/// <summary>
+///     An <see cref="ILoggerProvider" /> that writes logs
+/// </summary>
+[ProviderAlias("ElasticSearch")]
+public class ElasticSearchLoggerProvider<TOperationalEntity, TErrorEntity, TCustomEntity> : BatchingLoggerProvider
+    where TOperationalEntity : OperationLog, new()
+    where TErrorEntity : ErrorLog, new()
+    where TCustomEntity : CustomLog, new()
 {
-    /// <summary>
-    ///     An <see cref="ILoggerProvider" /> that writes logs
-    /// </summary>
-    [ProviderAlias("ElasticSearch")]
-    public class ElasticSearchLoggerProvider<TOperationalEntity, TErrorEntity, TCustomEntity> : BatchingLoggerProvider
-        where TOperationalEntity : OperationLog, new()
-        where TErrorEntity : ErrorLog, new()
-        where TCustomEntity : CustomLog, new()
+    private readonly IServiceProvider _serviceProvider;
+    private IElasticSearchBaseDomainService<TOperationalEntity> _operationLogService;
+    private IElasticSearchBaseDomainService<TErrorEntity> _errorLogService;
+    private IElasticSearchBaseDomainService<TCustomEntity> _customLogService;
+
+    public ElasticSearchLoggerProvider(
+        IOptions<ElasticSearchLoggerOptions> options,
+        IServiceProvider serviceProvider) : base(options) => _serviceProvider = serviceProvider;
+
+    protected override async Task WriteMessagesAsync(IEnumerable<LogMessage> messages, CancellationToken cancellationToken)
     {
-        private readonly IServiceProvider _serviceProvider;
-        private IElasticSearchBaseDomainService<TOperationalEntity> _operationLogService;
-        private IElasticSearchBaseDomainService<TErrorEntity> _errorLogService;
-        private IElasticSearchBaseDomainService<TCustomEntity> _customLogService;
+        _errorLogService = _serviceProvider.GetJingetService<IElasticSearchBaseDomainService<TErrorEntity>>();
+        _operationLogService = _serviceProvider.GetJingetService<IElasticSearchBaseDomainService<TOperationalEntity>>();
+        _customLogService = _serviceProvider.GetJingetService<IElasticSearchBaseDomainService<TCustomEntity>>();
 
-        public ElasticSearchLoggerProvider(
-            IOptions<ElasticSearchLoggerOptions> options,
-            IServiceProvider serviceProvider) : base(options) => _serviceProvider = serviceProvider;
-
-        protected override async Task WriteMessagesAsync(IEnumerable<LogMessage> messages, CancellationToken cancellationToken)
+        foreach (var group in messages.GroupBy(GetGrouping))
         {
-            _errorLogService = _serviceProvider.GetJingetService<IElasticSearchBaseDomainService<TErrorEntity>>();
-            _operationLogService = _serviceProvider.GetJingetService<IElasticSearchBaseDomainService<TOperationalEntity>>();
-            _customLogService = _serviceProvider.GetJingetService<IElasticSearchBaseDomainService<TCustomEntity>>();
-
-            foreach (var group in messages.GroupBy(GetGrouping))
+            foreach (LogMessage item in group.Where(x => x.Severity == LogLevel.Information))
             {
-                foreach (LogMessage item in group.Where(x => x.Severity == LogLevel.Information))
+                try
                 {
-                    try
-                    {
-                        var result = await _operationLogService.CreateAsync(JsonConvert.DeserializeObject<TOperationalEntity>(item.Description));
-                    }
-                    catch (JsonReaderException) //it means that the message is an error reporting message
-                    {
-                    }
+                    var result = await _operationLogService.CreateAsync(JsonConvert.DeserializeObject<TOperationalEntity>(item.Description));
                 }
-
-                //log errors
-                foreach (var item in group.Where(x => x.Severity > LogLevel.Information))
+                catch (JsonReaderException) //it means that the message is an error reporting message
                 {
-                    TErrorEntity model = null;
-                    try
-                    {
-                        model = JsonConvert.DeserializeObject<TErrorEntity>(item.Description);
-                    }
-                    //if the item.Description is a custom message then 
-                    //a JsonReaderException will be thrown because item.Description is not deserializable to TErrorEntity
-                    //so in this case the exception will be caught and model will be constructed manually
-                    catch (JsonReaderException)
-                    {
-                        model = new TErrorEntity()
-                        {
-                            Description = item.Description
-                        };
-                    }
-                    model.When = item.Timestamp;
-                    model.Severity = item.Severity.ToString();
-
-                    var result = await _errorLogService.CreateAsync(model);
-                }
-
-                //log custom data
-                foreach (var item in group.Where(x => x.Severity < LogLevel.Information))
-                {
-                    TCustomEntity model = null;
-                    try
-                    {
-                        model = JsonConvert.DeserializeObject<TCustomEntity>(item.Description);
-                    }
-                    //if the item.Description is a custom message then 
-                    //a JsonReaderException will be thrown because item.Description is not deserializable to TErrorEntity
-                    //so in this case the exception will be caught and model will be constructed manually
-                    catch (JsonReaderException)
-                    {
-                        model = new TCustomEntity()
-                        {
-                            Description = item.Description
-                        };
-                    }
-                    model.SubSystem = string.IsNullOrEmpty(model.SubSystem)
-                        ? AppDomain.CurrentDomain.FriendlyName
-                        : model.SubSystem;
-                    model.When = item.Timestamp;
-
-                    var result = await _customLogService.CreateAsync(model);
                 }
             }
-        }
 
-        private (int Year, int Month, int Day) GetGrouping(LogMessage message) => (message.Timestamp.Year, message.Timestamp.Month, message.Timestamp.Day);
+            //log errors
+            foreach (var item in group.Where(x => x.Severity > LogLevel.Information))
+            {
+                TErrorEntity model = null;
+                try
+                {
+                    model = JsonConvert.DeserializeObject<TErrorEntity>(item.Description);
+                }
+                //if the item.Description is a custom message then 
+                //a JsonReaderException will be thrown because item.Description is not deserializable to TErrorEntity
+                //so in this case the exception will be caught and model will be constructed manually
+                catch (JsonReaderException)
+                {
+                    model = new TErrorEntity()
+                    {
+                        Description = item.Description
+                    };
+                }
+                model.When = item.Timestamp;
+                model.Severity = item.Severity.ToString();
+
+                var result = await _errorLogService.CreateAsync(model);
+            }
+
+            //log custom data
+            foreach (var item in group.Where(x => x.Severity < LogLevel.Information))
+            {
+                TCustomEntity model = null;
+                try
+                {
+                    model = JsonConvert.DeserializeObject<TCustomEntity>(item.Description);
+                }
+                //if the item.Description is a custom message then 
+                //a JsonReaderException will be thrown because item.Description is not deserializable to TErrorEntity
+                //so in this case the exception will be caught and model will be constructed manually
+                catch (JsonReaderException)
+                {
+                    model = new TCustomEntity()
+                    {
+                        Description = item.Description
+                    };
+                }
+                model.SubSystem = string.IsNullOrEmpty(model.SubSystem)
+                    ? AppDomain.CurrentDomain.FriendlyName
+                    : model.SubSystem;
+                model.When = item.Timestamp;
+
+                var result = await _customLogService.CreateAsync(model);
+            }
+        }
     }
+
+    private (int Year, int Month, int Day) GetGrouping(LogMessage message) => (message.Timestamp.Year, message.Timestamp.Month, message.Timestamp.Day);
 }

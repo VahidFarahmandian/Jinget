@@ -1,6 +1,5 @@
-﻿namespace Jinget.Blazor.Attributes.Input
+﻿namespace Jinget.Blazor.Attributes.Input;
+
+public class JingetEmailBox : JingetFormElement
 {
-    public class JingetEmailBox : JingetFormElement
-    {
-    }
 }

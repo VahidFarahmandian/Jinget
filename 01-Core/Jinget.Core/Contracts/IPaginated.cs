@@ -1,16 +1,13 @@
-﻿using Jinget.Core.ExpressionToSql.Internal;
+﻿namespace Jinget.Core.Contracts;
 
-namespace Jinget.Core.Contracts
+/// <summary>
+/// Used for supporting paging mechanism in query handling
+/// </summary>
+public interface IPaginated
 {
     /// <summary>
-    /// Used for supporting paging mechanism in query handling
+    /// Gets or sets the paging configuration.
     /// </summary>
-    public interface IPaginated
-    {
-        /// <summary>
-        /// Gets or sets the paging configuration.
-        /// </summary>
-        /// <value>The paging configuration.</value>
-        Paging PagingConfig { get; set; }
-    }
+    /// <value>The paging configuration.</value>
+    Paging PagingConfig { get; set; }
 }

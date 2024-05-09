@@ -1,10 +1,9 @@
-﻿namespace Jinget.Core.Utilities
+﻿namespace Jinget.Core.Utilities;
+
+public static class HumanizerUtility
 {
-    public static class HumanizerUtility
+    public static bool Not(bool possibility)
     {
-        public static bool Not(bool possibility)
-        {
-            return !possibility;
-        }
+        return !possibility;
     }
 }

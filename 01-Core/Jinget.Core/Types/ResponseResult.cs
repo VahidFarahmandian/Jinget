@@ -1,23 +1,22 @@
 ﻿using System.Collections.Generic;
 
-namespace Jinget.Core.Types
+namespace Jinget.Core.Types;
+
+public class ResponseResult<TResponseModel>
 {
-    public class ResponseResult<TResponseModel>
-    {
-        private static ResponseResult<TResponseModel>? _instance;
-        public static ResponseResult<TResponseModel> Empty => _instance ??= new ResponseResult<TResponseModel>();
-        public long EffectedRowsCount { get; }
+    private static ResponseResult<TResponseModel>? _instance;
+    public static ResponseResult<TResponseModel> Empty => _instance ??= new ResponseResult<TResponseModel>();
+    public long EffectedRowsCount { get; }
 
-        public List<TResponseModel> Data { get; }
+    public List<TResponseModel> Data { get; }
 
-        public ResponseResult() { Data = []; }
+    public ResponseResult() { Data = []; }
 
-        public ResponseResult(TResponseModel data) : this() => Data.Add(data);
-        public ResponseResult(IEnumerable<TResponseModel> data) : this() => Data.AddRange(data);
+    public ResponseResult(TResponseModel data) : this() => Data.Add(data);
+    public ResponseResult(IEnumerable<TResponseModel> data) : this() => Data.AddRange(data);
 
 
-        public ResponseResult(TResponseModel data, long effectedRowsCount) : this(data) => EffectedRowsCount = effectedRowsCount;
-        public ResponseResult(IEnumerable<TResponseModel> data, long effectedRowsCount) : this(data) => EffectedRowsCount = effectedRowsCount;
+    public ResponseResult(TResponseModel data, long effectedRowsCount) : this(data) => EffectedRowsCount = effectedRowsCount;
+    public ResponseResult(IEnumerable<TResponseModel> data, long effectedRowsCount) : this(data) => EffectedRowsCount = effectedRowsCount;
 
-    }
 }

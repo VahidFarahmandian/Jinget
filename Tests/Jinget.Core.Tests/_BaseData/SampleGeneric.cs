@@ -1,7 +1,6 @@
-﻿namespace Jinget.Core.Tests._BaseData
+﻿namespace Jinget.Core.Tests._BaseData;
+
+public class SampleGeneric<T>
 {
-    public class SampleGeneric<T>
-    {
-        public T Id { get; set; }
-    }
+    public T Id { get; set; }
 }

@@ -1,6 +1,5 @@
-﻿namespace Jinget.Core.Tests._BaseData
+﻿namespace Jinget.Core.Tests._BaseData;
+
+public interface ISampleInterface
 {
-    public interface ISampleInterface
-    {
-    }
 }

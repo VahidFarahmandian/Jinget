@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace Jinget.Logger
+namespace Jinget.Logger;
+
+public interface ILog
 {
-    public interface ILog
-    {
-        Task LogAsync(HttpContext context);
-    }
+    Task LogAsync(HttpContext context);
 }

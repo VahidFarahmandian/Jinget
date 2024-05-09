@@ -1,6 +1,5 @@
-﻿namespace Jinget.Core.DiScanner.Tests.SampleTypes.Contracts
+﻿namespace Jinget.Core.DiScanner.Tests.SampleTypes.Contracts;
+
+public interface ICustomInterface
 {
-    public interface ICustomInterface
-    {
-    }
 }

@@ -25,47 +25,47 @@
                     DateRangeChanged=@DateRangeChangedAsync
                     PickerOpened=@OnOpen />
 @code {
-    MudDateRangePicker _dateRangePicker;
+MudDateRangePicker _dateRangePicker;
 
-    DateRange? _previousValue;
-    DateRange? _currentValue;
+DateRange? _previousValue;
+DateRange? _currentValue;
 
-    [Parameter]
-    public DateRange? Value
+[Parameter]
+public DateRange? Value
+{
+    get => _currentValue;
+    set
     {
-        get => _currentValue;
-        set
+        _previousValue = Value;
+        _currentValue = value;
+    }
+}
+[Parameter] public override string Label { get; set; } = "بازه تاریخی";
+
+[Parameter] public EventCallback<SelectedDateRangeModel> DateRangeChanged { get; set; }
+
+protected override async Task OnAfterRenderAsync(bool firstRender)
+{
+    if (EnglishNumber)
+        await JS.InvokeVoidAsync("toEnglishNumber", id);
+}
+
+async Task DateRangeChangedAsync(DateRange e)
+{
+    if (e == _previousValue || e == _currentValue)
+        return;
+    var dateRange = new DateRange(e.Start, e.End);
+    await DateRangeChanged.InvokeAsync(new SelectedDateRangeModel
         {
-            _previousValue = Value;
-            _currentValue = value;
+            DateRange = dateRange,
+            StartDateJalali = e.Start.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.Start.Value) : null,
+            EndDateJalali = e.End.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.End.Value) : null
         }
-    }
-    [Parameter] public override string Label { get; set; } = "بازه تاریخی";
+    );
+}
 
-    [Parameter] public EventCallback<SelectedDateRangeModel> DateRangeChanged { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (EnglishNumber)
-            await JS.InvokeVoidAsync("toEnglishNumber", id);
-    }
-
-    async Task DateRangeChangedAsync(DateRange e)
-    {
-        if (e == _previousValue || e == _currentValue)
-            return;
-        var dateRange = new DateRange(e.Start, e.End);
-        await DateRangeChanged.InvokeAsync(new SelectedDateRangeModel
-            {
-                DateRange = dateRange,
-                StartDateJalali = e.Start.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.Start.Value) : null,
-                EndDateJalali = e.End.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.End.Value) : null
-            }
-        );
-    }
-
-    async Task OnOpen()
-    {
-        await JS.InvokeVoidAsync("gotoDate", id);
-    }
+async Task OnOpen()
+{
+    await JS.InvokeVoidAsync("gotoDate", id);
+}
 }

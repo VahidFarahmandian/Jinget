@@ -8,18 +8,17 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Jinget.Core.ExtensionMethods;
 
-namespace Jinget.Logger.Configuration.Middlewares
+namespace Jinget.Logger.Configuration.Middlewares;
+
+public class LogRequestMiddleware
 {
-    public class LogRequestMiddleware
-    {
-        private readonly ILog _logger;
+    private readonly ILog _logger;
 
-        public LogRequestMiddleware(RequestDelegate next, IServiceProvider serviceProvider, ILogger<LogRequestMiddleware> logger,
-            IOptions<BlackListHeader> blackListHeaders,
-            IOptions<WhiteListHeader> whiteListHeaders)
-            => _logger =
-            new RequestLogger<LogRequestMiddleware>(next, logger, serviceProvider.GetJingetService<IExceptionHandler<LogRequestMiddleware>>(), blackListHeaders, whiteListHeaders);
+    public LogRequestMiddleware(RequestDelegate next, IServiceProvider serviceProvider, ILogger<LogRequestMiddleware> logger,
+        IOptions<BlackListHeader> blackListHeaders,
+        IOptions<WhiteListHeader> whiteListHeaders)
+        => _logger =
+        new RequestLogger<LogRequestMiddleware>(next, logger, serviceProvider.GetJingetService<IExceptionHandler<LogRequestMiddleware>>(), blackListHeaders, whiteListHeaders);
 
-        public async Task InvokeAsync(HttpContext context) => await _logger.LogAsync(context);
-    }
+    public async Task InvokeAsync(HttpContext context) => await _logger.LogAsync(context);
 }

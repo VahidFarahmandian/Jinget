@@ -7,28 +7,28 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class='modal-content @(Rtl?"rtl":"ltr")'>
             @if (ShowHeader)
-            {
-                <div class="modal-header">
+        {
+            <div class="modal-header">
                     <h5 class="modal-title">@Title</h5>
                     <MudButton Class="btn-close"
                                data-dismiss="modal"
                                aria-label="Close"
                                OnClick="CloseAsync"></MudButton>
                 </div>
-            }
+        }
             <div class="modal-body">
                 @ChildContent
             </div>
             @if (ShowFooter)
-            {
-                <div class="modal-footer">
+        {
+            <div class="modal-footer">
                     <MudButton Variant="Variant.Filled"
                                Size="Size.Small"
                                Color="Color.Primary"
                                OnClick="CloseAsync">@CloseButtonText</MudButton>
                     @FooterContent
                 </div>
-            }
+        }
         </div>
     </div>
 </div>
@@ -39,33 +39,33 @@
 }
 
 @code {
-    [Parameter] public bool ShowHeader { get; set; } = true;
-    [Parameter] public bool ShowFooter { get; set; } = true;
-    [Parameter] public string? Title { get; set; }
+[Parameter] public bool ShowHeader { get; set; } = true;
+[Parameter] public bool ShowFooter { get; set; } = true;
+[Parameter] public string? Title { get; set; }
 
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+[Parameter] public RenderFragment? ChildContent { get; set; }
 
-    [Parameter] public RenderFragment? FooterContent { get; set; }
+[Parameter] public RenderFragment? FooterContent { get; set; }
 
-    private string modalDisplay = "none;";
-    private string modalClass = string.Empty;
-    private bool showBackdrop = false;
+private string modalDisplay = "none;";
+private string modalClass = string.Empty;
+private bool showBackdrop = false;
 
-    public async Task OpenAsync()
-    {
-        modalDisplay = "block";
-        modalClass = "show";
-        showBackdrop = true;
-        await InvokeAsync(OnOpen.InvokeAsync);
-        StateHasChanged();
-    }
+public async Task OpenAsync()
+{
+    modalDisplay = "block";
+    modalClass = "show";
+    showBackdrop = true;
+    await InvokeAsync(OnOpen.InvokeAsync);
+    StateHasChanged();
+}
 
-    public async Task CloseAsync()
-    {
-        modalDisplay = "none";
-        modalClass = string.Empty;
-        showBackdrop = false;
-        await InvokeAsync(OnClose.InvokeAsync);
-        StateHasChanged();
-    }
+public async Task CloseAsync()
+{
+    modalDisplay = "none";
+    modalClass = string.Empty;
+    showBackdrop = false;
+    await InvokeAsync(OnClose.InvokeAsync);
+    StateHasChanged();
+}
 }

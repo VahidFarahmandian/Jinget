@@ -55,13 +55,13 @@
 </JingetModal>
 
 @code {
-    JingetModal? modal1 { get; set; }
-    JingetModal? modal2 { get; set; }
-    JingetModal? modal3 { get; set; }
-    JingetModal? modal31 { get; set; }
+JingetModal? modal1 { get; set; }
+JingetModal? modal2 { get; set; }
+JingetModal? modal3 { get; set; }
+JingetModal? modal31 { get; set; }
 
-    async Task ShowModal1() => await modal1?.OpenAsync();
-    async Task ShowModal2() => await modal2?.OpenAsync();
-    async Task ShowModal3() => await modal3?.OpenAsync();
-    async Task ShowModal31() => await modal31?.OpenAsync();
+async Task ShowModal1() => await modal1?.OpenAsync();
+async Task ShowModal2() => await modal2?.OpenAsync();
+async Task ShowModal3() => await modal3?.OpenAsync();
+async Task ShowModal31() => await modal31?.OpenAsync();
 }

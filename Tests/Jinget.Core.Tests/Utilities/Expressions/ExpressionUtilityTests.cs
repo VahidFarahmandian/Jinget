@@ -7,257 +7,256 @@ using System.Linq;
 using Jinget.Core.Utilities.Expressions;
 using Jinget.Core.Types;
 
-namespace Jinget.Core.ExtensionMethods.Expressions.Tests
+namespace Jinget.Core.ExtensionMethods.Expressions.Tests;
+
+[TestClass()]
+public class ExpressionUtilityTests
 {
-    [TestClass()]
-    public class ExpressionUtilityTests
+    [TestMethod()]
+    public void should_create_a_member_init_expression()
     {
-        [TestMethod()]
-        public void should_create_a_member_init_expression()
+        string[] inputs = ["Property1", "Property2"];
+        string parameterName = "x";
+        Expression<Func<TestClass, TestClass>> expectedExpression = x => new TestClass { Property1 = x.Property1, Property2 = x.Property2 };
+
+        Expression<Func<TestClass, TestClass>> result = ExpressionUtility.CreateMemberInitExpression<TestClass>(parameterName, inputs);
+
+        Assert.AreEqual(expectedExpression.Type, result.Type);
+    }
+
+    //[TestMethod()]
+    //public void should_create_a_member_access_expression()
+    //{
+    //    string[] inputs = ["Property1", "Property2"];
+    //    string parameterName = "x";
+    //    Expression<Func<TestClass, TestClass>> expectedExpression = x => new TestClass { Property1 = x.Property1, Property2 = x.Property2 };
+
+    //    Expression<Func<TestClass, TestClass>> result = ExpressionUtility.CreateMemberInitExpression<TestClass>(parameterName, inputs);
+
+    //    Assert.AreEqual(expectedExpression.Type, result.Type);
+    //}
+
+    [TestMethod()]
+    public void should_create_a_equal_condition_expression()
+    {
+        Expression<Func<TestClass, bool>> expectedResult = x => x.Property1 == 1;
+        var result = ExpressionUtility.CreateEqualCondition<TestClass, int>("Property1", 1, "x");
+
+        Assert.AreEqual(expectedResult.Type, result.Type);
+    }
+
+    #region null or empty filters
+
+    [TestMethod]
+    public void should_return_all_data_using_empty_string_filter()
+    {
+        string json = "";
+        string expectedFilter = "x => True";
+        var data = new List<TestClass>
         {
-            string[] inputs = ["Property1", "Property2"];
-            string parameterName = "x";
-            Expression<Func<TestClass, TestClass>> expectedExpression = x => new TestClass { Property1 = x.Property1, Property2 = x.Property2 };
+            new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
+            new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
+            new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
+            new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
+            new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
+        }.AsQueryable();
 
-            Expression<Func<TestClass, TestClass>> result = ExpressionUtility.CreateMemberInitExpression<TestClass>(parameterName, inputs);
+        var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(json);
+        Assert.AreEqual(expectedFilter, filter.ToString());
 
-            Assert.AreEqual(expectedExpression.Type, result.Type);
-        }
+        var result = data.Where(filter).ToList();
+        Assert.IsTrue(result.Count == 5);
+    }
 
-        //[TestMethod()]
-        //public void should_create_a_member_access_expression()
-        //{
-        //    string[] inputs = ["Property1", "Property2"];
-        //    string parameterName = "x";
-        //    Expression<Func<TestClass, TestClass>> expectedExpression = x => new TestClass { Property1 = x.Property1, Property2 = x.Property2 };
-
-        //    Expression<Func<TestClass, TestClass>> result = ExpressionUtility.CreateMemberInitExpression<TestClass>(parameterName, inputs);
-
-        //    Assert.AreEqual(expectedExpression.Type, result.Type);
-        //}
-
-        [TestMethod()]
-        public void should_create_a_equal_condition_expression()
-        {
-            Expression<Func<TestClass, bool>> expectedResult = x => x.Property1 == 1;
-            var result = ExpressionUtility.CreateEqualCondition<TestClass, int>("Property1", 1, "x");
-
-            Assert.AreEqual(expectedResult.Type, result.Type);
-        }
-
-        #region null or empty filters
-
-        [TestMethod]
-        public void should_return_all_data_using_empty_string_filter()
-        {
-            string json = "";
-            string expectedFilter = "x => True";
-            var data = new List<TestClass>
-            {
-                new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
-                new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
-                new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
-                new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
-                new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
-            }.AsQueryable();
-
-            var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(json);
-            Assert.AreEqual(expectedFilter, filter.ToString());
-
-            var result = data.Where(filter).ToList();
-            Assert.IsTrue(result.Count == 5);
-        }
-
-        [TestMethod]
-        public void should_return_no_data_using_empty_string_filter()
-        {
+    [TestMethod]
+    public void should_return_no_data_using_empty_string_filter()
+    {
 #nullable enable
-            object? json = "";
+        object? json = "";
 #nullable disable
 
-            string expectedFilter = "x => False";
+        string expectedFilter = "x => False";
 
-            var data = new List<TestClass>
-            {
-                new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
-                new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
-                new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
-                new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
-                new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
-            }.AsQueryable();
-
-            var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(json, false);
-            Assert.AreEqual(expectedFilter, filter.ToString());
-
-            var result = data.Where(filter).ToList();
-            Assert.IsTrue(result.Count == 0);
-        }
-
-        [TestMethod]
-        public void should_return_all_data_using_null_object()
+        var data = new List<TestClass>
         {
+            new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
+            new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
+            new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
+            new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
+            new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
+        }.AsQueryable();
+
+        var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(json, false);
+        Assert.AreEqual(expectedFilter, filter.ToString());
+
+        var result = data.Where(filter).ToList();
+        Assert.IsTrue(result.Count == 0);
+    }
+
+    [TestMethod]
+    public void should_return_all_data_using_null_object()
+    {
 #nullable enable
-            object? json = null;
+        object? json = null;
 #nullable disable
 
-            string expectedFilter = "x => True";
+        string expectedFilter = "x => True";
 
-            var data = new List<TestClass>
-            {
-                new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
-                new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
-                new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
-                new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
-                new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
-            }.AsQueryable();
-
-            var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(json);
-            Assert.AreEqual(expectedFilter, filter.ToString());
-
-            var result = data.Where(filter).ToList();
-
-            Assert.IsTrue(result.Count == 5);
-            Assert.IsTrue(result.First().Property1 == 1);
-        }
-
-        [TestMethod]
-        public void should_return_no_data_using_null_object()
+        var data = new List<TestClass>
         {
+            new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
+            new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
+            new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
+            new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
+            new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
+        }.AsQueryable();
+
+        var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(json);
+        Assert.AreEqual(expectedFilter, filter.ToString());
+
+        var result = data.Where(filter).ToList();
+
+        Assert.IsTrue(result.Count == 5);
+        Assert.IsTrue(result.First().Property1 == 1);
+    }
+
+    [TestMethod]
+    public void should_return_no_data_using_null_object()
+    {
 #nullable enable
-            object? json = null;
+        object? json = null;
 #nullable disable
 
-            string expectedFilter = "x => False";
+        string expectedFilter = "x => False";
 
-            var data = new List<TestClass>
-            {
-                new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
-                new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
-                new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
-                new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
-                new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
-            }.AsQueryable();
-
-            var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(json, false);
-            Assert.AreEqual(expectedFilter, filter.ToString());
-
-            var result = data.Where(filter).ToList();
-            Assert.IsTrue(result.Count == 0);
-        }
-
-        #endregion
-
-        #region json string filter
-
-        [TestMethod]
-        public void should_return_filtered_data_using_json_filter()
+        var data = new List<TestClass>
         {
-            string json = @"{
+            new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
+            new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
+            new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
+            new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
+            new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
+        }.AsQueryable();
+
+        var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(json, false);
+        Assert.AreEqual(expectedFilter, filter.ToString());
+
+        var result = data.Where(filter).ToList();
+        Assert.IsTrue(result.Count == 0);
+    }
+
+    #endregion
+
+    #region json string filter
+
+    [TestMethod]
+    public void should_return_filtered_data_using_json_filter()
+    {
+        string json = @"{
                                 'Property3':'urmia',
                                 'Property4':true
                             }";
-            string expectedFilter = "x => ((x.Property3 == \"urmia\") AndAlso (x.Property4 == True))";
+        string expectedFilter = "x => ((x.Property3 == \"urmia\") AndAlso (x.Property4 == True))";
 
-            var data = new List<TestClass>
-            {
-                new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
-                new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
-                new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
-                new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
-                new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
-            }.AsQueryable();
-
-            var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(json);
-            Assert.AreEqual(expectedFilter, filter.ToString());
-
-            var result = data.Where(filter).ToList();
-
-            Assert.IsTrue(result.Count == 1);
-            Assert.IsTrue(result.First().Property1 == 4);
-        }
-
-        #endregion
-
-        #region filter criteria
-
-        [TestMethod]
-        public void should_return_filtered_data_using_single_filter_criteria()
+        var data = new List<TestClass>
         {
-            List<FilterCriteria> filters =
-            [
-                new()
-                {
-                    Operand = "Property2",
-                    Operator = Enumerations.Operator.Contains,
-                    Value = "ah"
-                }
-            ];
-            string expectedFilter = "x => x.Property2.Contains(\"ah\")";
+            new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
+            new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
+            new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
+            new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
+            new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
+        }.AsQueryable();
 
-            var data = new List<TestClass>
-            {
-                new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
-                new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
-                new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
-                new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
-                new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
-            }.AsQueryable();
+        var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(json);
+        Assert.AreEqual(expectedFilter, filter.ToString());
 
-            var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(filters);
-            Assert.AreEqual(expectedFilter, filter.ToString());
+        var result = data.Where(filter).ToList();
 
-            var result = data.Where(filter).ToList();
-
-            Assert.IsTrue(result.Count == 2);
-            Assert.IsTrue(result.First().Property1 == 2);
-        }
-
-        [TestMethod]
-        public void should_return_filtered_data_using_multiple_filter_criterias()
-        {
-            List<FilterCriteria> filters =
-            [
-                new()
-                {
-                    Operand = "Property2",
-                    Operator = Enumerations.Operator.Contains,
-                    Value = "ah",
-                    NextConditionCombination = Enumerations.ConditionCombiningType.AndAlso
-                },
-                new()
-                {
-                    Operand = "Property3",
-                    Operator = Enumerations.Operator.Equal,
-                    Value = "urmia",
-                    NextConditionCombination = Enumerations.ConditionCombiningType.OrElse
-                },
-                new()
-                {
-                    Operand = "Property4",
-                    Operator = Enumerations.Operator.Equal,
-                    Value = true
-                },
-            ];
-            string expectedFilter = "x => ((x.Property2.Contains(\"ah\") AndAlso (x.Property3 == \"urmia\")) OrElse (x.Property4 == True))";
-
-            var data = new List<TestClass>
-            {
-                new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
-                new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
-                new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
-                new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
-                new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
-            }.AsQueryable();
-
-            var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(filters);
-            Assert.AreEqual(expectedFilter, filter.ToString());
-
-            var result = data.Where(filter).ToList();
-
-            Assert.IsTrue(result.Count == 4);
-            Assert.IsTrue(result.First().Property1 == 1);
-        }
-
-        #endregion
+        Assert.IsTrue(result.Count == 1);
+        Assert.IsTrue(result.First().Property1 == 4);
     }
+
+    #endregion
+
+    #region filter criteria
+
+    [TestMethod]
+    public void should_return_filtered_data_using_single_filter_criteria()
+    {
+        List<FilterCriteria> filters =
+        [
+            new()
+            {
+                Operand = "Property2",
+                Operator = Enumerations.Operator.Contains,
+                Value = "ah"
+            }
+        ];
+        string expectedFilter = "x => x.Property2.Contains(\"ah\")";
+
+        var data = new List<TestClass>
+        {
+            new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
+            new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
+            new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
+            new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
+            new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
+        }.AsQueryable();
+
+        var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(filters);
+        Assert.AreEqual(expectedFilter, filter.ToString());
+
+        var result = data.Where(filter).ToList();
+
+        Assert.IsTrue(result.Count == 2);
+        Assert.IsTrue(result.First().Property1 == 2);
+    }
+
+    [TestMethod]
+    public void should_return_filtered_data_using_multiple_filter_criterias()
+    {
+        List<FilterCriteria> filters =
+        [
+            new()
+            {
+                Operand = "Property2",
+                Operator = Enumerations.Operator.Contains,
+                Value = "ah",
+                NextConditionCombination = Enumerations.ConditionCombiningType.AndAlso
+            },
+            new()
+            {
+                Operand = "Property3",
+                Operator = Enumerations.Operator.Equal,
+                Value = "urmia",
+                NextConditionCombination = Enumerations.ConditionCombiningType.OrElse
+            },
+            new()
+            {
+                Operand = "Property4",
+                Operator = Enumerations.Operator.Equal,
+                Value = true
+            },
+        ];
+        string expectedFilter = "x => ((x.Property2.Contains(\"ah\") AndAlso (x.Property3 == \"urmia\")) OrElse (x.Property4 == True))";
+
+        var data = new List<TestClass>
+        {
+            new() { Property1=1, Property2="ali", Property3="tehran"   ,Property4=true},
+            new() { Property1=2, Property2="rahim", Property3="karaj"  ,Property4=true},
+            new() { Property1=3, Property2="vahid", Property3="urmia"  ,Property4=false},
+            new() { Property1=4, Property2="saeid", Property3="urmia"  ,Property4=true},
+            new() { Property1=5, Property2="maryam", Property3="urmia" ,Property4=false }
+        }.AsQueryable();
+
+        var filter = ExpressionUtility.ConstructBinaryExpression<TestClass>(filters);
+        Assert.AreEqual(expectedFilter, filter.ToString());
+
+        var result = data.Where(filter).ToList();
+
+        Assert.IsTrue(result.Count == 4);
+        Assert.IsTrue(result.First().Property1 == 1);
+    }
+
+    #endregion
 }
