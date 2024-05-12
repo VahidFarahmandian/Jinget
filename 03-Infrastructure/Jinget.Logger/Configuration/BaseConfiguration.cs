@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Jinget.Logger.Configuration;
 
-internal static class BaseConfiguration
+public static class BaseConfiguration
 {
-    internal static void ConfigurePrerequisites(this IServiceCollection services)
+    public static void ConfigureJingetLoggerPrerequisites(this IServiceCollection services)
     {
         services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.TryAddScoped<IExceptionHandler<LogRequestMiddleware>, ExceptionHandler<LogRequestMiddleware>>();

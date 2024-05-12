@@ -22,7 +22,7 @@ public static class ElasticSearchConfiguration
         where TErrorEntity : ErrorLog, new()
         where TCustomEntity : CustomLog, new()
     {
-        services.ConfigurePrerequisites();
+        services.ConfigureJingetLoggerPrerequisites();
 
         services.TryAddScoped<IElasticSearchBaseDomainService<TErrorEntity>, ElasticSearchBaseDomainService<TErrorEntity>>();
         services.TryAddScoped<IElasticSearchBaseDomainService<TOperationalEntity>, ElasticSearchBaseDomainService<TOperationalEntity>>();
@@ -44,7 +44,7 @@ public static class ElasticSearchConfiguration
 
     public static void ConfigureElasticSearchLogger(this IServiceCollection services, ElasticSearchSettingModel elasticSearchSetting = null)
     {
-        services.ConfigurePrerequisites();
+        services.ConfigureJingetLoggerPrerequisites();
 
         services.TryAddScoped<IElasticSearchBaseDomainService<ErrorLog>, ElasticSearchBaseDomainService<ErrorLog>>();
         services.TryAddScoped<IElasticSearchBaseDomainService<OperationLog>, ElasticSearchBaseDomainService<OperationLog>>();
