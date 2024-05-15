@@ -8,17 +8,17 @@
 
 @typeparam T
 <MudTable @ref=table
-            Items="Model.Items"
-            ServerData="@ServerReload"
-            Hover="true"
-            Class=@(Rtl?"rtl":"ltr")>
+          Items="Model?.Items"
+          ServerData="@ServerReload"
+          Hover="true"
+          Class=@(Rtl?"rtl":"ltr")>
     <ToolBarContent>
         @if (ShowSearchBar)
         {
             <MudTextField Clearable=true T="string" ValueChanged="@(s=>OnSearch(s))"
-                            Placeholder=@SearchPlaceHolderText
-                            AdornmentIcon="@Icons.Material.Filled.Search"
-                            IconSize="MudBlazor.Size.Medium"></MudTextField>
+                          Placeholder=@SearchPlaceHolderText
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          IconSize="MudBlazor.Size.Medium"></MudTextField>
             @if (SearchBarContent != null)
             {
                 @SearchBarContent
@@ -27,15 +27,14 @@
     </ToolBarContent>
     <NoRecordsContent>@NoRecordText</NoRecordsContent>
     <HeaderContent>
-            
+
         @foreach (var item in columns)
         {
             <MudTh>
-                <MudTableSortLabel 
-                    T=T 
-                    Enabled=@item.Sortable
-                    SortLabel=@item.Name>
-                        @item.DisplayText
+                <MudTableSortLabel T=T
+                                   Enabled=@item.Sortable
+                                   SortLabel=@item.Name>
+                    @item.DisplayText
                 </MudTableSortLabel>
             </MudTh>
         }
@@ -47,7 +46,7 @@
     <RowTemplate>
         @foreach (var cell in columns)
         {
-            <MudTd DataLabel="@cell.Name">@context.GetType().GetProperty(cell.Name).GetValue(context)</MudTd>
+            <MudTd DataLabel="@cell.Name">@context?.GetType().GetProperty(cell.Name)?.GetValue(context)</MudTd>
         }
         @if (ActionContent != null)
         {
@@ -58,11 +57,11 @@
         @if (ShowPagination)
         {
             <div id=@id>
-            <MudTablePager AllItemsText=@PaginationSetting.AllItemsText
-                            HorizontalAlignment=@PaginationSetting.HorizontalAlignment
-                            RowsPerPageString=@PaginationSetting.RowsPerPageString
-                            InfoFormat=@PaginationSetting.InfoFormat/>
-                            </div>
+                <MudTablePager AllItemsText=@PaginationSetting.AllItemsText
+                               HorizontalAlignment=@PaginationSetting.HorizontalAlignment
+                               RowsPerPageString=@PaginationSetting.RowsPerPageString
+                               InfoFormat=@PaginationSetting.InfoFormat />
+            </div>
         }
     </PagerContent>
 
@@ -71,13 +70,13 @@
 @code {
     string id = Guid.NewGuid().ToString("N");
 
-    [Parameter] public TableData<T> Model { get; set; }
+    [Parameter] public TableData<T>? Model { get; set; }
     [Parameter] public bool ShowSearchBar { get; set; } = true;
     [Parameter] public bool Rtl { get; set; } = true;
     [Parameter] public bool ShowPagination { get; set; } = true;
     [Parameter] public RenderFragment<object?>? ActionContent { get; set; }
     [Parameter] public RenderFragment? SearchBarContent { get; set; }
-    [Parameter] public Func<TableState, string, Task<TableData<T>>> SearchProviderAsync { get; set; }
+    [Parameter] public Func<TableState, string, Task<TableData<T>>>? SearchProviderAsync { get; set; }
 
     [Parameter] public PaginationSettingModel PaginationSetting { get; set; } = new PaginationSettingModel();
 
@@ -89,25 +88,25 @@
     {
         public string RowsPerPageString { get; set; } = "اندازه صفحه:";
         public string InfoFormat { get; set; } = "{first_item}-{last_item} از {all_items}";
-        public string AllItemsText { get; set; } = "همه";    
-        public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Center;    
+        public string AllItemsText { get; set; } = "همه";
+        public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Center;
     }
 
-    MudTable<T> table;
+    MudTable<T>? table;
     List<(string DisplayText, string Name, bool Sortable)> columns = [];
     string? searchString;
 
-    protected override void OnInitialized() 
-    { 
-        if(Model==null)
+    protected override void OnInitialized()
+    {
+        if (Model == null)
             Model = JingetObjectFactory<T>.EmptyTableData.Instance;
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!Rtl)
         {
-            await JS.InvokeVoidAsync("toLtr", id );
+            await JS.InvokeVoidAsync("toLtr", id);
         }
     }
 
@@ -130,14 +129,18 @@
             {
                 var properties = modelType.GetProperties()
                         .Where(x => x.IsDefined(typeof(JingetTableMember), true))
-                        .OrderBy(x => x.GetCustomAttribute<JingetTableMember>().Order).ToList();
+                        .OrderBy(x => x.GetCustomAttribute<JingetTableMember>()?.Order).ToList();
 
                 foreach (var item in properties)
                 {
-                    var cellColumn = item.GetCustomAttribute<JingetTableMember>().DisplayName;
-                    var sortable = item.GetCustomAttribute<JingetTableMember>().Sortable;
-                    cellColumn = string.IsNullOrWhiteSpace(cellColumn) ? item.Name : cellColumn;
-                    columns.Add((cellColumn, item.Name, sortable));
+                    var attr = item.GetCustomAttribute<JingetTableMember>();
+                    if (attr != null)
+                    {
+                        var cellColumn = attr.DisplayName;
+                        var sortable = attr.Sortable;
+                        cellColumn = string.IsNullOrWhiteSpace(cellColumn) ? item.Name : cellColumn;
+                        columns.Add((cellColumn, item.Name, sortable));
+                    }
                 }
             }
         }
@@ -150,9 +153,9 @@
         {
             if (state.SortDirection == SortDirection.None)
                 state.SortDirection = SortDirection.Ascending;
-            Model = await SearchProviderAsync.Invoke(state, searchString);
+            Model = await SearchProviderAsync.Invoke(state, searchString == null ? "" : searchString);
         }
-        return Model;
+        return Model == null ? new TableData<T>() : Model;
     }
 
     void OnSearch(string text)
@@ -161,5 +164,5 @@
         Reload();
     }
 
-    public void Reload() => table.ReloadServerData();
+    public void Reload() => table?.ReloadServerData();
 }

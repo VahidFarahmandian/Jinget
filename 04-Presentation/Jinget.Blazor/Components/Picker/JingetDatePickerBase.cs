@@ -17,7 +17,7 @@ public abstract class JingetDatePickerBase : ComponentBase
     [Parameter] public string RequiredError { get; set; } = "الزامی";
     [Parameter] public bool EnglishNumber { get; set; }
     [Parameter] public abstract string Label { get; set; }
-    [Parameter] public Func<DateTime, bool> DisabledDateFunc { get; set; }
+    [Parameter] public Func<DateTime, bool>? DisabledDateFunc { get; set; }
     [Parameter] public Func<DateTime, string> CustomDateStyleFunc { get; set; } = (DateTime dt) => dt.DayOfWeek == DayOfWeek.Friday ? "red-text text-accent-4" : "";
 
     protected override async Task OnInitializedAsync()

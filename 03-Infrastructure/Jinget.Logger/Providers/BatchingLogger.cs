@@ -22,9 +22,7 @@ public class BatchingLogger : ILogger
         Log(DateTime.Now, logLevel, eventId, state, exception, formatter);
     }
 
-#pragma warning disable IDE0060 // Remove unused parameter
     public void Log<TState>(DateTime timestamp, LogLevel logLevel, EventId eventId, TState state,
-#pragma warning restore IDE0060 // Remove unused parameter
         Exception exception, Func<TState, Exception, string> formatter)
     {
         _provider.AddMessage(

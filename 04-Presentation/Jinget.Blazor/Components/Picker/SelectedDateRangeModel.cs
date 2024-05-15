@@ -4,7 +4,7 @@ namespace Jinget.Blazor.Components.Picker;
 
 public class SelectedDateRangeModel
 {
-    public DateRange DateRange { get; set; }
+    public DateRange? DateRange { get; set; }
     public string? StartDateJalali { get; set; }
     public string? EndDateJalali { get; set; }
 

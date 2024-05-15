@@ -15,30 +15,27 @@
 @inject IJSRuntime JS;
 @inject IServiceProvider serviceProvider;
 
-@if (Attribute.HasLabel)
+@if (Attribute != null && Attribute.HasLabel)
 {
     <label class="@Attribute.LabelCssClass">@Attribute.DisplayName</label>
 }
 
 @if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDatePicker datePicker)
 {
-    <JingetDatePicker 
-        Value="@(Value==null?null:Convert.ToDateTime(Value))"
-        Label="@Attribute.DisplayName"
-        Culture=@datePicker.Culture
-        EnglishNumber=datePicker.EnglishNumber
-        DateChanged="@((e)=>OnChange(new ChangeEventArgs(){Value=e}))"
-        />
+    <JingetDatePicker Value="@(Value==null?null:Convert.ToDateTime(Value))"
+                      Label="@Attribute.DisplayName"
+                      Culture=@datePicker.Culture
+                      EnglishNumber=datePicker.EnglishNumber
+                      DateChanged="@((e)=>OnChange(new ChangeEventArgs(){Value=e}))" />
 
 }
 else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePicker dateRangePicker)
 {
-    <JingetDateRangePicker 
-        Value="@(Value is SelectedDateRangeModel?((SelectedDateRangeModel)Value).DateRange: (DateRange)Value)"
-        Label="@Attribute.DisplayName"
-        Culture=@dateRangePicker.Culture
-        EnglishNumber=dateRangePicker.EnglishNumber
-        DateRangeChanged="((e)=>OnChange(new ChangeEventArgs(){Value=e}))">
+    <JingetDateRangePicker Value="@(Value is SelectedDateRangeModel?((SelectedDateRangeModel)Value).DateRange: (DateRange)Value)"
+                           Label="@Attribute.DisplayName"
+                           Culture=@dateRangePicker.Culture
+                           EnglishNumber=dateRangePicker.EnglishNumber
+                           DateRangeChanged="((e)=>OnChange(new ChangeEventArgs(){Value=e}))">
     </JingetDateRangePicker>
 }
 else if (Attribute is JingetComboBox comboBox && comboBox.Searchable == false)
@@ -53,7 +50,7 @@ else if (Attribute is JingetComboBox comboBox && comboBox.Searchable == false)
         <MudSelectItem Disabled=true Value="0.ToString()">@comboBox.DefaultText</MudSelectItem>
         @foreach (DropDownItemModel item in GetData())
         {
-            <MudSelectItem Value="@item.Value.ToString()">@item.Text</MudSelectItem>
+            <MudSelectItem Value="@item.Value?.ToString()">@item.Text</MudSelectItem>
         }
     </MudSelect>
 }
@@ -89,7 +86,7 @@ else if (Attribute is JingetTextBox textbox)
 }
 else if (Attribute is JingetTextArea textArea)
 {
-        <MudTextField Converter="@StringConverter"
+    <MudTextField Converter="@StringConverter"
                   @bind-Value="Value"
                   Label="@textArea.DisplayName"
                   HelperText="@textArea.HelperText"
@@ -99,7 +96,7 @@ else if (Attribute is JingetTextArea textArea)
 }
 else if (Attribute is JingetPasswordBox passwordBox)
 {
-        <MudTextField Converter="@StringConverter"
+    <MudTextField Converter="@StringConverter"
                   @bind-Value="Value"
                   Label="@passwordBox.DisplayName"
                   HelperText="@passwordBox.HelperText"
@@ -109,7 +106,7 @@ else if (Attribute is JingetPasswordBox passwordBox)
 }
 else if (Attribute is JingetNumberBox numberBox)
 {
-        <MudTextField Converter="@StringConverter"
+    <MudTextField Converter="@StringConverter"
                   @bind-Value="Value"
                   Label="@numberBox.DisplayName"
                   HelperText="@numberBox.HelperText"
@@ -119,7 +116,7 @@ else if (Attribute is JingetNumberBox numberBox)
 }
 else if (Attribute is JingetEmailBox emailBox)
 {
-        <MudTextField Converter="@StringConverter"
+    <MudTextField Converter="@StringConverter"
                   @bind-Value="Value"
                   Label="@emailBox.DisplayName"
                   HelperText="@emailBox.HelperText"
@@ -129,7 +126,7 @@ else if (Attribute is JingetEmailBox emailBox)
 }
 else if (Attribute is JingetTelephoneBox telephoneBox)
 {
-        <MudTextField Converter="@StringConverter"
+    <MudTextField Converter="@StringConverter"
                   @bind-Value="Value"
                   Label="@telephoneBox.DisplayName"
                   HelperText="@telephoneBox.HelperText"
@@ -139,7 +136,7 @@ else if (Attribute is JingetTelephoneBox telephoneBox)
 }
 else
 {
-        <input id="@Id" type="@Attribute.ToString()" value="@Value" onchange="@OnChange" class="@Attribute.CssClass" />
+    <input id="@Id" type="@Attribute.ToString()" value="@Value" onchange="@OnChange" class="@Attribute.CssClass" />
 }
 
 @code {
@@ -150,13 +147,13 @@ else
     [Parameter] public EventCallback<object> ValueChanged { get; set; }
 
     private DotNetObjectReference<JingetDynamicField>? dotNetObjRef;
-    string labelText = "";
+    string? labelText = "";
 
     protected override Task OnInitializedAsync()
     {
         if (Attribute is JingetLabel label)
         {
-            labelText = (Value == null ? "" : Value.ToString());
+            labelText = Value == null ? "" : Value.ToString();
         }
         dotNetObjRef = DotNetObjectReference.Create(this);
         return base.OnInitializedAsync();
@@ -178,7 +175,10 @@ else
 
     List<DropDownItemModel> GetData()
     {
-        var method = Binding?.DeclaringType?.GetMethod((Attribute as JingetComboBox).BindingFunction);
+        var bindingFunction = (Attribute as JingetComboBox)?.BindingFunction;
+        if (bindingFunction == null)
+            return new List<DropDownItemModel>();
+        var method = Binding?.DeclaringType?.GetMethod(bindingFunction);
         if (method != null)
         {
             object? callerObject = null;

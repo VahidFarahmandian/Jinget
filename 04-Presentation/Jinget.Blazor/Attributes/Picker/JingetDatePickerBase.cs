@@ -3,6 +3,6 @@
 
 public abstract class JingetDatePickerBase : JingetFormElement
 {
-    public string Culture { get; set; }
+    public string? Culture { get; set; }
     public bool EnglishNumber { get; set; }
 }
