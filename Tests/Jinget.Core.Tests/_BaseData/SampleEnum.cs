@@ -18,4 +18,6 @@ internal class SampleEnum
 
         Golang = 4
     }
+
+    internal enum EmptyEnum { }
 }

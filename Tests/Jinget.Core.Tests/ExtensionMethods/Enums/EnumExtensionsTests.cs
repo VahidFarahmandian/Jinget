@@ -5,6 +5,8 @@ using Jinget.Core.Tests._BaseData;
 using System.Collections.Generic;
 using System.Linq;
 using static Jinget.Core.Tests._BaseData.SampleEnum;
+using System.ComponentModel;
+using Jinget.Core.Utilities.Enum;
 
 namespace Jinget.Core.Tests.ExtensionMethods.Enums;
 
@@ -49,7 +51,7 @@ public class EnumExtensionsTests
         string enumDisplayName = "C#";
         List<ProgrammingLanguage> expected = [ProgrammingLanguage.CSharp, ProgrammingLanguage.VB];
 
-        List<ProgrammingLanguage> result = EnumExtensions.GetValueFromDisplayName<ProgrammingLanguage>(enumDisplayName);
+        List<ProgrammingLanguage> result = EnumUtility.GetValueFromDisplayName<ProgrammingLanguage>(enumDisplayName);
 
         Assert.IsTrue(expected.SequenceEqual(result));
     }
@@ -60,7 +62,7 @@ public class EnumExtensionsTests
         string enumDisplayName = "Golang";
         List<ProgrammingLanguage> expected = [ProgrammingLanguage.Golang];
 
-        List<ProgrammingLanguage> result = EnumExtensions.GetValueFromDisplayName<ProgrammingLanguage>(enumDisplayName);
+        List<ProgrammingLanguage> result = EnumUtility.GetValueFromDisplayName<ProgrammingLanguage>(enumDisplayName);
 
         Assert.IsTrue(expected.SequenceEqual(result));
     }
@@ -70,7 +72,7 @@ public class EnumExtensionsTests
     public void should_throw_exception_where_display_name_not_found()
     {
         string enumDescription = "Java";
-        EnumExtensions.GetValueFromDisplayName<ProgrammingLanguage>(enumDescription);
+        EnumUtility.GetValueFromDisplayName<ProgrammingLanguage>(enumDescription);
     }
 
     [TestMethod()]
@@ -78,7 +80,7 @@ public class EnumExtensionsTests
     public void should_throw_exception_where_enum_type_is_invalid_in_display_name()
     {
         string enumDescription = "Java";
-        EnumExtensions.GetValueFromDisplayName<InvalidStruct>(enumDescription);
+        EnumUtility.GetValueFromDisplayName<InvalidStruct>(enumDescription);
     }
 
     #endregion
@@ -121,7 +123,7 @@ public class EnumExtensionsTests
         string enumDescription = "F#.Net";
         ProgrammingLanguage expected = ProgrammingLanguage.FSharp;
 
-        ProgrammingLanguage result = EnumExtensions.GetValueFromDescription<ProgrammingLanguage>(enumDescription);
+        ProgrammingLanguage result = EnumUtility.GetValueFromDescription<ProgrammingLanguage>(enumDescription);
 
         Assert.AreEqual(expected, result);
     }
@@ -132,7 +134,7 @@ public class EnumExtensionsTests
         string enumDescription = "VB";
         ProgrammingLanguage expected = ProgrammingLanguage.VB;
 
-        ProgrammingLanguage result = EnumExtensions.GetValueFromDescription<ProgrammingLanguage>(enumDescription);
+        ProgrammingLanguage result = EnumUtility.GetValueFromDescription<ProgrammingLanguage>(enumDescription);
 
         Assert.AreEqual(expected, result);
     }
@@ -142,7 +144,7 @@ public class EnumExtensionsTests
     public void should_throw_exception_where_description_not_found()
     {
         string enumDescription = "Java";
-        EnumExtensions.GetValueFromDescription<ProgrammingLanguage>(enumDescription);
+        EnumUtility.GetValueFromDescription<ProgrammingLanguage>(enumDescription);
     }
 
     [TestMethod()]
@@ -150,8 +152,42 @@ public class EnumExtensionsTests
     public void should_throw_exception_where_enum_type_is_invalid_in_description()
     {
         string enumDescription = "Java";
-        EnumExtensions.GetValueFromDescription<InvalidStruct>(enumDescription);
+        EnumUtility.GetValueFromDescription<InvalidStruct>(enumDescription);
     }
 
     #endregion region
+
+    #region Min & Max Values
+
+    [TestMethod()]
+    public void should_return_min_val_in_enum()
+    {
+        int expectedMinVal = 1;
+        var result = EnumUtility.GetMinValue<ProgrammingLanguage, int>();
+        Assert.AreEqual(expectedMinVal, result);
+    }
+
+    [TestMethod()]
+    [ExpectedException(typeof(InvalidEnumArgumentException))]
+    public void should_throw_exception_for_empty_enum_min()
+    {
+        EnumUtility.GetMinValue<EmptyEnum, int>();
+    }
+
+    [TestMethod()]
+    public void should_return_max_val_in_enum()
+    {
+        int expectedMinVal = 4;
+        var result = EnumUtility.GetMaxValue<ProgrammingLanguage, int>();
+        Assert.AreEqual(expectedMinVal, result);
+    }
+
+    [TestMethod()]
+    [ExpectedException(typeof(InvalidEnumArgumentException))]
+    public void should_throw_exception_for_empty_enum_max()
+    {
+        EnumUtility.GetMaxValue<EmptyEnum, int>();
+    }
+
+    #endregion
 }

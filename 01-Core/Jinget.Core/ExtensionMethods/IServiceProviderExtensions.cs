@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Jinget.Core.ExtensionMethods;
+﻿namespace Jinget.Core.ExtensionMethods;
 
 public static class IServiceProviderExtensions
 {

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Jinget.Core.Operators;
+﻿namespace Jinget.Core.Operators;
 
 public static class GenericEqualityOperator<T>
 {

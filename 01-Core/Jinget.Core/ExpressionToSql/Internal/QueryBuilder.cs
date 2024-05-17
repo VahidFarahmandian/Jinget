@@ -1,6 +1,3 @@
-using System;
-using System.Text;
-
 namespace Jinget.Core.ExpressionToSql.Internal;
 
 public class QueryBuilder

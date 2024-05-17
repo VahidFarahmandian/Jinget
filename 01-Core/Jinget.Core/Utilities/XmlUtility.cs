@@ -1,12 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters;
+﻿using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Soap;
-using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace Jinget.Core.Utilities;
 

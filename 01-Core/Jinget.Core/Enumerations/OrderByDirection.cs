@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Jinget.Core.Enumerations;
+﻿namespace Jinget.Core.Enumerations;
 
 /// <summary>
 /// Define order by directions used in query handling

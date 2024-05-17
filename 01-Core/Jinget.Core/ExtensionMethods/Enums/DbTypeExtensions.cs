@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace Jinget.Core.ExtensionMethods.Enums;
+﻿namespace Jinget.Core.ExtensionMethods.Enums;
 
 public static class DbTypeExtensions
 {

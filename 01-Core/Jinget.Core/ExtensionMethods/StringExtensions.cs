@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Jinget.Core.ExtensionMethods;
+﻿namespace Jinget.Core.ExtensionMethods;
 
 public static class StringExtensions
 {

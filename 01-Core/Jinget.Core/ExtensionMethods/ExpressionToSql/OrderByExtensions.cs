@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Jinget.Core.ExpressionToSql.Internal;
-
-namespace Jinget.Core.ExtensionMethods.ExpressionToSql;
+﻿namespace Jinget.Core.ExtensionMethods.ExpressionToSql;
 
 public static class OrderByExtensions
 {

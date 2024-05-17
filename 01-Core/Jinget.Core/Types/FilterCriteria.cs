@@ -1,6 +1,4 @@
-﻿using Jinget.Core.Enumerations;
-
-namespace Jinget.Core.Types;
+﻿namespace Jinget.Core.Types;
 
 /// <summary>
 /// represents a filter criteria. if no operator specified, then "=" operator will be used by default

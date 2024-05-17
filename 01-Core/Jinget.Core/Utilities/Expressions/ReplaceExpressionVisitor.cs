@@ -1,7 +1,4 @@
-﻿using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("Jinget.Core.Tests")]
+﻿[assembly: InternalsVisibleTo("Jinget.Core.Tests")]
 namespace Jinget.Core.Utilities.Expressions;
 
 /// <summary>

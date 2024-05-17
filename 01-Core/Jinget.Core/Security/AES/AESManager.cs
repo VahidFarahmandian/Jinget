@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System.Security.Cryptography;
 using Jinget.Core.Exceptions;
 
 namespace Jinget.Core.Security.AES;

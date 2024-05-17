@@ -1,7 +1,4 @@
-﻿using System;
-using System.Data;
-
-namespace Jinget.Core.ExtensionMethods.Database.SqlClient;
+﻿namespace Jinget.Core.ExtensionMethods.Database.SqlClient;
 
 public static class IDbCommandExtensions
 {

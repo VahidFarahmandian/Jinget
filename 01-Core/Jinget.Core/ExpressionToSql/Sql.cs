@@ -1,8 +1,4 @@
-﻿using Jinget.Core.ExpressionToSql.Internal;
-using System;
-using System.Linq.Expressions;
-
-namespace Jinget.Core.ExpressionToSql;
+﻿namespace Jinget.Core.ExpressionToSql;
 
 public static class Sql
 {

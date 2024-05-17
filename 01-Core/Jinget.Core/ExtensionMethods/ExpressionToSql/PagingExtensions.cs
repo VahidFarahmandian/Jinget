@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using Jinget.Core.Exceptions;
-using Jinget.Core.ExpressionToSql.Internal;
+﻿using Jinget.Core.Exceptions;
 
 namespace Jinget.Core.ExtensionMethods.ExpressionToSql;
 

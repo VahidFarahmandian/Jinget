@@ -1,9 +1,6 @@
 ﻿using Ionic.Zip;
 using Ionic.Zlib;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Jinget.Core.Utilities.Compression;
 

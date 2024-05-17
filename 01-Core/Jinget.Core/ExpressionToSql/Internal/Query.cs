@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Text;
-
 namespace Jinget.Core.ExpressionToSql.Internal;
 
 public abstract class Query

@@ -1,8 +1,4 @@
 using Jinget.Core.ExtensionMethods.Reflection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace Jinget.Core.ExpressionToSql.Internal;
 

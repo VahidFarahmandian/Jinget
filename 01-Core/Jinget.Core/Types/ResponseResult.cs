@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Jinget.Core.Types;
+﻿namespace Jinget.Core.Types;
 
 public class ResponseResult<TResponseModel>
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
-
-namespace Jinget.Core.Utilities;
+﻿namespace Jinget.Core.Utilities;
 
 public static class BooleanUtility
 {

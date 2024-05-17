@@ -1,11 +1,4 @@
-﻿using Dapper;
-using Jinget.Core.Contracts;
-using Jinget.Core.ExpressionToSql.Internal;
-using System.Collections.Generic;
-using System;
-using System.Data;
-using System.Threading.Tasks;
-using System.Linq;
+﻿using Jinget.Core.Contracts;
 using Jinget.Core.ExtensionMethods.ExpressionToSql;
 using Jinget.Core.ExtensionMethods.Collections;
 

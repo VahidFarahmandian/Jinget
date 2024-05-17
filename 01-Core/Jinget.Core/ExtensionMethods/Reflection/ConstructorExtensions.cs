@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-
-namespace Jinget.Core.ExtensionMethods.Reflection;
+﻿namespace Jinget.Core.ExtensionMethods.Reflection;
 
 public static class ConstructorExtensions
 {

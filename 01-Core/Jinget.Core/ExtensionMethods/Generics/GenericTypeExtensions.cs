@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Jinget.Core.ExtensionMethods.Generics;
+﻿namespace Jinget.Core.ExtensionMethods.Generics;
 
 public static class GenericTypeExtensions
 {
