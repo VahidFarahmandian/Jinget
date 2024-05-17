@@ -11,3 +11,8 @@ global using System.Reflection;
 global using Jinget.Core.Utilities;
 global using Jinget.Blazor.Attributes.Core;
 global using Jinget.Blazor.Models;
+
+global using System.Security.Claims;
+global using Jinget.Blazor.Services.Contracts;
+global using Microsoft.JSInterop;
+global using Microsoft.AspNetCore.Components.Authorization;
