@@ -1,6 +1,4 @@
-﻿using MudBlazor;
-
-namespace Jinget.Blazor.Services;
+﻿namespace Jinget.Blazor.Services;
 
 public class JingetObjectFactory<T>
 {
