@@ -31,8 +31,23 @@ public class TypeExtensionsTests
         var result = typeof(TestClass).Call(
             caller: new TestClass(),
             name: nameof(TestClass.GetInfo),
-            parameters: ["vahid", 123],
+            null,
+            parameterValues: ["vahid", 123],
             generics: typeof(SubType));
+
+        Assert.AreEqual(expectedResult, result);
+    }
+
+    [TestMethod()]
+    public void should_call_overloaded_static_method_dynamically()
+    {
+        int expectedResult = 250;
+
+        var result = typeof(TestClass).Call(
+            name: nameof(TestClass.Method1),
+            parameterTypes: [typeof(int), typeof(int)],
+            parameterValues: [100, 150],
+            generics: null);
 
         Assert.AreEqual(expectedResult, result);
     }

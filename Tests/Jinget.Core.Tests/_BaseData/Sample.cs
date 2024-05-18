@@ -21,6 +21,8 @@ public class Type2
 }
 public class TestClass
 {
+    public static int Method1(int a) => a;
+    public static int Method1(int a, int b) => a + b;
     public string GetInfo<T>(string s1, int i1) => $"string is: {s1}, integer is: {i1}, generic type is: {typeof(T).Name}";
 
     public class InnerClass

@@ -26,15 +26,15 @@ public static class TypeExtensions
     /// Call method dynamically at runtime. 
     /// This overload used to call the public instance method
     /// </summary>
-    public static object? Call(this Type type, object? caller, string name, object?[] parameters, params Type[] generics)
-        => type.Call(caller, name, BindingFlags.Public | BindingFlags.Instance, parameters, generics);
+    public static object? Call(this Type type, object? caller, string name, Type[]? parameterTypes, object?[] parameterValues, params Type[] generics)
+        => type.Call(caller, name, BindingFlags.Public | BindingFlags.Instance, parameterTypes, parameterValues, generics);
 
     /// <summary>
     /// Call method dynamically at runtime. 
     /// This overload used to call the public static method
     /// </summary>
-    public static object? Call(this Type type, string name, object?[] parameters, params Type[] generics)
-        => type.Call(null, name, BindingFlags.Public | BindingFlags.Static, parameters, generics);
+    public static object? Call(this Type type, string name, Type[]? parameterTypes, object?[] parameterValues, params Type[] generics)
+        => type.Call(null, name, BindingFlags.Public | BindingFlags.Static, parameterTypes, parameterValues, generics);
 
     /// <summary>
     /// Call method dynamically at runtime. 
@@ -45,9 +45,14 @@ public static class TypeExtensions
     /// <param name="parameters">parameters used to pass to the method</param>
     /// <param name="generics">if the mthod is a generic method, then generic types should be specified</param>
     /// <returns>Invoke the method and return the method's return value</returns>
-    public static object? Call(this Type type, object? caller, string name, BindingFlags bindingFlags, object?[] parameters, params Type[] generics)
+    public static object? Call(this Type type, object? caller, string name, BindingFlags bindingFlags, Type[]? parameterTypes, object?[] parameters, params Type[] generics)
     {
-        var method = type.GetMethod(name, bindingFlags);
+        MethodInfo method;
+        if (parameterTypes == null)
+            method = type.GetMethod(name, bindingFlags);
+        else
+            method = type.GetMethod(name, bindingFlags, parameterTypes);
+
         if (method == null)
             return null;
         if (generics != null)

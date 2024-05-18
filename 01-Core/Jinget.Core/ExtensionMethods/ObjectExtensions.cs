@@ -107,7 +107,8 @@ public static class ObjectExtensions
                 {
                     var referenceTypeValue = typeof(ObjectExtensions).Call(
                         name: nameof(ToType),
-                        parameters: [value],
+                        null,
+                        parameterValues: [value],
                         generics: property.PropertyType);
 
                     property.SetValue(newObj, referenceTypeValue);
@@ -122,7 +123,8 @@ public static class ObjectExtensions
                     {
                         var referenceTypeValue = typeof(ObjectExtensions).Call(
                             name: nameof(ToType),
-                            parameters: [item],
+                            null,
+                            parameterValues: [item],
                             generics: property.PropertyType.GetGenericArguments()[0]);
 
                         if (property.PropertyType.GetGenericTypeDefinition() != typeof(ICollection<>))
