@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 using System.Collections.Generic;
 
 namespace Jinget.Core.Tests._BaseData;
@@ -18,6 +19,17 @@ public class Type2
     public int Id { get; set; }
     public string Name { get; set; }
     public string SurName { get; set; }
+}
+public static class TestClassExtensions
+{
+    public static string[] Method1<T>(this TestClass testClass)
+    {
+        return [typeof(T).Name];
+    }
+    public static string[] Method1<T, U>(this TestClass testClass)
+    {
+        return [typeof(T).Name, typeof(U).Name];
+    }
 }
 public class TestClass
 {

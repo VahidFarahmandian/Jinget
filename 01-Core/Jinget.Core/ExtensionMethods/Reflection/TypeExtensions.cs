@@ -42,24 +42,44 @@ public static class TypeExtensions
     /// <param name="caller">object used to call the method. if the method is static, then set this as `null`</param>
     /// <param name="name">method name</param>
     /// <param name="bindingFlags"></param>
-    /// <param name="parameters">parameters used to pass to the method</param>
+    /// <param name="parameterValues">parameters used to pass to the method</param>
     /// <param name="generics">if the mthod is a generic method, then generic types should be specified</param>
     /// <returns>Invoke the method and return the method's return value</returns>
-    public static object? Call(this Type type, object? caller, string name, BindingFlags bindingFlags, Type[]? parameterTypes, object?[] parameters, params Type[] generics)
+    public static object? Call(this Type type, object? caller, string name, BindingFlags bindingFlags, Type[]? parameterTypes, object?[] parameterValues, params Type[] generics)
     {
         MethodInfo method;
-        if (parameterTypes == null)
-            method = type.GetMethod(name, bindingFlags);
+        if (generics != null)
+        {
+            if (parameterTypes == null)
+                method = type.GetMethods(bindingFlags)
+                    .Where(
+                    x => x.Name == name &&
+                    x.GetGenericArguments().Length == generics.Length)
+                    .FirstOrDefault();
+            else
+                method = type.GetMethods(bindingFlags)
+                    .Where(
+                    x => x.Name == name &&
+                    x.GetGenericArguments().Length == generics.Length &&
+                    x.GetParameters().Any() &&
+                    x.GetParameters().All(p => parameterTypes.ToList().Contains(p.ParameterType))
+                    )
+                    .FirstOrDefault();
+        }
         else
-            method = type.GetMethod(name, bindingFlags, parameterTypes);
-
+        {
+            if (parameterTypes == null)
+                method = type.GetMethod(name, bindingFlags);
+            else
+                method = type.GetMethod(name, bindingFlags, parameterTypes);
+        }
         if (method == null)
             return null;
         if (generics != null)
             method = method.MakeGenericMethod(generics);
         try
         {
-            return method.Invoke(caller, parameters);
+            return method.Invoke(caller, parameterValues);
         }
         catch (Exception ex) when (ex.InnerException is JingetException)
         {

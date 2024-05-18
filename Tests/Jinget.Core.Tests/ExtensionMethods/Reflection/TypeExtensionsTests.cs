@@ -53,6 +53,21 @@ public class TypeExtensionsTests
     }
 
     [TestMethod()]
+    public void should_call_generic_overloaded_extension_method_dynamically()
+    {
+        string[] expectedResult = ["TestClass", "SoapSample"];
+
+        var result = typeof(TestClassExtensions).Call(
+            name: nameof(TestClassExtensions.Method1),
+            parameterTypes: [typeof(TestClass)],
+            parameterValues: [new TestClass()],
+            typeof(TestClass), typeof(SoapSample));
+
+        Assert.AreEqual(expectedResult.First(), ((string[])result).First());
+        Assert.AreEqual(expectedResult.Last(), ((string[])result).Last());
+    }
+
+    [TestMethod()]
     public void shuold_return_all_reference_type_properties_except_string_types()
     {
         var result = typeof(TestClass).GetReferenceTypeProperties();
