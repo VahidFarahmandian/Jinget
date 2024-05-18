@@ -42,8 +42,9 @@ public static class TypeExtensions
     /// <param name="caller">object used to call the method. if the method is static, then set this as `null`</param>
     /// <param name="name">method name</param>
     /// <param name="bindingFlags"></param>
-    /// <param name="parameterValues">parameters used to pass to the method</param>
-    /// <param name="generics">if the mthod is a generic method, then generic types should be specified</param>
+    /// <param name="parameterTypes">parameters type used to pass to the method</param>
+    /// <param name="parameterValues">parameters value used to pass to the method</param>
+    /// <param name="generics">if the method is a generic method, then generic types should be specified</param>
     /// <returns>Invoke the method and return the method's return value</returns>
     public static object? Call(this Type type, object? caller, string name, BindingFlags bindingFlags, Type[]? parameterTypes, object?[] parameterValues, params Type[] generics)
     {

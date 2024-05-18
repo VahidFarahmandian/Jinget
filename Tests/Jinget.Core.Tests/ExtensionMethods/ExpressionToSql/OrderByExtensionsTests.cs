@@ -62,6 +62,25 @@ public class OrderByExtensionsTests
     }
 
     [TestMethod()]
+    public void should_return_stringfied_order_by_clause_complex_type_generic()
+    {
+        List<OrderBy<TestClass>> lstOrderBy =
+        [
+            new OrderBy<TestClass>
+            {
+                Name = x=>x.InnerSingularProperty.InnerProperty1,
+                Direction = Enumerations.OrderByDirection.Descending
+            }
+        ];
+
+        string expectedResult = "ORDER BY [InnerSingularProperty.InnerProperty1] DESC";
+
+        var result = lstOrderBy.GetSorting();
+
+        Assert.AreEqual(expectedResult, result);
+    }
+
+    [TestMethod()]
     public void should_return_stringfied_order_by_clause_stringfied_type_name()
     {
         List<OrderBy> lstOrderBy =

@@ -149,6 +149,16 @@ public static class ExpressionUtility
         return Expression.Lambda<Func<T, T>>(memberExpression, paramExpression);
     }
 
+    public static Expression<Func<Tin, Tout>> ToExpression<Tin, Tout>(string property, string parameterName = "Param_0")
+    {
+
+        var paramExpression = Expression.Parameter(typeof(Tin), parameterName);
+
+        var memberExpression = Expression.Constant(property);
+
+        return Expression.Lambda<Func<Tin, Tout>>(memberExpression, paramExpression);
+    }
+
     /// <summary>
     /// example return: x=>x.id
     /// </summary>
