@@ -9,7 +9,6 @@ public static class GenericTypeExtensions
     public static bool IsSubclassOfRawGeneric(this Type derivedType, Type parentType)
     {
         while (derivedType != null && derivedType != typeof(object))
-
         {
             var currentType = derivedType.IsGenericType ? derivedType.GetGenericTypeDefinition() : derivedType;
             if (parentType == currentType)

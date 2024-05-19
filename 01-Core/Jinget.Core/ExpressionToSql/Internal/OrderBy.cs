@@ -1,7 +1,4 @@
-﻿using Jinget.Core.ExtensionMethods.Expressions;
-using Jinget.Core.Utilities.Expressions;
-
-namespace Jinget.Core.ExpressionToSql.Internal;
+﻿namespace Jinget.Core.ExpressionToSql.Internal;
 
 /// <summary>
 /// Provides the order by functionality used in query handling

@@ -1,7 +1,6 @@
 ﻿using Jinget.Core.Contracts;
 using Jinget.Core.ExtensionMethods.ExpressionToSql;
 using Jinget.Core.ExtensionMethods.Collections;
-using Jinget.Core.ExtensionMethods.Reflection;
 
 [assembly: InternalsVisibleTo("Jinget.Core.Tests")]
 namespace Jinget.Core.ExtensionMethods.Database.SqlClient;

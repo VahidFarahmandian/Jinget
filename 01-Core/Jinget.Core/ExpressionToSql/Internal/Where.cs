@@ -1,5 +1,3 @@
-using Jinget.Core.Exceptions;
-
 #pragma warning disable CS8604 // Possible null reference argument.
 namespace Jinget.Core.ExpressionToSql.Internal;
 

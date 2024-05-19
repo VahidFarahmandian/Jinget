@@ -1,8 +1,4 @@
-﻿using Jinget.Core.Exceptions;
-using Jinget.Core.ExtensionMethods.Reflection;
-using Newtonsoft.Json;
-
-namespace Jinget.Core.ExtensionMethods;
+﻿namespace Jinget.Core.ExtensionMethods;
 
 public static class ObjectExtensions
 {
@@ -48,13 +44,13 @@ public static class ObjectExtensions
         foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(source))
         {
             object? value = property.GetValue(source);
-            if (options.IgnoreNull && value == null)
-                continue;
-            else if (options.IgnoreExpressions && value is Expression)
-                continue;
-            else if (options.IgnoreExpr2SQLOrderBys && value is List<OrderBy>)
-                continue;
-            else if (options.IgnoreExpr2SQLPagings && value is Paging)
+            var valueType = value.GetType();
+            if (
+                (options.IgnoreNull && value == null) ||
+                (options.IgnoreExpressions && value is Expression) ||
+                (options.IgnoreExpr2SQLOrderBys && value is List<OrderBy>) ||
+                (options.IgnoreExpr2SQLOrderBys && value is not null && valueType.IsGenericType && valueType.GenericTypeArguments[0].GetGenericTypeDefinition() == typeof(OrderBy<>)) ||
+                (options.IgnoreExpr2SQLPagings && value is Paging))
                 continue;
             string key = property.Name;
             if (!result.ContainsKey(key))
@@ -69,8 +65,7 @@ public static class ObjectExtensions
     /// <summary>
     /// Get the value of the given property
     /// </summary>
-    public static object? GetValue(this object obj, string propertyName)
-        => obj.GetType().GetProperty(propertyName)?.GetValue(obj);
+    public static object? GetValue(this object obj, string propertyName) => obj.GetType().GetProperty(propertyName)?.GetValue(obj);
 
     /// <summary>
     /// Convert two unrelated objects to each other.

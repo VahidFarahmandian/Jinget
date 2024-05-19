@@ -1,6 +1,4 @@
-﻿using Jinget.Core.Exceptions;
-
-namespace Jinget.Core.ExtensionMethods.Collections;
+﻿namespace Jinget.Core.ExtensionMethods.Collections;
 
 public static class IQueryableExtensions
 {

@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+﻿using Newtonsoft.Json.Serialization;
 
 namespace Jinget.Core.Utilities.Json;
 

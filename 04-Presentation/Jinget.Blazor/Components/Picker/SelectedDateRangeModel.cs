@@ -1,6 +1,4 @@
-﻿using MudBlazor;
-
-namespace Jinget.Blazor.Components.Picker;
+﻿namespace Jinget.Blazor.Components.Picker;
 
 public class SelectedDateRangeModel
 {

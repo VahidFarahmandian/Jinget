@@ -1,7 +1,4 @@
-﻿using Jinget.Core.Exceptions;
-using Jinget.Core.ExtensionMethods.Expressions;
-
-namespace Jinget.Core.ExtensionMethods.Reflection;
+﻿namespace Jinget.Core.ExtensionMethods.Reflection;
 
 public static class TypeExtensions
 {

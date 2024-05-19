@@ -1,5 +1,3 @@
-using Jinget.Core.ExtensionMethods.Reflection;
-
 namespace Jinget.Core.ExpressionToSql.Internal;
 
 public class Select<T, R> : Query

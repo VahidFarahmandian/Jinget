@@ -1,6 +1,4 @@
-﻿using Jinget.Core.Exceptions;
-
-namespace Jinget.Core.ExtensionMethods.ExpressionToSql;
+﻿namespace Jinget.Core.ExtensionMethods.ExpressionToSql;
 
 public static class PagingExtensions
 {

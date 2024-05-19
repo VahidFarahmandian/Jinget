@@ -1,10 +1,6 @@
 ﻿using Jinget.Core.Contracts;
 using Jinget.Core.ExpressionToSql.Internal;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Jinget.Core.Tests._BaseData
 {
@@ -18,14 +14,13 @@ namespace Jinget.Core.Tests._BaseData
                 PageNumber = 1,
                 PageSize = 10,
             };
-            OrderBy = new List<OrderBy<GenericRequestSampleMessage>>()
-        {
-            new()
+            OrderBy = [
+            new OrderBy<GenericRequestSampleMessage>()
             {
                 Name = x=>x.Property1,
                 Direction=Enumerations.OrderByDirection.Descending
             }
-        };
+        ];
         }
         public string Property1 { get; set; }
         public string Property2 { get; set; }

@@ -1,6 +1,4 @@
-﻿using Jinget.Core.Utilities.Expressions;
-
-namespace Jinget.Core.ExtensionMethods.Expressions;
+﻿namespace Jinget.Core.ExtensionMethods.Expressions;
 
 public static class LambdaExpressionExtensions
 {

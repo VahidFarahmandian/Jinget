@@ -1,6 +1,4 @@
-﻿using Jinget.Core.Utilities.Expressions;
-
-namespace Jinget.Core.ExtensionMethods.Expressions;
+﻿namespace Jinget.Core.ExtensionMethods.Expressions;
 
 public static class BooleanExpressionExtensions
 {
@@ -13,8 +11,10 @@ public static class BooleanExpressionExtensions
     /// <summary>
     /// Visit a boolean expression
     /// </summary>
-    private static (Expression? LeftExpression, Expression? RightExpression) Visit<T>(Expression<Func<T, bool>> leftExpression,
-        Expression<Func<T, bool>> rightExpression, ParameterExpression parameter)
+    private static (Expression? LeftExpression, Expression? RightExpression) Visit<T>(
+        Expression<Func<T, bool>> leftExpression,
+        Expression<Func<T, bool>> rightExpression,
+        ParameterExpression parameter)
     {
         ReplaceExpressionVisitor leftVisitor = new(leftExpression.Parameters[0], parameter);
         Expression? left = leftVisitor.Visit(leftExpression.Body);
@@ -29,31 +29,41 @@ public static class BooleanExpressionExtensions
     /// should combine conditions using AND operator. if any of expressions passed as null, then the other expression will be returned
     /// </summary>
     /// <param name="parameterName">parameter name used in expression. for example in x=>x.Id>0, parameterName is 'x'</param>
-    public static Expression<Func<T, bool>> AndAlso<T>(this Expression<Func<T, bool>> expr1, Expression<Func<T, bool>> expr2, string parameterName = "Param_0")
-    {
-        if (expr1 is null) return expr2;
-        if (expr2 is null) return expr1;
-        var parameter = Expression.Parameter(typeof(T), parameterName);
-
-        (Expression? LeftExpression, Expression? RightExpression) = Visit(expr1, expr2, parameter);
-#pragma warning disable CS8604 // Possible null reference argument.
-        return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(LeftExpression, RightExpression), parameter);
-#pragma warning restore CS8604 // Possible null reference argument.
-    }
+    public static Expression<Func<T, bool>> AndAlso<T>(
+        this Expression<Func<T, bool>> expr1,
+        Expression<Func<T, bool>> expr2,
+        string parameterName = "Param_0")
+        => expr1.CreateBinaryExpression(expr2, parameterName, ExpressionType.AndAlso);
 
     /// <summary>
     /// should combine conditions using OR operator. if any of expressions passed as null, then the other expression will be returned
     /// </summary>
     /// <param name="parameterName">parameter name used in expression. for example in x=>x.Id>0, parameterName is 'x'</param>
-    public static Expression<Func<T, bool>> OrElse<T>(this Expression<Func<T, bool>> expr1, Expression<Func<T, bool>> expr2, string parameterName = "Param_0")
+    public static Expression<Func<T, bool>> OrElse<T>(
+        this Expression<Func<T, bool>> expr1,
+        Expression<Func<T, bool>> expr2,
+        string parameterName = "Param_0")
+        => expr1.CreateBinaryExpression(expr2, parameterName, ExpressionType.OrElse);
+
+    static Expression<Func<T, bool>> CreateBinaryExpression<T>(
+        this Expression<Func<T, bool>> expr1,
+        Expression<Func<T, bool>> expr2,
+        string parameterName = "Param_0",
+        ExpressionType expressionType = ExpressionType.AndAlso)
     {
         if (expr1 is null) return expr2;
         if (expr2 is null) return expr1;
         var parameter = Expression.Parameter(typeof(T), parameterName);
-
         (Expression? LeftExpression, Expression? RightExpression) = Visit(expr1, expr2, parameter);
-#pragma warning disable CS8604 // Possible null reference argument.
-        return Expression.Lambda<Func<T, bool>>(Expression.OrElse(LeftExpression, RightExpression), parameter);
-#pragma warning restore CS8604 // Possible null reference argument.
+        BinaryExpression binaryExpr;
+        if (expressionType == ExpressionType.AndAlso)
+            binaryExpr = Expression.AndAlso(LeftExpression, RightExpression);
+        else if (expressionType == ExpressionType.OrElse)
+            binaryExpr = Expression.OrElse(LeftExpression, RightExpression);
+        else
+            throw new Exception("Jinget Says: Only AndAlso and OrElse are supported");
+
+        return Expression.Lambda<Func<T, bool>>(binaryExpr, parameter);
     }
+
 }
