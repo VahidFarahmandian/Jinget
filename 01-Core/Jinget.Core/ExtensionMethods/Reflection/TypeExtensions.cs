@@ -58,6 +58,7 @@ public static class TypeExtensions
                     x.GetGenericArguments().Length == generics.Length)
                     .FirstOrDefault();
             else
+            {
                 method = type.GetMethods(bindingFlags)
                     .Where(
                     x => x.Name == name &&
@@ -66,6 +67,16 @@ public static class TypeExtensions
                     x.GetParameters().All(p => parameterTypes.ToList().Contains(p.ParameterType))
                     )
                     .FirstOrDefault();
+                if (method == null)
+                    method = type.GetMethods(bindingFlags)
+                        .Where(
+                        x => x.Name == name &&
+                        x.GetGenericArguments().Length == generics.Length &&
+                        x.GetParameters().Any() &&
+                        x.GetParameters().Length == parameterTypes.Length
+                        )
+                        .FirstOrDefault();
+            }
         }
         else
         {

@@ -15,4 +15,16 @@ public static class PagingExtensions
 
         return $"{strOrderby} {(paging is null ? "" : paging.ToString())}";
     }
+
+    public static string GetPaging<T>(this Paging paging, List<OrderBy<T>>? lstOrderBy)
+    {
+        lstOrderBy ??= [];
+
+        string strOrderby = lstOrderBy.GetSorting();
+
+        if (string.IsNullOrEmpty(strOrderby) && paging != null)
+            throw new JingetException("In order to use paging, you should specify at least one order by expression.", 4000);
+
+        return $"{strOrderby} {(paging is null ? "" : paging.ToString())}";
+    }
 }

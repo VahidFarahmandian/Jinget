@@ -2,6 +2,8 @@
 using Moq;
 using System.Data;
 using Jinget.Core.ExtensionMethods.Database.SqlClient;
+using Jinget.Core.ExpressionToSql;
+using Jinget.Core.Tests._BaseData;
 
 namespace Jinget.Core.Tests.ExtensionMethods.Database.SqlClient;
 
@@ -27,5 +29,39 @@ public class IDbConnectionExtensionsTests
         cnn.SafeOpen();
         cnn.SafeOpen();
         Assert.IsTrue(cnn.State == ConnectionState.Open);
+    }
+
+    [TestMethod()]
+    public void should_create_query_for_generic_order_by_message()
+    {
+        var select = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest");
+        var param = new GenericRequestSampleMessage();
+        var result = IDbConnectionExtensions.PrepareQuery(select, param);
+
+        Assert.IsFalse(string.IsNullOrWhiteSpace(result.queryText));
+    }
+
+    [TestMethod()]
+    public void should_create_query_for_nongeneric_order_by_message()
+    {
+        var select = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest");
+        var param = new NonGenericRequestSampleMessage();
+        var result = IDbConnectionExtensions.PrepareQuery(select, param);
+
+        Assert.IsFalse(string.IsNullOrWhiteSpace(result.queryText));
+    }
+
+    [TestMethod()]
+    public void should_create_same_query_for_different_order_by_type_same_message()
+    {
+        var select = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest");
+
+        var param1 = new GenericRequestSampleMessage();
+        var result1 = IDbConnectionExtensions.PrepareQuery(select, param1);
+
+        var param2 = new NonGenericRequestSampleMessage();
+        var result2 = IDbConnectionExtensions.PrepareQuery(select, param2);
+
+        Assert.AreEqual(result1.queryText, result2.queryText);
     }
 }

@@ -35,7 +35,9 @@ public class OrderBy<T>
         StringBuilder orderByClause = new();
         orderByClause.Append('[');
 
-        if (Name.Body is MemberExpression expression && expression.Expression.NodeType != ExpressionType.Convert)
+        if (Name.Body is MemberExpression expression &&
+            expression.Expression.NodeType != ExpressionType.Convert &&
+            expression.Expression.NodeType != ExpressionType.Parameter)
             orderByClause.Append(Expression.Lambda(expression).Compile().DynamicInvoke());
         else
             orderByClause.Append(Name.Stringfy());

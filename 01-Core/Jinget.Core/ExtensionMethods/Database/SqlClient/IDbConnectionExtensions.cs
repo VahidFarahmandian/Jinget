@@ -1,7 +1,9 @@
 ﻿using Jinget.Core.Contracts;
 using Jinget.Core.ExtensionMethods.ExpressionToSql;
 using Jinget.Core.ExtensionMethods.Collections;
+using Jinget.Core.ExtensionMethods.Reflection;
 
+[assembly: InternalsVisibleTo("Jinget.Core.Tests")]
 namespace Jinget.Core.ExtensionMethods.Database.SqlClient;
 
 public static class IDbConnectionExtensions
@@ -18,7 +20,7 @@ public static class IDbConnectionExtensions
         connection.Open();
     }
 
-    private static (string queryText, Dictionary<string, object?>? queryParameters) PrepareQuery(Query sql, object? param)
+    internal static (string queryText, Dictionary<string, object?>? queryParameters) PrepareQuery(Query sql, object? param)
     {
         var query = sql.ToSql();
         var queryText = query.query.ToString();
@@ -37,7 +39,25 @@ public static class IDbConnectionExtensions
                 countQueryText = queryText[queryText.IndexOf(" FROM ", StringComparison.CurrentCultureIgnoreCase)..];
                 countQueryText = "Select Count(*) " + countQueryText;
 
-                queryText = string.Join(" ", queryText, paging.GetPaging(orderBy));
+                string pagingStatement = "";
+                if (orderBy == null)
+                {
+                    var iOrderByInterface = param.GetType().GetInterface(typeof(IOrderBy<>).Name);
+                    var orderByProperty = iOrderByInterface.GetProperty("OrderBy");
+                    var orderByValue = orderByProperty.GetValue(param);
+                    pagingStatement = typeof(PagingExtensions).Call(
+                        "GetPaging",
+                        [typeof(Paging), orderByValue.GetType()],
+                        [paging, orderByValue],
+                        param.GetType()
+                        ).ToString();
+                }
+                else
+                {
+                    pagingStatement = paging.GetPaging(orderBy);
+                }
+
+                queryText = string.Join(" ", queryText, pagingStatement);
             }
         }
 
