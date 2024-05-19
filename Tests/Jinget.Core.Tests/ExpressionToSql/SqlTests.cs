@@ -90,6 +90,16 @@ public class SqlTests
     }
 
     [TestMethod]
+    public void Should_return_select_multiple_columns_from_table_using_memberInitExpression()
+    {
+        var expectedQuery = "SELECT a.[Id], a.[FirstName] FROM [dbo].[tblTest] AS a";
+
+        var result = Sql.Select<SqlTableSample, SqlTableSample>(x => new SqlTableSample { Id = x.Id, FirstName = x.FirstName }, "tblTest").ToSql();
+
+        Assert.AreEqual(expectedQuery, result.query.ToString());
+    }
+
+    [TestMethod]
     public void Should_return_select_all_columns_from_table()
     {
         var expectedQuery = "SELECT a.[Id], a.[FirstName], a.[LastName], a.[Age] FROM [dbo].[tblTest] AS a";

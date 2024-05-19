@@ -70,6 +70,17 @@ public class Select<T, R> : Query
                 var m = (MemberExpression)e;
                 AddExpression(m, t, qb);
                 break;
+            case ExpressionType.MemberInit:
+                bool remove = false;
+                foreach (var item in ((MemberInitExpression)e).Bindings)
+                {
+                    remove = true;
+                    AddExpression(((MemberAssignment)item).Expression, t, qb);
+                    qb.AddSeparator();
+                }
+                if (remove)
+                    qb.Remove();
+                break;
             default:
                 throw new NotImplementedException();
         }
