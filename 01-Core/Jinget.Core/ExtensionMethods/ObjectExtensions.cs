@@ -49,6 +49,8 @@ public static class ObjectExtensions
                 continue;
             else if (options.IgnoreExpressions && value is Expression)
                 continue;
+            else if (options.IgnoreExpr2SQLPagings && value is Paging)
+                continue;
             else if (options.IgnoreExpr2SQLOrderBys)
             {
                 if (value is List<OrderBy>)
@@ -58,8 +60,6 @@ public static class ObjectExtensions
                     property.PropertyType.GenericTypeArguments[0].GetGenericTypeDefinition() == typeof(OrderBy<>))
                     continue;
             }
-            else if (options.IgnoreExpr2SQLPagings && value is Paging)
-                continue;
             string key = property.Name;
             if (!result.ContainsKey(key))
             {
