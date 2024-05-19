@@ -44,13 +44,21 @@ public static class ObjectExtensions
         foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(source))
         {
             object? value = property.GetValue(source);
-            var valueType = value.GetType();
-            if (
-                (options.IgnoreNull && value == null) ||
-                (options.IgnoreExpressions && value is Expression) ||
-                (options.IgnoreExpr2SQLOrderBys && value is List<OrderBy>) ||
-                (options.IgnoreExpr2SQLOrderBys && value is not null && valueType.IsGenericType && valueType.GenericTypeArguments[0].GetGenericTypeDefinition() == typeof(OrderBy<>)) ||
-                (options.IgnoreExpr2SQLPagings && value is Paging))
+
+            if (options.IgnoreNull && value == null)
+                continue;
+            else if (options.IgnoreExpressions && value is Expression)
+                continue;
+            else if (options.IgnoreExpr2SQLOrderBys)
+            {
+                if (value is List<OrderBy>)
+                    continue;
+                else if (property.PropertyType.IsGenericType &&
+                    property.PropertyType.GenericTypeArguments[0].IsGenericType &&
+                    property.PropertyType.GenericTypeArguments[0].GetGenericTypeDefinition() == typeof(OrderBy<>))
+                    continue;
+            }
+            else if (options.IgnoreExpr2SQLPagings && value is Paging)
                 continue;
             string key = property.Name;
             if (!result.ContainsKey(key))

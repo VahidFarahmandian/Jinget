@@ -42,11 +42,38 @@ public class ObjectExtensionsTests
                 }
             ]
         };
+        var result = obj.ToDictionary();
+        Assert.IsTrue(result.Keys.Count == 5);
+        Assert.IsTrue(result.Keys.Any(x => x == "InnerSingularProperty"));
+    }
+
+    [TestMethod()]
+    public void should_convert_given_type_to_dictionary_custom_options()
+    {
+        TestClass obj = new()
+        {
+            Property1 = 123,
+            Property2 = "vahid",
+            InnerSingularProperty = new TestClass.InnerClass
+            {
+                InnerProperty1 = 456
+            },
+            InnerListProperty =
+            [
+                new() {
+                    InnerProperty1=789
+                }
+            ]
+        };
         var result = obj.ToDictionary(new Options
         {
-            IgnoreNull = false
+            IgnoreNull = false,
+            IgnoreExpr2SQLOrderBys = false,
+            IgnoreExpr2SQLPagings = false,
+            IgnoreExpressions = false
         });
 
+        Assert.IsTrue(result.Keys.Count == 7);
         Assert.IsTrue(result.Keys.Any(x => x == "InnerSingularProperty"));
     }
 
