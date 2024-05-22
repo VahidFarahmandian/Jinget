@@ -9,20 +9,24 @@ public static class DateTimeUtility
     /// Minimum supported Gregorian date is: year: 622,month: 3,day: 22. 
     /// See also: <seealso cref="PersianCalendar.MinSupportedDateTime"/>
     /// </summary>
-    public static string ToSolarDate(DateTime gregorianDate)
+    public static string? ToSolarDate(DateTime? gregorianDate)
     {
+        if (!gregorianDate.HasValue)
+            return null;
         var calendar = new PersianCalendar();
         if (gregorianDate < calendar.MinSupportedDateTime)
             throw new ArgumentOutOfRangeException($"Date should be after {calendar.MinSupportedDateTime} ");
         return
-        $"{calendar.GetYear(gregorianDate)}/{calendar.GetMonth(gregorianDate):D2}/{calendar.GetDayOfMonth(gregorianDate):D2}";
+        $"{calendar.GetYear(gregorianDate.Value)}/{calendar.GetMonth(gregorianDate.Value):D2}/{calendar.GetDayOfMonth(gregorianDate.Value):D2}";
     }
 
     /// <summary>
     /// Converts given Solar date to its Gregorian equalivant
     /// </summary>
-    public static DateTime ToGregorianDate(string persianDate)
+    public static DateTime? ToGregorianDate(string persianDate)
     {
+        if (string.IsNullOrWhiteSpace(persianDate))
+            return null;
         if (persianDate.Length == 8 && !persianDate.Contains('/'))
             persianDate = $"{persianDate[..4]}/{persianDate.Substring(4, 2)}/{persianDate.Substring(6, 2)}";
         return DateTime.Parse(persianDate, new CultureInfo("fa-IR"));
@@ -41,10 +45,10 @@ public static class DateTimeUtility
     /// </summary>
     public static bool IsValidPersianDate(string persianDate, string minAcceptableDate = "", string maxAcceptableDate = "")
     {
-        if (!StringUtility.IsDigitOnly(persianDate) || Convert.ToInt32(persianDate) < 0 || persianDate.Length != 8)
+        if (persianDate == null || !StringUtility.IsDigitOnly(persianDate) || Convert.ToInt32(persianDate) < 0 || persianDate.Length != 8)
             return false;
 
-        DateTime givenDate = ToGregorianDate(persianDate);
+        DateTime? givenDate = ToGregorianDate(persianDate);
         DateTime? minDate = null;
         DateTime? maxDate = null;
         if (minAcceptableDate != "")

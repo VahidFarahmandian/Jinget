@@ -128,4 +128,19 @@ public class DateTimeUtilityTests
 
         Assert.AreEqual(expectedResult, result);
     }
+
+
+    [TestMethod()]
+    public void Should_return_null_for_null_gregorian_date()
+    {
+        var result = DateTimeUtility.ToSolarDate(null);
+        Assert.IsNull(result);
+    }
+
+    [TestMethod()]
+    public void Should_return_null_for_null_solar_date()
+    {
+        var result = DateTimeUtility.ToGregorianDate(null);
+        Assert.IsNull(result);
+    }
 }
