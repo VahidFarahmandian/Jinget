@@ -7,9 +7,11 @@ public enum OrderByDirection
 {
     /// <exclude />
     [Description("ASC")]
+    [Display(Name = "Ascending")]
     Ascending,
 
     /// <exclude />
     [Description("DESC")]
+    [Display(Name = "Descending")]
     Descending
 }

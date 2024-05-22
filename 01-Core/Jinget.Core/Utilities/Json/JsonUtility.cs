@@ -54,7 +54,7 @@ public class JsonUtility
         if (removeNewLine)
         {
             json = json
-                .Replace(System.Environment.NewLine, "")
+                .Replace(Environment.NewLine, "")
                 .Replace(@"\r\n", "");
         }
 
