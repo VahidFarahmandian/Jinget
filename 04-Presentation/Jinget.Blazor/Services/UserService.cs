@@ -8,7 +8,7 @@ public class UserService(
     public event Action<ClaimsPrincipal?>? UserChanged;
     private ClaimsPrincipal? currentUser;
 
-    public ClaimsPrincipal? CurrentUser
+    public virtual ClaimsPrincipal? CurrentUser
     {
         get { return currentUser ?? new(); }
         set
@@ -24,7 +24,8 @@ public class UserService(
             }
         }
     }
-    public async Task<ClaimsPrincipal?> GetUserAsync()
+
+    public virtual async Task<ClaimsPrincipal?> GetUserAsync()
     {
         var token = await tokenStorageService.GetTokenAsync();
         bool isTokenValid = false;
@@ -60,7 +61,7 @@ public class UserService(
     }
 
     /// <returns>If username and password are correct then returns true</returns>
-    public async Task<bool> LoginAsync(string username, string password)
+    public virtual async Task<bool> LoginAsync(string username, string password)
     {
         var token = await authenticationService.LoginAsync(username, password);
         if (!string.IsNullOrWhiteSpace(token))
@@ -72,7 +73,7 @@ public class UserService(
         return !string.IsNullOrWhiteSpace(token);
     }
 
-    public async Task LogoutAsync()
+    public virtual async Task LogoutAsync()
     {
         await tokenStorageService.RemoveTokenAsync();
     }
