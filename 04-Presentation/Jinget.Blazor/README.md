@@ -11,39 +11,27 @@ Blazor components optimised for RTL languaged such as Farsi, Arabic etc.
 - [x] **Table**
 - [x] **Dynamic Form**
 
-**Services and Providers:**
-- [x] **JwtTokenService**
-- [x] **LocalStorageService**
-- [x] **TokenStorageService**
-- [x] **TokenAuthenticationStateProvider**
 
-## How to configure Services and Providers:
-
-Register the services and providers like below code in your `Program.cs` file:
-
-```
-
-builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();
-builder.Services.AddScoped<TokenAuthenticationStateProvider>();
-builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<TokenAuthenticationStateProvider>());
-
-new TokenConfigModel
-{
-    Secret = <secret key used to generate the token>,
-    Name = <localstorage item name which holds the token. Default name is 'jinget.token'>,
-    Expiration = <token expiration in minute. Default value is 5 minutes>
-}
-
-builder.Services.AddScoped<IJwtTokenService>(provider => new JwtTokenService(tokenConfig.Secret, tokenConfig.Expiration));
-builder.Services.AddScoped<ITokenStorageService>(provider => new TokenStorageService(provider.GetRequiredService<ILocalStorageService>(), tokenConfig.Name));
-
-```
-
-## How to Use Components:
+## How to Use:
 
 Download the package from NuGet using Package Manager:
 `Install-Package Jinget.Blazor`
 You can also use other methods supported by NuGet. Check [Here](https://www.nuget.org/packages/Jinget.Blazor "Here") for more information.
+
+
+## Add Services:
+
+Register the required services in your `Program.cs` file:
+
+```
+
+builder.Services.AddJingetBlazor();
+
+```
+
+If you need to use `TokenAuthenticationStateProvider` as a provider for handling authentication state, then you need to pass
+the `TokenModel` to `AddJingetBlazor`.
+
 
 ## Configuration
 
