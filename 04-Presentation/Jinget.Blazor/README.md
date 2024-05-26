@@ -30,10 +30,60 @@ builder.Services.AddJingetBlazor();
 ```
 
 If you need to use `TokenAuthenticationStateProvider` as a provider for handling authentication state, then you need to pass
-the `TokenModel` to `AddJingetBlazor`.
+the `TokenModel` to `AddJingetBlazor`. If you have no plan to use Jinget.Blazor components and you just want to use its
+services, then you can pass `false` for the `addMudServices` parameter of `AddJingetBlazor` method.
 
 
-## Configuration
+## How to Use Methods:
+
+***Login and Logout user:***
+
+If you want to authenticate the user and manage user's state via `TokenAuthenticationStateProvider` then you can inject `UserService`
+to your login form and authenticate the user:
+
+```
+
+@attribute [AllowAnonymous]
+@layout LoginLayout
+@page "/login"
+@inject NavigationManager NavigationManagerService;
+@inject UserService userService;
+@inherits BaseComponent
+@{
+    base.BuildRenderTree(__builder);
+}
+<input type="text" id="username" @bind-value="@UserName" />
+<input type="password" id="password" @bind-value="@Password" />
+<button @onclick="Authenticate">ورود</button>
+
+@code {
+
+    string? UserName { get; set; }
+    string? Password { get; set; }
+
+    async Task Authenticate()
+    {
+        var result = await userService.LoginAsync(UserName, Password);
+
+        if (result)
+        {
+                NavigationManagerService.NavigateTo("/", true);
+        }
+        else
+        {
+            await ShowErrorAsync("Username or password is incorrect");
+        }
+    }
+}
+
+```
+
+`await userService.LoginAsync` method will call the `LoginAsync` defined in `IAuthenticationService` interface. 
+You can implement `IAuthenticationService` interface and write your own logic to authenticate the user.
+Similiarly in order to logout the user you can call `await userService.LogoutAsync()`.
+
+
+## How to Use Components:
 
 ***References:***
 
