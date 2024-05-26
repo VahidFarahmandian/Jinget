@@ -30,8 +30,11 @@ builder.Services.AddJingetBlazor();
 ```
 
 If you need to use `TokenAuthenticationStateProvider` as a provider for handling authentication state, then you need to pass
-the `TokenModel` to `AddJingetBlazor`. If you have no plan to use Jinget.Blazor components and you just want to use its
-services, then you can pass `false` for the `addMudServices` parameter of `AddJingetBlazor` method.
+both `TokenModel` and `addTokenAuthenticationStateProvider=true` to `AddJingetBlazor`.
+If you do not need to register token storage and local storage services, then you need to set `addTokenStorageService=false`,
+and if you want to register them, you should pass both `TokenModel` and `addTokenStorageService=true` to `AddJingetBlazor`.
+If you have no plan to use `Jinget.Blazor` components and you just want to use its services, then you can pass `addMudServices=false` 
+to `AddJingetBlazor` method.
 
 
 ## How to Use Methods:
