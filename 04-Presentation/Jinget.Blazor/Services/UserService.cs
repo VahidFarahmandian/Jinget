@@ -1,16 +1,13 @@
 ﻿namespace Jinget.Blazor.Services;
 
-public class UserService(
-    IAuthenticationService authenticationService,
-    IJwtTokenService jwtTokenService,
-    ITokenStorageService tokenStorageService)
+public class UserService(IAuthenticationService authenticationService, ITokenStorageService tokenStorageService)
 {
     public event Action<ClaimsPrincipal?>? UserChanged;
     private ClaimsPrincipal? currentUser;
 
     public virtual ClaimsPrincipal? CurrentUser
     {
-        get { return currentUser ?? new(); }
+        get => currentUser ?? new();
         set
         {
             if (currentUser != value)
@@ -28,34 +25,29 @@ public class UserService(
     public virtual async Task<ClaimsPrincipal?> GetUserAsync()
     {
         var token = await tokenStorageService.GetTokenAsync();
-        bool isTokenValid = false;
+        var isTokenValid = false;
         try
         {
             isTokenValid = await JwtUtility.IsValidAsync(token);
         }
-        catch { isTokenValid = false; }
-        if (isTokenValid)
+        catch
         {
-            CurrentUser = new ClaimsPrincipal(await RefreshTokenAsync(token));
+            isTokenValid = false;
         }
-        else
-        {
-            CurrentUser = null;
-        }
+
+        CurrentUser = isTokenValid ? new ClaimsPrincipal(await RefreshTokenAsync(token)) : null;
+
         return CurrentUser;
     }
 
     async Task<ClaimsIdentity> RefreshTokenAsync(string oldToken)
     {
-        var identity = new ClaimsIdentity(JwtUtility.Read(oldToken).Claims, "jwt");
+        var identity = new ClaimsIdentity(JwtUtility.Read(oldToken)?.Claims, "jwt");
         if (identity.Claims.Any())
         {
-            string username = identity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            string[] roles = [identity.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role).Value];
-            var newToken = jwtTokenService.Generate(username, roles);
-
+            var newToken = await authenticationService.GenerateTokenAsync(identity.Claims, "jwt");
             await tokenStorageService.SetTokenAsync(newToken);
-            return new ClaimsIdentity(JwtUtility.Read(newToken).Claims, "jwt");
+            return new ClaimsIdentity(JwtUtility.Read(newToken)?.Claims, "jwt");
         }
         return new();
     }
@@ -73,8 +65,5 @@ public class UserService(
         return !string.IsNullOrWhiteSpace(token);
     }
 
-    public virtual async Task LogoutAsync()
-    {
-        await tokenStorageService.RemoveTokenAsync();
-    }
+    public virtual async Task LogoutAsync() => await tokenStorageService.RemoveTokenAsync();
 }

@@ -10,10 +10,10 @@ public class TokenConfigModel
     /// <summary>
     /// token expiration in minute. Default value is 5 minutes
     /// </summary>
-    public int Expiration { get; set; } = 5;
+    public int ExpirationInMinute { get; set; } = 5;
 
     /// <summary>
     /// localstorage item name which holds the token. Default name is 'jinget.token'
     /// </summary>
-    public string Name { get; set; } = "jinget.token";
+    public string TokenName { get; set; } = "jinget.token";
 }
