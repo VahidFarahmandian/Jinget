@@ -5,6 +5,7 @@ public static class WebApplicationBuilderExtensions
     public static IServiceCollection AddJingetBlazor(
         this IServiceCollection services,
         bool addComponents = true,
+        bool addAuthenticationStateProvider = true,
         TokenConfigModel? tokenConfigModel = null)
     {
         if (addComponents)
@@ -17,9 +18,13 @@ public static class WebApplicationBuilderExtensions
                 x.ExpirationInMinute = tokenConfigModel.ExpirationInMinute;
                 x.TokenName = tokenConfigModel.TokenName;
             });
+
             services.TryAddScoped<ILocalStorageService, LocalStorageService>();
             services.TryAddScoped<ITokenStorageService>(
                 provider => new TokenStorageService(provider.GetRequiredService<ILocalStorageService>(), tokenConfigModel.TokenName));
+        }
+        if (addAuthenticationStateProvider)
+        {
             services.RemoveAll<AuthenticationStateProvider>();
             services.AddScoped<AuthenticationStateProvider, TokenAuthenticationStateProvider>();
             services.AddScoped<UserService>();
