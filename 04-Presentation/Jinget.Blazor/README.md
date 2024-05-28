@@ -31,7 +31,8 @@ builder.Services.AddJingetBlazor();
 
 If you need to use `TokenAuthenticationStateProvider` as a provider for handling authentication state(for example in your ASP.NET Core Blazor project), 
 then you need to pass `addAuthenticationStateProvider=true` to `AddJingetBlazor`.
-If you need to use token storage services for storing/retrieving your tokens, then you need to pass `tokenConfigModel` to `AddJingetBlazor`.
+If you need to use token storage services for storing/retrieving your tokens, then you need to pass `tokenConfigModel` and `addTokenRelatedServices=true` to `AddJingetBlazor`.
+If you do not need to use token storage services, but you want to register `TokenConfigModel` then you need to pass `tokenConfigModel` and `addTokenRelatedServices=false` to `AddJingetBlazor`.
 If you have no plan to use `Jinget.Blazor` components and you just want to use its services, 
 then you can pass `addComponents=false` to `AddJingetBlazor` method.
 
