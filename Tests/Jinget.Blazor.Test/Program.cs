@@ -1,11 +1,17 @@
 using Jinget.Blazor.Test.Components;
 using Jinget.Blazor.Extensions;
+using Jinget.Blazor.Services.Contracts;
+using Jinget.Blazor.Test;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-builder.Services.AddJingetBlazor();
-
+builder.Services.AddJingetBlazor(tokenConfigModel:
+    new Jinget.Blazor.Models.TokenConfigModel
+    {
+        TokenName = "token",
+    });
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 var app = builder.Build();
 app.UsePathBase("/Jinget");
 

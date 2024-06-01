@@ -13,6 +13,7 @@
 @using Jinget.Blazor;
 
 @inject IJSRuntime JS;
+@inject ITokenStorageService tokenService;
 @inject IServiceProvider serviceProvider;
 
 @if (Attribute != null && Attribute.HasLabel)
@@ -48,7 +49,7 @@ else if (Attribute is JingetComboBox comboBox && comboBox.Searchable == false)
                Variant="Variant.Outlined"
                ValueChanged="OnItemSelected">
         <MudSelectItem Disabled=true Value="0.ToString()">@comboBox.DefaultText</MudSelectItem>
-        @foreach (DropDownItemModel item in GetData())
+        @foreach (DropDownItemModel item in _data)
         {
             <MudSelectItem Value="@item.Value?.ToString()">@item.Text</MudSelectItem>
         }
@@ -56,18 +57,25 @@ else if (Attribute is JingetComboBox comboBox && comboBox.Searchable == false)
 }
 else if (Attribute is JingetComboBox searchableComboBox && searchableComboBox.Searchable == true)
 {
-    <select id="@Id" onchange=@OnChange class="@Attribute.CssClass">
-        <option value="">@searchableComboBox.DefaultText</option>
-        @foreach (var item in GetData())
-        {
-            bool selected = item.Selected == true || (item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString()));
-            if (selected)
+    @if (connected)
+    {
+        <select id="@Id" onchange=@OnChange class="@Attribute.CssClass">
+            <option value="">@searchableComboBox.DefaultText</option>
+            @foreach (var item in _data)
             {
-                Task.Run(() => JS.InvokeVoidAsync("selectItem", Id, Value).GetAwaiter().GetResult());
+                bool selected = item.Selected == true || (item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString()));
+                if (selected)
+                {
+                    Task.Run(() => JS.InvokeVoidAsync("selectItem", Id, Value).GetAwaiter().GetResult());
+                }
+                <option value="@item.Value" selected="@selected">@item.Text</option>
             }
-            <option value="@item.Value" selected="@selected">@item.Text</option>
-        }
-    </select>
+        </select>
+    }
+    @*   else
+    {
+        <p>Loading...</p>
+    } *@
 }
 else if (Attribute is JingetLabel label)
 {
@@ -140,30 +148,47 @@ else
 }
 
 @code {
+
+    private bool isConnected;
+
     [Parameter] public string? Id { get; set; }
     [Parameter] public JingetFormElement? Attribute { get; set; }
     [Parameter] public object? Value { get; set; }
     [Parameter] public PropertyInfo? Binding { get; set; }
     [Parameter] public EventCallback<object> ValueChanged { get; set; }
 
+    List<DropDownItemModel> _data = [];
+
+    // List<DropDownItemModel> _data2 = [];
+    bool connected = false;
     private DotNetObjectReference<JingetDynamicField>? dotNetObjRef;
     string? labelText = "";
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         if (Attribute is JingetLabel label)
         {
             labelText = Value == null ? "" : Value.ToString();
         }
         dotNetObjRef = DotNetObjectReference.Create(this);
-        return base.OnInitializedAsync();
+        if (Attribute is JingetComboBox comboBox)
+        {
+            _data = await GetData();
+            if (comboBox.Searchable)
+            {
+                connected = true;
+            }
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && Attribute is JingetComboBox comboBox && comboBox.Searchable)
+        if (Attribute is JingetComboBox comboBox)
         {
-            await JS.InvokeVoidAsync("convertToSearchable", dotNetObjRef, Id);
+            if (comboBox.Searchable)
+            {
+                await JS.InvokeVoidAsync("convertToSearchable", dotNetObjRef, Id);
+            }
         }
     }
 
@@ -173,12 +198,11 @@ else
 
     async void OnChange(ChangeEventArgs e) => await ValueChanged.InvokeAsync(e.Value);
 
-    List<DropDownItemModel> GetData()
+    object? InvokeBindingFunction(string? functionName, params object[] parameters)
     {
-        var bindingFunction = (Attribute as JingetComboBox)?.BindingFunction;
-        if (bindingFunction == null)
-            return new List<DropDownItemModel>();
-        var method = Binding?.DeclaringType?.GetMethod(bindingFunction);
+        if (functionName == null)
+            return null;
+        var method = Binding?.DeclaringType?.GetMethod(functionName);
         if (method != null)
         {
             object? callerObject = null;
@@ -198,22 +222,55 @@ else
             {
                 if (method.GetCustomAttribute(typeof(AsyncStateMachineAttribute)) != null)
                 {
-                    data = method.InvokeAsync(callerObject);
+                    data = method.InvokeAsync(callerObject, parameters);
                 }
                 else
                 {
-                    data = method.Invoke(callerObject, null);
+                    data = method.Invoke(callerObject, parameters);
                 }
             }
 
             if (data != null)
-                return (List<DropDownItemModel>)data;
+                return data;
         }
 
-        return new List<DropDownItemModel>();
+        return null;
     }
 
-    Converter<object?> StringConverter = new Converter<object?>
+    async Task<List<DropDownItemModel>> GetData()
+    {
+        string? token = null;
+        var requireToken = (Attribute as JingetComboBox)?.GetTokenBeforeBinding;
+        if (requireToken.HasValue && requireToken.Value == true)
+        {
+            token = await tokenService.GetTokenAsync();
+        }
+
+        var preBindingFunction = (Attribute as JingetComboBox)?.PreBindingFunction;
+        object? preBindingResult = null;
+        if (!string.IsNullOrWhiteSpace(preBindingFunction))
+        {
+            preBindingResult = InvokeBindingFunction(preBindingFunction, token);
+        }
+
+        object? data;
+        var bindingFunction = (Attribute as JingetComboBox)?.BindingFunction;
+        data = InvokeBindingFunction(bindingFunction, token, preBindingResult);
+
+        data = data == null ? new List<DropDownItemModel>() : data;
+
+        var postBindingFunction = (Attribute as JingetComboBox)?.PostBindingFunction;
+        object? postBindingResult = null;
+        if (!string.IsNullOrWhiteSpace(postBindingFunction))
+        {
+            postBindingResult = InvokeBindingFunction(postBindingFunction, token, preBindingResult, data);
+        }
+
+        return (List<DropDownItemModel>)data;
+    }
+
+    Converter<object?>
+    StringConverter = new Converter<object?>
         {
             SetFunc = value => value?.ToString(),
             GetFunc = text => text?.ToString(),

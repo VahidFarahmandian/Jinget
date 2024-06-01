@@ -400,7 +400,7 @@ Add the `JingetTable` to your page and start using it;-)
             <MudButton 
                 OnClick=@(async ()=> await ShowDetailFarsi((SampleDataFarsi)context))
                 ButtonType="ButtonType.Reset"
-                Color="Color.Warning">جزئیات...
+                Color="Color.Warning">Details...
             </MudButton>
             </ActionContent>
 </JingetTable>
@@ -509,16 +509,16 @@ Add the `JingetTable` to your page and start using it;-)
         [JingetTableMember(DisplayName = "#")]
         public int Id { get; set; }
         
-        [JingetTableMember(DisplayName = "نام")]
+        [JingetTableMember(DisplayName = "Name")]
         public string Name{get;set;}
 
-        [JingetTableMember(DisplayName = "نام خانوادگی")]
+        [JingetTableMember(DisplayName = "Last name")]
         public string LastName{get;set;}
 
-        [JingetTableMember(DisplayName = "سن", Sortable=true)]
+        [JingetTableMember(DisplayName = "Age", Sortable=true)]
         public int Age{get;set;}
 
-        [JingetTableMember(DisplayName = "وضعیت")]
+        [JingetTableMember(DisplayName = "Status")]
         public bool IsActive{get;set;}
     }
 
@@ -569,46 +569,44 @@ Add the `JingetDynamicForm` to your page and start using it;-)
         public SampleModel() { }
         public SampleModel(IServiceProvider serviceProvider) { }
 
-        [JingetTextBox(DisplayName = "نام", HelperText = "نام خود را منطبق با اطلاعات کارت ملی وارد نمایید", Order =1)]
+        [JingetTextBox(DisplayName = "Full Name", HelperText = "Please enter your full name", Order =1)]
         public string Name { get; set; }
 
-        [JingetPasswordBox(DisplayName = "رمز عبور", Order =3)]
+        [JingetPasswordBox(DisplayName = "Password", Order =2)]
         public string Password { get; init; }
 
-        [JingetEmailBox(DisplayName = "پست الکترونیکی",Order =4)]
+        [JingetEmailBox(DisplayName = "E-Mail",Order =3)]
         public string EMail { get; init; }
 
-        [JingetDatePicker(DisplayName = "تاریخ تولد",Culture ="fa-IR", Order =5)]
+        [JingetDatePicker(DisplayName = "Date of Birth",Culture ="fa-IR", Order =4)]
         public string DoB { get; init; }
 
-        [JingetDateRangePicker(DisplayName = "بازه زمانی سفر",Culture ="fa-IR", Order =6)]
+        [JingetDateRangePicker(DisplayName = "Travel Date range",Culture ="fa-IR", Order =5)]
         public DateRange TravelDate { get; init; }
 
-        [JingetLabel(DisplayName = "امتیاز اکتسابی", HasLabel = false)]
+        [JingetLabel(DisplayName = "Score", HasLabel = false)]
         public int Score { get; init; } = 1850;
 
-        [JingetTextArea(DisplayName = "اطلاعات بیشتر", Rows =3)]
+        [JingetTextArea(DisplayName = "More info", Rows =3)]
         public string Description { get; init; }
 
-        [JingetNumberBox(DisplayName = "سن", Order =7)]
+        [JingetNumberBox(DisplayName = "Age", Order =7)]
         public int Age { get; set; }
 
-        [JingetComboBox(DisplayName = "وضعیت", BindingFunction = nameof(GetStatusAsync), 
-        Searchable =true,DefaultText ="---انتخاب کنید---",HasLabel =true, LabelCssClass = "overlayed-label", Order =8)]
+        [JingetComboBox(DisplayName = "Flight Status", BindingFunction = nameof(GetStatusAsync), 
+        Searchable =true,DefaultText ="---Choose one---",HasLabel =true, LabelCssClass = "overlayed-label", Order =8)]
         public int? Status { get; init; }
         public async Task<List<DropDownItemModel>> GetStatusAsync()
-            => await new JingetComboBox().BindAsync<StatusModel>(async () =>
+            => await new JingetComboBox().BindAsync<FlightStatusModel>(async () =>
             {
-                return await Task.FromResult(new List<StatusModel>
-                                        {
-                        new StatusModel{Code= 1,Title= "فعال" },
-                        new StatusModel{Code= 2,Title= "غیرفعال" },
-                        new StatusModel{Code= 3,Title= "نامشخص" }
-                                        });
-            });
+                return await Task.FromResult(new List<FlightStatusModel>
+                {
+                    new FlightStatusModel {Code= 1,Title= "Boarding" },
+                    new FlightStatusModel {Code= 2,Title= "Arriving" }
+                });
+        });
 
-
-        class StatusModel : BaseTypeModel
+        class FlightStatusModel : BaseTypeModel
         {
 
         }
@@ -645,7 +643,46 @@ Add the `JingetDynamicForm` to your page and start using it;-)
 
 `JingetDateRangePicker`: Render a JingetDateRangePicker on the page. You can set `Culture` and `EnglishNumber` properties.
 
-`JingetComboBox`: Render a select input on the page. If `Searchable` is set to true, then the user can do search among combobox items. Using `BindingFunction` user can define a method to bind data into combobox.
+`JingetComboBox`: Render a select input on the page. If `Searchable` is set to true, then the user can do search among combobox items. 
+Using `PreBindingFunction` user can define a method to run before `BindingFunction`. This method's signature is:
+
+```
+public async Task<string> PreBinding(string? token) => await Task.FromResult("This is pre binding");
+```
+
+Using `BindingFunction` user can define a method to bind data into combobox. If `GetTokenBeforeBinding` is set to true, 
+then before running the `BindingFunction`, `ITokenStorageService.GetTokenAsync()` method will be called to read the token from localstorage 
+where localstorage key is equal to `TokenConfigModel.TokenName`. (See `builder.Services.AddJingetBlazor();`)
+
+Using `PostBindingFunction` user can define a method to run after `BindingFunction`. This method's signature is:
+
+```
+public async Task<string> PostBinding(string? token, object? preBindingResult, object? data) => await Task.FromResult("This is post binding");
+```
+
+Full sample for `JingetComboBox` in `DynamicForm` is like below:
+
+```
+
+[JingetComboBox(DisplayName = "Flight Status", Searchable = true, DefaultText = "---Choose one---",
+BindingFunction = nameof(GetStatusAsync), PreBindingFunction = nameof(PreBinding), PostBindingFunction = nameof(PostBinding),
+HasLabel = true, LabelCssClass = "overlayed-label", Order = 1, GetTokenBeforeBinding = true)]
+public int? Status { get; init; }
+public async Task<string> PreBinding(string? token) 
+    => await Task.FromResult("This is pre binding");
+public async Task<string> PostBinding(string? token, object? preBindingResult, object? data) 
+    => await Task.FromResult("This is post binding");
+public async Task<List<DropDownItemModel>> GetStatusAsync(string token, object? preBindingResult)
+    => await new JingetComboBox().BindAsync<FlightStatusModel>(async () =>
+    {
+        return await Task.FromResult(new List<FlightStatusModel>
+        {
+           new FlightStatusModel{Code= 1,Title= "Boarding" },
+           new FlightStatusModel{Code= 2,Title= "Arriving" }
+        });
+    });
+
+```
 
 `JingetLabel`: Render a label on the page.
 
