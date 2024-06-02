@@ -621,9 +621,21 @@ Add the `JingetDynamicForm` to your page and start using it;-)
 
 `Rtl`: If set to true, the the form will be rendred Right-to-Left. Default is `true`.
 
+***Properties:***
+
+`DynamicFields`: Returns a list of fields rendered on page.
+
+***Methods:***
+
+`FindElement`: Find element by id.
+
+`FindElement<TFormElementType>`: Find element by type. 
+
 ***Callbacks:***
 
-`OnModelChanged`: Fires a callback whenever the model is changed.
+`OnModelChanged`: This event raised whenever a member's value changed.
+
+`OnFieldReady`: This event raised whenever a field rendered on page.
 
 ***Attributes:***
 

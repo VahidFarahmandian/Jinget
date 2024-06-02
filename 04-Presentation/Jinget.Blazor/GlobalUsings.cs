@@ -16,3 +16,4 @@ global using Jinget.Blazor.Services;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using MudBlazor.Services;
+

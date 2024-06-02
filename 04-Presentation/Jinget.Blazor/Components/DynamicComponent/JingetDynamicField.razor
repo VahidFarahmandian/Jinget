@@ -64,11 +64,13 @@ else if (Attribute is JingetComboBox searchableComboBox && searchableComboBox.Se
             <option value="">@searchableComboBox.DefaultText</option>
             @foreach (var item in _data)
             {
-                @* bool selected = item.Selected == true || (item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString())); *@
                 bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
                 if (selected)
                 {
-                    Task.Run(() => JS.InvokeVoidAsync("selectItem", Id, Value).GetAwaiter().GetResult());
+                    Task.Run(() =>
+                    {
+                        JS.InvokeVoidAsync("selectItem", Id, Value).GetAwaiter().GetResult();
+                    });
                 }
                 <option value="@item.Value" selected="@selected">@item.Text</option>
             }
@@ -147,16 +149,27 @@ else
 
 @code {
 
+    [JsonProperty]
     [Parameter] public string? Id { get; set; }
+
+    [JsonProperty]
     [Parameter] public JingetFormElement? Attribute { get; set; }
+
+    [JsonProperty]
     [Parameter] public object? Value { get; set; }
 
-    [JsonIgnore]
+    [JsonProperty]
     [Parameter] public PropertyInfo? Binding { get; set; }
 
+    /// <summary>
+    /// This event raised whenever a field's value changed
+    /// </summary>
     [JsonIgnore]
     [Parameter] public EventCallback<object> ValueChanged { get; set; }
 
+    /// <summary>
+    /// This event raised whenever a field rendered on page
+    /// </summary>
     [JsonIgnore]
     [Parameter] public EventCallback<JingetDynamicField> DynamicFieldAdded { get; set; }
 
@@ -195,29 +208,22 @@ else
             }
         }
         if (firstRender)
-            await DynamicFieldAdded.InvokeAsync(new JingetDynamicField
-                {
-                    Attribute = this.Attribute,
-                    Id = this.Id,
-                    Value = this.Value,
-                    _data = this._data
-                });
+            await OnDynamicFieldAdded();
     }
-
-    public async Task SelectComboItem(IJSRuntime js, string id, object? value)
+    async Task OnDynamicFieldAdded()
     {
-        Value = value;
-        if (((JingetComboBox)Attribute).Searchable)
-        {
-            await js.InvokeVoidAsync("selectItem", id, value);
-        }
+        await DynamicFieldAdded.InvokeAsync(this);
     }
 
     [JSInvokable]
     public void OnItemSelected(object value) => OnChange(new ChangeEventArgs() { Value = value });
     void OnTextChanged(string value) => OnChange(new ChangeEventArgs() { Value = value });
 
-    async void OnChange(ChangeEventArgs e) => await ValueChanged.InvokeAsync(e.Value);
+    async void OnChange(ChangeEventArgs e)
+    {
+        await OnDynamicFieldAdded();
+        await ValueChanged.InvokeAsync(e.Value);
+    }
 
     object? InvokeBindingFunction(string? functionName, params object[] parameters)
     {

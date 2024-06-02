@@ -14,7 +14,6 @@
                                     Value=@(p.Property.DeclaringType==typeof(string) && p.Property.GetValue(Model)==null?"":p.Property.GetValue(Model))
                                     Attribute="@p.Attribute"
                                     Binding="@p.Property"
-                                    @ref=JingetDynamicField
                                     DynamicFieldAdded="@((e)=>OnDynamicFieldAdded(e))"
                                     ValueChanged="@((e)=>OnValueChanged(p.Property.Name, e))" />
             </MudItem>
@@ -25,11 +24,22 @@
 @code {
     [Parameter] public T? Model { get; set; }
     [Parameter] public bool Rtl { get; set; } = true;
+
+    /// <summary>
+    /// This event raised whenever a member's value changed
+    /// </summary>
     [Parameter] public EventCallback<Dictionary<string, object?>> OnModelChanged { get; set; }
 
-    public List<JingetDynamicField> DynamicFields { get; private set; } = [];
-    JingetDynamicField JingetDynamicField;
+    /// <summary>
+    /// This event raised whenever a field rendered on page
+    /// </summary>
+    [Parameter] public EventCallback<JingetDynamicField> OnFieldReady { get; set; }
 
+    /// <summary>
+    /// return the list of fields rendered on page
+    /// </summary>
+    public List<JingetDynamicField> DynamicFields { get; private set; } = [];
+    
     public HashSet<(PropertyInfo Property, JingetFormElement? Attribute)> Properties { get; set; } = new();
 
     protected override void OnInitialized()
@@ -48,9 +58,11 @@
         }
     }
 
-    void OnDynamicFieldAdded(JingetDynamicField field)
+    async Task OnDynamicFieldAdded(JingetDynamicField field)
     {
+        DynamicFields.RemoveAll(x => (x.Binding != null && x.Binding.Name == field.Binding.Name) || x.Id == field.Id);
         DynamicFields.Add(field);
+        await OnFieldReady.InvokeAsync(field);
     }
 
     public List<JingetDynamicField> FindElement(string id)
