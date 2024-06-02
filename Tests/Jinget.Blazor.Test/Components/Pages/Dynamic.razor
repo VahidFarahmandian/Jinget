@@ -13,6 +13,8 @@
 @using Jinget.Core.ExtensionMethods.Collections;
 @using Jinget.Blazor.Components.Picker
 
+@inject IJSRuntime js;
+
 <JingetMessageBox @ref=@messageBox
                   ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true))></JingetMessageBox>
 <hr />
@@ -24,7 +26,7 @@
     <MudText>Submit</MudText>
 </MudButton>
 <hr />
-<JingetDynamicForm Model=@Model></JingetDynamicForm>
+<JingetDynamicForm @ref=dynamicForm Model=@Model></JingetDynamicForm>
 
 <MudButton FullWidth=true
            OnClick="Submit"
@@ -32,8 +34,28 @@
            Color="Color.Primary">
     <MudText>Submit</MudText>
 </MudButton>
+<MudButton FullWidth=true
+           OnClick="ViewElements"
+           Variant="Variant.Filled"
+           Color="Color.Primary">
+    <MudText>View Form elements</MudText>
+</MudButton>
+<MudButton FullWidth=true
+           OnClick="FindType"
+           Variant="Variant.Filled"
+           Color="Color.Primary">
+    <MudText>Find by type</MudText>
+</MudButton>
+<MudButton FullWidth=true
+           OnClick="FindId"
+           Variant="Variant.Filled"
+           Color="Color.Primary">
+    <MudText>Find by id</MudText>
+</MudButton>
 
 @code {
+    JingetDynamicForm<SampleModel> dynamicForm;
+
     public class InquiryByDateFromViewModel
     {
         [Attributes.Picker.JingetDateRangePicker(DisplayName = "تاریخ", HasLabel = false, Culture = "fa-IR")]
@@ -51,6 +73,11 @@
         Model1 = new();
     }
 
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
     async Task Submit1()
     {
         await messageBox.ShowInfoAsync(
@@ -64,6 +91,43 @@
         Model.Name,
         $"{Model.Name} {Model.LastName}",
         Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+    }
+
+    async Task ViewElements()
+    {
+        await messageBox.ShowInfoAsync("Elements on page", "", Newtonsoft.Json.JsonConvert.SerializeObject(new { dynamicForm.DynamicFields }, new Newtonsoft.Json.JsonSerializerSettings
+            {
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+            }));
+    }
+    async Task FindType()
+    {
+        var y = dynamicForm.FindElement<JingetComboBox>();
+        foreach (var i in y)
+        {
+            await i.SelectComboItem(js, ((JingetComboBox)i.Attribute).Id, 3);
+            await InvokeAsync(StateHasChanged);        
+        }
+
+        await messageBox.ShowInfoAsync("Elements on page", "", Newtonsoft.Json.JsonConvert.SerializeObject(new { y }, new Newtonsoft.Json.JsonSerializerSettings
+            {
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+            }));
+    }
+
+    async Task FindId()
+    {
+        var y = dynamicForm.FindElement("cmbSearch");
+        foreach (var i in y)
+        {
+            await i.SelectComboItem(js, ((JingetComboBox)i.Attribute).Id, 1);
+            await InvokeAsync(StateHasChanged);
+        }
+
+        await messageBox.ShowInfoAsync("Elements on page", "", Newtonsoft.Json.JsonConvert.SerializeObject(new { y }, new Newtonsoft.Json.JsonSerializerSettings
+            {
+                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore,
+            }));
     }
 
     public record SampleModel
@@ -106,16 +170,13 @@
         [JingetNumberBox(DisplayName = "سن", Order = 7)]
         public int Age { get; set; }
 
-        [JingetComboBox(DisplayName = "وضعیت2", BindingFunction = nameof(GetStatusAsync), DefaultText = "---انتخاب کنید---",
+        [JingetComboBox(DisplayName = "وضعیت2", Id = "cmb2", BindingFunction = nameof(GetStatusAsync), DefaultText = "---انتخاب کنید---",
         HasLabel = true, LabelCssClass = "overlayed-label", Order = 8, GetTokenBeforeBinding = true)]
         public int? Status2 { get; init; }
 
-        [JingetComboBox(DisplayName = "وضعیت",
-        BindingFunction = nameof(GetStatusAsync),
-        PreBindingFunction = nameof(PreBinding),
-        PostBindingFunction = nameof(PostBinding),
-        Searchable = true, DefaultText = "---انتخاب کنید---",
-        HasLabel = true, LabelCssClass = "overlayed-label", Order = 9, GetTokenBeforeBinding = true)]
+        [JingetComboBox(DisplayName = "وضعیت", Id = "cmbSearch",
+        BindingFunction = nameof(GetStatusAsync), PreBindingFunction = nameof(PreBinding), PostBindingFunction = nameof(PostBinding),
+        Searchable = true, DefaultText = "---انتخاب کنید---", HasLabel = true, LabelCssClass = "overlayed-label", Order = 9, GetTokenBeforeBinding = true)]
         public int? Status { get; init; }
         public async Task<string> PreBinding(string? token) => await Task.FromResult("This is pre binding");
         public async Task<string> PostBinding(string? token, object? preBindingResult, object? data) => await Task.FromResult("This is post binding");
@@ -125,9 +186,9 @@
                 var t = preBindingResult;
                 return await Task.FromResult(new List<StatusModel>{
                             new StatusModel{Code= 1,Title= token },
-                        new StatusModel{Code= 2,Title= "غیرفعال" },
+                        new StatusModel{Code= 2,Title= "غیرفعال"},
                         new StatusModel{Code= 3,Title= "نامشخص" }
-                                                                        });
+                                                                                                                                                                                                                        });
             });
 
 

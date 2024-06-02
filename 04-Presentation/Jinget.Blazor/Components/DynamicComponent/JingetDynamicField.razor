@@ -11,6 +11,7 @@
 @using Jinget.Core.ExtensionMethods.Reflection;
 @using System.Globalization
 @using Jinget.Blazor;
+@using Newtonsoft.Json
 
 @inject IJSRuntime JS;
 @inject ITokenStorageService tokenService;
@@ -63,7 +64,8 @@ else if (Attribute is JingetComboBox searchableComboBox && searchableComboBox.Se
             <option value="">@searchableComboBox.DefaultText</option>
             @foreach (var item in _data)
             {
-                bool selected = item.Selected == true || (item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString()));
+                @* bool selected = item.Selected == true || (item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString())); *@
+                bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
                 if (selected)
                 {
                     Task.Run(() => JS.InvokeVoidAsync("selectItem", Id, Value).GetAwaiter().GetResult());
@@ -72,10 +74,6 @@ else if (Attribute is JingetComboBox searchableComboBox && searchableComboBox.Se
             }
         </select>
     }
-    @*   else
-    {
-        <p>Loading...</p>
-    } *@
 }
 else if (Attribute is JingetLabel label)
 {
@@ -149,23 +147,29 @@ else
 
 @code {
 
-    private bool isConnected;
-
     [Parameter] public string? Id { get; set; }
     [Parameter] public JingetFormElement? Attribute { get; set; }
     [Parameter] public object? Value { get; set; }
+
+    [JsonIgnore]
     [Parameter] public PropertyInfo? Binding { get; set; }
+
+    [JsonIgnore]
     [Parameter] public EventCallback<object> ValueChanged { get; set; }
 
+    [JsonIgnore]
+    [Parameter] public EventCallback<JingetDynamicField> DynamicFieldAdded { get; set; }
+
+    [JsonProperty]
     List<DropDownItemModel> _data = [];
 
-    // List<DropDownItemModel> _data2 = [];
     bool connected = false;
     private DotNetObjectReference<JingetDynamicField>? dotNetObjRef;
     string? labelText = "";
 
     protected override async Task OnInitializedAsync()
     {
+
         if (Attribute is JingetLabel label)
         {
             labelText = Value == null ? "" : Value.ToString();
@@ -189,6 +193,23 @@ else
             {
                 await JS.InvokeVoidAsync("convertToSearchable", dotNetObjRef, Id);
             }
+        }
+        if (firstRender)
+            await DynamicFieldAdded.InvokeAsync(new JingetDynamicField
+                {
+                    Attribute = this.Attribute,
+                    Id = this.Id,
+                    Value = this.Value,
+                    _data = this._data
+                });
+    }
+
+    public async Task SelectComboItem(IJSRuntime js, string id, object? value)
+    {
+        Value = value;
+        if (((JingetComboBox)Attribute).Searchable)
+        {
+            await js.InvokeVoidAsync("selectItem", id, value);
         }
     }
 

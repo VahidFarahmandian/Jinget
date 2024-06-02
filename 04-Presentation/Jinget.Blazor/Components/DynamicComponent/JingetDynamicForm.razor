@@ -8,86 +8,104 @@
 <MudRTLProvider RightToLeft=@Rtl>
     <MudGrid>
         @foreach (var p in Properties)
-    {
-        <MudItem lg="6" md="6" xs="12" sm="6" Style=@(Rtl?"font-family:IRANSans":"")>
+        {
+            <MudItem lg="6" md="6" xs="12" sm="6" Style=@(Rtl?"font-family:IRANSans":"")>
                 <JingetDynamicField Id="@(string.IsNullOrWhiteSpace(p.Attribute?.Id)?Guid.NewGuid().ToString():p.Attribute.Id)"
-                                       Value=@(p.Property.DeclaringType==typeof(string) && p.Property.GetValue(Model)==null?"":p.Property.GetValue(Model))
-                                       Attribute="@p.Attribute"
-                                       Binding="@p.Property"
-                                       ValueChanged="@((e)=>OnValueChanged(p.Property.Name, e))" />
+                                    Value=@(p.Property.DeclaringType==typeof(string) && p.Property.GetValue(Model)==null?"":p.Property.GetValue(Model))
+                                    Attribute="@p.Attribute"
+                                    Binding="@p.Property"
+                                    @ref=JingetDynamicField
+                                    DynamicFieldAdded="@((e)=>OnDynamicFieldAdded(e))"
+                                    ValueChanged="@((e)=>OnValueChanged(p.Property.Name, e))" />
             </MudItem>
-    }
+
+        }
     </MudGrid>
 </MudRTLProvider>
 @code {
-[Parameter] public T? Model { get; set; }
-[Parameter] public bool Rtl { get; set; } = true;
-[Parameter] public EventCallback<Dictionary<string, object?>> OnModelChanged { get; set; }
+    [Parameter] public T? Model { get; set; }
+    [Parameter] public bool Rtl { get; set; } = true;
+    [Parameter] public EventCallback<Dictionary<string, object?>> OnModelChanged { get; set; }
 
-public HashSet<(PropertyInfo Property, JingetFormElement? Attribute)> Properties { get; set; } = new();
+    public List<JingetDynamicField> DynamicFields { get; private set; } = [];
+    JingetDynamicField JingetDynamicField;
 
-protected override void OnInitialized()
-{
-    if (Model != null)
+    public HashSet<(PropertyInfo Property, JingetFormElement? Attribute)> Properties { get; set; } = new();
+
+    protected override void OnInitialized()
     {
-        IOrderedEnumerable<PropertyInfo> props = Model.GetType().GetProperties()
-        .Where(x => x.IsDefined(typeof(JingetFormElement)))
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-        .OrderBy(x => x.GetCustomAttribute<JingetFormElement>().Order);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-        foreach (var p in props)
+        if (Model != null)
         {
-            Properties.Add(new(
-                p,
-                p.GetCustomAttribute<JingetFormElement>()));
+            IOrderedEnumerable<PropertyInfo> props = Model.GetType().GetProperties()
+            .Where(x => x.IsDefined(typeof(JingetFormElement)))
+            .OrderBy(x => x.GetCustomAttribute<JingetFormElement>().Order);
+            foreach (var p in props)
+            {
+                Properties.Add(new(
+                    p,
+                    p.GetCustomAttribute<JingetFormElement>()));
+            }
         }
     }
-}
 
-void OnValueChanged(string prop, object? value)
-{
-    if (Model != null)
+    void OnDynamicFieldAdded(JingetDynamicField field)
     {
-        var p = Model.GetType().GetProperty(prop);
-        var previousValue = p?.GetValue(Model);
-        object? convertedValue = null;
+        DynamicFields.Add(field);
+    }
 
-        try
+    public List<JingetDynamicField> FindElement(string id)
+    {
+        return DynamicFields.Where(x => x.Id == id).ToList();
+    }
+    public List<JingetDynamicField> FindElement<TFormElementType>() where TFormElementType : JingetFormElement
+    {
+        return DynamicFields.Where(x => x.Attribute is TFormElementType).ToList();
+    }
+
+    void OnValueChanged(string prop, object? value)
+    {
+        if (Model != null)
         {
-            Type t = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
-            if (value is not IConvertible && t == typeof(string))
-            {
-                value = value==null?null:value?.ToString();
-            }
+            var p = Model.GetType().GetProperty(prop);
+            var previousValue = p?.GetValue(Model);
+            object? convertedValue = null;
 
-            if (value is SelectedDateRangeModel dateRangeValue)
+            try
             {
-                if (t == typeof(DateRange))
+                Type t = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
+                if (value is not IConvertible && t == typeof(string))
                 {
-                    convertedValue = Convert.ChangeType(dateRangeValue.DateRange, t);
+                    value = value == null ? null : value?.ToString();
+                }
+
+                if (value is SelectedDateRangeModel dateRangeValue)
+                {
+                    if (t == typeof(DateRange))
+                    {
+                        convertedValue = Convert.ChangeType(dateRangeValue.DateRange, t);
+                    }
+                    else
+                    {
+                        convertedValue = Convert.ChangeType(dateRangeValue, t);
+                    }
                 }
                 else
                 {
-                    convertedValue = Convert.ChangeType(dateRangeValue, t);
+                    if (value is IConvertible)
+                    {
+                        convertedValue = (value == null) ? null : Convert.ChangeType(value, t);
+                    }
+                    else
+                    {
+                        convertedValue = (value == null) ? null : Convert.ChangeType(value.ToString(), t);
+                    }
                 }
+                p?.SetValue(Model, convertedValue);
+                StateHasChanged();
             }
-            else
-            {
-                if (value is IConvertible)
-                {
-                    convertedValue = (value == null) ? null : Convert.ChangeType(value, t);
-                }
-                else
-                {
-                    convertedValue = (value == null) ? null : Convert.ChangeType(value.ToString(), t);
-                }
-            }
-            p?.SetValue(Model, convertedValue);
-            StateHasChanged();
-        }
-        catch { }
+            catch { }
 
-        Dictionary<string, object?> info = new Dictionary<string, object?>
+            Dictionary<string, object?> info = new Dictionary<string, object?>
         {
             {"Model",Model},
             {"PreviousValue",previousValue},
@@ -95,7 +113,7 @@ void OnValueChanged(string prop, object? value)
             {"ConvertedValue",convertedValue},
             {"PropertyName",prop}
         };
-        OnModelChanged.InvokeAsync(info);
+            OnModelChanged.InvokeAsync(info);
+        }
     }
-}
 }

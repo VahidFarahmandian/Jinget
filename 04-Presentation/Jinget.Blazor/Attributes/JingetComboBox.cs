@@ -31,14 +31,15 @@ public class JingetComboBox : JingetFormElement
     {
         List<DropDownItemModel> result = [];
 
-        var data = await GetData.Invoke().ConfigureAwait(false);
+        List<T> data = await GetData.Invoke().ConfigureAwait(false);
 
 
         if (data != null)
         {
-            foreach (var item in data)
+            foreach (T item in data)
             {
-                result.Add(new(item.Code, item.Title, false));
+                //result.Add(new(item.Code, item.Title, item.Selected));
+                result.Add(new(item.Code, item.Title));
             }
         }
         return result;

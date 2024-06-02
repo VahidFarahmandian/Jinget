@@ -652,7 +652,13 @@ public async Task<string> PreBinding(string? token) => await Task.FromResult("Th
 
 Using `BindingFunction` user can define a method to bind data into combobox. If `GetTokenBeforeBinding` is set to true, 
 then before running the `BindingFunction`, `ITokenStorageService.GetTokenAsync()` method will be called to read the token from localstorage 
-where localstorage key is equal to `TokenConfigModel.TokenName`. (See `builder.Services.AddJingetBlazor();`)
+where localstorage key is equal to `TokenConfigModel.TokenName`. (See `builder.Services.AddJingetBlazor();`). This method's signature is:
+
+```
+public async Task<return type> <Binding function name>(string token, object? preBindingResult)=>...
+```
+
+`BindingFunction` can be either `async` or not.
 
 Using `PostBindingFunction` user can define a method to run after `BindingFunction`. This method's signature is:
 
