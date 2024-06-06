@@ -38,7 +38,6 @@ public class JingetComboBox : JingetFormElement
         {
             foreach (T item in data)
             {
-                //result.Add(new(item.Code, item.Title, item.Selected));
                 result.Add(new(item.Code, item.Title));
             }
         }
