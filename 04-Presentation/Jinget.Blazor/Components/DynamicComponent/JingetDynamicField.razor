@@ -50,7 +50,7 @@ else if (Attribute is JingetComboBox comboBox && comboBox.Searchable == false)
                Variant="Variant.Outlined"
                ValueChanged="OnItemSelected">
         <MudSelectItem Disabled=true Value="0.ToString()">@comboBox.DefaultText</MudSelectItem>
-        @foreach (DropDownItemModel item in _data)
+        @foreach (DropDownItemModel item in Data)
         {
             <MudSelectItem Value="@item.Value?.ToString()">@item.Text</MudSelectItem>
         }
@@ -62,7 +62,7 @@ else if (Attribute is JingetComboBox searchableComboBox && searchableComboBox.Se
     {
         <select id="@Id" onchange=@OnChange class="@Attribute.CssClass">
             <option value="">@searchableComboBox.DefaultText</option>
-            @foreach (var item in _data)
+            @foreach (var item in Data)
             {
                 bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
                 if (selected)
@@ -174,7 +174,7 @@ else
     [Parameter] public EventCallback<JingetDynamicField> DynamicFieldAdded { get; set; }
 
     [JsonProperty]
-    List<DropDownItemModel> _data = [];
+    public List<DropDownItemModel> Data = [];
 
     bool connected = false;
     private DotNetObjectReference<JingetDynamicField>? dotNetObjRef;
@@ -190,7 +190,7 @@ else
         dotNetObjRef = DotNetObjectReference.Create(this);
         if (Attribute is JingetComboBox comboBox)
         {
-            _data = await GetData();
+            Data = await GetData();
             if (comboBox.Searchable)
             {
                 connected = true;
