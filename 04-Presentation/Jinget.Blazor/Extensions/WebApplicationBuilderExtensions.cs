@@ -22,6 +22,7 @@ public static class WebApplicationBuilderExtensions
             if (addTokenRelatedServices)
             {
                 services.TryAddScoped<ILocalStorageService, LocalStorageService>();
+                services.TryAddScoped<ISessionStorageService, SessionStorageService>();
                 services.TryAddScoped<ITokenStorageService>(
                     provider => new TokenStorageService(provider.GetRequiredService<ILocalStorageService>(), tokenConfigModel.TokenName));
             }

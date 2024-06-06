@@ -14,6 +14,26 @@ window.selectItem = (id, value) => {
 };
 /*Selectize END*/
 
+/*localStorage START*/
+
+window.removeAll_localStorageKeys = () => {
+    localStorage.clear();
+}
+
+window.removeAll_sessionStorageKeys = () => {
+    sessionStorage.clear();
+}
+
+window.getAll_localStorageKeys = () => {
+    return JSON.stringify(localStorage);
+}
+
+window.getAll_sessionStorageKeys = () => {
+    return JSON.stringify(sessionStorage);
+}
+
+/*localStorage END*/
+
 /*DateRange/Date Picker START*/
 function gotoDate(id) {
 

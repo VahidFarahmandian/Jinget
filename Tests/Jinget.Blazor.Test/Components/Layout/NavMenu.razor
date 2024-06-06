@@ -17,18 +17,18 @@
             <span class="oi oi-plus" aria-hidden="true"></span> Pickers
         </NavLink>
         @if (expandPickerSubNav)
-    {
-        <div class="nav-item px-3">
+        {
+            <div class="nav-item px-3">
                 <NavLink class="nav-link" href="/datepicker" Match="NavLinkMatch.All">
                     Date Picker
                 </NavLink>
             </div>
-        <div class="nav-item px-3">
+            <div class="nav-item px-3">
                 <NavLink class="nav-link" href="/daterangepicker" Match="NavLinkMatch.All">
                     Date Range Picker
                 </NavLink>
             </div>
-    }
+        }
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/list" Match="NavLinkMatch.All">
                 List
@@ -54,26 +54,31 @@
                 Dynamic Form
             </NavLink>
         </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/browser-storage" Match="NavLinkMatch.All">
+                Browser Storage
+            </NavLink>
+        </div>
     </nav>
 </div>
 @code {
-bool expandPickerSubNav;
-bool collapsePickerSubNav = true;
+    bool expandPickerSubNav;
+    bool collapsePickerSubNav = true;
 
-string? NavMenuCssClass
-{
-    get
+    string? NavMenuCssClass
+    {
+        get
+        {
+            if (collapsePickerSubNav)
+                return collapsePickerSubNav ? "collapse" : null;
+            else
+                return "";
+        }
+    }
+
+    void ToggleNavMenu()
     {
         if (collapsePickerSubNav)
-            return collapsePickerSubNav ? "collapse" : null;
-        else
-            return "";
+            collapsePickerSubNav = !collapsePickerSubNav;
     }
-}
-
-void ToggleNavMenu()
-{
-    if (collapsePickerSubNav)
-        collapsePickerSubNav = !collapsePickerSubNav;
-}
 }

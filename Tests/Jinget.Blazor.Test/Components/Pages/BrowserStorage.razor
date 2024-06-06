@@ -1,0 +1,160 @@
+﻿@page "/browser-storage"
+@using Jinget.Blazor.Components.List
+@using Jinget.Blazor.Components.Popup
+@using Jinget.Blazor.Services.Contracts
+@using MudBlazor
+@inject ILocalStorageService localStorageService;
+@inject ISessionStorageService sessionStorageService;
+<JingetMessageBox @ref=@messageBox
+                  ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true))></JingetMessageBox>
+<div class="container">
+    <div class="row">
+        <div class="form-group input-group">
+            LocalStorage services:
+            <MudButton FullWidth=true
+                       OnClick="setLocalStorage"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                <MudText>Set LocalStorage</MudText>
+            </MudButton>
+            <MudButton FullWidth=true
+                       OnClick="getLocalStorage"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                <MudText>Get specific key</MudText>
+            </MudButton>
+            <MudButton FullWidth=true
+                       OnClick="upsertLocalStorage"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                <MudText>Upsert LocalStorage</MudText>
+            </MudButton>
+            <MudButton FullWidth=true
+                       OnClick="getAllLocalStorage"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                <MudText>Get all keys</MudText>
+            </MudButton>
+            <MudButton FullWidth=true
+                       OnClick="removeSpecificLocalStorageKey"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                <MudText>Remove specific key</MudText>
+            </MudButton>
+            <MudButton FullWidth=true
+                       OnClick="removeAllLocalStorageKey"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                <MudText>Remove all keys</MudText>
+            </MudButton>
+        </div>
+        <div class="form-group input-group">
+            SessionStorage services:
+            <MudButton FullWidth=true
+                       OnClick="setSessionStorage"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                <MudText>Set SessionStorage</MudText>
+            </MudButton>
+            <MudButton FullWidth=true
+                       OnClick="getSessionStorage"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                <MudText>Get specific key</MudText>
+            </MudButton>
+            <MudButton FullWidth=true
+                       OnClick="upsertSessionStorage"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                <MudText>Upsert SessionStorage</MudText>
+            </MudButton>
+            <MudButton FullWidth=true
+                       OnClick="getAllSessionStorage"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                <MudText>Get all keys</MudText>
+            </MudButton>
+            <MudButton FullWidth=true
+                       OnClick="removeSpecificSessionStorageKey"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                <MudText>Remove specific key</MudText>
+            </MudButton>
+            <MudButton FullWidth=true
+                       OnClick="removeAllSessionStorageKey"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                <MudText>Remove all keys</MudText>
+            </MudButton>
+        </div>
+    </div>
+</div>
+
+@code {
+    JingetMessageBox? messageBox;
+    async Task setLocalStorage()
+    {
+        string key = "key" + new Random().Next(1, 100);
+        await localStorageService.SetItemAsync(key, "Some value: " + new Random().Next(1, 100));
+        await messageBox.ShowInfoAsync("Item Added", $"Key: {key}");
+    }
+    async Task getLocalStorage()
+    {
+        await localStorageService.SetItemAsync("keyTest", "Some value: " + new Random().Next(1, 100));
+        var localStorageValue = await localStorageService.GetItemAsync("keyTest");
+        await messageBox.ShowInfoAsync("keyTest", localStorageValue);
+    }
+    async Task upsertLocalStorage()
+    {
+        await localStorageService.UpsertItemAsync("keyTest", "Some value UPSERTED: " + new Random().Next(1, 100));
+        await messageBox.ShowInfoAsync("Item Upserted", "Key: keyTest");
+
+    }
+    async Task getAllLocalStorage()
+    {
+        var localStorageValues = await localStorageService.GetAllAsync();
+        await messageBox.ShowInfoAsync("keyTest", "All values", Newtonsoft.Json.JsonConvert.SerializeObject(localStorageValues));
+    }
+    async Task removeSpecificLocalStorageKey()
+    {
+        await localStorageService.RemoveItemAsync("keyTest");
+        await messageBox.ShowInfoAsync("keyTest", "Removed!");
+    }
+    async Task removeAllLocalStorageKey()
+    {
+        await localStorageService.RemoveAllAsync();
+        await messageBox.ShowInfoAsync("", "All keys removed!");
+    }
+    async Task setSessionStorage()
+    {
+        string key = "key" + new Random().Next(1, 100);
+        await sessionStorageService.SetItemAsync(key, "Some value: " + new Random().Next(1, 100));
+        await messageBox.ShowInfoAsync("Item Added", $"Key: {key}");
+    }
+    async Task getSessionStorage()
+    {
+        await sessionStorageService.SetItemAsync("keyTest", "Some value: " + new Random().Next(1, 100));
+        var SessionStorageValue = await sessionStorageService.GetItemAsync("keyTest");
+        await messageBox.ShowInfoAsync("keyTest", SessionStorageValue);
+    }
+    async Task upsertSessionStorage()
+    {
+        await sessionStorageService.UpsertItemAsync("keyTest", "Some value UPSERTED: " + new Random().Next(1, 100));
+        await messageBox.ShowInfoAsync("Item Upserted", "Key: keyTest");
+    }
+    async Task getAllSessionStorage()
+    {
+        var SessionStorageValues = await sessionStorageService.GetAllAsync();
+        await messageBox.ShowInfoAsync("keyTest", "All values", Newtonsoft.Json.JsonConvert.SerializeObject(SessionStorageValues));
+    }
+    async Task removeSpecificSessionStorageKey()
+    {
+        await sessionStorageService.RemoveItemAsync("keyTest");
+        await messageBox.ShowInfoAsync("keyTest", "Removed!");
+    }
+    async Task removeAllSessionStorageKey()
+    {
+        await sessionStorageService.RemoveAllAsync();
+        await messageBox.ShowInfoAsync("", "All keys removed!");
+    }
+}

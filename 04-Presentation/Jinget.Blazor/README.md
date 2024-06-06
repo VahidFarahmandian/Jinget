@@ -11,6 +11,10 @@ Blazor components optimised for RTL languaged such as Farsi, Arabic etc.
 - [x] **Table**
 - [x] **Dynamic Form**
 
+**Services list:**
+- [x] **LocalStorage**
+- [x] **SessionStorage**
+
 
 ## How to Use:
 
@@ -707,6 +711,31 @@ public async Task<List<DropDownItemModel>> GetStatusAsync(string token, object? 
 `JingetList`: Render a JingetList on the page. List's items are defined using `BodyMember` property. items should be passed as json string to this property.
 
 `JingetTable`: Render a JingetTable on the page.(Used in JingetTable component, for more info go to JingetTable component section)
+
+------------
+**Services**
+
+***LocalStorage/SessionStorage:***
+
+If you need to work with `localStorage` then you need to inject `ILocalStorageService` and 
+if you want to work with `sessionStorage` then you need to inject `ISessionStorageService` to your page or classes.
+Both of these methods have same methods with same signatures. Note that these two services are registered in DI container if only you set the `tokenConfigModel` 
+to non-null value and also set the `addTokenRelatedServices=true` while adding `builder.Services.AddJingetBlazor();` to `Program.cs`.
+
+****Methods:****
+
+`GetItemAsync`: Get item with specific key from storage.
+
+`GetAllAsync`: Get all items from storage.
+
+`SetItemAsync`: Set item to storage
+
+`UpsertItemAsync`: Add or update item to storage
+
+`RemoveItemAsync`: Remove item with specific key from storage
+
+`RemoveAllAsync`: Remove all items from storage
+
 
 ------------
 ## How to install
