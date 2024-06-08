@@ -1,11 +1,10 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Jinget.Blazor.Attributes.Input;
+using System.Runtime.CompilerServices;
 
 namespace Jinget.Blazor.Attributes.Core;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 public abstract class JingetFormElement([CallerMemberName] string? propertyName = null) : Attribute
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 {
     public string? PropertyName { get; } = propertyName;
 
@@ -32,7 +31,7 @@ public abstract class JingetFormElement([CallerMemberName] string? propertyName 
     public bool HasLabel { get; set; } = false;
     public string DivCssClass { get; set; } = "col-3";
     public string CssClass { get; set; } = "form-control";
-    public bool IsVisible { get; set; } = true;
+    //public bool IsVisible { get; set; } = true;
     public bool IsDisabled { get; set; } = false;
     public bool IsReadOnly { get; set; } = false;
     public string HelperText { get; set; }

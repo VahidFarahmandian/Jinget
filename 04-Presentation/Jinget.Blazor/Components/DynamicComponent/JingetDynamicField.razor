@@ -12,6 +12,7 @@
 @using System.Globalization
 @using Jinget.Blazor;
 @using Newtonsoft.Json
+@using Jinget.Blazor.Components.DropDownList;
 
 @inject IJSRuntime JS;
 @inject ITokenStorageService tokenService;
@@ -28,6 +29,8 @@
                       Label="@Attribute.DisplayName"
                       Culture=@datePicker.Culture
                       EnglishNumber=datePicker.EnglishNumber
+                      Disabled="@Attribute.IsDisabled"
+                      ReadOnly="@Attribute.IsReadOnly"
                       DateChanged="@((e)=>OnChange(new ChangeEventArgs(){Value=e}))" />
 
 }
@@ -37,114 +40,66 @@ else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePicker date
                            Label="@Attribute.DisplayName"
                            Culture=@dateRangePicker.Culture
                            EnglishNumber=dateRangePicker.EnglishNumber
+                           Disabled="@Attribute.IsDisabled"
+                           ReadOnly="@Attribute.IsReadOnly"
                            DateRangeChanged="((e)=>OnChange(new ChangeEventArgs(){Value=e}))">
     </JingetDateRangePicker>
 }
 else if (Attribute is JingetComboBox comboBox && comboBox.Searchable == false)
 {
-    <MudSelect T="string"
-               Value="Value==null?default: Value.ToString()"
-               HelperText="@comboBox.HelperText"
-               Strict=true
-               Label="@comboBox.DisplayName"
-               Variant="Variant.Outlined"
-               ValueChanged="OnItemSelected">
-        <MudSelectItem Disabled=true Value="0.ToString()">@comboBox.DefaultText</MudSelectItem>
-        @foreach (DropDownItemModel item in Data)
-        {
-            <MudSelectItem Value="@item.Value?.ToString()">@item.Text</MudSelectItem>
-        }
-    </MudSelect>
+    <JingetDropDownList CssClass="@Attribute.CssClass"
+                        HelperText="@comboBox.HelperText"
+                        Id="@Id"
+                        IsDisabled=@Attribute.IsDisabled
+                        IsReadOnly=@Attribute.IsReadOnly
+                        DisplayName="@Attribute.DisplayName"
+                        DefaultText="@comboBox.DefaultText"
+                        DataProviderFunc=@GetData
+                        Value=@Value
+                        OnChange=@OnChange></JingetDropDownList>
 }
 else if (Attribute is JingetComboBox searchableComboBox && searchableComboBox.Searchable == true)
 {
-    @if (connected)
-    {
-        <select id="@Id" onchange=@OnChange class="@Attribute.CssClass">
-            <option value="">@searchableComboBox.DefaultText</option>
-            @foreach (var item in Data)
-            {
-                bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
-                if (selected)
-                {
-                    Task.Run(() =>
-                    {
-                        JS.InvokeVoidAsync("selectItem", Id, Value).GetAwaiter().GetResult();
-                    });
-                }
-                <option value="@item.Value" selected="@selected">@item.Text</option>
-            }
-        </select>
-    }
+    <JingetSearchableDropDownList CssClass="@Attribute.CssClass"
+                                  Id="@Id"
+                                  IsDisabled=@Attribute.IsDisabled
+                                  DefaultText="@searchableComboBox.DefaultText"
+                                  DataProviderFunc=@GetData
+                                  Value=@Value
+                                  OnChange=@OnChange>
+    </JingetSearchableDropDownList>
 }
 else if (Attribute is JingetLabel label)
 {
     <MudField HelperText="@label.HelperText"
               Label="@label.DisplayName"
-              Variant="Variant.Outlined">@labelText</MudField>
+              Disabled="@Attribute.IsDisabled"
+              id="@Id"
+              Variant="Variant.Outlined">@(Value == null ? "" : Value.ToString())</MudField>
 }
-else if (Attribute is JingetTextBox textbox)
+else if (Attribute is JingetInputElement attr)
 {
     <MudTextField Converter="@StringConverter"
                   @bind-Value="Value"
-                  Label="@textbox.DisplayName"
-                  HelperText="@textbox.HelperText"
+                  Label="@attr.DisplayName"
+                  HelperText="@attr.HelperText"
+                  Disabled="@attr.IsDisabled"
+                  ReadOnly="@attr.IsReadOnly"
                   Variant="Variant.Outlined"
-                  TextChanged="OnTextChanged" />
-}
-else if (Attribute is JingetTextArea textArea)
-{
-    <MudTextField Converter="@StringConverter"
-                  @bind-Value="Value"
-                  Label="@textArea.DisplayName"
-                  HelperText="@textArea.HelperText"
-                  Variant="Variant.Outlined"
-                  Lines=@textArea.Rows
-                  TextChanged="OnTextChanged" />
-}
-else if (Attribute is JingetPasswordBox passwordBox)
-{
-    <MudTextField Converter="@StringConverter"
-                  @bind-Value="Value"
-                  Label="@passwordBox.DisplayName"
-                  HelperText="@passwordBox.HelperText"
-                  Variant="Variant.Outlined"
-                  InputType=@InputType.Password
-                  TextChanged="OnTextChanged" />
-}
-else if (Attribute is JingetNumberBox numberBox)
-{
-    <MudTextField Converter="@StringConverter"
-                  @bind-Value="Value"
-                  Label="@numberBox.DisplayName"
-                  HelperText="@numberBox.HelperText"
-                  Variant="Variant.Outlined"
-                  InputType=@InputType.Number
-                  TextChanged="OnTextChanged" />
-}
-else if (Attribute is JingetEmailBox emailBox)
-{
-    <MudTextField Converter="@StringConverter"
-                  @bind-Value="Value"
-                  Label="@emailBox.DisplayName"
-                  HelperText="@emailBox.HelperText"
-                  Variant="Variant.Outlined"
-                  InputType=@InputType.Email
-                  TextChanged="OnTextChanged" />
-}
-else if (Attribute is JingetTelephoneBox telephoneBox)
-{
-    <MudTextField Converter="@StringConverter"
-                  @bind-Value="Value"
-                  Label="@telephoneBox.DisplayName"
-                  HelperText="@telephoneBox.HelperText"
-                  Variant="Variant.Outlined"
-                  InputType=@InputType.Telephone
+                  InputType=@attr.GetInputType()
+                  id="@Id"
+                  Lines="@(attr is JingetTextArea? ((JingetTextArea)Attribute).Rows:1)"
                   TextChanged="OnTextChanged" />
 }
 else
 {
-    <input id="@Id" type="@Attribute.ToString()" value="@Value" onchange="@OnChange" class="@Attribute.CssClass" />
+    <input id="@Id"
+           type="@Attribute.ToString()"
+           value="@Value"
+           onchange="@OnChange"
+           class="@Attribute.CssClass"
+           disabled="@Attribute.IsDisabled"
+           readonly="@Attribute.IsReadOnly" />
 }
 
 @code {
@@ -173,40 +128,8 @@ else
     [JsonIgnore]
     [Parameter] public EventCallback<JingetDynamicField> DynamicFieldAdded { get; set; }
 
-    [JsonProperty]
-    public List<DropDownItemModel> Data = [];
-
-    bool connected = false;
-    private DotNetObjectReference<JingetDynamicField>? dotNetObjRef;
-    string? labelText = "";
-
-    protected override async Task OnInitializedAsync()
-    {
-
-        if (Attribute is JingetLabel label)
-        {
-            labelText = Value == null ? "" : Value.ToString();
-        }
-        dotNetObjRef = DotNetObjectReference.Create(this);
-        if (Attribute is JingetComboBox comboBox)
-        {
-            Data = await GetData();
-            if (comboBox.Searchable)
-            {
-                connected = true;
-            }
-        }
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Attribute is JingetComboBox comboBox)
-        {
-            if (comboBox.Searchable)
-            {
-                await JS.InvokeVoidAsync("convertToSearchable", dotNetObjRef, Id);
-            }
-        }
         if (firstRender)
             await OnDynamicFieldAdded();
     }
@@ -215,11 +138,9 @@ else
         await DynamicFieldAdded.InvokeAsync(this);
     }
 
-    [JSInvokable]
-    public void OnItemSelected(object value) => OnChange(new ChangeEventArgs() { Value = value });
     void OnTextChanged(string value) => OnChange(new ChangeEventArgs() { Value = value });
 
-    async void OnChange(ChangeEventArgs e)
+    public async void OnChange(ChangeEventArgs e)
     {
         await OnDynamicFieldAdded();
         await ValueChanged.InvokeAsync(e.Value);

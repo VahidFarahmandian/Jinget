@@ -10,4 +10,10 @@
     <ProjectReference Include="..\..\04-Presentation\Jinget.Blazor\Jinget.Blazor.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Components\Pages\DropDownList.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>

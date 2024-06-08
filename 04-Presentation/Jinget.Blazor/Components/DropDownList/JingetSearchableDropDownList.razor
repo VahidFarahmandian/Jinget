@@ -1,0 +1,45 @@
+﻿@using Jinget.Blazor.Components.DropDownList
+@inject IJSRuntime JS;
+@inherits JingetDropDownListBase;
+@if (connected)
+{
+    <select id="@Id" onchange=@OnDDLSelectedItemChangedAsync class="@CssClass" disabled="@IsDisabled">
+        <option value="">@DefaultText</option>
+        @foreach (var item in Items)
+        {
+            bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
+            if (selected)
+            {
+                Task.Run(() =>
+                {
+                    JS.InvokeVoidAsync("selectItem", Id, Value).GetAwaiter().GetResult();
+                });
+            }
+            <option value="@item.Value" selected="@selected">@item.Text</option>
+        }
+    </select>
+}
+@code {
+
+    bool connected = false;
+
+    private DotNetObjectReference<JingetSearchableDropDownList>? dotNetObjRef;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        dotNetObjRef = DotNetObjectReference.Create(this);
+        connected = true;
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JS.InvokeVoidAsync("convertToSearchable", dotNetObjRef, Id);
+    }
+    [JSInvokable]
+    public async void OnDDLSelectedItemChangedAsync(ChangeEventArgs e)
+    {
+        Value = e.Value;
+        SelectedItem = Items.FirstOrDefault(x => x.Value?.ToString() == e.Value?.ToString());
+        await OnChange.InvokeAsync(e);
+    }
+}

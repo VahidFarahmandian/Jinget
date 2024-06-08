@@ -1,17 +1,23 @@
 ﻿@using System.Reflection;
 @using Jinget.Core.Utilities
 @using MudBlazor
-@using Jinget.Blazor.Components.Picker
+@using Jinget.Blazor.Components.Picker;
+@using Jinget.Blazor.Attributes.Core
 
-@typeparam T
+@typeparam T where T : new()
 
-<MudRTLProvider RightToLeft=@Rtl>
+<MudRTLProvider RightToLeft=@Rtl Style="@CustomStyle">
     <MudGrid>
         @foreach (var p in Properties)
         {
-            <MudItem lg="6" md="6" xs="12" sm="6" Style=@(Rtl?"font-family:IRANSans":"")>
-                <JingetDynamicField Id="@(string.IsNullOrWhiteSpace(p.Attribute?.Id)?Guid.NewGuid().ToString():p.Attribute.Id)"
-                                    Value=@(p.Property.DeclaringType==typeof(string) && p.Property.GetValue(Model)==null?"":p.Property.GetValue(Model))
+            object? value = null;
+            if (Model != null)
+                value = p.Property.DeclaringType == typeof(string) && p.Property.GetValue(Model) == null ? "" : p.Property.GetValue(Model);
+
+            string id = string.IsNullOrWhiteSpace(p.Attribute?.Id) ? $"jinget-{p.GetHashCode()}" : p.Attribute.Id;
+            <MudItem lg="6" md="6" xs="12" sm="6" Style=@style>
+                <JingetDynamicField Id=@id
+                                    Value=@value
                                     Attribute="@p.Attribute"
                                     Binding="@p.Property"
                                     DynamicFieldAdded="@((e)=>OnDynamicFieldAdded(e))"
@@ -22,13 +28,27 @@
     </MudGrid>
 </MudRTLProvider>
 @code {
+    string style = "";
+
+    /// <summary>
+    /// Model which is used to bind to the elements
+    /// </summary>
     [Parameter] public T? Model { get; set; }
+
+    /// <summary>
+    /// Defines whether the form should be right-to-left or not
+    /// </summary>
     [Parameter] public bool Rtl { get; set; } = true;
+
+    /// <summary>
+    /// Custom css style used for the whole form
+    /// </summary>
+    [Parameter] public string CustomStyle { get; set; }
 
     /// <summary>
     /// This event raised whenever a member's value changed
     /// </summary>
-    [Parameter] public EventCallback<Dictionary<string, object?>> OnModelChanged { get; set; }
+    [Parameter] public EventCallback<ObjectChangedModel<T>> OnModelChanged { get; set; }
 
     /// <summary>
     /// This event raised whenever a field rendered on page
@@ -39,23 +59,27 @@
     /// return the list of fields rendered on page
     /// </summary>
     public List<JingetDynamicField> DynamicFields { get; private set; } = [];
-    
+
     public HashSet<(PropertyInfo Property, JingetFormElement? Attribute)> Properties { get; set; } = new();
 
     protected override void OnInitialized()
     {
-        if (Model != null)
-        {
-            IOrderedEnumerable<PropertyInfo> props = Model.GetType().GetProperties()
+        // if (SetDefaultForNullModel && Model == null)
+        //     Model = new();
+        // if (Model != null)
+        // {
+        // IOrderedEnumerable<PropertyInfo> props = Model.GetType().GetProperties()
+        IOrderedEnumerable<PropertyInfo> props = typeof(T).GetProperties()
             .Where(x => x.IsDefined(typeof(JingetFormElement)))
             .OrderBy(x => x.GetCustomAttribute<JingetFormElement>().Order);
-            foreach (var p in props)
-            {
-                Properties.Add(new(
-                    p,
-                    p.GetCustomAttribute<JingetFormElement>()));
-            }
+        foreach (var p in props)
+        {
+            Properties.Add(new(
+                p,
+                p.GetCustomAttribute<JingetFormElement>()));
         }
+        style = Rtl ? "font-family:IRANSans" : "";
+        //}
     }
 
     async Task OnDynamicFieldAdded(JingetDynamicField field)
@@ -116,15 +140,15 @@
                 StateHasChanged();
             }
             catch { }
-
-            Dictionary<string, object?> info = new Dictionary<string, object?>
-        {
-            {"Model",Model},
-            {"PreviousValue",previousValue},
-            {"CurrentValue",value},
-            {"ConvertedValue",convertedValue},
-            {"PropertyName",prop}
-        };
+            var info = new ObjectChangedModel<T>(Model, prop, previousValue, value, convertedValue);
+            //     Dictionary<string, object?> info = new Dictionary<string, object?>
+            // {
+            //     {"Model",Model},
+            //     {"PreviousValue",previousValue},
+            //     {"CurrentValue",value},
+            //     {"ConvertedValue",convertedValue},
+            //     {"PropertyName",prop}
+            // };
             OnModelChanged.InvokeAsync(info);
         }
     }

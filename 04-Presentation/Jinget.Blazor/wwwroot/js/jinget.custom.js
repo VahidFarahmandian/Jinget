@@ -5,7 +5,7 @@ window.convertToSearchable = (dotnet, id) => $('#' + id).selectize({
     searchConjunction: 'and',
     respect_word_boundaries: false,
     onChange: function (value) {
-        dotnet.invokeMethodAsync('OnItemSelected', value)
+        dotnet.invokeMethodAsync('OnDDLSelectedItemChangedAsync', { Value: value })
     }
 });
 window.selectItem = (id, value) => {
@@ -14,7 +14,7 @@ window.selectItem = (id, value) => {
 };
 /*Selectize END*/
 
-/*localStorage START*/
+/*localStorage/sessionStorage START*/
 
 window.removeAll_localStorageKeys = () => {
     localStorage.clear();
@@ -32,7 +32,7 @@ window.getAll_sessionStorageKeys = () => {
     return JSON.stringify(sessionStorage);
 }
 
-/*localStorage END*/
+/*localStorage/sessionStorage END*/
 
 /*DateRange/Date Picker START*/
 function gotoDate(id) {

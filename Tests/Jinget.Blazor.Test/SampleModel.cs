@@ -47,7 +47,7 @@ namespace Jinget.Blazor.Test
         public int Age { get; set; }
 
         [JingetComboBox(DisplayName = "وضعیت2", Id = "cmb2", BindingFunction = nameof(GetStatusAsync), DefaultText = "---انتخاب کنید---",
-        HasLabel = true, LabelCssClass = "overlayed-label", Order = 8, GetTokenBeforeBinding = true)]
+        Order = 8, GetTokenBeforeBinding = true)]
         public int? Status2 { get; set; }
 
         [JingetComboBox(DisplayName = "وضعیت", Id = "cmbSearch",
@@ -57,22 +57,19 @@ namespace Jinget.Blazor.Test
         public async Task<string> PreBinding(string? token) => await Task.FromResult("This is pre binding");
         public async Task<string> PostBinding(string? token, object? preBindingResult, object? data) => await Task.FromResult("This is post binding");
         public async Task<List<DropDownItemModel>> GetStatusAsync(string token, object? preBindingResult)
-        => await new JingetComboBox().BindAsync<StatusModel>(async () =>
+        => await new JingetComboBox().BindAsync(async () =>
         {
             var t = preBindingResult;
             return await Task.FromResult(new List<StatusModel>{
-                            new StatusModel{Code= 1,Title= token },
-                        new StatusModel{Code= 2,Title= "غیرفعال"},
-                        new StatusModel{Code= 3,Title= "نامشخص" }
+                new() {Code= 1,Title= token },
+                new(){Code= 2,Title= "غیرفعال"},
+                new(){Code= 3,Title= "نامشخص" }
                                                                                                                                                                                                                                                                                         });
         });
-
 
         class StatusModel : BaseTypeModel
         {
 
         }
-
     }
-
 }

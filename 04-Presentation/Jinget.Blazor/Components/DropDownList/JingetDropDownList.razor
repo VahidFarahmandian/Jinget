@@ -1,0 +1,32 @@
+﻿@using Jinget.Blazor.Components.DropDownList
+@using MudBlazor
+@inherits JingetDropDownListBase;
+<MudSelect T="string"
+           Value="@(Value==null?default: Value.ToString())"
+           HelperText="@HelperText"
+           Strict=true
+           Disabled="@IsDisabled"
+           ReadOnly="@IsReadOnly"
+           Label="@DisplayName"
+           id="@Id"
+           ValueChanged=@OnDDLSelectedItemChangedAsync>
+    <MudSelectItem Disabled=true Value="0.ToString()">@DefaultText</MudSelectItem>
+    @foreach (DropDownItemModel item in Items)
+    {
+        <MudSelectItem Value="@item.Value?.ToString()">@item.Text</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+
+    [Parameter] public bool IsReadOnly { get; set; }
+    [Parameter] public string DisplayName { get; set; }
+    [Parameter] public string HelperText { get; set; }
+
+    public async void OnDDLSelectedItemChangedAsync(object e)
+    {
+        Value = e;
+        SelectedItem = Items.FirstOrDefault(x => x.Value?.ToString() == e.ToString());
+        await OnChange.InvokeAsync(new ChangeEventArgs { Value = e });
+    }
+}

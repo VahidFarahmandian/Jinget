@@ -1,0 +1,55 @@
+﻿@page "/dropdownlist"
+
+@using Jinget.Blazor.Components.DropDownList
+@using Jinget.Blazor.Components.Popup
+@using Jinget.Blazor.Models
+<JingetMessageBox @ref=@messageBox
+                  ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true))></JingetMessageBox>
+<JingetDropDownList @ref=@ddlSample
+                    Id="ddlSample"
+                    DataProviderFunc=@GetData
+                    DefaultText="---Choose---"
+                    HelperText="This is sample drop down list"
+                    DisplayName="DDLSample"
+                    IsDisabled=false
+                    IsReadOnly=false
+                    OnChange=@OnChange></JingetDropDownList>
+<hr />
+<JingetSearchableDropDownList @ref=ddlSearchable
+                              Id="ddlSearchableSample"
+                              DataProviderFunc=@GetData
+                              DefaultText="--Choose---"
+                              IsDisabled=false
+                              OnChange=@OnChangeSearchable>
+</JingetSearchableDropDownList>
+
+@code {
+
+    JingetMessageBox? messageBox;
+    JingetDropDownList ddlSample;
+    JingetSearchableDropDownList ddlSearchable;
+
+
+    async Task<List<DropDownItemModel>> GetData()
+    {
+        return await Task.FromResult(new List<DropDownItemModel>
+    {
+        new DropDownItemModel(1,"Iran"),
+        new DropDownItemModel(2,"USA"),
+        new DropDownItemModel(3,"UK"),
+        new DropDownItemModel(4,"Russia"),
+        new DropDownItemModel(5,"Canada"),
+        new DropDownItemModel(6,"China")
+    });
+    }
+
+    public async Task OnChange(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("Selected", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample.SelectedItem));
+    }
+
+    public async Task OnChangeSearchable(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("Selected", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSearchable.SelectedItem));
+    }
+}

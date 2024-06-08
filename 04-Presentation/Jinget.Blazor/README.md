@@ -10,6 +10,8 @@ Blazor components optimised for RTL languaged such as Farsi, Arabic etc.
 - [x] **List**
 - [x] **Table**
 - [x] **Dynamic Form**
+- [x] **JingetDropDownList** 
+- [x] **JingetSearchableDropDownList**
 
 **Services list:**
 - [x] **LocalStorage**
@@ -655,6 +657,22 @@ Add the `JingetDynamicForm` to your page and start using it;-)
 
 `JingetTelephoneBox`: Render a tel input on the page.
 
+`JingetColorBox`: Render a color input on the page.
+
+`JingetDateBox`: Render a date input on the page.
+
+`JingetDateTimeLocalBox`: Render a datetime-local input on the page.
+
+`JingetHiddenBox`: Render a hidden input on the page.
+
+`JingetMonthBox`: Render a month input on the page.
+
+`JingetTimeBox`: Render a time input on the page.
+
+`JingetUrlBox`: Render a url input on the page.
+
+`JingetWeekBox`: Render a week input on the page.
+
 `JingetDatePicker`: Render a JingetDatePicker on the page. You can set `Culture` and `EnglishNumber` properties.
 
 `JingetDateRangePicker`: Render a JingetDateRangePicker on the page. You can set `Culture` and `EnglishNumber` properties.
@@ -711,6 +729,64 @@ public async Task<List<DropDownItemModel>> GetStatusAsync(string token, object? 
 `JingetList`: Render a JingetList on the page. List's items are defined using `BodyMember` property. items should be passed as json string to this property.
 
 `JingetTable`: Render a JingetTable on the page.(Used in JingetTable component, for more info go to JingetTable component section)
+
+**Jinget DropDownList/SearchableDropDownList components**
+
+Add the `JingetSearchableDropDownList` or `JingetDropDownList` to your page and start using it;-)
+`JingetSearchableDropDownList` has builtin search mechanism.
+
+```
+<JingetDropDownList @ref=@ddlSample
+                    Id="ddlSample"
+                    DataProviderFunc=@GetData
+                    DefaultText="---Choose---"
+                    HelperText="This is sample drop down list"
+                    DisplayName="DDLSample"
+                    IsDisabled=false
+                    IsReadOnly=false
+                    OnChange=@OnChange></JingetDropDownList>
+<hr />
+<JingetSearchableDropDownList @ref=ddlSearchable
+                              Id="ddlSearchableSample"
+                              DataProviderFunc=@GetData
+                              DefaultText="--Choose---"
+                              IsDisabled=false
+                              OnChange=@OnChangeSearchable>
+</JingetSearchableDropDownList>
+```
+
+***Parameters:***
+
+`Id`: Unique identifier for component in page. This parameter is required.
+
+`Value`: Selected item's value.
+
+`IsDisabled`: Defines wheather the component should be disabled or not.
+
+`CssClass`: Defines a custom css class used to decorate the component.
+
+`DefaultText`: Sets a default text to be shown in dropdownlist before selecting anything
+
+`DataProviderFunc`: Defines a method which is used to populate the data in dropdownlist.
+
+Following parameters are identical to `JingetDropDownList`:
+
+`IsReadOnly`: If true, the input will be read-only..
+
+`DisplayName`: If string has value the label text will be displayed in the input, and scaled down at the top if the input has value.
+
+`HelperText`: The HelperText will be displayed below the text field.
+
+***Callbacks:***
+
+`OnChange`: Fires a callback whenever the selected item changed.
+
+***Properties:***
+
+`Items`: Contains the items which are populated to dropdownlist using `DataProviderFunc`
+
+`SelectedItem`: Contains the selected item Text and Value.
+
 
 ------------
 **Services**

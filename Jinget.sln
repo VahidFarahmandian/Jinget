@@ -36,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Blazor.Test", "Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Core.DiScanner", "01-Core\Jinget.Core.DiScanner\Jinget.Core.DiScanner.csproj", "{9411D2C7-AF8E-4C8A-A11E-DA52E3BEB6C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jinget.Core.DiScanner.Tests", "Tests\Jinget.Core.DiScanner.Tests\Jinget.Core.DiScanner.Tests.csproj", "{F464F7DD-38F2-412C-9CD1-28D53853BFE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Core.DiScanner.Tests", "Tests\Jinget.Core.DiScanner.Tests\Jinget.Core.DiScanner.Tests.csproj", "{F464F7DD-38F2-412C-9CD1-28D53853BFE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

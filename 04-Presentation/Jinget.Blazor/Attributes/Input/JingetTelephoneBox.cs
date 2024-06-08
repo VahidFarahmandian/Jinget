@@ -1,5 +1,5 @@
 ﻿namespace Jinget.Blazor.Attributes.Input;
 
-public class JingetTelephoneBox : JingetFormElement
+public class JingetTelephoneBox : JingetInputElement
 {
 }

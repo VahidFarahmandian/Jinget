@@ -1,5 +1,4 @@
-﻿
-namespace Jinget.Blazor.Attributes;
+﻿namespace Jinget.Blazor.Attributes;
 
 public class JingetList : JingetFormElement
 {
