@@ -23,6 +23,12 @@
     [Parameter] public string DisplayName { get; set; }
     [Parameter] public string HelperText { get; set; }
 
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
     public async void OnDDLSelectedItemChangedAsync(object e)
     {
         Value = e;

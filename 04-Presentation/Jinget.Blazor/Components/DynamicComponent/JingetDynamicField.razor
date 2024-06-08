@@ -25,7 +25,8 @@
 
 @if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDatePicker datePicker)
 {
-    <JingetDatePicker Value="@(Value==null?null:Convert.ToDateTime(Value))"
+    <JingetDatePicker @ref=RefObject
+                      Value="@(Value==null?null:Convert.ToDateTime(Value))"
                       Label="@Attribute.DisplayName"
                       Culture=@datePicker.Culture
                       EnglishNumber=datePicker.EnglishNumber
@@ -36,7 +37,8 @@
 }
 else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePicker dateRangePicker)
 {
-    <JingetDateRangePicker Value="@(Value is SelectedDateRangeModel?((SelectedDateRangeModel)Value).DateRange: (DateRange)Value)"
+    <JingetDateRangePicker @ref=RefObject
+                           Value="@(Value is SelectedDateRangeModel?((SelectedDateRangeModel)Value).DateRange: (DateRange)Value)"
                            Label="@Attribute.DisplayName"
                            Culture=@dateRangePicker.Culture
                            EnglishNumber=dateRangePicker.EnglishNumber
@@ -47,7 +49,8 @@ else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePicker date
 }
 else if (Attribute is JingetComboBox comboBox && comboBox.Searchable == false)
 {
-    <JingetDropDownList CssClass="@Attribute.CssClass"
+    <JingetDropDownList @ref=RefObject
+                        CssClass="@Attribute.CssClass"
                         HelperText="@comboBox.HelperText"
                         Id="@Id"
                         IsDisabled=@Attribute.IsDisabled
@@ -60,7 +63,8 @@ else if (Attribute is JingetComboBox comboBox && comboBox.Searchable == false)
 }
 else if (Attribute is JingetComboBox searchableComboBox && searchableComboBox.Searchable == true)
 {
-    <JingetSearchableDropDownList CssClass="@Attribute.CssClass"
+    <JingetSearchableDropDownList @ref=RefObject
+                                  CssClass="@Attribute.CssClass"
                                   Id="@Id"
                                   IsDisabled=@Attribute.IsDisabled
                                   DefaultText="@searchableComboBox.DefaultText"
@@ -79,7 +83,8 @@ else if (Attribute is JingetLabel label)
 }
 else if (Attribute is JingetInputElement attr)
 {
-    <MudTextField Converter="@StringConverter"
+    <MudTextField @ref=RefObject
+                  Converter="@StringConverter"
                   @bind-Value="Value"
                   Label="@attr.DisplayName"
                   HelperText="@attr.HelperText"
@@ -93,7 +98,8 @@ else if (Attribute is JingetInputElement attr)
 }
 else
 {
-    <input id="@Id"
+    <input @ref=RefObject
+           id="@Id"
            type="@Attribute.ToString()"
            value="@Value"
            onchange="@OnChange"
@@ -103,6 +109,10 @@ else
 }
 
 @code {
+
+    [JsonProperty]
+    public object RefObject { get; set; }
+
 
     [JsonProperty]
     [Parameter] public string? Id { get; set; }

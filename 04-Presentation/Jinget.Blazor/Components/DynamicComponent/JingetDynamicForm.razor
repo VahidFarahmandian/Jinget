@@ -60,15 +60,13 @@
     /// </summary>
     public List<JingetDynamicField> DynamicFields { get; private set; } = [];
 
+    /// <summary>
+    /// return the list of elements used to rednder the dynamic form
+    /// </summary>
     public HashSet<(PropertyInfo Property, JingetFormElement? Attribute)> Properties { get; set; } = new();
 
     protected override void OnInitialized()
     {
-        // if (SetDefaultForNullModel && Model == null)
-        //     Model = new();
-        // if (Model != null)
-        // {
-        // IOrderedEnumerable<PropertyInfo> props = Model.GetType().GetProperties()
         IOrderedEnumerable<PropertyInfo> props = typeof(T).GetProperties()
             .Where(x => x.IsDefined(typeof(JingetFormElement)))
             .OrderBy(x => x.GetCustomAttribute<JingetFormElement>().Order);
@@ -79,7 +77,6 @@
                 p.GetCustomAttribute<JingetFormElement>()));
         }
         style = Rtl ? "font-family:IRANSans" : "";
-        //}
     }
 
     async Task OnDynamicFieldAdded(JingetDynamicField field)
@@ -140,16 +137,7 @@
                 StateHasChanged();
             }
             catch { }
-            var info = new ObjectChangedModel<T>(Model, prop, previousValue, value, convertedValue);
-            //     Dictionary<string, object?> info = new Dictionary<string, object?>
-            // {
-            //     {"Model",Model},
-            //     {"PreviousValue",previousValue},
-            //     {"CurrentValue",value},
-            //     {"ConvertedValue",convertedValue},
-            //     {"PropertyName",prop}
-            // };
-            OnModelChanged.InvokeAsync(info);
+            OnModelChanged.InvokeAsync(new ObjectChangedModel<T>(Model, prop, previousValue, value, convertedValue));
         }
     }
 }

@@ -627,9 +627,13 @@ Add the `JingetDynamicForm` to your page and start using it;-)
 
 `Rtl`: If set to true, the the form will be rendred Right-to-Left. Default is `true`.
 
+`CustomStyle`: Custom css style used for the whole form.
+
 ***Properties:***
 
 `DynamicFields`: Returns a list of fields rendered on page.
+
+`Properties`: return the list of elements used to rednder the dynamic form
 
 ***Methods:***
 
@@ -641,7 +645,8 @@ Add the `JingetDynamicForm` to your page and start using it;-)
 
 `OnModelChanged`: This event raised whenever a member's value changed.
 
-`OnFieldReady`: This event raised whenever a field rendered on page.
+`OnFieldReady`: This event raised whenever a field rendered on page. This event gives an object of `JingetDynamicField` which contains a property called `RefObject`
+which refers to the form element on page. For example in order to get the drop down list items in `OnFieldReady` using `((JingetDropDownList)field.RefObject).Items`.
 
 ***Attributes:***
 
