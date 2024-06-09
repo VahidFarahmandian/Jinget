@@ -125,7 +125,7 @@
             {
                 modelType = Model.GetType();
             }
-            if (modelType.IsDefined(typeof(JingetTable), true))
+            if (modelType.IsDefined(typeof(JingetTableElement), true))
             {
                 var properties = modelType.GetProperties()
                         .Where(x => x.IsDefined(typeof(JingetTableMember), true))

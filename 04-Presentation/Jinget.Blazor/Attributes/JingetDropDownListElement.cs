@@ -1,6 +1,6 @@
 ﻿namespace Jinget.Blazor.Attributes;
 
-public class JingetComboBox : JingetFormElement
+public class JingetDropDownListElement : JingetFormElement
 {
     public string DefaultText { get; set; } = "---انتخاب کنید---";
 
@@ -14,22 +14,22 @@ public class JingetComboBox : JingetFormElement
 
     public string? PostBindingFunction { get; set; }
 
-    /// <summary>
-    /// If set to true, then before calling the <seealso cref="BindingFunction"/>, ITokenStorageService.GetTokenAsync()
-    /// method will be called to read the token from localstorage where key=<seealso cref="TokenConfigModel.TokenName"/>.
-    /// </summary>
-    public bool GetTokenBeforeBinding { get; set; } = true;
+    ///// <summary>
+    ///// If set to true, then before calling the <seealso cref="BindingFunction"/>, ITokenStorageService.GetTokenAsync()
+    ///// method will be called to read the token from localstorage where key=<seealso cref="TokenConfigModel.TokenName"/>.
+    ///// </summary>
+    //public bool GetTokenBeforeBinding { get; set; } = true;
 
-    public async Task<List<DropDownItemModel>> BindAsync<T>(Func<Task<List<T>>> GetData)
+    public async Task<List<JingetDropDownItemModel>> BindAsync<T>(Func<Task<List<T>>> GetData)
         where T : BaseTypeModel
     {
         return await BindAsync<T, byte>(GetData).ConfigureAwait(false);
     }
 
-    public async Task<List<DropDownItemModel>> BindAsync<T, TCode>(Func<Task<List<T>>> GetData)
+    public async Task<List<JingetDropDownItemModel>> BindAsync<T, TCode>(Func<Task<List<T>>> GetData)
         where T : BaseTypeModel<TCode>
     {
-        List<DropDownItemModel> result = [];
+        List<JingetDropDownItemModel> result = [];
 
         List<T> data = await GetData.Invoke().ConfigureAwait(false);
 

@@ -30,16 +30,16 @@
     JingetSearchableDropDownList ddlSearchable;
 
 
-    async Task<List<DropDownItemModel>> GetData()
+    async Task<List<JingetDropDownItemModel>> GetData()
     {
-        return await Task.FromResult(new List<DropDownItemModel>
+        return await Task.FromResult(new List<JingetDropDownItemModel>
     {
-        new DropDownItemModel(1,"Iran"),
-        new DropDownItemModel(2,"USA"),
-        new DropDownItemModel(3,"UK"),
-        new DropDownItemModel(4,"Russia"),
-        new DropDownItemModel(5,"Canada"),
-        new DropDownItemModel(6,"China")
+        new JingetDropDownItemModel(1,"Iran"),
+        new JingetDropDownItemModel(2,"USA"),
+        new JingetDropDownItemModel(3,"UK"),
+        new JingetDropDownItemModel(4,"Russia"),
+        new JingetDropDownItemModel(5,"Canada"),
+        new JingetDropDownItemModel(6,"China")
     });
     }
 

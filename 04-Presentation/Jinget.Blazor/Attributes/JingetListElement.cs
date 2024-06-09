@@ -1,6 +1,6 @@
 ﻿namespace Jinget.Blazor.Attributes;
 
-public class JingetList : JingetFormElement
+public class JingetListElement : JingetFormElement
 {
     /// <summary>
     /// Property which its content will be rendered as list body content text

@@ -1,0 +1,16 @@
+﻿@using Jinget.Blazor.Attributes.Input
+@using MudBlazor
+@inherits JingetInputBase;
+
+<MudTextField id="@Id"
+              Class="@CssClass"
+              @bind-Value="Value"
+              Label="@DisplayName"
+              HelperText="@HelperText"
+              Disabled=@IsDisabled
+              ReadOnly=@IsReadOnly
+              InputType=@InputType
+              Lines=@Rows
+              Variant="Variant.Outlined"
+              TextChanged="OnTextChanged"
+              Converter="StringConverter" />

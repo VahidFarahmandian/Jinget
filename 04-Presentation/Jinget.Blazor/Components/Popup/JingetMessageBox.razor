@@ -87,6 +87,12 @@
                 }
                 else
                 {
+                    try
+                    {
+                        if (JsonViewer != null)
+                            await JsonViewer.Render(verboseContent);
+                    }
+                    catch { }
                     verboseItems.Add(new ListItem(verboseContent, "list-group-item list-group-item-danger"));
                 }
             }

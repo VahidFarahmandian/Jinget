@@ -1,6 +1,6 @@
 ﻿namespace Jinget.Blazor.Attributes.Input;
 
-public class JingetTextArea : JingetInputElement
+public class JingetTextAreaElement : JingetBaseInputElement
 {
     public int Rows { get; set; } = 1;
 }

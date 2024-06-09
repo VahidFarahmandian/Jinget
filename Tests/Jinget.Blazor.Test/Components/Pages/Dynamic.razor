@@ -13,6 +13,7 @@
 @using Jinget.Core.Enumerations;
 @using Jinget.Core.ExtensionMethods.Collections;
 @using Jinget.Blazor.Components.Picker
+@using static Jinget.Blazor.Test.SampleModel
 
 @inject IJSRuntime js;
 
@@ -63,14 +64,24 @@
 @code {
     JingetDynamicForm<SampleModel> dynamicForm;
 
-    public void OnFieldReady(JingetDynamicField field)
+    public async Task OnFieldReady(JingetDynamicField field)
     {
-        
+        if (field.Attribute is JingetDropDownListElement && field.Binding != null && field.Binding.Name == nameof(SampleModel.Status2))
+        {
+            ((JingetDropDownList)field.RefObject).Items = await new JingetDropDownListElement().BindAsync<StatusModel>(
+                async () =>
+                 await Task.FromResult(new List<StatusModel> {
+                     new() { Code = 1, Title = "Active" },
+                     new() { Code = 2, Title = "Deactive" },
+                     new() { Code = 3, Title = "Unknown" } })
+            );
+        }
+        await Task.CompletedTask;
     }
 
     public class InquiryByDateFromViewModel
     {
-        [Attributes.Picker.JingetDateRangePicker(DisplayName = "تاریخ", HasLabel = false, Culture = "fa-IR")]
+        [Attributes.Picker.JingetDateRangePickerElement(DisplayName = "تاریخ", HasLabel = false, Culture = "fa-IR")]
         public SelectedDateRangeModel? Date { get; set; }
     }
 
@@ -118,7 +129,7 @@
     }
     async Task FindType()
     {
-        var fields = dynamicForm.FindElement<JingetComboBox>();
+        var fields = dynamicForm.FindElement<JingetDropDownListElement>();
         var result = fields.Select(x => new
         {
             x.Attribute,

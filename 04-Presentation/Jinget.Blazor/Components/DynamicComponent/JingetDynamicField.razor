@@ -1,29 +1,21 @@
-﻿@using Jinget.Blazor.Attributes
+﻿    @using Jinget.Blazor.Attributes
 @using Jinget.Blazor.Attributes.Input
-@using Jinget.Blazor.Attributes.Picker
-@using Jinget.Blazor.Models
-@using MudBlazor
+@using Jinget.Blazor.Components.DropDownList
+@using Jinget.Blazor.Components.Input
 @using Jinget.Blazor.Components.Picker
-@using Microsoft.JSInterop
-@using System.Reflection;
-@using System.Runtime.CompilerServices;
-@using Microsoft.VisualStudio.Threading;
-@using Jinget.Core.ExtensionMethods.Reflection;
-@using System.Globalization
-@using Jinget.Blazor;
+@using Jinget.Core.ExtensionMethods.Reflection
+@using MudBlazor
 @using Newtonsoft.Json
-@using Jinget.Blazor.Components.DropDownList;
+@using System.Runtime.CompilerServices
 
 @inject IJSRuntime JS;
-@inject ITokenStorageService tokenService;
-@inject IServiceProvider serviceProvider;
 
 @if (Attribute != null && Attribute.HasLabel)
 {
     <label class="@Attribute.LabelCssClass">@Attribute.DisplayName</label>
 }
 
-@if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDatePicker datePicker)
+@if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDatePickerElement datePicker)
 {
     <JingetDatePicker @ref=RefObject
                       Value="@(Value==null?null:Convert.ToDateTime(Value))"
@@ -35,7 +27,7 @@
                       DateChanged="@((e)=>OnChange(new ChangeEventArgs(){Value=e}))" />
 
 }
-else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePicker dateRangePicker)
+else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePickerElement dateRangePicker)
 {
     <JingetDateRangePicker @ref=RefObject
                            Value="@(Value is SelectedDateRangeModel?((SelectedDateRangeModel)Value).DateRange: (DateRange)Value)"
@@ -47,33 +39,33 @@ else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePicker date
                            DateRangeChanged="((e)=>OnChange(new ChangeEventArgs(){Value=e}))">
     </JingetDateRangePicker>
 }
-else if (Attribute is JingetComboBox comboBox && comboBox.Searchable == false)
+else if (Attribute is JingetDropDownListElement dropDown && dropDown.Searchable == false)
 {
     <JingetDropDownList @ref=RefObject
                         CssClass="@Attribute.CssClass"
-                        HelperText="@comboBox.HelperText"
+                        HelperText="@dropDown.HelperText"
                         Id="@Id"
                         IsDisabled=@Attribute.IsDisabled
                         IsReadOnly=@Attribute.IsReadOnly
                         DisplayName="@Attribute.DisplayName"
-                        DefaultText="@comboBox.DefaultText"
+                        DefaultText="@dropDown.DefaultText"
                         DataProviderFunc=@GetData
                         Value=@Value
                         OnChange=@OnChange></JingetDropDownList>
 }
-else if (Attribute is JingetComboBox searchableComboBox && searchableComboBox.Searchable == true)
+else if (Attribute is JingetDropDownListElement searchableDropDown && searchableDropDown.Searchable == true)
 {
     <JingetSearchableDropDownList @ref=RefObject
                                   CssClass="@Attribute.CssClass"
                                   Id="@Id"
                                   IsDisabled=@Attribute.IsDisabled
-                                  DefaultText="@searchableComboBox.DefaultText"
+                                  DefaultText="@searchableDropDown.DefaultText"
                                   DataProviderFunc=@GetData
                                   Value=@Value
                                   OnChange=@OnChange>
     </JingetSearchableDropDownList>
 }
-else if (Attribute is JingetLabel label)
+else if (Attribute is JingetLabelElement label)
 {
     <MudField HelperText="@label.HelperText"
               Label="@label.DisplayName"
@@ -81,20 +73,20 @@ else if (Attribute is JingetLabel label)
               id="@Id"
               Variant="Variant.Outlined">@(Value == null ? "" : Value.ToString())</MudField>
 }
-else if (Attribute is JingetInputElement attr)
+else if (Attribute is JingetBaseInputElement attr)
 {
-    <MudTextField @ref=RefObject
-                  Converter="@StringConverter"
-                  @bind-Value="Value"
-                  Label="@attr.DisplayName"
-                  HelperText="@attr.HelperText"
-                  Disabled="@attr.IsDisabled"
-                  ReadOnly="@attr.IsReadOnly"
-                  Variant="Variant.Outlined"
-                  InputType=@attr.GetInputType()
-                  id="@Id"
-                  Lines="@(attr is JingetTextArea? ((JingetTextArea)Attribute).Rows:1)"
-                  TextChanged="OnTextChanged" />
+    <JingetInput @ref=RefObject
+                 Id="@Id"
+                 @bind-Value="@Value"
+                 DisplayName="@attr.DisplayName"
+                 HelperText="@attr.HelperText"
+                 IsDisabled="@attr.IsDisabled"
+                 IsReadOnly="@attr.IsReadOnly"
+                 InputType=@attr.GetInputType()
+                 Rows="@(attr is JingetTextAreaElement? ((JingetTextAreaElement)attr).Rows:1)"
+                 OnChange="@OnChange">
+
+    </JingetInput>
 }
 else
 {
@@ -148,8 +140,6 @@ else
         await DynamicFieldAdded.InvokeAsync(this);
     }
 
-    void OnTextChanged(string value) => OnChange(new ChangeEventArgs() { Value = value });
-
     public async void OnChange(ChangeEventArgs e)
     {
         await OnDynamicFieldAdded();
@@ -166,12 +156,10 @@ else
             object? callerObject = null;
             if (Binding?.DeclaringType != null)
             {
-                if (Binding.DeclaringType.GetConstructor(new[] { typeof(IServiceProvider) }) != null)
-                    callerObject = Activator.CreateInstance(Binding.DeclaringType, new object[] { serviceProvider });
-                else if (Binding.DeclaringType.GetConstructor(Type.EmptyTypes) != null)
+                if (Binding.DeclaringType.GetDefaultConstructor() != null)
                     callerObject = Activator.CreateInstance(Binding.DeclaringType, null);
                 else
-                    throw new Exception("Properties with JingetComboBox attribute should have a constructor with IServieProvider parameter or should have a parameterless constructor.");
+                    throw new Exception($"Properties with {nameof(JingetDropDownListElement)} attribute should have a parameterless constructor.");
             }
 
             object? data = null;
@@ -195,42 +183,28 @@ else
         return null;
     }
 
-    async Task<List<DropDownItemModel>> GetData()
+    async Task<List<JingetDropDownItemModel>> GetData()
     {
-        string? token = null;
-        var requireToken = (Attribute as JingetComboBox)?.GetTokenBeforeBinding;
-        if (requireToken.HasValue && requireToken.Value == true)
-        {
-            token = await tokenService.GetTokenAsync();
-        }
-
-        var preBindingFunction = (Attribute as JingetComboBox)?.PreBindingFunction;
+        var preBindingFunction = (Attribute as JingetDropDownListElement)?.PreBindingFunction;
         object? preBindingResult = null;
         if (!string.IsNullOrWhiteSpace(preBindingFunction))
         {
-            preBindingResult = InvokeBindingFunction(preBindingFunction, token);
+            preBindingResult = InvokeBindingFunction(preBindingFunction);
         }
 
         object? data;
-        var bindingFunction = (Attribute as JingetComboBox)?.BindingFunction;
-        data = InvokeBindingFunction(bindingFunction, token, preBindingResult);
+        var bindingFunction = (Attribute as JingetDropDownListElement)?.BindingFunction;
+        data = InvokeBindingFunction(bindingFunction, preBindingResult);
 
-        data = data == null ? new List<DropDownItemModel>() : data;
+        data = data == null ? new List<JingetDropDownItemModel>() : data;
 
-        var postBindingFunction = (Attribute as JingetComboBox)?.PostBindingFunction;
+        var postBindingFunction = (Attribute as JingetDropDownListElement)?.PostBindingFunction;
         object? postBindingResult = null;
         if (!string.IsNullOrWhiteSpace(postBindingFunction))
         {
-            postBindingResult = InvokeBindingFunction(postBindingFunction, token, preBindingResult, data);
+            postBindingResult = InvokeBindingFunction(postBindingFunction, preBindingResult, data);
         }
 
-        return (List<DropDownItemModel>)data;
+        return await Task.FromResult((List<JingetDropDownItemModel>)data);
     }
-
-    Converter<object?>
-    StringConverter = new Converter<object?>
-        {
-            SetFunc = value => value?.ToString(),
-            GetFunc = text => text?.ToString(),
-        };
 }

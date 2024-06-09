@@ -1,7 +1,7 @@
 ﻿namespace Jinget.Blazor.Attributes;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class JingetTable : JingetFormElement { }
+public class JingetTableElement : JingetFormElement { }
 
 public class JingetTableMember : JingetFormElement
 {

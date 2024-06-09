@@ -12,62 +12,65 @@ namespace Jinget.Blazor.Test
         {
 
         }
-        ITokenStorageService tokenService;
-        ILocalStorageService localStorage;
-        public SampleModel(IServiceProvider serviceProvider)
-        {
-            tokenService = serviceProvider.GetRequiredService<ITokenStorageService>();
-            localStorage = serviceProvider.GetRequiredService<ILocalStorageService>();
-        }
-        [JingetTextBox(DisplayName = "نام", HelperText = "نام خود را منطبق با اطلاعات کارت ملی وارد نمایید", Order = 1)]
+        //ITokenStorageService tokenService;
+        //ILocalStorageService localStorage;
+        //public SampleModel(IServiceProvider serviceProvider)
+        //{
+        //    tokenService = serviceProvider.GetRequiredService<ITokenStorageService>();
+        //    localStorage = serviceProvider.GetRequiredService<ILocalStorageService>();
+        //}
+        [JingetTextBoxElement(DisplayName = "نام", HelperText = "نام خود را منطبق با اطلاعات کارت ملی وارد نمایید", Order = 1)]
         public string? Name { get; set; }
 
-        [JingetTextBox(DisplayName = "نام خانوادگی", HelperText = "نام خانوادگی خود را منطبق با اطلاعات کارت ملی وارد نمایید", Order = 2)]
+        [JingetTextBoxElement(DisplayName = "نام خانوادگی", HelperText = "نام خانوادگی خود را منطبق با اطلاعات کارت ملی وارد نمایید", Order = 2)]
         public string? LastName { get; set; }
 
-        [JingetPasswordBox(DisplayName = "رمز عبور", Order = 3)]
+        [JingetPasswordBoxElement(DisplayName = "رمز عبور", Order = 3)]
         public string? Password { get; init; }
 
-        [JingetEmailBox(DisplayName = "پست الکترونیکی", Order = 4)]
+        [JingetEmailBoxElement(DisplayName = "پست الکترونیکی", Order = 4)]
         public string? EMail { get; init; }
 
-        [Attributes.Picker.JingetDatePicker(DisplayName = "تاریخ تولد", Culture = "fa-IR", Order = 5)]
+        [Attributes.Picker.JingetDatePickerElement(DisplayName = "تاریخ تولد", Culture = "fa-IR", Order = 5)]
         public string? DoB { get; init; }
 
-        [Attributes.Picker.JingetDateRangePicker(DisplayName = "بازه زمانی سفر", Culture = "fa-IR", Order = 6)]
+        [Attributes.Picker.JingetDateRangePickerElement(DisplayName = "بازه زمانی سفر", Culture = "fa-IR", Order = 6)]
         public DateRange? TravelDate { get; init; }
 
-        [JingetLabel(DisplayName = "امتیاز اکتسابی", HasLabel = false)]
-        public int Score { get; init; } = 1850;
+        [JingetLabelElement(DisplayName = "امتیاز اکتسابی", HasLabel = false)]
+        public int Score { get; set; } = 1850;
 
-        [JingetTextArea(DisplayName = "اطلاعات بیشتر", Rows = 3)]
-        public string? Description { get; init; }
+        [JingetTextAreaElement(DisplayName = "اطلاعات بیشتر", Rows = 3)]
+        public string? Description { get; set; }
 
-        [JingetNumberBox(DisplayName = "سن", Order = 7)]
+        [JingetNumberBoxElement(DisplayName = "سن", Order = 7)]
         public int Age { get; set; }
 
-        [JingetComboBox(DisplayName = "وضعیت2", Id = "cmb2", BindingFunction = nameof(GetStatusAsync), DefaultText = "---انتخاب کنید---",
-        Order = 8, GetTokenBeforeBinding = true)]
+        [JingetDropDownListElement(DisplayName = "وضعیت2", Id = "cmb2",/* BindingFunction = nameof(GetStatusAsync),*/ DefaultText = "---انتخاب کنید---",
+        Order = 8/*, GetTokenBeforeBinding = true*/)]
         public int? Status2 { get; set; }
 
-        [JingetComboBox(DisplayName = "وضعیت", Id = "cmbSearch",
+        [JingetDropDownListElement(DisplayName = "وضعیت", Id = "cmbSearch",
         BindingFunction = nameof(GetStatusAsync), PreBindingFunction = nameof(PreBinding), PostBindingFunction = nameof(PostBinding),
-        Searchable = true, DefaultText = "---انتخاب کنید---", HasLabel = true, LabelCssClass = "overlayed-label", Order = 9, GetTokenBeforeBinding = true)]
+        Searchable = true, DefaultText = "---انتخاب کنید---", HasLabel = true, LabelCssClass = "overlayed-label", Order = 9/*, GetTokenBeforeBinding = true*/)]
         public int? Status { get; set; }
-        public async Task<string> PreBinding(string? token) => await Task.FromResult("This is pre binding");
-        public async Task<string> PostBinding(string? token, object? preBindingResult, object? data) => await Task.FromResult("This is post binding");
-        public async Task<List<DropDownItemModel>> GetStatusAsync(string token, object? preBindingResult)
-        => await new JingetComboBox().BindAsync(async () =>
+        //public async Task<string> PreBinding(string? token) => await Task.FromResult("This is pre binding");
+        public async Task<string> PreBinding() => await Task.FromResult("This is pre binding");
+        //public async Task<string> PostBinding(string? token, object? preBindingResult, object? data) => await Task.FromResult("This is post binding");
+        public async Task<string> PostBinding(object? preBindingResult, object? data) => await Task.FromResult("This is post binding");
+        //public async Task<List<JingetDropDownItemModel>> GetStatusAsync(string token, object? preBindingResult)
+        public async Task<List<JingetDropDownItemModel>> GetStatusAsync(object? preBindingResult)
+        => await new JingetDropDownListElement().BindAsync(async () =>
         {
             var t = preBindingResult;
-            return await Task.FromResult(new List<StatusModel>{
-                new() {Code= 1,Title= token },
-                new(){Code= 2,Title= "غیرفعال"},
-                new(){Code= 3,Title= "نامشخص" }
-                                                                                                                                                                                                                                                                                        });
+            return await Task.FromResult(new List<StatusModel> {
+                new() { Code = 1, Title = "فعال" },
+                new() { Code = 2, Title = "غیرفعال" },
+                new() { Code = 3, Title = "نامشخص" }
+            });
         });
 
-        class StatusModel : BaseTypeModel
+       public class StatusModel : BaseTypeModel
         {
 
         }
