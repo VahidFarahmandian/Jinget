@@ -600,11 +600,11 @@ Add the `JingetDynamicForm` to your page and start using it;-)
         [JingetNumberBox(DisplayName = "Age", Order =7)]
         public int Age { get; set; }
 
-        [JingetComboBox(DisplayName = "Flight Status", BindingFunction = nameof(GetStatusAsync), 
+        [JingetDropDownListElement(DisplayName = "Flight Status", BindingFunction = nameof(GetStatusAsync), 
         Searchable =true,DefaultText ="---Choose one---",HasLabel =true, LabelCssClass = "overlayed-label", Order =8)]
         public int? Status { get; init; }
-        public async Task<List<DropDownItemModel>> GetStatusAsync()
-            => await new JingetComboBox().BindAsync<FlightStatusModel>(async () =>
+        public async Task<List<JingetDropDownItemModel>> GetStatusAsync()
+            => await new JingetDropDownListElement().BindAsync<FlightStatusModel>(async () =>
             {
                 return await Task.FromResult(new List<FlightStatusModel>
                 {
@@ -651,46 +651,46 @@ which refers to the form element on page. For example in order to get the drop d
 
 ***Attributes:***
 
-`JingetTextBox`: Render a textbox on the page.
+`JingetTextBoxElement`: Render a textbox on the page.
 
-`JingetTextArea`: Render a textarea on the page. Using `Rows` property you can set the textarea rows.
+`JingetTextAreaElement`: Render a textarea on the page. Using `Rows` property you can set the textarea rows.
 
-`JingetEmailBox`: Render an email input on the page.
+`JingetEmailBoxElement`: Render an email input on the page.
 
-`JingetNumberBox`: Render a number input on the page.
+`JingetNumberBoxElement`: Render a number input on the page.
 
-`JingetPasswordBox`: Render a password input on the page.
+`JingetPasswordBoxElement`: Render a password input on the page.
 
-`JingetTelephoneBox`: Render a tel input on the page.
+`JingetTelephoneBoxElement`: Render a tel input on the page.
 
-`JingetColorBox`: Render a color input on the page.
+`JingetColorBoxElement`: Render a color input on the page.
 
-`JingetDateBox`: Render a date input on the page.
+`JingetDateBoxElement`: Render a date input on the page.
 
-`JingetDateTimeLocalBox`: Render a datetime-local input on the page.
+`JingetDateTimeLocalBoxElement`: Render a datetime-local input on the page.
 
-`JingetHiddenBox`: Render a hidden input on the page.
+`JingetHiddenBoxElement`: Render a hidden input on the page.
 
-`JingetMonthBox`: Render a month input on the page.
+`JingetMonthBoxElement`: Render a month input on the page.
 
-`JingetTimeBox`: Render a time input on the page.
+`JingetTimeBoxElement`: Render a time input on the page.
 
-`JingetUrlBox`: Render a url input on the page.
+`JingetUrlBoxElement`: Render a url input on the page.
 
-`JingetWeekBox`: Render a week input on the page.
+`JingetWeekBoxElement`: Render a week input on the page.
 
-`JingetDatePicker`: Render a JingetDatePicker on the page. You can set `Culture` and `EnglishNumber` properties.
+`JingetDatePickerElement`: Render a JingetDatePicker on the page. You can set `Culture` and `EnglishNumber` properties.
 
-`JingetDateRangePicker`: Render a JingetDateRangePicker on the page. You can set `Culture` and `EnglishNumber` properties.
+`JingetDateRangePickerElement`: Render a JingetDateRangePicker on the page. You can set `Culture` and `EnglishNumber` properties.
 
-`JingetComboBox`: Render a select input on the page. If `Searchable` is set to true, then the user can do search among combobox items. 
+`JingetDropDownListElement`: Render a select input on the page. If `Searchable` is set to true, then the user can do search among drop down list items. 
 Using `PreBindingFunction` user can define a method to run before `BindingFunction`. This method's signature is:
 
 ```
 public async Task<string> PreBinding(string? token) => await Task.FromResult("This is pre binding");
 ```
 
-Using `BindingFunction` user can define a method to bind data into combobox. If `GetTokenBeforeBinding` is set to true, 
+Using `BindingFunction` user can define a method to bind data into drop down list. If `GetTokenBeforeBinding` is set to true, 
 then before running the `BindingFunction`, `ITokenStorageService.GetTokenAsync()` method will be called to read the token from localstorage 
 where localstorage key is equal to `TokenConfigModel.TokenName`. (See `builder.Services.AddJingetBlazor();`). This method's signature is:
 
@@ -706,11 +706,11 @@ Using `PostBindingFunction` user can define a method to run after `BindingFuncti
 public async Task<string> PostBinding(string? token, object? preBindingResult, object? data) => await Task.FromResult("This is post binding");
 ```
 
-Full sample for `JingetComboBox` in `DynamicForm` is like below:
+Full sample for `JingetDropDownListElement` in `DynamicForm` is like below:
 
 ```
 
-[JingetComboBox(DisplayName = "Flight Status", Searchable = true, DefaultText = "---Choose one---",
+[JingetDropDownListElement(DisplayName = "Flight Status", Searchable = true, DefaultText = "---Choose one---",
 BindingFunction = nameof(GetStatusAsync), PreBindingFunction = nameof(PreBinding), PostBindingFunction = nameof(PostBinding),
 HasLabel = true, LabelCssClass = "overlayed-label", Order = 1, GetTokenBeforeBinding = true)]
 public int? Status { get; init; }
@@ -718,8 +718,8 @@ public async Task<string> PreBinding(string? token)
     => await Task.FromResult("This is pre binding");
 public async Task<string> PostBinding(string? token, object? preBindingResult, object? data) 
     => await Task.FromResult("This is post binding");
-public async Task<List<DropDownItemModel>> GetStatusAsync(string token, object? preBindingResult)
-    => await new JingetComboBox().BindAsync<FlightStatusModel>(async () =>
+public async Task<List<JingetDropDownItemModel>> GetStatusAsync(string token, object? preBindingResult)
+    => await new JingetDropDownListElement().BindAsync<FlightStatusModel>(async () =>
     {
         return await Task.FromResult(new List<FlightStatusModel>
         {
@@ -730,11 +730,11 @@ public async Task<List<DropDownItemModel>> GetStatusAsync(string token, object? 
 
 ```
 
-`JingetLabel`: Render a label on the page.
+`JingetLabelElement`: Render a label on the page.
 
-`JingetList`: Render a JingetList on the page. List's items are defined using `BodyMember` property. items should be passed as json string to this property.
+`JingetListElement`: Render a JingetList on the page. List's items are defined using `BodyMember` property. items should be passed as json string to this property.
 
-`JingetTable`: Render a JingetTable on the page.(Used in JingetTable component, for more info go to JingetTable component section)
+`JingetTableElement`: Render a JingetTable on the page.(Used in JingetTable component, for more info go to JingetTable component section)
 
 **Jinget DropDownList/SearchableDropDownList components**
 
@@ -777,6 +777,10 @@ Add the `JingetSearchableDropDownList` or `JingetDropDownList` to your page and 
 
 `IsReadOnly`: If true, the input will be read-only.
 
+`IsRequired`: If true, the the input is required.
+
+`RequiredError`: Message to be shown whenever the `IsRequired=true` and no value has beed provided.
+
 `DefaultText`: Sets a default text to be shown in dropdownlist before selecting anything
 
 `DataProviderFunc`: Defines a method which is used to populate the data in dropdownlist.
@@ -815,6 +819,10 @@ Add the `JingetInput` to your page and start using it;-)
 `IsDisabled`: Defines wheather the component should be disabled or not.
 
 `IsReadOnly`: If true, the input will be read-only.
+
+`IsRequired`: If true, the the input is required.
+
+`RequiredError`: Message to be shown whenever the `IsRequired=true` and no value has beed provided.
 
 `HelperText`: The HelperText will be displayed below the text field.
 
