@@ -18,6 +18,7 @@
 <JingetSearchableDropDownList @ref=ddlSearchable
                               Id="ddlSearchableSample"
                               DataProviderFunc=@GetData
+                              IsRequired="true"
                               DefaultText="--Choose---"
                               IsDisabled=false
                               OnChange=@OnChangeSearchable>
@@ -28,7 +29,6 @@
     JingetMessageBox? messageBox;
     JingetDropDownList ddlSample;
     JingetSearchableDropDownList ddlSearchable;
-
 
     async Task<List<JingetDropDownItemModel>> GetData()
     {

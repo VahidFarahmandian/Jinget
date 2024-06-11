@@ -4,23 +4,22 @@
 {
     <ul class="list-group">
         @if (ShowTitle)
-    {
-        <li class="list-group-item @HeaderCssClass">
+        {
+            <li class="list-group-item @HeaderCssClass">
                 @Title
             </li>
-    }
+        }
         @foreach (var item in Model)
-    {
-        <li class="list-group-item @item.CssClass">
+        {
+            <li class="list-group-item @item.CssClass">
                 @item.Text
             </li>
-    }
+        }
     </ul>
 }
 @code {
-[Parameter] public IList<ListItem>? Model { get; set; }
-
-[Parameter] public string? Title { get; set; }
-[Parameter] public bool ShowTitle { get; set; } = true;
-[Parameter] public string HeaderCssClass { get; set; } = "list-group-item-primary";
+    [Parameter] public IList<ListItem>? Model { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public bool ShowTitle { get; set; } = true;
+    [Parameter] public string HeaderCssClass { get; set; } = "list-group-item-primary";
 }

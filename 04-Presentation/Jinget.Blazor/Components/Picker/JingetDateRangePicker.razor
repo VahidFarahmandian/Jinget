@@ -1,20 +1,20 @@
 ﻿@using Jinget.Blazor.Components.Picker.CultureService
 @using Microsoft.JSInterop
 @using MudBlazor
-@inject IJSRuntime JS;
 @inherits JingetDatePickerBase;
 
-<MudDateRangePicker id="@id" @ref=@_dateRangePicker
-                    Disabled=@Disabled
-                    ReadOnly=@ReadOnly
+<MudDateRangePicker @ref=@_dateRangePicker
+                    id="@Id"
+                    Disabled=@IsDisabled
+                    ReadOnly=@IsReadOnly
                     Label=@Label
                     Editable=false
                     ImmediateText=false
                     Clearable=@Clearable
                     MinDate=@MinDate
                     MaxDate=@MaxDate
-                    DateRange=@Value
-                    Required=@Required
+                    DateRange=@((DateRange?)Value)
+                    Required=@IsRequired
                     RequiredError="@RequiredError"
                     Culture=@CalendarService.GetCulture(Culture)
                     TitleDateFormat=@DateFormat
@@ -23,49 +23,23 @@
                     AdditionalDateClassesFunc=@CustomDateStyleFunc
                     IsDateDisabledFunc=@DisabledDateFunc
                     DateRangeChanged=@DateRangeChangedAsync
-                    PickerOpened=@OnOpen />
+                    PickerOpened=@OnOpenAsync />
 @code {
-MudDateRangePicker? _dateRangePicker;
+    MudDateRangePicker? _dateRangePicker;
 
-DateRange? _previousValue;
-DateRange? _currentValue;
+    [Parameter] public override string Label { get; set; } = "بازه تاریخی";
 
-[Parameter]
-public DateRange? Value
-{
-    get => _currentValue;
-    set
+    [Parameter] public EventCallback<SelectedDateRangeModel> DateRangeChanged { get; set; }
+
+    async Task DateRangeChangedAsync(DateRange e)
     {
-        _previousValue = Value;
-        _currentValue = value;
+        var dateRange = new DateRange(e.Start, e.End);
+        await DateRangeChanged.InvokeAsync(new SelectedDateRangeModel
+            {
+                DateRange = dateRange,
+                StartDateJalali = e.Start.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.Start.Value) : null,
+                EndDateJalali = e.End.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.End.Value) : null
+            }
+        );
     }
-}
-[Parameter] public override string Label { get; set; } = "بازه تاریخی";
-
-[Parameter] public EventCallback<SelectedDateRangeModel> DateRangeChanged { get; set; }
-
-protected override async Task OnAfterRenderAsync(bool firstRender)
-{
-    if (EnglishNumber)
-        await JS.InvokeVoidAsync("toEnglishNumber", id);
-}
-
-async Task DateRangeChangedAsync(DateRange e)
-{
-    if (e == _previousValue || e == _currentValue)
-        return;
-    var dateRange = new DateRange(e.Start, e.End);
-    await DateRangeChanged.InvokeAsync(new SelectedDateRangeModel
-        {
-            DateRange = dateRange,
-            StartDateJalali = e.Start.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.Start.Value) : null,
-            EndDateJalali = e.End.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.End.Value) : null
-        }
-    );
-}
-
-async Task OnOpen()
-{
-    await JS.InvokeVoidAsync("gotoDate", id);
-}
 }

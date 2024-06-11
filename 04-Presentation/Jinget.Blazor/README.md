@@ -12,6 +12,7 @@ Blazor components optimised for RTL languaged such as Farsi, Arabic etc.
 - [x] **Dynamic Form**
 - [x] **JingetDropDownList** 
 - [x] **JingetSearchableDropDownList**
+- [x] **Input** 
 
 **Services list:**
 - [x] **LocalStorage**
@@ -764,23 +765,21 @@ Add the `JingetSearchableDropDownList` or `JingetDropDownList` to your page and 
 
 `Id`: Unique identifier for component in page. This parameter is required.
 
-`Value`: Selected item's value.
-
-`IsDisabled`: Defines wheather the component should be disabled or not.
-
-`CssClass`: Defines a custom css class used to decorate the component.
-
-`DefaultText`: Sets a default text to be shown in dropdownlist before selecting anything
-
-`DataProviderFunc`: Defines a method which is used to populate the data in dropdownlist.
-
-Following parameters are identical to `JingetDropDownList`:
-
-`IsReadOnly`: If true, the input will be read-only..
+`Value`: Value entered in the input box
 
 `DisplayName`: If string has value the label text will be displayed in the input, and scaled down at the top if the input has value.
 
 `HelperText`: The HelperText will be displayed below the text field.
+
+`CssClass`: Defines a custom css class used to decorate the component.
+
+`IsDisabled`: Defines wheather the component should be disabled or not.
+
+`IsReadOnly`: If true, the input will be read-only.
+
+`DefaultText`: Sets a default text to be shown in dropdownlist before selecting anything
+
+`DataProviderFunc`: Defines a method which is used to populate the data in dropdownlist.
 
 ***Callbacks:***
 
@@ -791,6 +790,41 @@ Following parameters are identical to `JingetDropDownList`:
 `Items`: Contains the items which are populated to dropdownlist using `DataProviderFunc`
 
 `SelectedItem`: Contains the selected item Text and Value.
+
+**Jinget Input**
+
+Add the `JingetInput` to your page and start using it;-)
+
+```
+<JingetInput Id="inpText"
+             InputType="InputType.Text"
+             @bind-Value="@obj.Name">
+</JingetInput>
+```
+
+***Parameters:***
+
+`Id`: Unique identifier for component in page. This parameter is required.
+
+`Value`: Value entered in the input box
+
+`DisplayName`: If string has value the label text will be displayed in the input, and scaled down at the top if the input has value.
+
+`CssClass`: Defines a custom css class used to decorate the component.
+
+`IsDisabled`: Defines wheather the component should be disabled or not.
+
+`IsReadOnly`: If true, the input will be read-only.
+
+`HelperText`: The HelperText will be displayed below the text field.
+
+`Rows`: If rows are greater than 1, then html `testarea` with specified rows number will be rendered on the page.
+
+`InputType`: Defines the input type to be rendered on the page. For example `text`, `password`, `hidden` etc.
+
+***Callbacks:***
+
+`OnChange`: Fires a callback whenever the selected item changed.
 
 
 ------------

@@ -3,7 +3,7 @@
 @inherits JingetDropDownListBase;
 @if (connected)
 {
-    <select id="@Id" onchange=@OnDDLSelectedItemChangedAsync class="@CssClass" disabled="@IsDisabled">
+    <select id="@Id" onchange=@OnDDLSelectedItemChangedAsync class="@CssClass" disabled="@IsDisabled" required="@IsRequired">
         <option value="">@DefaultText</option>
         @foreach (var item in Items)
         {
@@ -18,6 +18,10 @@
             <option value="@item.Value" selected="@selected">@item.Text</option>
         }
     </select>
+    @if (IsRequired && (SelectedItem == null || string.IsNullOrWhiteSpace(SelectedItem.Value?.ToString())))
+    {
+        <label style="color:red">@RequiredError</label>
+    }
 }
 @code {
 

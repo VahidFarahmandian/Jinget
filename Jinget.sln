@@ -23,11 +23,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03-Infrastructure", "03-Inf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Logger", "03-Infrastructure\Jinget.Logger\Jinget.Logger.csproj", "{91DB3AE4-0B9B-42B4-8943-EF025B9565E2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6ED05ED4-BDC6-4361-970D-EA5021729A95}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04-Presentation", "04-Presentation", "{18874D4F-0257-4DF2-A97F-F532A36BAD0E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Blazor", "04-Presentation\Jinget.Blazor\Jinget.Blazor.csproj", "{A3E2F74D-AEB2-4D7A-8B75-F8198BF5FBE0}"

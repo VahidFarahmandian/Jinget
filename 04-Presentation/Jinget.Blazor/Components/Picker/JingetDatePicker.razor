@@ -2,20 +2,19 @@
 @using Microsoft.JSInterop
 @using MudBlazor;
 @using System.Runtime.CompilerServices
-@inject IJSRuntime JS;
 @inherits JingetDatePickerBase;
-<MudDatePicker id=@id
+<MudDatePicker id=@Id
                @ref=_datePicker
-               Disabled=@Disabled
-               ReadOnly=@ReadOnly
+               Disabled=@IsDisabled
+               ReadOnly=@IsReadOnly
                Label=@Label
                Editable=@Editable
                ImmediateText=false
                Clearable=@Clearable
                MinDate=@MinDate
                MaxDate=@MaxDate
-               Date=@Value
-               Required=@Required
+               Date=@((DateTime?)Value)
+               Required=@IsRequired
                RequiredError="@RequiredError"
                Culture=@CalendarService.GetCulture(Culture)
                TitleDateFormat=@DateFormat
@@ -28,50 +27,33 @@
 </MudDatePicker>
 
 @code {
-MudDatePicker? _datePicker;
+    MudDatePicker? _datePicker;
 
-DateTime? _previousValue;
-DateTime? _currentValue;
+    [Parameter] public override string Label { get; set; } = "تاریخ";
+    [Parameter] public EventCallback<DateTime?> DateChanged { get; set; }
 
-[Parameter]
-public DateTime? Value
-{
-    get => _currentValue;
-    set
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _previousValue = Value;
-        _currentValue = value;
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            _datePicker.GoToDate();
+        }
     }
-}
-[Parameter] public override string Label { get; set; } = "تاریخ";
-[Parameter] public EventCallback<DateTime?> DateChanged { get; set; }
 
-
-protected override async Task OnAfterRenderAsync(bool firstRender)
-{
-    if (EnglishNumber)
-        await JS.InvokeVoidAsync("toEnglishNumber", id);
-
-    if (firstRender)
+    async Task DateChangedAsync(DateTime? e)
     {
-        _datePicker.GoToDate();
+        if (e != null && e.HasValue)
+        {
+            await _datePicker.GoToDate(e.Value);
+        }
+        await DateChanged.InvokeAsync(e).ConfigureAwait(false);
     }
-}
 
-async Task DateChangedAsync(DateTime? e)
-{
-    if (e == _previousValue || e == _currentValue)
-        return;
-    if (e != null && e.HasValue)
+    async Task OnOpen()
     {
-        await _datePicker.GoToDate(e.Value);
+        await JS.InvokeVoidAsync("refreshDatePicker");
+        await base.OnOpenAsync();
     }
-    await DateChanged.InvokeAsync(e).ConfigureAwait(false);
-}
-
-async Task OnOpen()
-{
-    await JS.InvokeVoidAsync("refreshDatePicker");
-    await JS.InvokeVoidAsync("gotoDate", id);
-}
 }
