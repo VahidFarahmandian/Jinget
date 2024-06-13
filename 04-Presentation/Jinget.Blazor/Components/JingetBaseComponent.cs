@@ -1,5 +1,4 @@
-﻿
-namespace Jinget.Blazor.Components;
+﻿namespace Jinget.Blazor.Components;
 
 public abstract class JingetBaseComponent : ComponentBase
 {
@@ -34,12 +33,10 @@ public abstract class JingetBaseComponent : ComponentBase
     /// </summary>
     [Parameter] public EventCallback OnRendered { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected bool _initialized = false;
+    protected override async Task OnInitializedAsync()
     {
-        await base.OnAfterRenderAsync(firstRender);
-        if (firstRender)
-        {
-            await OnRendered.InvokeAsync();
-        }
+        await base.OnInitializedAsync();
+        _initialized = true;
     }
 }

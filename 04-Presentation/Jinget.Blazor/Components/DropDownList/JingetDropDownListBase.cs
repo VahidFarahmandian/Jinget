@@ -12,15 +12,24 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
     [Parameter] public EventCallback OnDataBound { get; set; }
     public List<JingetDropDownItemModel> Items { get; set; } = [];
     public JingetDropDownItemModel? SelectedItem { get; protected set; }
-   
+
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
         if (DataProviderFunc != null)
         {
             Items = await DataProviderFunc();
             await OnDataBound.InvokeAsync();
         }
+        await base.OnInitializedAsync();
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_initialized)
+        {
+            _initialized = false;
+            await OnRendered.InvokeAsync();
+        }
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     public async Task SetSelectedItemAsync(object? value)
