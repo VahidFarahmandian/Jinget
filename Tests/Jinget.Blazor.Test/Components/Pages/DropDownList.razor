@@ -10,39 +10,44 @@
 <JingetMessageBox @ref=@messageBox
                   ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true))></JingetMessageBox>
 <h3>JingetDropDownList</h3>
-Required:
-<JingetDropDownList @ref=@ddlSample
-                    Id="ddlSampleRequired"
+Sample 01: Required
+<JingetDropDownList @ref=@ddlSample1
+                    Id="ddlSample1"
                     DataProviderFunc=@GetData
                     DefaultText="---Choose---"
                     HelperText="This is sample drop down list"
                     DisplayName="DDLSample"
                     IsRequired="true"
-                    OnChange=@OnChange></JingetDropDownList>
-<hr />
-Disabled
-<JingetDropDownList Id="ddlSampleDisabled"
-                    DataProviderFunc=@GetData
-                    DefaultText="---Choose---"
-                    HelperText="This is sample drop down list"
-                    DisplayName="DDLSample"
-                    IsDisabled="true"></JingetDropDownList>
-
-<hr />
-Change Selected Item(get from localstorage):
+                    OnChange=@OnChange1></JingetDropDownList>
+Sample 02: Data Bound
 <JingetDropDownList @ref=ddlSample2
+                    Value="selectedItemValue"
                     Id="ddlSample2"
+                    IsSearchable="true"
                     DataProviderFunc=@GetData
                     DefaultText="--Choose---"
-                    OnChange=@OnChange2>
+                    OnChange=@OnChange2
+                    OnDataBound="ddlSample2_DataBound"
+                    OnRendered="ddlSample2_Rendered">
 </JingetDropDownList>
 <hr />
-Change Selected Item(On button click):
+Sample 03: Change Selected Item(get from localstorage)
 <JingetDropDownList @ref=ddlSample3
                     Id="ddlSample3"
+                    IsSearchable="true"
                     DataProviderFunc=@GetData
                     DefaultText="--Choose---"
                     OnChange=@OnChange3>
+</JingetDropDownList>
+
+<hr />
+Sample 04: Change Selected Item(On button click)
+<JingetDropDownList @ref=ddlSample4
+                    Id="ddlSample4"
+                    IsSearchable="true"
+                    DataProviderFunc=@GetData
+                    DefaultText="--Choose---"
+                    OnChange=@OnChange4>
 </JingetDropDownList>
 <MudButton FullWidth=true
            OnClick="SetSelectedItem"
@@ -57,12 +62,12 @@ Change Selected Item(On button click):
     <MudText>Clear Selection</MudText>
 </MudButton>
 <hr />
-Set selected index: (SelectedIndex: @selectedIndex)
-<JingetDropDownList @ref=ddlSample4
-                    Id="ddlSample4"
+Sample 05: Set selected index: (SelectedIndex: @selectedIndexSearch)
+<JingetDropDownList @ref=ddlSample5
+                    Id="ddlSample5"
                     DataProviderFunc=@GetData
                     DefaultText="--Choose---"
-                    OnChange=@OnChange4>
+                    OnChange=@OnChange5>
 </JingetDropDownList>
 <MudButton FullWidth=true
            OnClick="SetSelectedIndex"
@@ -70,87 +75,22 @@ Set selected index: (SelectedIndex: @selectedIndex)
            Color="Color.Primary">
     <MudText>Select</MudText>
 </MudButton>
-<h3>JingetSearchableDropDownList</h3>
-Required:
-<JingetSearchableDropDownList @ref=ddlSearchable
-                              Id="ddlSearchableSampleRequired"
-                              DataProviderFunc=@GetData
-                              IsRequired="true"
-                              DefaultText="--Choose---"
-                              OnChange=@OnChangeSearchable>
-</JingetSearchableDropDownList>
-Data Bound:
-<JingetSearchableDropDownList @ref=ddlSearchable5
-                              Value="selectedItemValue"
-                              Id="ddlSearchableSample5"
-                              DataProviderFunc=@GetData
-                              DefaultText="--Choose---"
-                              OnChange=@OnChangeSearchable
-                              OnDataBound="DataBound">
-</JingetSearchableDropDownList>
 <hr />
-Disabled:
-<JingetSearchableDropDownList Id="ddlSearchableSampleDisabled"
-                              DataProviderFunc=@GetData
-                              IsDisabled="true"
-                              DefaultText="--Choose---">
-</JingetSearchableDropDownList>
-<hr />
-Change Selected Item(get from localstorage):
-<JingetSearchableDropDownList @ref=ddlSearchable2
-                              Id="ddlSearchableSample2"
-                              DataProviderFunc=@GetData
-                              DefaultText="--Choose---"
-                              OnChange=@OnChangeSearchable2>
-</JingetSearchableDropDownList>
-
-<hr />
-Change Selected Item(On button click):
-<JingetSearchableDropDownList @ref=ddlSearchable3
-                              Id="ddlSearchableSample3"
-                              DataProviderFunc=@GetData
-                              DefaultText="--Choose---"
-                              OnChange=@OnChangeSearchable3>
-</JingetSearchableDropDownList>
-<MudButton FullWidth=true
-           OnClick="SetSelectedItemSearch"
-           Variant="Variant.Filled"
-           Color="Color.Primary">
-    <MudText>Select</MudText>
-</MudButton>
-<MudButton FullWidth=true
-           OnClick="ClearSelectionSearch"
-           Variant="Variant.Filled"
-           Color="Color.Primary">
-    <MudText>Clear Selection</MudText>
-</MudButton>
-<hr />
-Set selected index: (SelectedIndex: @selectedIndexSearch)
-<JingetSearchableDropDownList @ref=ddlSearchable4
-                              Id="ddlSearchableSample4"
-                              DataProviderFunc=@GetData
-                              DefaultText="--Choose---"
-                              OnChange=@OnChangeSearchable4>
-</JingetSearchableDropDownList>
-<MudButton FullWidth=true
-           OnClick="SetSelectedIndexSearch"
-           Variant="Variant.Filled"
-           Color="Color.Primary">
-    <MudText>Select</MudText>
-</MudButton>
-
+Sample 06: Disabled
+<JingetDropDownList Id="ddlSampleDisabled"
+                    DataProviderFunc=@GetData
+                    DefaultText="--Choose---"
+                    IsDisabled="true">
+</JingetDropDownList>
 @code {
 
     JingetMessageBox? messageBox;
-    JingetDropDownList ddlSample;
+    JingetDropDownList ddlSample1;
     JingetDropDownList ddlSample2;
     JingetDropDownList ddlSample3;
     JingetDropDownList ddlSample4;
-    JingetSearchableDropDownList ddlSearchable;
-    JingetSearchableDropDownList ddlSearchable5;
-    JingetSearchableDropDownList ddlSearchable2;
-    JingetSearchableDropDownList ddlSearchable3;
-    JingetSearchableDropDownList ddlSearchable4;
+    JingetDropDownList ddlSample5;
+
 
     int selectedIndex;
     int selectedIndexSearch;
@@ -174,72 +114,47 @@ Set selected index: (SelectedIndex: @selectedIndexSearch)
         if (firstRender)
         {
             await localStorage.SetItemAsync("selectedItem", new Random().Next(1, 6).ToString());
-            await ddlSample2.SetSelectedItemAsync(await localStorage.GetItemAsync("selectedItem"));
-            await ddlSearchable2.SetSelectedItemAsync(await localStorage.GetItemAsync("selectedItem"));
+            await ddlSample3.SetSelectedItemAsync(await localStorage.GetItemAsync("selectedItem"));
         }
     }
-    public void DataBound()
+    public async Task ddlSample2_DataBound()
     {
-        selectedItemValue = 3;
     }
-    public async Task OnChange(ChangeEventArgs e)
+    public async Task ddlSample2_Rendered()
     {
-        await messageBox.ShowInfoAsync("Selected", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample.SelectedItem));
+        await ddlSample2.SetSelectedIndexAsync(new Random().Next(1, 6));
+    }
+    public async Task OnChange1(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("ddlSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample1.SelectedItem));
     }
     public async Task OnChange2(ChangeEventArgs e)
     {
-        await messageBox.ShowInfoAsync("Selected", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample2.SelectedItem));
+        await messageBox.ShowInfoAsync("ddlSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample2.SelectedItem));
     }
     public async Task OnChange3(ChangeEventArgs e)
     {
-        await messageBox.ShowInfoAsync("Selected", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample3.SelectedItem));
+        await messageBox.ShowInfoAsync("ddlSample3", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample3.SelectedItem));
     }
     public async Task OnChange4(ChangeEventArgs e)
     {
-        await messageBox.ShowInfoAsync("Selected", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample4.SelectedItem));
+        await messageBox.ShowInfoAsync("ddlSample4", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample4.SelectedItem));
     }
-
-    public async Task OnChangeSearchable(ChangeEventArgs e)
+    public async Task OnChange5(ChangeEventArgs e)
     {
-        await messageBox.ShowInfoAsync("Selected", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSearchable.SelectedItem));
-    }
-
-    public async Task OnChangeSearchable2(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("Selected", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSearchable2.SelectedItem));
-    }
-    public async Task OnChangeSearchable3(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("Selected", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSearchable3.SelectedItem));
-    }
-    public async Task OnChangeSearchable4(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("Selected", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSearchable4.SelectedItem));
+        await messageBox.ShowInfoAsync("ddlSample5", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample5.SelectedItem));
     }
     public async Task SetSelectedItem()
     {
-        await ddlSample3.SetSelectedItemAsync(new Random().Next(1, 6).ToString());
-    }
-    public async Task SetSelectedItemSearch()
-    {
-        await ddlSearchable3.SetSelectedItemAsync(new Random().Next(1, 6).ToString());
+        await ddlSample4.SetSelectedItemAsync(new Random().Next(1, 6).ToString());
     }
     public async Task ClearSelection()
     {
-        await ddlSample3.SetSelectedItemAsync(null);
-    }
-    public async Task ClearSelectionSearch()
-    {
-        await ddlSearchable3.SetSelectedItemAsync(null);
+        await ddlSample4.SetSelectedItemAsync(null);
     }
     public async Task SetSelectedIndex()
     {
-        selectedIndex = new Random().Next(0, 6);
-        await ddlSample4.SetSelectedIndexAsync(selectedIndex);
-    }
-    public async Task SetSelectedIndexSearch()
-    {
         selectedIndexSearch = new Random().Next(0, 6);
-        await ddlSearchable4.SetSelectedIndexAsync(selectedIndexSearch);
+        await ddlSample5.SetSelectedIndexAsync(selectedIndexSearch);
     }
 }

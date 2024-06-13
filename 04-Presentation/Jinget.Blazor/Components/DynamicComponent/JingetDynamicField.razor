@@ -41,7 +41,7 @@ else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePickerEleme
                            DateRangeChanged="((e)=>OnChange(new ChangeEventArgs(){Value=e}))">
     </JingetDateRangePicker>
 }
-else if (Attribute is JingetDropDownListElement dropDown && dropDown.Searchable == false)
+else if (Attribute is JingetDropDownListElement dropDown)//&& dropDown.Searchable == false)
 {
     <JingetDropDownList @ref=RefObject
                         Id="@Id"
@@ -54,11 +54,12 @@ else if (Attribute is JingetDropDownListElement dropDown && dropDown.Searchable 
                         RequiredError="@Attribute.RequiredError"
                         DisplayName="@Attribute.DisplayName"
                         DefaultText="@dropDown.DefaultText"
+                        IsSearchable="dropDown.IsSearchable"
                         DataProviderFunc=@GetData
                         OnChange=@OnChange></JingetDropDownList>
 }
-else if (Attribute is JingetDropDownListElement searchableDropDown && searchableDropDown.Searchable == true)
-{
+@*else if (Attribute is JingetDropDownListElement searchableDropDown && searchableDropDown.Searchable == true)
+ {
     <JingetSearchableDropDownList @ref=RefObject
                                   Id="@Id"
                                   Value=@Value
@@ -73,7 +74,7 @@ else if (Attribute is JingetDropDownListElement searchableDropDown && searchable
                                   DataProviderFunc=@GetData
                                   OnChange=@OnChange>
     </JingetSearchableDropDownList>
-}
+} *@
 else if (Attribute is JingetLabelElement label)
 {
     <MudField HelperText="@label.HelperText"

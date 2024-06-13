@@ -1,24 +1,12 @@
 ﻿using Jinget.Blazor.Attributes.Input;
 using Jinget.Blazor.Attributes;
 using Jinget.Blazor.Models;
-using Jinget.Blazor.Services.Contracts;
 using MudBlazor;
 
 namespace Jinget.Blazor.Test
 {
     public record SampleModel
     {
-        public SampleModel()
-        {
-
-        }
-        //ITokenStorageService tokenService;
-        //ILocalStorageService localStorage;
-        //public SampleModel(IServiceProvider serviceProvider)
-        //{
-        //    tokenService = serviceProvider.GetRequiredService<ITokenStorageService>();
-        //    localStorage = serviceProvider.GetRequiredService<ILocalStorageService>();
-        //}
         [JingetTextBoxElement(DisplayName = "نام", HelperText = "نام خود را منطبق با اطلاعات کارت ملی وارد نمایید", Order = 1)]
         public string? Name { get; set; }
 
@@ -46,19 +34,15 @@ namespace Jinget.Blazor.Test
         [JingetNumberBoxElement(DisplayName = "سن", Order = 7)]
         public int Age { get; set; }
 
-        [JingetDropDownListElement(DisplayName = "وضعیت2", Id = "cmb2",/* BindingFunction = nameof(GetStatusAsync),*/ DefaultText = "---انتخاب کنید---",
-        Order = 8/*, GetTokenBeforeBinding = true*/)]
+        [JingetDropDownListElement(DisplayName = "وضعیت2", Id = "cmb2", DefaultText = "---انتخاب کنید---", Order = 8)]
         public int? Status2 { get; set; }
 
         [JingetDropDownListElement(DisplayName = "وضعیت", Id = "cmbSearch",
         BindingFunction = nameof(GetStatusAsync), PreBindingFunction = nameof(PreBinding), PostBindingFunction = nameof(PostBinding),
-        Searchable = true, DefaultText = "---انتخاب کنید---", HasLabel = true, LabelCssClass = "overlayed-label", Order = 9/*, GetTokenBeforeBinding = true*/)]
+        IsSearchable = true, DefaultText = "---انتخاب کنید---", HasLabel = true, LabelCssClass = "overlayed-label", Order = 9)]
         public int? Status { get; set; }
-        //public async Task<string> PreBinding(string? token) => await Task.FromResult("This is pre binding");
         public async Task<string> PreBinding() => await Task.FromResult("This is pre binding");
-        //public async Task<string> PostBinding(string? token, object? preBindingResult, object? data) => await Task.FromResult("This is post binding");
         public async Task<string> PostBinding(object? preBindingResult, object? data) => await Task.FromResult("This is post binding");
-        //public async Task<List<JingetDropDownItemModel>> GetStatusAsync(string token, object? preBindingResult)
         public async Task<List<JingetDropDownItemModel>> GetStatusAsync(object? preBindingResult)
         => await new JingetDropDownListElement().BindAsync(async () =>
         {
@@ -70,7 +54,7 @@ namespace Jinget.Blazor.Test
             });
         });
 
-       public class StatusModel : BaseTypeModel
+        public class StatusModel : BaseTypeModel
         {
 
         }

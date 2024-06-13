@@ -1,27 +1,71 @@
 ﻿@using MudBlazor
+@inject IJSRuntime JS;
 @inherits JingetDropDownListBase;
-<MudSelect T="string"
-           Value="@(Value==null?default: Value.ToString())"
-           HelperText="@HelperText"
-           Strict=true
-           Disabled="@IsDisabled"
-           ReadOnly="@IsReadOnly"
-           Label="@DisplayName"
-           Required="@IsRequired"
-           RequiredError="@RequiredError"
-           id="@Id"
-           ValueChanged=@OnDDLSelectedItemChangedAsync>
-    <MudSelectItem Disabled=true Value="0.ToString()">@DefaultText</MudSelectItem>
-    @foreach (JingetDropDownItemModel item in Items)
+@if (IsSearchable)
+{
+    <select id="@Id" onchange=@OnSelectedItemChangedAsync class="@CssClass" disabled="@IsDisabled" required="@IsRequired">
+        <option value="">@DefaultText</option>
+        @foreach (var item in Items)
+        {
+            bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
+            if (selected)
+            {
+                Task.Run(() =>
+                {
+                    JS.InvokeVoidAsync("selectItem", Id, Value).GetAwaiter().GetResult();
+                });
+            }
+            <option value="@item.Value" selected="@selected">@item.Text</option>
+        }
+        @if (Value == null)
+        {
+            Task.Run(() =>
+            {
+                JS.InvokeVoidAsync("clearSelectItem", Id).GetAwaiter().GetResult();
+            });
+        }
+    </select>
+    @if (IsRequired && (SelectedItem == null || string.IsNullOrWhiteSpace(SelectedItem.Value?.ToString())))
     {
-        <MudSelectItem Value="@item.Value?.ToString()">@item.Text</MudSelectItem>
+        <label style="color:red">@RequiredError</label>
     }
-</MudSelect>
-
+}
+else
+{
+    <MudSelect T="string"
+               Value="@(Value==null?default: Value.ToString())"
+               HelperText="@HelperText"
+               Strict=true
+               Disabled="@IsDisabled"
+               ReadOnly="@IsReadOnly"
+               Label="@DisplayName"
+               Required="@IsRequired"
+               RequiredError="@RequiredError"
+               id="@Id"
+               ValueChanged=@OnSelectedItemChangedAsync>
+        <MudSelectItem Disabled=true Value="0.ToString()">@DefaultText</MudSelectItem>
+        @foreach (JingetDropDownItemModel item in Items)
+        {
+            <MudSelectItem Value="@item.Value?.ToString()">@item.Text</MudSelectItem>
+        }
+    </MudSelect>
+}
 @code {
-
-    public async void OnDDLSelectedItemChangedAsync(object e)
+    private DotNetObjectReference<JingetDropDownList>? dotNetObjRef;
+    protected override async Task OnInitializedAsync()
     {
-        await base.OnSelectedItemChangedAsync(e);
+        if (IsSearchable)
+        {
+            dotNetObjRef = DotNetObjectReference.Create(this);
+        }
+        await base.OnInitializedAsync();
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (IsSearchable)
+        {
+            await JS.InvokeVoidAsync("convertToSearchable", dotNetObjRef, Id);
+        }
+        await base.OnAfterRenderAsync(firstRender);
     }
 }

@@ -11,7 +11,6 @@ Blazor components optimised for RTL languaged such as Farsi, Arabic etc.
 - [x] **Table**
 - [x] **Dynamic Form**
 - [x] **JingetDropDownList** 
-- [x] **JingetSearchableDropDownList**
 - [x] **Input** 
 
 **Services list:**
@@ -216,6 +215,8 @@ Add the `JingetDatePicker` to your page and start using it;-)
 
 `DateChanged`: Fires a callback whenever the selected date is changed
 
+`OnRendered`: whenever the component rendered on the page.
+
 ------------
 
 **Jinget DateRangePicker component**
@@ -268,6 +269,8 @@ Add the `JingetDateRangePicker` to your page and start using it;-)
 ***Callbacks:***
 
 `DateRangeChanged`: Fires a callback whenever the selected date range is changed.
+
+`OnRendered`: whenever the component rendered on the page.
 
 ------------
 
@@ -601,7 +604,7 @@ Add the `JingetDynamicForm` to your page and start using it;-)
         public int Age { get; set; }
 
         [JingetDropDownListElement(DisplayName = "Flight Status", BindingFunction = nameof(GetStatusAsync), 
-        Searchable =true,DefaultText ="---Choose one---",HasLabel =true, LabelCssClass = "overlayed-label", Order =8)]
+        IsSearchable =true,DefaultText ="---Choose one---",HasLabel =true, LabelCssClass = "overlayed-label", Order =8)]
         public int? Status { get; init; }
         public async Task<List<JingetDropDownItemModel>> GetStatusAsync()
             => await new JingetDropDownListElement().BindAsync<FlightStatusModel>(async () =>
@@ -683,7 +686,7 @@ which refers to the form element on page. For example in order to get the drop d
 
 `JingetDateRangePickerElement`: Render a JingetDateRangePicker on the page. You can set `Culture` and `EnglishNumber` properties.
 
-`JingetDropDownListElement`: Render a select input on the page. If `Searchable` is set to true, then the user can do search among drop down list items. 
+`JingetDropDownListElement`: Render a select input on the page. If `IsSearchable=true`, then the user can do search among drop down list items. 
 Using `PreBindingFunction` user can define a method to run before `BindingFunction`. This method's signature is:
 
 ```
@@ -710,7 +713,7 @@ Full sample for `JingetDropDownListElement` in `DynamicForm` is like below:
 
 ```
 
-[JingetDropDownListElement(DisplayName = "Flight Status", Searchable = true, DefaultText = "---Choose one---",
+[JingetDropDownListElement(DisplayName = "Flight Status", IsSearchable = true, DefaultText = "---Choose one---",
 BindingFunction = nameof(GetStatusAsync), PreBindingFunction = nameof(PreBinding), PostBindingFunction = nameof(PostBinding),
 HasLabel = true, LabelCssClass = "overlayed-label", Order = 1, GetTokenBeforeBinding = true)]
 public int? Status { get; init; }
@@ -736,10 +739,9 @@ public async Task<List<JingetDropDownItemModel>> GetStatusAsync(string token, ob
 
 `JingetTableElement`: Render a JingetTable on the page.(Used in JingetTable component, for more info go to JingetTable component section)
 
-**Jinget DropDownList/SearchableDropDownList components**
+**Jinget DropDownList components**
 
-Add the `JingetSearchableDropDownList` or `JingetDropDownList` to your page and start using it;-)
-`JingetSearchableDropDownList` has builtin search mechanism.
+Add the `JingetDropDownList` to your page and start using it;-)
 
 ```
 <JingetDropDownList @ref=@ddlSample
@@ -751,14 +753,6 @@ Add the `JingetSearchableDropDownList` or `JingetDropDownList` to your page and 
                     IsDisabled=false
                     IsReadOnly=false
                     OnChange=@OnChange></JingetDropDownList>
-<hr />
-<JingetSearchableDropDownList @ref=ddlSearchable
-                              Id="ddlSearchableSample"
-                              DataProviderFunc=@GetData
-                              DefaultText="--Choose---"
-                              IsDisabled=false
-                              OnChange=@OnChangeSearchable>
-</JingetSearchableDropDownList>
 ```
 
 ***Parameters:***
@@ -781,6 +775,8 @@ Add the `JingetSearchableDropDownList` or `JingetDropDownList` to your page and 
 
 `RequiredError`: Message to be shown whenever the `IsRequired=true` and no value has beed provided.
 
+`IsSearchable`: If true, then user can search among the dropdownlist items.
+
 `DefaultText`: Sets a default text to be shown in dropdownlist before selecting anything
 
 `DataProviderFunc`: Defines a method which is used to populate the data in dropdownlist.
@@ -790,6 +786,8 @@ Add the `JingetSearchableDropDownList` or `JingetDropDownList` to your page and 
 `OnChange`: Fires a callback whenever the selected item changed.
 
 `OnDataBound`: Fires whenever the `Items` changed.
+
+`OnRendered`: whenever the component rendered on the page.
 
 ***Properties:***
 

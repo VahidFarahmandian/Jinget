@@ -3,6 +3,7 @@
 public abstract class JingetDropDownListBase : JingetBaseComponent
 {
     [Parameter] public string DefaultText { get; set; }
+    [Parameter] public bool IsSearchable { get; set; }
     [Parameter, EditorRequired] public Func<Task<List<JingetDropDownItemModel>>>? DataProviderFunc { get; set; }
 
     /// <summary>
@@ -49,6 +50,7 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
         }
     }
 
+    [JSInvokable]
     protected async Task OnSelectedItemChangedAsync(object? e)
     {
         Value = e;

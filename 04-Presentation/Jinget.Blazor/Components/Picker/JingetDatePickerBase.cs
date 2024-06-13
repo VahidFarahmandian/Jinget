@@ -2,8 +2,6 @@
 
 public abstract class JingetDatePickerBase : JingetBaseComponent
 {
-    [Inject] protected IJSRuntime JS { get; set; }
-
     public string DateFormat { get; set; } = "yyyy/MM/dd";
 
     [Parameter] public string Culture { get; set; } = "fa-IR";

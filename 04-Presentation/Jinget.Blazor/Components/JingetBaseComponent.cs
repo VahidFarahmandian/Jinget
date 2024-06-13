@@ -1,7 +1,9 @@
-﻿namespace Jinget.Blazor.Components;
+﻿
+namespace Jinget.Blazor.Components;
 
 public abstract class JingetBaseComponent : ComponentBase
 {
+    [Inject] protected IJSRuntime JS { get; set; }
     [Parameter, EditorRequired] public required string Id { get; set; } = Guid.NewGuid().ToString("N");
     [Parameter] public string DisplayName { get; set; }
     [Parameter] public string CssClass { get; set; }
@@ -26,4 +28,18 @@ public abstract class JingetBaseComponent : ComponentBase
 
     [Parameter] public EventCallback<object?> ValueChanged { get; set; }
     [Parameter] public EventCallback<ChangeEventArgs> OnChange { get; set; }
+
+    /// <summary>
+    /// Raised whenever the component rendered on the page
+    /// </summary>
+    [Parameter] public EventCallback OnRendered { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            await OnRendered.InvokeAsync();
+        }
+    }
 }
