@@ -22,8 +22,6 @@
 
     public async void OnDDLSelectedItemChangedAsync(object e)
     {
-        Value = e;
-        SelectedItem = Items.FirstOrDefault(x => x.Value?.ToString() == e.ToString());
-        await OnChange.InvokeAsync(new ChangeEventArgs { Value = e });
+        await base.OnSelectedItemChangedAsync(e);
     }
 }

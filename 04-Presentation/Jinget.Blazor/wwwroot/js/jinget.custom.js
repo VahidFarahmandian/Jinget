@@ -12,6 +12,10 @@ window.selectItem = (id, value) => {
     var item = $('#' + id).selectize();
     item[0].selectize.setValue(value, true);
 };
+window.clearSelectItem = (id) => {
+    var item = $('#' + id).selectize();
+    item[0].selectize.clear();
+};
 /*Selectize END*/
 
 /*localStorage/sessionStorage START*/

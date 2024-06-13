@@ -14,12 +14,6 @@ public class JingetDropDownListElement : JingetFormElement
 
     public string? PostBindingFunction { get; set; }
 
-    ///// <summary>
-    ///// If set to true, then before calling the <seealso cref="BindingFunction"/>, ITokenStorageService.GetTokenAsync()
-    ///// method will be called to read the token from localstorage where key=<seealso cref="TokenConfigModel.TokenName"/>.
-    ///// </summary>
-    //public bool GetTokenBeforeBinding { get; set; } = true;
-
     public async Task<List<JingetDropDownItemModel>> BindAsync<T>(Func<Task<List<T>>> GetData)
         where T : BaseTypeModel
     {

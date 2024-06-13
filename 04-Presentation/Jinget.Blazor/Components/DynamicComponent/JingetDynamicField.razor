@@ -1,4 +1,4 @@
-﻿    @using Jinget.Blazor.Attributes
+﻿@using Jinget.Blazor.Attributes
 @using Jinget.Blazor.Attributes.Input
 @using Jinget.Blazor.Components.DropDownList
 @using Jinget.Blazor.Components.Input
@@ -18,50 +18,59 @@
 @if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDatePickerElement datePicker)
 {
     <JingetDatePicker @ref=RefObject
+                      Id="@Id"
                       Value="@(Value==null?null:Convert.ToDateTime(Value))"
                       Label="@Attribute.DisplayName"
                       Culture=@datePicker.Culture
                       EnglishNumber=datePicker.EnglishNumber
-                      Disabled="@Attribute.IsDisabled"
-                      ReadOnly="@Attribute.IsReadOnly"
+                      IsDisabled="@Attribute.IsDisabled"
+                      IsReadOnly="@Attribute.IsReadOnly"
                       DateChanged="@((e)=>OnChange(new ChangeEventArgs(){Value=e}))" />
 
 }
 else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePickerElement dateRangePicker)
 {
     <JingetDateRangePicker @ref=RefObject
+                           Id="@Id"
                            Value="@(Value is SelectedDateRangeModel?((SelectedDateRangeModel)Value).DateRange: (DateRange)Value)"
                            Label="@Attribute.DisplayName"
                            Culture=@dateRangePicker.Culture
                            EnglishNumber=dateRangePicker.EnglishNumber
-                           Disabled="@Attribute.IsDisabled"
-                           ReadOnly="@Attribute.IsReadOnly"
+                           IsDisabled="@Attribute.IsDisabled"
+                           IsReadOnly="@Attribute.IsReadOnly"
                            DateRangeChanged="((e)=>OnChange(new ChangeEventArgs(){Value=e}))">
     </JingetDateRangePicker>
 }
 else if (Attribute is JingetDropDownListElement dropDown && dropDown.Searchable == false)
 {
     <JingetDropDownList @ref=RefObject
+                        Id="@Id"
+                        Value=@Value
                         CssClass="@Attribute.CssClass"
                         HelperText="@dropDown.HelperText"
-                        Id="@Id"
                         IsDisabled=@Attribute.IsDisabled
                         IsReadOnly=@Attribute.IsReadOnly
+                        IsRequired="@Attribute.IsRequired"
+                        RequiredError="@Attribute.RequiredError"
                         DisplayName="@Attribute.DisplayName"
                         DefaultText="@dropDown.DefaultText"
                         DataProviderFunc=@GetData
-                        Value=@Value
                         OnChange=@OnChange></JingetDropDownList>
 }
 else if (Attribute is JingetDropDownListElement searchableDropDown && searchableDropDown.Searchable == true)
 {
     <JingetSearchableDropDownList @ref=RefObject
-                                  CssClass="@Attribute.CssClass"
                                   Id="@Id"
+                                  Value=@Value
+                                  CssClass="@Attribute.CssClass"
+                                  HelperText="@Attribute.HelperText"
                                   IsDisabled=@Attribute.IsDisabled
+                                  IsReadOnly="@Attribute.IsReadOnly"
+                                  IsRequired="@Attribute.IsRequired"
+                                  RequiredError="@Attribute.RequiredError"
+                                  DisplayName="@Attribute.DisplayName"
                                   DefaultText="@searchableDropDown.DefaultText"
                                   DataProviderFunc=@GetData
-                                  Value=@Value
                                   OnChange=@OnChange>
     </JingetSearchableDropDownList>
 }

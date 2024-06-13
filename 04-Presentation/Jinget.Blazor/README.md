@@ -795,6 +795,12 @@ Add the `JingetSearchableDropDownList` or `JingetDropDownList` to your page and 
 
 `SelectedItem`: Contains the selected item Text and Value.
 
+***Methods:***
+
+`SetSelectedItemAsync`: Select item in dropdownlist based on `Value`
+
+`SetSelectedIndexAsync`: Select item in dropdownlist based on the index in `Items`. Index starts from zero(0).
+
 **Jinget Input**
 
 Add the `JingetInput` to your page and start using it;-)

@@ -1,5 +1,4 @@
-﻿using Jinget.Blazor.Attributes.Input;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace Jinget.Blazor.Attributes.Core;
 
@@ -34,6 +33,8 @@ public abstract class JingetFormElement([CallerMemberName] string? propertyName 
     //public bool IsVisible { get; set; } = true;
     public bool IsDisabled { get; set; } = false;
     public bool IsReadOnly { get; set; } = false;
+    public bool IsRequired { get; set; } = false;
+    public string RequiredError { get; set; } = "*";
     public string HelperText { get; set; }
 
 }

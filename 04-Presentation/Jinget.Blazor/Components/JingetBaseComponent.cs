@@ -9,7 +9,7 @@ public abstract class JingetBaseComponent : ComponentBase
     [Parameter] public bool IsReadOnly { get; set; }
     [Parameter] public string HelperText { get; set; }
     [Parameter] public bool IsRequired { get; set; } = false;
-    [Parameter] public string RequiredError { get; set; } = "الزامی";
+    [Parameter] public string RequiredError { get; set; } = "*";
 
     private object? _value;
     [Parameter]
