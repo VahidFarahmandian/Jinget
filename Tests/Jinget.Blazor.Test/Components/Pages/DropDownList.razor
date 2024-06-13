@@ -79,6 +79,15 @@ Required:
                               DefaultText="--Choose---"
                               OnChange=@OnChangeSearchable>
 </JingetSearchableDropDownList>
+Data Bound:
+<JingetSearchableDropDownList @ref=ddlSearchable5
+                              Value="selectedItemValue"
+                              Id="ddlSearchableSample5"
+                              DataProviderFunc=@GetData
+                              DefaultText="--Choose---"
+                              OnChange=@OnChangeSearchable
+                              OnDataBound="DataBound">
+</JingetSearchableDropDownList>
 <hr />
 Disabled:
 <JingetSearchableDropDownList Id="ddlSearchableSampleDisabled"
@@ -138,12 +147,15 @@ Set selected index: (SelectedIndex: @selectedIndexSearch)
     JingetDropDownList ddlSample3;
     JingetDropDownList ddlSample4;
     JingetSearchableDropDownList ddlSearchable;
+    JingetSearchableDropDownList ddlSearchable5;
     JingetSearchableDropDownList ddlSearchable2;
     JingetSearchableDropDownList ddlSearchable3;
     JingetSearchableDropDownList ddlSearchable4;
 
     int selectedIndex;
     int selectedIndexSearch;
+
+    int selectedItemValue;
 
     async Task<List<JingetDropDownItemModel>> GetData()
     {
@@ -166,7 +178,10 @@ Set selected index: (SelectedIndex: @selectedIndexSearch)
             await ddlSearchable2.SetSelectedItemAsync(await localStorage.GetItemAsync("selectedItem"));
         }
     }
-
+    public void DataBound()
+    {
+        selectedItemValue = 3;
+    }
     public async Task OnChange(ChangeEventArgs e)
     {
         await messageBox.ShowInfoAsync("Selected", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample.SelectedItem));

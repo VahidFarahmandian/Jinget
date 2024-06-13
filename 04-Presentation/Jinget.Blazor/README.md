@@ -789,6 +789,8 @@ Add the `JingetSearchableDropDownList` or `JingetDropDownList` to your page and 
 
 `OnChange`: Fires a callback whenever the selected item changed.
 
+`OnDataBound`: Fires whenever the `Items` changed.
+
 ***Properties:***
 
 `Items`: Contains the items which are populated to dropdownlist using `DataProviderFunc`

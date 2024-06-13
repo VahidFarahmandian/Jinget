@@ -5,9 +5,24 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
     [Parameter] public string DefaultText { get; set; }
     [Parameter, EditorRequired] public Func<Task<List<JingetDropDownItemModel>>>? DataProviderFunc { get; set; }
 
-    public List<JingetDropDownItemModel> Items { get; set; } = [];
+    /// <summary>
+    /// Raised whenever the <seealso cref="Items"/> changed.
+    /// </summary>
+    [Parameter] public EventCallback OnDataBound { get; set; }
 
-    public JingetDropDownItemModel? SelectedItem { get; set; }
+    private List<JingetDropDownItemModel> items = [];
+    public List<JingetDropDownItemModel> Items
+    {
+        get => items; set
+        {
+            if (items != value)
+            {
+                items = value;
+                OnDataBound.InvokeAsync();
+            }
+        }
+    }
+    public JingetDropDownItemModel? SelectedItem { get; protected set; }
 
     public async Task SetSelectedItemAsync(object? value)
     {
@@ -29,8 +44,11 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
     {
         await base.OnInitializedAsync();
         if (DataProviderFunc != null)
+        {
             Items = await DataProviderFunc();
+        }
     }
+
     protected async Task OnSelectedItemChangedAsync(object? e)
     {
         Value = e;
