@@ -5,6 +5,7 @@ public class JingetDropDownListElement : JingetFormElement
     public string DefaultText { get; set; } = "---انتخاب کنید---";
 
     public bool IsSearchable { get; set; }
+    
     /// <summary>
     /// set a method which will be called automatically while binding the element
     /// </summary>

@@ -9,6 +9,7 @@
 @using System.Runtime.CompilerServices
 
 @inject IJSRuntime JS;
+@inject IServiceProvider serviceProvider;
 
 @if (Attribute != null && Attribute.HasLabel)
 {
@@ -58,23 +59,6 @@ else if (Attribute is JingetDropDownListElement dropDown)//&& dropDown.Searchabl
                         DataProviderFunc=@GetData
                         OnChange=@OnChange></JingetDropDownList>
 }
-@*else if (Attribute is JingetDropDownListElement searchableDropDown && searchableDropDown.Searchable == true)
- {
-    <JingetSearchableDropDownList @ref=RefObject
-                                  Id="@Id"
-                                  Value=@Value
-                                  CssClass="@Attribute.CssClass"
-                                  HelperText="@Attribute.HelperText"
-                                  IsDisabled=@Attribute.IsDisabled
-                                  IsReadOnly="@Attribute.IsReadOnly"
-                                  IsRequired="@Attribute.IsRequired"
-                                  RequiredError="@Attribute.RequiredError"
-                                  DisplayName="@Attribute.DisplayName"
-                                  DefaultText="@searchableDropDown.DefaultText"
-                                  DataProviderFunc=@GetData
-                                  OnChange=@OnChange>
-    </JingetSearchableDropDownList>
-} *@
 else if (Attribute is JingetLabelElement label)
 {
     <MudField HelperText="@label.HelperText"
@@ -169,6 +153,15 @@ else
                     callerObject = Activator.CreateInstance(Binding.DeclaringType, null);
                 else
                     throw new Exception($"Properties with {nameof(JingetDropDownListElement)} attribute should have a parameterless constructor.");
+
+                if (Binding.DeclaringType.BaseType != null)
+                {
+                    var propServiceProperty = Binding.DeclaringType.BaseType.GetProperty("ServiceProvider", BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (propServiceProperty != null)
+                    {
+                        propServiceProperty.SetValue(callerObject, serviceProvider);
+                    }
+                }
             }
 
             object? data = null;

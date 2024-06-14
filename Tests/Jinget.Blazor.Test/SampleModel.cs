@@ -5,7 +5,7 @@ using MudBlazor;
 
 namespace Jinget.Blazor.Test
 {
-    public record SampleModel
+    public class SampleModel : DynamicFormBaseModel
     {
         [JingetTextBoxElement(DisplayName = "نام", HelperText = "نام خود را منطبق با اطلاعات کارت ملی وارد نمایید", Order = 1)]
         public string? Name { get; set; }
@@ -41,6 +41,7 @@ namespace Jinget.Blazor.Test
         BindingFunction = nameof(GetStatusAsync), PreBindingFunction = nameof(PreBinding), PostBindingFunction = nameof(PostBinding),
         IsSearchable = true, DefaultText = "---انتخاب کنید---", HasLabel = true, LabelCssClass = "overlayed-label", Order = 9)]
         public int? Status { get; set; }
+
         public async Task<string> PreBinding() => await Task.FromResult("This is pre binding");
         public async Task<string> PostBinding(object? preBindingResult, object? data) => await Task.FromResult("This is post binding");
         public async Task<List<JingetDropDownItemModel>> GetStatusAsync(object? preBindingResult)

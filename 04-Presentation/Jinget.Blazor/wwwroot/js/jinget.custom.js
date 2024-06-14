@@ -6,7 +6,6 @@ window.convertToSearchable = (dotnet, id) => $('#' + id).selectize({
     respect_word_boundaries: false,
     onChange: function (value) {
         dotnet.invokeMethodAsync('OnSelectedItemChangedAsync', value)
-        /*dotnet.invokeMethodAsync('OnDDLSelectedItemChangedAsync', { Value: value })*/
     }
 });
 window.selectItem = (id, value) => {
