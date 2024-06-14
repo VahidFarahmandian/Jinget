@@ -6,12 +6,12 @@ public abstract class JingetInputBase : JingetBaseComponent
     [Parameter] public InputType InputType { get; set; }
 
 
-    internal Converter<object?> StringConverter = new()
+    protected internal Converter<object?> StringConverter = new()
     {
         SetFunc = value => value?.ToString(),
         GetFunc = text => text?.ToString(),
     };
-    internal async void OnTextChanged(object? e)
+    protected internal async void OnTextChanged(object? e)
     {
         await OnChange.InvokeAsync(new ChangeEventArgs { Value = e });
     }

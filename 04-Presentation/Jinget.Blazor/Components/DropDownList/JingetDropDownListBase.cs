@@ -13,6 +13,7 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
     public List<JingetDropDownItemModel> Items { get; set; } = [];
     public JingetDropDownItemModel? SelectedItem { get; protected set; }
 
+    protected internal bool connected = false;
     protected override async Task OnInitializedAsync()
     {
         if (DataProviderFunc != null)
@@ -20,6 +21,7 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
             Items = await DataProviderFunc();
             await OnDataBound.InvokeAsync();
         }
+        connected = true;
         await base.OnInitializedAsync();
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -35,7 +37,6 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
     public async Task SetSelectedItemAsync(object? value)
     {
         Value = value;
-        StateHasChanged();
         await OnSelectedItemChangedAsync(value);
     }
 
@@ -49,7 +50,7 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
     }
 
     [JSInvokable]
-    protected async Task OnSelectedItemChangedAsync(object? e)
+    public async Task OnSelectedItemChangedAsync(object? e)
     {
         Value = e;
 
@@ -61,6 +62,7 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
         {
             SelectedItem = Items.FirstOrDefault(x => x.Value?.ToString() == e.ToString());
         }
+        StateHasChanged();
         await OnChange.InvokeAsync(new ChangeEventArgs { Value = e });
     }
 }

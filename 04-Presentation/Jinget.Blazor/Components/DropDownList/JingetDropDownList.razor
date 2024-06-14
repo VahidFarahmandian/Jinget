@@ -1,33 +1,35 @@
 ﻿@using MudBlazor
-@inject IJSRuntime JS;
 @inherits JingetDropDownListBase;
 @if (IsSearchable)
 {
-    <select id="@Id" onchange=@OnSelectedItemChangedAsync class="@CssClass" disabled="@IsDisabled" required="@IsRequired">
-        <option value="">@DefaultText</option>
-        @foreach (var item in Items)
-        {
-            bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
-            if (selected)
+    @if (connected)
+    {
+        <select id="@Id" onchange=@OnSelectedItemChangedAsync class="@CssClass" disabled="@IsDisabled" required="@IsRequired">
+            <option value="">@DefaultText</option>
+            @foreach (var item in Items)
+            {
+                bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
+                if (selected)
+                {
+                    Task.Run(() =>
+                    {
+                        JS.InvokeVoidAsync("selectItem", Id, Value).GetAwaiter().GetResult();
+                    });
+                }
+                <option value="@item.Value" selected="@selected">@item.Text</option>
+            }
+            @if (Value == null)
             {
                 Task.Run(() =>
                 {
-                    JS.InvokeVoidAsync("selectItem", Id, Value).GetAwaiter().GetResult();
+                    JS.InvokeVoidAsync("clearSelectItem", Id).GetAwaiter().GetResult();
                 });
             }
-            <option value="@item.Value" selected="@selected">@item.Text</option>
-        }
-        @if (Value == null)
+        </select>
+        @if (IsRequired && (SelectedItem == null || string.IsNullOrWhiteSpace(SelectedItem.Value?.ToString())))
         {
-            Task.Run(() =>
-            {
-                JS.InvokeVoidAsync("clearSelectItem", Id).GetAwaiter().GetResult();
-            });
+            <label style="color:red">@RequiredError</label>
         }
-    </select>
-    @if (IsRequired && (SelectedItem == null || string.IsNullOrWhiteSpace(SelectedItem.Value?.ToString())))
-    {
-        <label style="color:red">@RequiredError</label>
     }
 }
 else
