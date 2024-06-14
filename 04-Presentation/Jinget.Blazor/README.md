@@ -504,7 +504,7 @@ Add the `JingetTable` to your page and start using it;-)
             };
     }
 
-    [JingetTable]
+    [JingetTableElement]
     class SampleDataFarsi
     {
         public SampleDataFarsi(int id, string name, string lastname,int age, bool isActive)
@@ -567,6 +567,8 @@ Add the `JingetTable` to your page and start using it;-)
 
 Add the `JingetDynamicForm` to your page and start using it;-)
 
+Note that if types used for dynamic form creation needs to access `IServiceProvider`, should inherit from `DynamicFormBaseModel`.
+
 ```
 <JingetDynamicForm Model=@Model Rtl=true></JingetDynamicForm>
 ...
@@ -574,33 +576,30 @@ Add the `JingetDynamicForm` to your page and start using it;-)
     public SampleModel Model { get; set; }
     protected override void OnInitialized() => Model = new();
 
-    public record SampleModel
+    public class SampleModel: DynamicFormBaseModel
     {
-        public SampleModel() { }
-        public SampleModel(IServiceProvider serviceProvider) { }
-
-        [JingetTextBox(DisplayName = "Full Name", HelperText = "Please enter your full name", Order =1)]
+        [JingetTextBoxElement(DisplayName = "Full Name", HelperText = "Please enter your full name", Order =1)]
         public string Name { get; set; }
 
-        [JingetPasswordBox(DisplayName = "Password", Order =2)]
+        [JingetPasswordBoxElement(DisplayName = "Password", Order =2)]
         public string Password { get; init; }
 
-        [JingetEmailBox(DisplayName = "E-Mail",Order =3)]
+        [JingetEmailBoxElement(DisplayName = "E-Mail",Order =3)]
         public string EMail { get; init; }
 
-        [JingetDatePicker(DisplayName = "Date of Birth",Culture ="fa-IR", Order =4)]
+        [JingetDatePickerElement(DisplayName = "Date of Birth",Culture ="fa-IR", Order =4)]
         public string DoB { get; init; }
 
-        [JingetDateRangePicker(DisplayName = "Travel Date range",Culture ="fa-IR", Order =5)]
+        [JingetDateRangePickerElement(DisplayName = "Travel Date range",Culture ="fa-IR", Order =5)]
         public DateRange TravelDate { get; init; }
 
-        [JingetLabel(DisplayName = "Score", HasLabel = false)]
+        [JingetLabelElement(DisplayName = "Score", HasLabel = false)]
         public int Score { get; init; } = 1850;
 
-        [JingetTextArea(DisplayName = "More info", Rows =3)]
+        [JingetTextAreaElement(DisplayName = "More info", Rows =3)]
         public string Description { get; init; }
 
-        [JingetNumberBox(DisplayName = "Age", Order =7)]
+        [JingetNumberBoxElement(DisplayName = "Age", Order =7)]
         public int Age { get; set; }
 
         [JingetDropDownListElement(DisplayName = "Flight Status", BindingFunction = nameof(GetStatusAsync), 
