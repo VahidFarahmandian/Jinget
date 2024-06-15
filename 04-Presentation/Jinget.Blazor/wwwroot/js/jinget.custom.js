@@ -5,7 +5,7 @@ window.convertToSearchable = (dotnet, id) => $('#' + id).selectize({
     searchConjunction: 'and',
     respect_word_boundaries: false,
     onChange: function (value) {
-        dotnet.invokeMethodAsync('OnSelectedItemChangedAsync', value)
+        dotnet.invokeMethodAsync('jinget_blazor_dropdownlist_onchange', value)
     }
 });
 window.selectItem = (id, value) => {

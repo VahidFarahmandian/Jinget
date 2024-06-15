@@ -4,7 +4,7 @@
 {
     @if (connected)
     {
-        <select id="@Id" onchange=@OnSelectedItemChangedAsync class="@CssClass" disabled="@IsDisabled" required="@IsRequired">
+        <select id="@Id" onchange=@((object e)=>OnSelectedItemChangedAsync(e)) class="@CssClass" disabled="@IsDisabled" required="@IsRequired">
             <option value="">@DefaultText</option>
             @foreach (var item in Items)
             {
@@ -66,6 +66,7 @@ else
     {
         if (IsSearchable)
         {
+            //calling convertToSearchable makes the select input searchable. this functionality is mainly powered by js selectize library.
             await JS.InvokeVoidAsync("convertToSearchable", dotNetObjRef, Id);
         }
         await base.OnAfterRenderAsync(firstRender);

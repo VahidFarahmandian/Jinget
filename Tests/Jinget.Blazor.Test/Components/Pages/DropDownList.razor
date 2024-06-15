@@ -3,13 +3,14 @@
 @using Jinget.Blazor.Components.Popup
 @using Jinget.Blazor.Models
 @using Jinget.Blazor.Services.Contracts
+@using Microsoft.AspNetCore.Components.Authorization
 @using MudBlazor
 
 @inject ILocalStorageService localStorage
 
 <JingetMessageBox @ref=@messageBox
                   ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true))></JingetMessageBox>
-<h3>JingetDropDownList</h3>
+@* <h3>JingetDropDownList</h3>
 Sample 01: Required
 <JingetDropDownList @ref=@ddlSample1
                     Id="ddlSample1"
@@ -20,17 +21,22 @@ Sample 01: Required
                     IsRequired="true"
                     OnChange=@OnChange1></JingetDropDownList>
 Sample 02: Data Bound
-<JingetDropDownList @ref=ddlSample2
-                    Value="selectedItemValue"
-                    Id="ddlSample2"
-                    IsSearchable="true"
-                    DataProviderFunc=@GetData
-                    DefaultText="--Choose---"
-                    OnChange=@OnChange2
-                    OnDataBound="ddlSample2_DataBound"
-                    OnRendered="ddlSample2_Rendered">
-</JingetDropDownList>
-<hr />
+<CascadingAuthenticationState>
+    <Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+        <NotAuthorized>
+            <JingetDropDownList @ref=ddlSample2
+                                Id="ddlSample2"
+                                IsSearchable="true"
+                                DataProviderFunc=@GetData
+                                DefaultText="--Choose---"
+                                OnChange=@OnChange2
+                                OnDataBound="ddlSample2_DataBound"
+                                OnRendered="ddlSample2_Rendered">
+            </JingetDropDownList>
+        </NotAuthorized>
+    </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+</CascadingAuthenticationState>
+<hr />*@
 Sample 03: Change Selected Item(get from localstorage)
 <JingetDropDownList @ref=ddlSample3
                     Id="ddlSample3"
@@ -44,7 +50,7 @@ Sample 03: Change Selected Item(get from localstorage)
 Sample 04: Change Selected Item(On button click)
 <JingetDropDownList @ref=ddlSample4
                     Id="ddlSample4"
-                    IsSearchable="true"
+                    IsSearchable=true
                     DataProviderFunc=@GetData
                     DefaultText="--Choose---"
                     OnChange=@OnChange4>
@@ -65,6 +71,7 @@ Sample 04: Change Selected Item(On button click)
 Sample 05: Set selected index: (SelectedIndex: @selectedIndexSearch)
 <JingetDropDownList @ref=ddlSample5
                     Id="ddlSample5"
+                    IsSearchable=true
                     DataProviderFunc=@GetData
                     DefaultText="--Choose---"
                     OnChange=@OnChange5>
@@ -85,17 +92,14 @@ Sample 06: Disabled
 @code {
 
     JingetMessageBox? messageBox;
-    JingetDropDownList ddlSample1;
-    JingetDropDownList ddlSample2;
+    // JingetDropDownList ddlSample1;
+    // JingetDropDownList ddlSample2;
     JingetDropDownList ddlSample3;
     JingetDropDownList ddlSample4;
     JingetDropDownList ddlSample5;
 
 
-    int selectedIndex;
     int selectedIndexSearch;
-
-    int selectedItemValue;
 
     async Task<List<JingetDropDownItemModel>> GetData()
     {
@@ -109,29 +113,29 @@ Sample 06: Disabled
     new JingetDropDownItemModel(6,"China")});
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await localStorage.SetItemAsync("selectedItem", new Random().Next(1, 6).ToString());
-            await ddlSample3.SetSelectedItemAsync(await localStorage.GetItemAsync("selectedItem"));
-        }
-    }
-    public async Task ddlSample2_DataBound()
-    {
-    }
-    public async Task ddlSample2_Rendered()
-    {
-        await ddlSample2.SetSelectedIndexAsync(new Random().Next(1, 6));
-    }
-    public async Task OnChange1(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("ddlSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample1.SelectedItem));
-    }
-    public async Task OnChange2(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("ddlSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample2.SelectedItem));
-    }
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+    //         await localStorage.SetItemAsync("selectedItem", new Random().Next(1, 6).ToString());
+    //         await ddlSample3.SetSelectedItemAsync(await localStorage.GetItemAsync("selectedItem"));
+    //     }
+    // }
+    // public async Task ddlSample2_DataBound()
+    // {
+    // }
+    // public async Task ddlSample2_Rendered()
+    // {
+    //     await ddlSample2.SetSelectedIndexAsync(new Random().Next(1, 6));
+    // }
+    // public async Task OnChange1(ChangeEventArgs e)
+    // {
+    //     await messageBox.ShowInfoAsync("ddlSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample1.SelectedItem));
+    // }
+    // public async Task OnChange2(ChangeEventArgs e)
+    // {
+    //     await messageBox.ShowInfoAsync("ddlSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample2.SelectedItem));
+    // }
     public async Task OnChange3(ChangeEventArgs e)
     {
         await messageBox.ShowInfoAsync("ddlSample3", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample3.SelectedItem));
