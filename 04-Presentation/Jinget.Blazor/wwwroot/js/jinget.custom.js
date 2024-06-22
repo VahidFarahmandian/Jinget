@@ -1,20 +1,33 @@
 ﻿/*Selectize START*/
-window.convertToSearchable = (dotnet, id) => $('#' + id).selectize({
-    sortField: ['text', 'value'],
-    searchField: ['value', 'text'],
-    searchConjunction: 'and',
-    respect_word_boundaries: false,
-    onChange: function (value) {
-        dotnet.invokeMethodAsync('jinget_blazor_dropdownlist_onchange', value)
-    }
+//window.convertToSearchable = (dotnet, id) => $('#' + id).selectize({
+//    sortField: ['text', 'value'],
+//    searchField: ['value', 'text'],
+//    searchConjunction: 'and',
+//    respect_word_boundaries: false,
+//    onChange: function (value) {
+//        alert(value);
+//        //dotnet.invokeMethodAsync('OnItemSelected', value)
+//    }
+//});
+
+window.convertToSearchable = (dotnet, id) => $('#' + id).select2({
+    dir: 'rtl',
+    closeOnSelect: true,
+    theme: 'outlined',
+    width: 'resolve',
+}).on('select2:select', function (e) {
+    dotnet.invokeMethodAsync('OnJSSelectedItemChanged', e.params.data.id);
 });
-window.selectItem = (id, value) => {
-    var item = $('#' + id).selectize();
-    item[0].selectize.setValue(value, true);
+
+window.jinget_blazor_dropdownlist_selectItem = (id, value) => {
+    $('#' + id).val(value).trigger("change");
+    //var item = $('#' + id).selectize();
+    //item[0].selectize.setValue(value, true);
 };
-window.clearSelectItem = (id) => {
-    var item = $('#' + id).selectize();
-    item[0].selectize.clear();
+window.jinget_blazor_dropdownlist_clear = (id) => {
+    $('#' + id).val(null).trigger("change");
+    //var item = $('#' + id).selectize();
+    //item[0].selectize.clear();
 };
 /*Selectize END*/
 

@@ -8,6 +8,6 @@
 @import url('jinget.jalali.picker.daterange.css');
 @import url('jinget.modal.css');
 @import url('jinget.table.css');
-@import url('jinget.selectize.css');
-
+@import url('jinget.select2.css');
+@import url('jinget.select2.theme.material.css');
 @import url('jinget.custom.css');

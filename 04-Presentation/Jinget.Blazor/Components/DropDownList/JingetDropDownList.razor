@@ -1,10 +1,15 @@
-﻿@using MudBlazor
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using MudBlazor
 @inherits JingetDropDownListBase;
 @if (IsSearchable)
 {
     @if (connected)
     {
-        <select id="@Id" onchange=@((object e)=>OnSelectedItemChangedAsync(e)) class="@CssClass" disabled="@IsDisabled" required="@IsRequired">
+        @* @onchange= "@((ChangeEventArgs e)=>OnSelectedItemChangedAsync(e?.Value))" *@
+        <select id="@Id"
+                class="@CssClass"
+                disabled="@IsDisabled"
+                required="@IsRequired">
             <option value="">@DefaultText</option>
             @foreach (var item in Items)
             {
@@ -13,7 +18,7 @@
                 {
                     Task.Run(() =>
                     {
-                        JS.InvokeVoidAsync("selectItem", Id, Value).GetAwaiter().GetResult();
+                        JS.InvokeVoidAsync("jinget_blazor_dropdownlist_selectItem", Id, Value).GetAwaiter().GetResult();
                     });
                 }
                 <option value="@item.Value" selected="@selected">@item.Text</option>
@@ -22,7 +27,7 @@
             {
                 Task.Run(() =>
                 {
-                    JS.InvokeVoidAsync("clearSelectItem", Id).GetAwaiter().GetResult();
+                    JS.InvokeVoidAsync("jinget_blazor_dropdownlist_clear", Id).GetAwaiter().GetResult();
                 });
             }
         </select>
@@ -53,6 +58,7 @@ else
     </MudSelect>
 }
 @code {
+
     private DotNetObjectReference<JingetDropDownList>? dotNetObjRef;
     protected override async Task OnInitializedAsync()
     {
@@ -64,11 +70,14 @@ else
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (IsSearchable)
+        if (_initialized)
         {
-            //calling convertToSearchable makes the select input searchable. this functionality is mainly powered by js selectize library.
-            await JS.InvokeVoidAsync("convertToSearchable", dotNetObjRef, Id);
+            if (IsSearchable)
+            {
+                //calling convertToSearchable makes the select input searchable. this functionality is mainly powered by js select2 library.
+                await JS.InvokeVoidAsync("convertToSearchable", dotNetObjRef, Id);
+            }
+            await base.OnAfterRenderAsync(firstRender);
         }
-        await base.OnAfterRenderAsync(firstRender);
     }
 }

@@ -22,6 +22,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Remove="wwwroot\js\jinget.select2.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="wwwroot\js\jinget.select2.js" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
@@ -40,6 +48,7 @@
 			<PackagePath>\</PackagePath>
 			<Pack>True</Pack>
 		</None>
+		<None Include="wwwroot\js\jinget.select2.js" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\01-Core\Jinget.Core\Jinget.Core.csproj" />

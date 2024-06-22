@@ -10,7 +10,7 @@
 
 <JingetMessageBox @ref=@messageBox
                   ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true))></JingetMessageBox>
-@* <h3>JingetDropDownList</h3>
+<h3>JingetDropDownList</h3>
 Sample 01: Required
 <JingetDropDownList @ref=@ddlSample1
                     Id="ddlSample1"
@@ -36,12 +36,12 @@ Sample 02: Data Bound
         </NotAuthorized>
     </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
 </CascadingAuthenticationState>
-<hr />*@
+<hr />
 Sample 03: Change Selected Item(get from localstorage)
 <JingetDropDownList @ref=ddlSample3
                     Id="ddlSample3"
                     IsSearchable="true"
-                    DataProviderFunc=@GetData
+                    DataProviderFunc=@GetDataPersian
                     DefaultText="--Choose---"
                     OnChange=@OnChange3>
 </JingetDropDownList>
@@ -92,8 +92,8 @@ Sample 06: Disabled
 @code {
 
     JingetMessageBox? messageBox;
-    // JingetDropDownList ddlSample1;
-    // JingetDropDownList ddlSample2;
+    JingetDropDownList ddlSample1;
+    JingetDropDownList ddlSample2;
     JingetDropDownList ddlSample3;
     JingetDropDownList ddlSample4;
     JingetDropDownList ddlSample5;
@@ -112,30 +112,41 @@ Sample 06: Disabled
     new JingetDropDownItemModel(5,"Canada"),
     new JingetDropDownItemModel(6,"China")});
     }
+    async Task<List<JingetDropDownItemModel>> GetDataPersian()
+    {
+        return await Task.FromResult(new List<JingetDropDownItemModel>
+    {
+    new JingetDropDownItemModel(1,"ایران"),
+    new JingetDropDownItemModel(2,"ایالات متحده آمریکا"),
+    new JingetDropDownItemModel(3,"انگلستان"),
+    new JingetDropDownItemModel(4,"روسیه"),
+    new JingetDropDownItemModel(5,"کانادا"),
+    new JingetDropDownItemModel(6,"جمهوری خلق چین")});
+    }
 
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     if (firstRender)
-    //     {
-    //         await localStorage.SetItemAsync("selectedItem", new Random().Next(1, 6).ToString());
-    //         await ddlSample3.SetSelectedItemAsync(await localStorage.GetItemAsync("selectedItem"));
-    //     }
-    // }
-    // public async Task ddlSample2_DataBound()
-    // {
-    // }
-    // public async Task ddlSample2_Rendered()
-    // {
-    //     await ddlSample2.SetSelectedIndexAsync(new Random().Next(1, 6));
-    // }
-    // public async Task OnChange1(ChangeEventArgs e)
-    // {
-    //     await messageBox.ShowInfoAsync("ddlSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample1.SelectedItem));
-    // }
-    // public async Task OnChange2(ChangeEventArgs e)
-    // {
-    //     await messageBox.ShowInfoAsync("ddlSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample2.SelectedItem));
-    // }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await localStorage.SetItemAsync("selectedItem", new Random().Next(1, 6).ToString());
+            await ddlSample3.SetSelectedItemAsync(await localStorage.GetItemAsync("selectedItem"));
+        }
+    }
+    public async Task ddlSample2_DataBound()
+    {
+    }
+    public async Task ddlSample2_Rendered()
+    {
+        await ddlSample2.SetSelectedIndexAsync(new Random().Next(1, 6));
+    }
+    public async Task OnChange1(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("ddlSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample1.SelectedItem));
+    }
+    public async Task OnChange2(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("ddlSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample2.SelectedItem));
+    }
     public async Task OnChange3(ChangeEventArgs e)
     {
         await messageBox.ShowInfoAsync("ddlSample3", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample3.SelectedItem));

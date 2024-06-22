@@ -1,4 +1,30 @@
-﻿/*MudBlazor START*/
+﻿/*Select2.js START*/
+.select2-container {
+    width: 100% !important
+}
+
+.select2-container--outlined .select2-selection {
+    font-family: IRANSans !important;
+    border-top: none !important;
+    border-right: none !important;
+    border-left: none !important;
+    border-radius: 0 !important;
+    min-height: 2.5rem !important;
+    line-height: 1.5 !important;
+    padding: 0 !important;
+}
+
+.select2-results__option--selectable {
+    font-family: IRANSans !important;
+}
+
+
+.select2-container .select2-selection--single .select2-selection__arrow {
+    position: absolute !important;
+    left: 0px !important;
+}
+/*Select2.js END*/
+/*MudBlazor START*/
 .mud-typography, .mud-picker {
     font-family: IRANSans;
 }
@@ -27,7 +53,7 @@
 
 /*Selectize START*/
 .selectize-control.single .selectize-input {
-    height: 55px !important;
+/*    height: 55px !important;
     margin-top: 4px !important;
 }
 
@@ -46,7 +72,7 @@
     position: absolute;
     z-index: 2 !important;
     color: rgb(66 66 66,1) !important;
-}
+}*/
 /*Selectize END*/
 
 /*JingetList START*/

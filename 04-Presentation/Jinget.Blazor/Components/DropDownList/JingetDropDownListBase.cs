@@ -85,8 +85,7 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
     /// <summary>
     /// This method is being invoked by jinget.custom.js. whenever searchable dropdownlist's selected item changed
     /// </summary>
-    /// <param name="e"></param>
-    [JSInvokable("jinget_blazor_dropdownlist_onchange")]
+    [JSInvokable]
     public void OnJSSelectedItemChanged(object? e) => OnSelectedItemChangedAsync(e);
 
     protected async Task OnSelectedItemChangedAsync(object? e)
