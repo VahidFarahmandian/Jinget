@@ -42,8 +42,13 @@ namespace Jinget.Blazor.Test
         IsSearchable = true, DefaultText = "---انتخاب کنید---", HasLabel = true, LabelCssClass = "overlayed-label", Order = 9)]
         public int? Status { get; set; }
 
+        [JingetDropDownListElement(DisplayName = "جنسیت", Id = "cmbGender",
+            BindingFunction = nameof(GetStatusAsync), IsSearchable = true, DefaultText = "---انتخاب کنید---", HasLabel = true, LabelCssClass = "overlayed-label", Order = 10)]
+        public string? Gender { get; set; }
+
         public async Task<string> PreBinding() => await Task.FromResult("This is pre binding");
         public async Task<string> PostBinding(object? preBindingResult, object? data) => await Task.FromResult("This is post binding");
+
         public async Task<List<JingetDropDownItemModel>> GetStatusAsync(object? preBindingResult)
         => await new JingetDropDownListElement().BindAsync(async () =>
         {
