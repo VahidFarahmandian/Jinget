@@ -2,7 +2,7 @@
 
 public static class DbTypeUtility
 {
-    private static readonly Dictionary<Type, DbType> typeMap = new()
+    private static readonly Dictionary<Type, DbType> TypeMap = new()
     {
         [typeof(byte)] = DbType.Byte,
         [typeof(sbyte)] = DbType.SByte,
@@ -47,7 +47,7 @@ public static class DbTypeUtility
     {
         givenType = Nullable.GetUnderlyingType(givenType) ?? givenType;
 
-        if (typeMap.TryGetValue(givenType, out DbType value))
+        if (TypeMap.TryGetValue(givenType, out DbType value))
         {
             return value;
         }
