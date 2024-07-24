@@ -7,8 +7,9 @@ namespace Jinget.Core.Utilities;
 
 public class XmlUtility
 {
+    /// <param name="input">serializes the input value into an XML format.</param>
     /// <param name="omitXmlDeclaration">remove ?xml tag</param>
-    /// <param name="namespaces">if null passed, removes unnecessary xsi and xsd namespaces</param>
+    /// <param name="ns">if null passed, removes unnecessary xsi and xsd namespaces</param>
     /// <returns></returns>
     public static string SerializeToXml(object input, bool omitXmlDeclaration = false, XmlSerializerNamespaces? ns = null)
     {
