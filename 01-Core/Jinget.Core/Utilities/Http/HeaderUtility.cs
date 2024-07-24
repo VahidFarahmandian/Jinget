@@ -6,11 +6,10 @@ public class HeaderUtility
 {
     /// <summary>
     /// check if content type header presents in the given collection or not.
-    /// This method does serch for the key using <seealso cref="StringComparison.OrdinalIgnoreCase"/>
+    /// This method does search for the key using <seealso cref="StringComparison.OrdinalIgnoreCase"/>
     /// </summary>
     public static bool HasContentType(Dictionary<string, string> headers)
     =>
-        headers != null &&
         headers.Keys.Any(x => string.Equals(x, "Content-Type", StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
@@ -19,7 +18,7 @@ public class HeaderUtility
     /// </summary>
     public static string GetContentTypeValue(Dictionary<string, string> headers)
     {
-        if (headers != null && HasContentType(headers))
+        if (HasContentType(headers))
         {
             return headers.FirstOrDefault(x => string.Equals(x.Key, "Content-Type", StringComparison.OrdinalIgnoreCase)).Value;
         }
@@ -32,7 +31,7 @@ public class HeaderUtility
     /// </summary>
     public static string GetContentTypeHeaderName(Dictionary<string, string> headers)
     {
-        if (headers != null && HasContentType(headers))
+        if (HasContentType(headers))
             return headers.FirstOrDefault(x => string.Equals(x.Key, "Content-Type", StringComparison.OrdinalIgnoreCase)).Key;
         return "";
     }
