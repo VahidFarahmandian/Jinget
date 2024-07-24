@@ -5,7 +5,7 @@ namespace Jinget.Core.Utilities;
 public static class DateTimeUtility
 {
     /// <summary>
-    /// Converts given Gregorian date to its Solar equalivant.
+    /// Converts given Gregorian date to its Solar equivalent.
     /// Minimum supported Gregorian date is: year: 622,month: 3,day: 22. 
     /// See also: <seealso cref="PersianCalendar.MinSupportedDateTime"/>
     /// </summary>
@@ -21,7 +21,7 @@ public static class DateTimeUtility
     }
 
     /// <summary>
-    /// Converts given Solar date to its Gregorian equalivant
+    /// Converts given Solar date to its Gregorian equivalent.
     /// </summary>
     public static DateTime? ToGregorianDate(string persianDate)
     {
@@ -39,13 +39,13 @@ public static class DateTimeUtility
 
     /// <summary>
     /// check if given persian date is a valid date or not. 
-    /// <paramref name="persianDate"/> should have exactly 8 numerical characters 
-    /// and it should be also greater than the zero
-    /// You can check the date validity using minimum acceptable date nad maximum accptable date ranges
+    /// <paramref name="persianDate"/> should have exactly 8 numerical characters, and
+    ///  it should be also greater than the zero
+    /// You can check the date validity using minimum acceptable date nad maximum acceptable date ranges
     /// </summary>
     public static bool IsValidPersianDate(string persianDate, string minAcceptableDate = "", string maxAcceptableDate = "")
     {
-        if (persianDate == null || !StringUtility.IsDigitOnly(persianDate) || Convert.ToInt32(persianDate) < 0 || persianDate.Length != 8)
+        if (string.IsNullOrWhiteSpace(persianDate) || !StringUtility.IsDigitOnly(persianDate) || Convert.ToInt32(persianDate) < 0 || persianDate.Length != 8)
             return false;
 
         DateTime? givenDate = ToGregorianDate(persianDate);
@@ -58,7 +58,7 @@ public static class DateTimeUtility
         if ((minDate == null || givenDate >= minDate) && (maxDate == null || givenDate <= maxDate))
             return true;
 
-        else return false;
+        return false;
     }
 
     /// <summary>
@@ -67,13 +67,13 @@ public static class DateTimeUtility
     public static string Format(string input, string currentFormat = "yyyyMMdd", string newFormat = "yyyy/MM/dd")
     {
         var isDate = DateTime.TryParseExact(
-        input.ToString(),
+        input,
         currentFormat,
         CultureInfo.InvariantCulture,
         DateTimeStyles.None,
         out DateTime date);
 
-        return isDate ? date.ToString(newFormat) : input.ToString();
+        return isDate ? date.ToString(newFormat) : input;
     }
 
     public static string[] GetJalaliDayNames() => ["یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"];
