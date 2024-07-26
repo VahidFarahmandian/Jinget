@@ -34,8 +34,8 @@ namespace Jinget.Blazor.Test
         [JingetNumberBoxElement(DisplayName = "سن", Order = 7)]
         public int Age { get; set; }
 
-        [JingetDropDownListElement(DisplayName = "وضعیت2", Id = "cmb2", DefaultText = "---انتخاب کنید---", Order = 8)]
-        public int? Status2 { get; set; }
+        [JingetDropDownListElement(DisplayName = "وضعیت2", Id = "cmb2", DefaultText = "---Choose---", Order = 8, IsRtl = false)]
+        public string Status2 { get; set; }
 
         [JingetDropDownListElement(DisplayName = "وضعیت", Id = "cmbSearch",
         BindingFunction = nameof(GetStatusAsync), PreBindingFunction = nameof(PreBinding), PostBindingFunction = nameof(PostBinding),
@@ -61,6 +61,10 @@ namespace Jinget.Blazor.Test
         });
 
         public class StatusModel : BaseTypeModel
+        {
+
+        }
+        public class StatusGuidModel : BaseTypeModel<string>
         {
 
         }

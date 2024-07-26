@@ -1,35 +1,31 @@
-﻿/*Selectize START*/
-//window.convertToSearchable = (dotnet, id) => $('#' + id).selectize({
-//    sortField: ['text', 'value'],
-//    searchField: ['value', 'text'],
-//    searchConjunction: 'and',
-//    respect_word_boundaries: false,
-//    onChange: function (value) {
-//        alert(value);
-//        //dotnet.invokeMethodAsync('OnItemSelected', value)
-//    }
-//});
+﻿/*select2 START*/
 
-window.convertToSearchable = (dotnet, id) => $('#' + id).select2({
-    dir: 'rtl',
-    closeOnSelect: true,
-    theme: 'outlined',
-    width: 'resolve',
-}).on('select2:select', function (e) {
-    dotnet.invokeMethodAsync('OnJSSelectedItemChanged', e.params.data.id);
-});
+window.initJingetDropDownList = (params = { dotnet, id, isSearchable = false, isRtl = true } = {}) => {
+    var element = $('#' + params.id).select2(
+        {
+            dir: params.isRtl ? 'rtl' : 'ltr',
+            closeOnSelect: true,
+            theme: 'outlined',
+            width: 'resolve',
+            minimumResultsForSearch: params.isSearchable ? 0 : Infinity
+        }).on('select2:select', function (e) {
+            if (params.dotnet == null)
+                alert('dotnet not initialized');
+            params.dotnet.invokeMethodAsync('OnJSSelectedItemChanged', e.params.data.id);
+        });
+    if (params.isRtl && document.getElementById(params.id).nextSibling != null) {
+        document.getElementById(params.id).nextSibling.querySelector('.select2-selection__arrow').classList.add('select2_selection_arrow_rtl');
+    }
+    return element;
+};
 
 window.jinget_blazor_dropdownlist_selectItem = (id, value) => {
     $('#' + id).val(value).trigger("change");
-    //var item = $('#' + id).selectize();
-    //item[0].selectize.setValue(value, true);
 };
 window.jinget_blazor_dropdownlist_clear = (id) => {
     $('#' + id).val(null).trigger("change");
-    //var item = $('#' + id).selectize();
-    //item[0].selectize.clear();
 };
-/*Selectize END*/
+/*select2 END*/
 
 /*localStorage/sessionStorage START*/
 
@@ -115,7 +111,6 @@ function gotoDate(id) {
     observer.observe(targetNode, config);
 }
 
-
 function GetMonthNumber(monthName) {
     switch (monthName) {
 
@@ -159,7 +154,6 @@ function refreshDatePicker() {
     });
     observer.observe(targetNode, config);
 }
-
 
 function toEnglishNumber(id) {
     const targetNode = document.querySelector("body");

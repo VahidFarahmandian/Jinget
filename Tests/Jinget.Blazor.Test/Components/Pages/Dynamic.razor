@@ -63,17 +63,17 @@
 
 @code {
     JingetDynamicForm<SampleModel> dynamicForm;
-
+    Guid[] guids = [Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()];
     public async Task OnFieldReady(JingetDynamicField field)
     {
         if (field.Attribute is JingetDropDownListElement && field.Binding != null && field.Binding.Name == nameof(SampleModel.Status2))
         {
-            ((JingetDropDownList)field.RefObject).Items = await new JingetDropDownListElement().BindAsync<StatusModel>(
+            ((JingetDropDownList)field.RefObject).Items = await new JingetDropDownListElement().BindAsync<StatusGuidModel, string>(
                 async () =>
-                 await Task.FromResult(new List<StatusModel> {
-                     new() { Code = 1, Title = "Active" },
-                     new() { Code = 2, Title = "Deactive" },
-                     new() { Code = 3, Title = "Unknown" } })
+                 await Task.FromResult(new List<StatusGuidModel> {
+                     new() { Code = guids[0].ToString(), Title = "Active" },
+                     new() { Code = guids[1].ToString(), Title = "Deactive" },
+                     new() { Code = guids[2].ToString(), Title = "Unknown" } })
             );
         }
         await Task.CompletedTask;
@@ -107,7 +107,7 @@
     async Task SetValue()
     {
         dynamicForm.Model.Status = 1;
-        dynamicForm.Model.Status2 = 2;
+        dynamicForm.Model.Status2 = guids[2].ToString();
         dynamicForm.Model.LastName = "Farahmandian";
         await messageBox.ShowInfoAsync(Model.Name, $"{Model.Name} {Model.LastName}", Newtonsoft.Json.JsonConvert.SerializeObject(Model));
     }

@@ -42,7 +42,7 @@ else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePickerEleme
                            DateRangeChanged="((e)=>OnChange(new ChangeEventArgs(){Value=e}))">
     </JingetDateRangePicker>
 }
-else if (Attribute is JingetDropDownListElement dropDown)//&& dropDown.Searchable == false)
+else if (Attribute is JingetDropDownListElement dropDown)
 {
     <JingetDropDownList @ref=RefObject
                         Id="@Id"
@@ -55,7 +55,8 @@ else if (Attribute is JingetDropDownListElement dropDown)//&& dropDown.Searchabl
                         RequiredError="@Attribute.RequiredError"
                         DisplayName="@Attribute.DisplayName"
                         DefaultText="@dropDown.DefaultText"
-                        IsSearchable="dropDown.IsSearchable"
+                        IsSearchable="@dropDown.IsSearchable"
+                        IsRtl="@dropDown.IsRtl"
                         DataProviderFunc=@GetData
                         OnChange=@OnChange></JingetDropDownList>
 }

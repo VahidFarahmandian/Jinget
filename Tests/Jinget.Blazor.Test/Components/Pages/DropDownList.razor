@@ -89,6 +89,14 @@ Sample 06: Disabled
                     DefaultText="--Choose---"
                     IsDisabled="true">
 </JingetDropDownList>
+<hr />
+Sample 07: Guid Code
+<JingetDropDownList @ref=ddlSample6
+                    Id="ddlSample6"
+                    DataProviderFunc=@GetDataGuid
+                    DefaultText="--Choose---"
+                    OnChange=@OnChange6>
+</JingetDropDownList>
 @code {
 
     JingetMessageBox? messageBox;
@@ -97,7 +105,7 @@ Sample 06: Disabled
     JingetDropDownList ddlSample3;
     JingetDropDownList ddlSample4;
     JingetDropDownList ddlSample5;
-
+    JingetDropDownList ddlSample6;
 
     int selectedIndexSearch;
 
@@ -111,6 +119,17 @@ Sample 06: Disabled
     new JingetDropDownItemModel(4,"Russia"),
     new JingetDropDownItemModel(5,"Canada"),
     new JingetDropDownItemModel(6,"China")});
+    }
+    async Task<List<JingetDropDownItemModel>> GetDataGuid()
+    {
+        return await Task.FromResult(new List<JingetDropDownItemModel>
+    {
+    new JingetDropDownItemModel(Guid.NewGuid(),"Iran"),
+    new JingetDropDownItemModel(Guid.NewGuid(),"USA"),
+    new JingetDropDownItemModel(Guid.NewGuid(),"UK"),
+    new JingetDropDownItemModel(Guid.NewGuid(),"Russia"),
+    new JingetDropDownItemModel(Guid.NewGuid(),"Canada"),
+    new JingetDropDownItemModel(Guid.NewGuid(),"China")});
     }
     async Task<List<JingetDropDownItemModel>> GetDataPersian()
     {
@@ -158,6 +177,10 @@ Sample 06: Disabled
     public async Task OnChange5(ChangeEventArgs e)
     {
         await messageBox.ShowInfoAsync("ddlSample5", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample5.SelectedItem));
+    }
+    public async Task OnChange6(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("ddlSample6", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample6.SelectedItem));
     }
     public async Task SetSelectedItem()
     {

@@ -13,6 +13,11 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
     [Parameter] public bool IsSearchable { get; set; }
 
     /// <summary>
+    /// if set to true, then dropdownllist items will be rendered in right to left direction
+    /// </summary>
+    [Parameter] public bool IsRtl { get; set; }
+
+    /// <summary>
     /// Delegate used to bind data to dropdownlist.
     /// </summary>
     [Parameter, EditorRequired] public Func<Task<List<JingetDropDownItemModel>>>? DataProviderFunc { get; set; }

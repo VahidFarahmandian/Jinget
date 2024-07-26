@@ -5,7 +5,13 @@ public class JingetDropDownListElement : JingetFormElement
     public string DefaultText { get; set; } = "---انتخاب کنید---";
 
     public bool IsSearchable { get; set; }
-    
+
+    /// <summary>
+    /// if set to true, then dropdownllist items will be rendered in right to left direction.
+    /// default is <see cref="true"/>
+    /// </summary>
+    public bool IsRtl { get; set; } = true;
+
     /// <summary>
     /// set a method which will be called automatically while binding the element
     /// </summary>
@@ -27,7 +33,6 @@ public class JingetDropDownListElement : JingetFormElement
         List<JingetDropDownItemModel> result = [];
 
         List<T> data = await GetData.Invoke().ConfigureAwait(false);
-
 
         if (data != null)
         {

@@ -18,12 +18,23 @@
     font-family: IRANSans !important;
 }
 
+.select2_selection_arrow_rtl {
+    margin-left: unset !important;
+    margin-right: auto !important;
+}
 
-.select2-container .select2-selection--single .select2-selection__arrow {
+
+/*.select2-container .select2-selection--single .select2-selection__arrow {
     position: absolute !important;
     left: 0px !important;
-}
+}*/
+
+
+/*.select2-container .select2-selection--single .select2-selection__rendered {
+    padding-left: 20px !important;
+}*/
 /*Select2.js END*/
+
 /*MudBlazor START*/
 .mud-typography, .mud-picker {
     font-family: IRANSans;
@@ -50,36 +61,6 @@
     direction: ltr !important;
 }
 /*MudBlazor END*/
-
-/*Selectize START*/
-.selectize-control.single .selectize-input {
-/*    height: 55px !important;
-    margin-top: 4px !important;
-}
-
-.selectize-input > * {
-    padding-top: 10px !important;
-}
-
-.selectize-control.rtl .selectize-input > input {
-    padding-top: 10px !important;
-}
-
-.overlayed-label {
-    transform: translate(-4px, -6px) scale(0.83);
-    background-color: white !important;
-    padding: 0 5px !important;
-    position: absolute;
-    z-index: 2 !important;
-    color: rgb(66 66 66,1) !important;
-}*/
-/*Selectize END*/
-
-/*JingetList START*/
-.list-group-item {
-    overflow-wrap: break-word;
-}
-/*JingetList END*/
 
 /*JsonViewer START*/
 json-viewer {
