@@ -75,15 +75,14 @@ public static class EnumUtility
     /// <typeparam name="TValue">enum data type</typeparam>
     public static TValue GetMinValue<TEnum, TValue>() where TValue : struct, IConvertible
     {
-        
-        var enumValues = System.Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
+        var enumValues = System.Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToList();
         if (enumValues.Any())
         {
             var minVal = enumValues.First();
             return (TValue)Convert.ChangeType(minVal, typeof(TValue));
         }
-        else
-            throw new InvalidEnumArgumentException("Enum is empty and contains no value");
+
+        throw new InvalidEnumArgumentException("Enum is empty and contains no value");
     }
 
     /// <summary>
@@ -93,13 +92,14 @@ public static class EnumUtility
     /// <typeparam name="TValue">enum data type</typeparam>
     public static TValue GetMaxValue<TEnum, TValue>() where TValue : struct, IConvertible
     {
-        var enumValues = System.Enum.GetValues(typeof(TEnum)).Cast<TEnum>();
+        var enumValues = System.Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToList();
         if (enumValues.Any())
         {
             var maxVal = enumValues.Last();
             return (TValue)Convert.ChangeType(maxVal, typeof(TValue));
         }
-        else
-            throw new InvalidEnumArgumentException("Enum is empty and contains no value");
+
+        throw new InvalidEnumArgumentException("Enum is empty and contains no value");
     }
+
 }
