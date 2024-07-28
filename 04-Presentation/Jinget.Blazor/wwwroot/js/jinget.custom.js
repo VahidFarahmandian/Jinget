@@ -11,12 +11,11 @@ window.initJingetDropDownList = (params = { dotnet, id, isSearchable = false, is
         }).on('select2:select', function (e) {
             if (params.dotnet == null)
                 alert('dotnet not initialized');
-            params.dotnet.invokeMethodAsync('OnJSSelectedItemChanged', e.params.data.id);
+            params.dotnet.invokeMethodAsync('OnJSDropDownListSelectedItemChanged', e.params.data.id);
         });
     if (params.isRtl && document.getElementById(params.id).nextSibling != null) {
         document.getElementById(params.id).nextSibling.querySelector('.select2-selection__arrow').classList.add('select2_selection_arrow_rtl');
     }
-    return element;
 };
 
 window.jinget_blazor_dropdownlist_selectItem = (id, value) => {
@@ -26,6 +25,35 @@ window.jinget_blazor_dropdownlist_clear = (id) => {
     $('#' + id).val(null).trigger("change");
 };
 /*select2 END*/
+
+/*select2tree START*/
+
+window.initJingetDropDownListTree = (params = { dotnet, id, isSearchable = false, isRtl = true } = {}) => {
+    var element = $('#' + params.id).select2tree(
+        {
+            dir: params.isRtl ? 'rtl' : 'ltr',
+            closeOnSelect: true,
+            theme: 'outlined',
+            width: 'resolve',
+            minimumResultsForSearch: params.isSearchable ? 0 : Infinity
+        });
+    $('#' + params.id).on('select2:select', function (e) {
+        if (params.dotnet == null)
+            alert('dotnet not initialized');
+        params.dotnet.invokeMethodAsync('OnJSDropDownListTreeSelectedItemChanged', e.params.data.id);
+    });
+    if (params.isRtl && document.getElementById(params.id).nextSibling != null) {
+        document.getElementById(params.id).nextSibling.querySelector('.select2-selection__arrow').classList.add('select2_selection_arrow_rtl');
+    }
+};
+window.jinget_blazor_dropdownlist_tree_selectItem = (id, value) => {
+    $('#' + id).val(value).trigger("change");
+};
+window.jinget_blazor_dropdownlist_tree_clear = (id) => {
+    $('#' + id).val(null).trigger("change");
+};
+
+/*select2tree END*/
 
 /*localStorage/sessionStorage START*/
 

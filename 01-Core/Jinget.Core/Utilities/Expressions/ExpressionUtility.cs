@@ -255,7 +255,7 @@ public static class ExpressionUtility
         var exprVariable = Expression.Parameter(type, "x");
 
         //construct queries
-        IDictionary<Expression, ConditionCombiningType> filterExpressions = new Dictionary<Expression, ConditionCombiningType>();
+        IDictionary<Expression, ConditionJoinType> filterExpressions = new Dictionary<Expression, ConditionJoinType>();
         foreach (var filter in filters)
         {
             var property = type.GetProperty(filter.Operand, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
@@ -270,15 +270,15 @@ public static class ExpressionUtility
         return Expression.Lambda<Func<T, bool>>(MergeFilterExpressions(filterExpressions), exprVariable);
     }
 
-    private static Expression MergeFilterExpressions(IDictionary<Expression, ConditionCombiningType> filterExpressions)
+    private static Expression MergeFilterExpressions(IDictionary<Expression, ConditionJoinType> filterExpressions)
     {
-        Expression JoinExpressions(Expression left, ConditionCombiningType join, Expression right)
+        Expression JoinExpressions(Expression left, ConditionJoinType join, Expression right)
         {
             return join switch
             {
-                ConditionCombiningType.Unknown => Expression.AndAlso(left, right),
-                ConditionCombiningType.AndAlso => Expression.AndAlso(left, right),
-                ConditionCombiningType.OrElse => Expression.OrElse(left, right),
+                ConditionJoinType.Unknown => Expression.AndAlso(left, right),
+                ConditionJoinType.AndAlso => Expression.AndAlso(left, right),
+                ConditionJoinType.OrElse => Expression.OrElse(left, right),
                 _ => throw new JingetException($"Conditional join of type {filterExpressions.ElementAt(0).Value} is not supported by Jinget!")
             };
         }

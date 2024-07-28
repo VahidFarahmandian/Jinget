@@ -14,7 +14,7 @@ public class FilterCriteria
     /// <summary>
     /// Combine current criteria with next criteria
     /// </summary>
-    public ConditionCombiningType NextConditionCombination { get; set; }
+    public ConditionJoinType NextConditionCombination { get; set; }
 }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 

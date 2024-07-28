@@ -222,14 +222,14 @@ public class ExpressionUtilityTests
                 Operand = "Property2",
                 Operator = Enumerations.Operator.Contains,
                 Value = "ah",
-                NextConditionCombination = Enumerations.ConditionCombiningType.AndAlso
+                NextConditionCombination = Enumerations.ConditionJoinType.AndAlso
             },
             new()
             {
                 Operand = "Property3",
                 Operator = Enumerations.Operator.Equal,
                 Value = "urmia",
-                NextConditionCombination = Enumerations.ConditionCombiningType.OrElse
+                NextConditionCombination = Enumerations.ConditionJoinType.OrElse
             },
             new()
             {

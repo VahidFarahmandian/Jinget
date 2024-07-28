@@ -3,7 +3,7 @@
 /// <summary>
 /// Define Condition Join Type types which can be used in usecases such as joining filter criterias
 /// </summary>
-public enum ConditionCombiningType
+public enum ConditionJoinType
 {
     Unknown = 0,
     AndAlso,

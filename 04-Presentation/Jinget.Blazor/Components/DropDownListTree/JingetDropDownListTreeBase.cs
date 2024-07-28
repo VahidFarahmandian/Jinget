@@ -1,9 +1,12 @@
-﻿namespace Jinget.Blazor.Components.DropDownList;
+﻿using Jinget.Core.ExtensionMethods;
+using System.Linq;
 
-public abstract class JingetDropDownListBase : JingetBaseComponent
+namespace Jinget.Blazor.Components.DropDownList;
+
+public abstract class JingetDropDownListTreeBase : JingetBaseComponent
 {
     /// <summary>
-    /// Default string used to be shown in dropdownlist, whenever user choose nothing.
+    /// Default string used to be shown in dropdownlisttree, whenever user choose nothing.
     /// </summary>
     [Parameter] public string DefaultText { get; set; }
 
@@ -18,9 +21,9 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
     [Parameter] public bool IsRtl { get; set; }
 
     /// <summary>
-    /// Delegate used to bind data to dropdownlist.
+    /// Delegate used to bind data to dropdownlisttree.
     /// </summary>
-    [Parameter, EditorRequired] public Func<Task<List<JingetDropDownItemModel>>>? DataProviderFunc { get; set; }
+    [Parameter, EditorRequired] public Func<Task<List<JingetDropDownTreeItemModel>>>? DataProviderFunc { get; set; }
 
     /// <summary>
     /// Raised whenever the <seealso cref="Items"/> changed.
@@ -30,23 +33,58 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
     /// <summary>
     /// Data binded to the drop down list
     /// </summary>
-    public List<JingetDropDownItemModel> Items { get; set; } = [];
+    public List<JingetDropDownTreeItemModel> Items { get; set; } = [];
 
     /// <summary>
     /// Currently selected item among <seealso cref="Items"/> members
     /// </summary>
-    public JingetDropDownItemModel? SelectedItem { get; protected set; }
+    public JingetDropDownTreeItemModel? SelectedItem { get; protected set; }
 
     /// <summary>
     /// This field is only used when <seealso cref="IsSearchable"/> is true, to prevent rendering element before binding data into <seealso cref="Items"/>
     /// </summary>
     protected internal bool connected = false;
+
+    static string Traverse(IEnumerable<JingetDropDownTreeItemModel> set, JingetDropDownTreeItemModel sample, out int level)
+    {
+        string route = "";
+        if (sample == null || sample.Value == null)
+            route = "";
+        else if (
+            sample.ParentValue == null ||
+            !set.Any(x => string.Equals(x.Value.ToString(), sample.ParentValue.ToString(), StringComparison.OrdinalIgnoreCase))
+            )
+            route = sample.Value.ToString();
+        else
+            route = Traverse(
+                set,
+                set.First(x => string.Equals(
+                                    x.Value.ToString(),
+                                    sample.ParentValue.ToString(),
+                                    StringComparison.OrdinalIgnoreCase)),
+                out level) + "/" + sample.Value.ToString();
+        level = route.Split('/', StringSplitOptions.RemoveEmptyEntries).Length;
+        return route;
+    }
+
     protected override async Task OnInitializedAsync()
     {
         if (DataProviderFunc != null)
         {
             //exec given delegate and populate data in Items
-            Items = await DataProviderFunc();
+            var data = await DataProviderFunc();
+            Items = data
+                .Select(x => new
+                {
+                    x.Value,
+                    x.ParentValue,
+                    x.Text,
+                    Route = Traverse(data, x, out int level),
+                    Level = level
+                })
+                .OrderBy(x => x.Route).ThenBy(x => x.Text)
+                .Select(x => new JingetDropDownTreeItemModel(x.Value, x.ParentValue, x.Text))
+                .ToList();
             await OnDataBound.InvokeAsync();
         }
         //data is loaded to Items, so the component can start rendering
@@ -88,10 +126,10 @@ public abstract class JingetDropDownListBase : JingetBaseComponent
     }
 
     /// <summary>
-    /// This method is being invoked by jinget.custom.js. whenever searchable dropdownlist's selected item changed
+    /// This method is being invoked by jinget.custom.js. whenever searchable dropdownlisttree's selected item changed
     /// </summary>
     [JSInvokable]
-    public void OnJSDropDownListSelectedItemChanged(object? e) => OnSelectedItemChangedAsync(e);
+    public void OnJSDropDownListTreeSelectedItemChanged(object? e) => OnSelectedItemChangedAsync(e);
 
     protected async Task OnSelectedItemChangedAsync(object? e)
     {

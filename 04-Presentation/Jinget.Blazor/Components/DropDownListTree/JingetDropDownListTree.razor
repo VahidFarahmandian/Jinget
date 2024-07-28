@@ -1,0 +1,64 @@
+﻿@using Jinget.Blazor.Components.DropDownList
+@using Microsoft.AspNetCore.Components.Forms
+@using MudBlazor
+@inherits JingetDropDownListTreeBase;
+
+@if (connected)
+{
+    <select id="@Id"
+            data-bind="dir: @(IsRtl?"rtl":"ltr")"
+            class="@CssClass"
+            disabled="@IsDisabled"
+            required="@IsRequired">
+        <option value="---" data-parent>@DefaultText</option>
+        @foreach (var item in Items)
+        {
+            bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
+            if (selected)
+            {
+                Task.Run(() =>
+                {
+                    JS.InvokeVoidAsync("jinget_blazor_dropdownlist_tree_selectItem", Id, Value).GetAwaiter().GetResult();
+                });
+            }
+            @if (item.ParentValue == null)
+            {
+                <option value="@item.Value" data-parent="">@item.Text</option>
+            }
+            else
+            {
+                <option value="@item.Value" data-parent="@item.ParentValue">@item.Text</option>
+            }
+            @if (Value == null)
+            {
+                Task.Run(() =>
+                {
+                    JS.InvokeVoidAsync("jinget_blazor_dropdownlist_tree_clear", Id).GetAwaiter().GetResult();
+                });
+            }
+        }
+    </select>
+    @if (IsRequired && (SelectedItem == null || string.IsNullOrWhiteSpace(SelectedItem.Value?.ToString())))
+    {
+        <label style="color:red">@RequiredError</label>
+    }
+}
+@code {
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_initialized)
+        {
+            //initialize drop down list by calling initJingetDropDownListTree. this functionality is mainly powered by select2.js library.
+            await JS.InvokeVoidAsync("initJingetDropDownListTree",
+            new
+            {
+                dotnet = DotNetObjectReference.Create(this),
+                Id,
+                IsSearchable,
+                IsRtl
+            });
+            await base.OnAfterRenderAsync(firstRender);
+        }
+    }
+}

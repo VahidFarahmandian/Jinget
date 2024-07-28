@@ -1,0 +1,58 @@
+﻿@page "/dropdownlisttree"
+@using Jinget.Blazor.Components.DropDownListTree
+@using Jinget.Blazor.Components.Popup
+@using Jinget.Blazor.Models
+@using Jinget.Blazor.Services.Contracts
+
+@inject ILocalStorageService localStorage
+
+<JingetMessageBox @ref=@messageBox
+                  ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true))></JingetMessageBox>
+<h3>JingetDropDownListTree</h3>
+Sample 01: Required
+<JingetDropDownListTree @ref=@ddlTreeSample1
+                        Id="ddlTreeSample1"
+                        DataProviderFunc=@GetData
+                        DefaultText="---Choose---"
+                        HelperText="This is sample drop down list tree"
+                        DisplayName="DDLSampleTree"
+                        IsRequired="true"
+                        IsRtl=true
+                        IsSearchable=true
+                        OnChange=@OnChange1></JingetDropDownListTree>
+@code {
+
+    JingetMessageBox? messageBox;
+    JingetDropDownListTree ddlTreeSample1;
+
+    int selectedIndexSearch;
+
+    async Task<List<JingetDropDownTreeItemModel>> GetData()
+    {
+        return await Task.FromResult(new List<JingetDropDownTreeItemModel>
+            {
+                new JingetDropDownTreeItemModel(15,5,"استان تهران"),
+                new JingetDropDownTreeItemModel(1500,15,"شهر تهران"),
+                new JingetDropDownTreeItemModel(1501,15,"پردیس"),
+                new JingetDropDownTreeItemModel(100,null,"آسیا"),
+                new JingetDropDownTreeItemModel(2,null,"اروپا"),
+                new JingetDropDownTreeItemModel(3,null,"آمریکای شمالی"),
+                new JingetDropDownTreeItemModel(4,null,"آفریقا"),
+                new JingetDropDownTreeItemModel(5,100,"ایران"),
+                new JingetDropDownTreeItemModel(6,3,"ایالات متحده آمریکا"),
+                new JingetDropDownTreeItemModel(7,2,"انگلستان"),
+                new JingetDropDownTreeItemModel(8,2,"روسیه"),
+                new JingetDropDownTreeItemModel(9,3,"کانادا"),
+                new JingetDropDownTreeItemModel(10,4,"مراکش"),
+                new JingetDropDownTreeItemModel(11,100,"چین"),
+                new JingetDropDownTreeItemModel(12,null,"آمریکای جنوبی"),
+                new JingetDropDownTreeItemModel(13,12,"برزیل"),
+                new JingetDropDownTreeItemModel(14,null,"اقیانوسیه"),
+            });
+    }
+
+    public async Task OnChange1(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("ddlTreeSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlTreeSample1.SelectedItem));
+    }
+}

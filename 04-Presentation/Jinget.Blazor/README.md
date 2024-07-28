@@ -770,7 +770,9 @@ Add the `JingetDropDownList` to your page and start using it;-)
 
 `IsReadOnly`: If true, the input will be read-only.
 
-`IsRequired`: If true, the the input is required.
+`IsRequired`: If true, the input is required.
+
+`IsRtl`: If true, the input will be decorated right to left.
 
 `RequiredError`: Message to be shown whenever the `IsRequired=true` and no value has beed provided.
 
