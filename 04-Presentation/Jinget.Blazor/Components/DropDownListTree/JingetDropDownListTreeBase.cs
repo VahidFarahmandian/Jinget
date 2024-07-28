@@ -83,7 +83,7 @@ public abstract class JingetDropDownListTreeBase : JingetBaseComponent
                     Level = level
                 })
                 .OrderBy(x => x.Route).ThenBy(x => x.Text)
-                .Select(x => new JingetDropDownTreeItemModel(x.Value, x.ParentValue, x.Text))
+                .Select(x => new JingetDropDownTreeItemModel(x.Value, x.ParentValue, x.Text) { Padding = x.Level })
                 .ToList();
             await OnDataBound.InvokeAsync();
         }

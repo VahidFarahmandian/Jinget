@@ -2,132 +2,165 @@
     $.fn.select2tree = function (options) {
         var defaults = {
             matcher: matchCustom,
-            templateSelection: templateSelectionCustom,
-            templateResult: templateResultCustom
+            templateResult: formTemplateResult,
+            templateSelection: formTemplateSelection
         };
         var opts = $.extend(defaults, options);
-        var $this = $(this);
-        $(this).select2(opts).on("select2:open", function () {
-            open($this);
+        //زمانیکه کامپوننت باز میشود نیاز است تا ایتم ها را بصورت درختی رندر کنیم
+        $(this).select2(opts).on("select2:open", function (e) {
+            var $select = $(this);
+            setTimeout(function () {
+                moveOption($select);
+            }, 0);
+        });
+        //در صورتیکه کاربر روی ایکون کلیک کرد نباید چیزی انتخاب شود و صرفا باید درخت اکسپند یا کلپس شود
+        $(this).select2(opts).on("select2:selecting", function (e, selector, data, handler) {
+            var iconClicked = $(e.params.args.originalEvent.target).hasClass('fa-plus-square') || $(e.params.args.originalEvent.target).hasClass('fa-minus-square');
+            var toBeOpen = $(e.params.args.originalEvent.target).hasClass('fa-plus-square');
+            var $select = $(this);
+            if (iconClicked) {
+                switchAction($select, e.params.args.data.id, toBeOpen);
+                e.preventDefault();
+            }
+            else {
+                switchAction($select, e.params.args.data.id, toBeOpen);
+            }
         });
     };
-
-    function templateResultCustom(data, container, opts) {
-
-        if (data.element) {
-            //insert span element and add 'parent' property
-            var $wrapper = $("<span></span><span>" + data.text + "</span>");
-            var $switchSpn = $wrapper.first();
-            var $element = $(data.element);
-            var $select = $element.parent();
-            var $container = $(container);
-
-            $container.attr("val", $element.val());
-            $container.attr("data-parent", $element.data("parent"));
-
-            //برای آیتم پیش فرض نیازی به فلش نیست. آیتم پیش فرض آیتمی است که فاقد ای دی میباشد
-            //یعنی تگ روبرو: <option value="" data-parent="">@DefaultText</option>
-            var isData = false;
-            if (data.id != "---")
-                isData = true;
-
-            var hasChilds = isData && $select.find("option[data-parent='" + $element.val() + "']").length > 0;
-            if (hasChilds) {
-                $switchSpn.addClass("switch-tree fa-solid");
-
-                if ($switchSpn.hasClass("fa-plus-square"))
-                    $switchSpn.removeClass("fa-plus-square").addClass("fa-minus-square");
-                else
-                    $switchSpn.removeClass("fa-minus-square").addClass("fa-plus-square");
-            }
-            $switchSpn.css({
-                "padding": "0 10px 0 10px",
-                "cursor": "pointer"
-            });
-
-            //اگر دارای پدر بود
-            if ($element.data("parent") !== '') {
-                var dir = $select.attr('data-bind').split(':')[1].trim();
-
-                var padding = getTreeLevel($select, $element.val()) * 2;
-                if (!hasChilds)
-                    padding++;
-                $container.css("margin-" + (dir == 'ltr' ? "left" : "right"), padding + "em");
-            }
-
-            return $wrapper;
-        } else {
+    //زمانیکه ایتمی انتخاب شد مقدار برگشتی از این متد بعنوان مقدار انتخابی در کامپوننت نمایش داده میشود
+    function formTemplateSelection(data) {
+        return data.text;
+    }
+    //نحوه رندر شدن ایتم ها در درخت در این متد تنظیم میشوند
+    function formTemplateResult(data) {
+        if (data.loading) {
             return data.text;
         }
-    };
+        var $element = $(data.element);
+        var $select = $element.parent();
+        var $markup = $("<div><span></span><span></span></div>");
+        var container = $markup[0];
+        var $container = $(container);
+        $container.attr('id', "container-" + data.id);
+        //مقدار گره
+        $container.attr('val', $element.val());
+        //شناسه گره پدر
+        $container.attr('data-parent', $element.data("parent"));
+        //عمق تو رفتگی
+        $container.attr('data-level', $element.data("level"));
 
-    function getTreeLevel($select, id) {
-        var level = 0;
-        while ($select.find("option[data-parent!=''][value='" + id + "']").length > 0) {
-            id = $select.find("option[value='" + id + "']").data("parent");
-            level++;
+        var hasChild = $select.find("option[data-parent='" + $element.val() + "']").length > 0;
+
+        var $icon = $(container.firstChild);
+        $icon.attr('id', "icon-" + data.id);
+        $icon.attr('data-hasChild', hasChild);
+        $icon.addClass("fa-solid");
+
+        var isSearching = $(".select2-search__field").val().length > 0;
+        if (isSearching) {
+            //با استفاده از این صفت بعدا در حالت جستجو امکان اکپند و کلپس پیاده میشود
+            $container.attr('status', 'searching');
         }
-        return level;
+        //اگر در حال جستجو بود و جستجو حاوی نتیجه بود آنگاه درخت را در حالت اکسپند نمایش بده
+        if (isSearching && hasChild) {
+            if ($icon.hasClass("fa-plus-square"))
+                $icon.removeClass("fa-plus-square")
+            $icon.addClass("fa-minus-square");
+            $container.attr('opened', true);
+        }
+        else if (hasChild) {
+            if ($icon.hasClass("fa-plus-square"))
+                $icon.removeClass("fa-plus-square").addClass("fa-minus-square");
+            else
+                $icon.removeClass("fa-minus-square").addClass("fa-plus-square");
+        }
+        var $text = $(container.lastChild);
+        $text.attr('id', "text-" + data.id);
+        $text.html(data.text);
+
+        var dir = $(data.element.parentNode)[0].dataset.bind.substr(5, 3);
+        var padding = data.element.dataset.level * 2;
+        if (dir == 'ltr') {
+            $container.css({
+                "margin-left": padding + "em"
+            });
+            $icon.css({
+                "margin-left": "1em"
+            });
+        }
+        else {
+            $container.css({
+                "margin-right": padding + "em"
+            });
+            $icon.css({
+                "margin-left": "1em"
+            });
+        }
+        return $markup;
     }
 
+    //برای رندر آیتم های درخت استفاده میشود
+    //همچنین باعث میشود در هنگام باز شدن درخت ایتم های زیرمجموعه دیده نشوند
     function moveOption($select, id) {
         if (id) {
-            $select.find(".select2-results__options li[data-parent='" + id + "']").insertAfter(".select2-results__options li[val=" + id + "]");
-            $select.find(".select2-results__options li[data-parent='" + id + "']").each(function () {
+            $select.find(".select2-results__options div[data-parent='" + id + "']").insertAfter(".select2-results__options div[val=" + id + "]");
+            $select.find(".select2-results__options div[data-parent='" + id + "']").each(function () {
                 moveOption($select, $(this).attr("val"));
             });
         } else {
-
-            $(".select2-results__options li[data-parent!='']").css("display", "none");
-            $(".select2-results__options li[data-parent='']").appendTo(".select2-results__options ul");
-            $(".select2-results__options li[data-parent='']").each(function () {
+            $(".select2-results__options div[data-parent!='']").parent().css("display", "none");
+            $(".select2-results__options div[data-parent='']").appendTo(".select2-results__options ul");
+            $(".select2-results__options div[data-parent='']").each(function () {
                 moveOption($select, $(this).attr("val"));
             });
         }
     }
+
+    //باز و بسته کردن گره ها در درخت برای نمایش زیرمجموعه
     function switchAction($select, id, open) {
 
-        var parent = $(".select2-results__options li[val=" + id + "] span[class]:eq(0)");
-        var childs = $(".select2-results__options li[data-parent='" + id + "']");
+        var parent = $(".select2-results__options div[val=" + id + "] span[class]:eq(0)");
+
+        //we need to get access to li element which is the parent of dov element.
+        //this is why we call .parent() on selectors
+        var childs = $(".select2-results__options div[data-parent='" + id + "']").parent();
         if (open) {
             parent.removeClass("fa-plus-square").addClass("fa-minus-square");
-            childs.each(function () { $(this).attr('opened', true); });
-            childs.slideDown();
+            childs.each(function () {
+                $(this).attr('opened', true);
+            });
+            childs.slideDown("fast");
         } else {
             childs.each(function () {
-                var childId = $(this).attr('val');
+                var childId = $(this).find('div').attr('val');
                 //آیا فرزندی دارد که باز باشد؟
-                if ($(".select2-results__options li[data-parent='" + childId + "'][opened=true]").length > 0)
+                if ($(".select2-results__options li[opened=true] div[data-parent='" + childId + "']").length > 0)
+                    switchAction($select, childId, open);
+
+                //آیا در حالت جستجو بوده و میخواهیم گره را ببندیم؟
+                if ($(".select2-results__options div[status='searching'][data-parent='" + childId + "']").length > 0)
                     switchAction($select, childId, open);
 
                 parent.removeClass("fa-minus-square").addClass("fa-plus-square");
                 $(this).removeAttr('opened');
+                $(this).removeAttr('status');
             });
             childs.slideUp("fast");
         }
     }
 
-    function open($select) {
-        setTimeout(function () {
-
-            moveOption($select);
-            //override mousedown for collapse/expand 
-            $(".switch-tree").mousedown(function () {
-                switchAction(
-                    $select,
-                    $(this).parent().attr("val"),
-                    $(this).hasClass("fa-plus-square"));
-                event.stopPropagation();
-            });
-            //override mouseup to nothing
-            $(".switch-tree").mouseup(() => false);
-        }, 0);
-    }
-
+    //جستجو در درخت
     function matchCustom(params, data) {
-        if ($.trim(params.term) === '') {
+        //اگر چیزی جستجو نشده بود. یعنی فقط درخت باز شده است
+        if (typeof params.term === 'undefined') {
             return data;
         }
+        // اگر عبارت جستجو خالی بود
+        else if ($.trim(params.term) === '') {
+            $('#' + $(data.element).parent()[0].id).select2('close').select2('open')
+            return data;
+        }
+        // Do not display the item if there is no 'text' property
         if (typeof data.text === 'undefined') {
             return null;
         }
@@ -146,12 +179,12 @@
             $("#" + data._resultId).css("display", "unset");
             return data;
         }
+        // Return `null` if the term should not be displayed
         return null;
     }
 
+    //برای جستجو در فرزندان گره جاری
     function checkForChildMatch($select, $element, term) {
-        //if (term == '')
-        //    open($select);
         var matched = false;
         var val = $element.val();
         var childs;
@@ -170,24 +203,5 @@
         });
 
         return matched;
-    }
-
-    function templateSelectionCustom(item) {
-        return item.text;
-    }
-
-    function getParentText($select, $element) {
-        var text = '';
-        var parentVal = $element.data('parent');
-        if (parentVal == '') return text;
-
-        var parent = $select.find('option[value=' + parentVal + ']');
-
-        if (parent) {
-            text = getParentText($select, parent);
-            if (text != '') text += ' - ';
-            text += parent.text();
-        }
-        return text;
     }
 })(jQuery);

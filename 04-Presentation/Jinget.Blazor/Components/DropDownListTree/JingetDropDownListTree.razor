@@ -10,7 +10,7 @@
             class="@CssClass"
             disabled="@IsDisabled"
             required="@IsRequired">
-        <option value="---" data-parent>@DefaultText</option>
+        <option value="---" data-parent="" data-level=1>@DefaultText</option>
         @foreach (var item in Items)
         {
             bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
@@ -23,11 +23,11 @@
             }
             @if (item.ParentValue == null)
             {
-                <option value="@item.Value" data-parent="">@item.Text</option>
+                <option value="@item.Value" data-parent="" data-level="@item.Padding">@item.Text</option>
             }
             else
             {
-                <option value="@item.Value" data-parent="@item.ParentValue">@item.Text</option>
+                <option value="@item.Value" data-parent="@item.ParentValue" data-level="@item.Padding">@item.Text</option>
             }
             @if (Value == null)
             {

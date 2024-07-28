@@ -1,5 +1,4 @@
 ﻿/*select2 START*/
-
 window.initJingetDropDownList = (params = { dotnet, id, isSearchable = false, isRtl = true } = {}) => {
     var element = $('#' + params.id).select2(
         {

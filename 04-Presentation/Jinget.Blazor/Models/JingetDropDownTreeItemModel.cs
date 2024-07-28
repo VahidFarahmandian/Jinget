@@ -1,3 +1,6 @@
 ﻿namespace Jinget.Blazor.Models;
 
-public record JingetDropDownTreeItemModel(object? Value, object? ParentValue, string? Text);
+public record JingetDropDownTreeItemModel(object? Value, object? ParentValue, string? Text)
+{
+    internal int Padding;
+}
