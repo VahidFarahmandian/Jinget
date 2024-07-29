@@ -9,6 +9,7 @@ window.initJingetDropDownList = (params = {
             closeOnSelect: true,
             theme: 'outlined',
             width: 'resolve',
+            dropdownPosition: 'auto',
             minimumResultsForSearch: params.isSearchable ? 0 : Infinity,
             language: {
                 noResults: function () {
@@ -45,6 +46,7 @@ window.initJingetDropDownListTree = (params = {
             closeOnSelect: true,
             theme: 'outlined',
             width: 'resolve',
+            dropdownPosition: 'below',
             minimumResultsForSearch: params.isSearchable ? 0 : Infinity,
             searchPlaceholderText: params.searchPlaceholderText,
             language: {

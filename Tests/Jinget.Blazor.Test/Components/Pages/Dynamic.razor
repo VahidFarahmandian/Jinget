@@ -1,33 +1,16 @@
 ﻿@page "/dynamic"
+@using Jinget.Blazor.Attributes.DropDownList
 @using Jinget.Blazor.Components.DropDownList
 @using Jinget.Blazor.Components.DynamicComponent
-@using Jinget.Blazor.Components.Table
 @using Jinget.Blazor.Components.Popup
-@using Jinget.Blazor.Models
-@using Jinget.Blazor.Services
-@using Jinget.Blazor.Attributes
-@using Jinget.Blazor.Attributes.Input
-@using Jinget.Blazor.Attributes.Picker
-@using Jinget.Blazor.Services.Contracts
-@using MudBlazor;
-@using Jinget.Core.Enumerations;
-@using Jinget.Core.ExtensionMethods.Collections;
-@using Jinget.Blazor.Components.Picker
+@using MudBlazor
 @using static Jinget.Blazor.Test.SampleModel
 
 @inject IJSRuntime js;
 
 <JingetMessageBox @ref=@messageBox
                   ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true))></JingetMessageBox>
-<hr />
-<JingetDynamicForm Model=@Model1></JingetDynamicForm>
-<MudButton FullWidth=true
-           OnClick="Submit1"
-           Variant="Variant.Filled"
-           Color="Color.Primary">
-    <MudText>Submit</MudText>
-</MudButton>
-<hr />
+
 <JingetDynamicForm @ref=dynamicForm Model=@Model OnFieldReady="OnFieldReady"></JingetDynamicForm>
 
 <MudButton FullWidth=true
@@ -64,7 +47,7 @@
 @code {
     JingetDynamicForm<SampleModel> dynamicForm;
     Guid[] guids = [Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()];
-    public async Task OnFieldReady(JingetDynamicField field)
+    public async Task OnFieldReady(JingetDynamicFieldBase field)
     {
         if (field.Attribute is JingetDropDownListElement && field.Binding != null && field.Binding.Name == nameof(SampleModel.Status2))
         {
@@ -79,27 +62,15 @@
         await Task.CompletedTask;
     }
 
-    public class InquiryByDateFromViewModel
-    {
-        [Attributes.Picker.JingetDateRangePickerElement(DisplayName = "تاریخ", HasLabel = false, Culture = "fa-IR")]
-        public SelectedDateRangeModel? Date { get; set; }
-    }
-
     JingetMessageBox? messageBox;
-    public InquiryByDateFromViewModel? Model1 { get; set; }
 
     public SampleModel? Model { get; set; }
 
     protected override void OnInitialized()
     {
         Model = new();
-        Model1 = new();
     }
 
-    async Task Submit1()
-    {
-        await messageBox.ShowInfoAsync(Model1.Date == null ? "" : Model1.Date.ToString(), "", Newtonsoft.Json.JsonConvert.SerializeObject(Model1));
-    }
     async Task Submit()
     {
         await messageBox.ShowInfoAsync(Model.Name, $"{Model.Name} {Model.LastName}", Newtonsoft.Json.JsonConvert.SerializeObject(Model));
@@ -108,6 +79,7 @@
     {
         dynamicForm.Model.Status = 1;
         dynamicForm.Model.Status2 = guids[2].ToString();
+        dynamicForm.Model.Geo = new Random().Next(1, 6);
         dynamicForm.Model.LastName = "Farahmandian";
         await messageBox.ShowInfoAsync(Model.Name, $"{Model.Name} {Model.LastName}", Newtonsoft.Json.JsonConvert.SerializeObject(Model));
     }

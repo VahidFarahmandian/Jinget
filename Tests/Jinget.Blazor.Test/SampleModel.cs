@@ -2,6 +2,7 @@
 using Jinget.Blazor.Attributes;
 using Jinget.Blazor.Models;
 using MudBlazor;
+using Jinget.Blazor.Attributes.DropDownList;
 
 namespace Jinget.Blazor.Test
 {
@@ -60,11 +61,30 @@ namespace Jinget.Blazor.Test
             });
         });
 
+        [JingetDropDownListTreeElement(DisplayName = "Geo", Id = "cmbTreeGeo", IsRtl = false,
+            BindingFunction = nameof(GetGeoAsync), IsSearchable = true, HasLabel = true, LabelCssClass = "overlayed-label", Order = 1)]
+        public int? Geo { get; set; }
+        public async Task<List<JingetDropDownTreeItemModel>> GetGeoAsync(object? preBindingResult)
+            => await new JingetDropDownListTreeElement().BindAsync<GeoModel, int?>(async () =>
+            {
+                return await Task.FromResult(new List<GeoModel> {
+                    new() { Code = 1,ParentCode=null, Title = "Iran" },
+                    new() { Code = 2,ParentCode=null, Title = "USA" },
+                    new() { Code = 3,ParentCode=1, Title = "Tehran" },
+                    new() { Code = 4,ParentCode=3, Title = "Tehran City" },
+                    new() { Code = 5,ParentCode=2, Title = "WA" },
+                    new() { Code = 6,ParentCode=3, Title = "Pardis" }
+                });
+            });
         public class StatusModel : BaseTypeModel
         {
 
         }
         public class StatusGuidModel : BaseTypeModel<string>
+        {
+
+        }
+        public class GeoModel : BaseTypeTreeModel<int?>
         {
 
         }

@@ -16,14 +16,16 @@
 }
 
 loadScript({
-    /*url: '_content/Jinget.Blazor/js/jinget.selectize.js',*/
     url: '_content/Jinget.Blazor/js/jinget.select2.js',
     callback: loadScript({
-        url: '_content/Jinget.Blazor/js/jinget.jalali.picker.date.js',
+        url: '_content/Jinget.Blazor/js/jinget.select2.ext.js',
         callback: loadScript({
-            url: '_content/Jinget.Blazor/js/jinget.custom.js',
+            url: '_content/Jinget.Blazor/js/jinget.jalali.picker.date.js',
             callback: loadScript({
-                url: '_content/Jinget.Blazor/js/jinget.select2tree.js'
+                url: '_content/Jinget.Blazor/js/jinget.custom.js',
+                callback: loadScript({
+                    url: '_content/Jinget.Blazor/js/jinget.select2.tree.js'
+                })
             })
         })
     })

@@ -1,12 +1,12 @@
 ﻿@using Jinget.Blazor.Attributes
+@using Jinget.Blazor.Attributes.DropDownList
 @using Jinget.Blazor.Attributes.Input
 @using Jinget.Blazor.Components.DropDownList
+@using Jinget.Blazor.Components.DropDownList.DropDownListTree
 @using Jinget.Blazor.Components.Input
 @using Jinget.Blazor.Components.Picker
-@using Jinget.Core.ExtensionMethods.Reflection
 @using MudBlazor
-@using Newtonsoft.Json
-@using System.Runtime.CompilerServices
+@inherits JingetDynamicFieldBase
 
 @inject IJSRuntime JS;
 @inject IServiceProvider serviceProvider;
@@ -57,8 +57,30 @@ else if (Attribute is JingetDropDownListElement dropDown)
                         DefaultText="@dropDown.DefaultText"
                         IsSearchable="@dropDown.IsSearchable"
                         IsRtl="@dropDown.IsRtl"
-                        DataProviderFunc=@GetData
+                        NoResultText="@dropDown.NoResultText"
+                        SearchPlaceholderText="@dropDown.SearchPlaceholderText"
+                        DataProviderFunc=@GetDropDownListDataAsync
                         OnChange=@OnChange></JingetDropDownList>
+}
+else if (Attribute is JingetDropDownListTreeElement dropDownTree)
+{
+    <JingetDropDownListTree @ref=RefObject
+                            Id="@Id"
+                            Value=@Value
+                            CssClass="@Attribute.CssClass"
+                            HelperText="@dropDownTree.HelperText"
+                            IsDisabled=@Attribute.IsDisabled
+                            IsReadOnly=@Attribute.IsReadOnly
+                            IsRequired="@Attribute.IsRequired"
+                            RequiredError="@Attribute.RequiredError"
+                            DisplayName="@Attribute.DisplayName"
+                            DefaultText="@dropDownTree.DefaultText"
+                            IsSearchable="@dropDownTree.IsSearchable"
+                            IsRtl="@dropDownTree.IsRtl"
+                            NoResultText="@dropDownTree.NoResultText"
+                            SearchPlaceholderText="@dropDownTree.SearchPlaceholderText"
+                            DataProviderFunc=@GetDropDownTreeDataAsync
+                            OnChange=@OnChange></JingetDropDownListTree>
 }
 else if (Attribute is JingetLabelElement label)
 {
@@ -93,121 +115,4 @@ else
            class="@Attribute.CssClass"
            disabled="@Attribute.IsDisabled"
            readonly="@Attribute.IsReadOnly" />
-}
-
-@code {
-
-    [JsonProperty]
-    public object RefObject { get; set; }
-
-    [JsonProperty]
-    [Parameter] public string? Id { get; set; }
-
-    [JsonProperty]
-    [Parameter] public JingetFormElement? Attribute { get; set; }
-
-    [JsonProperty]
-    [Parameter] public object? Value { get; set; }
-
-    [JsonProperty]
-    [Parameter] public PropertyInfo? Binding { get; set; }
-
-    /// <summary>
-    /// This event raised whenever a field's value changed
-    /// </summary>
-    [JsonIgnore]
-    [Parameter] public EventCallback<object> ValueChanged { get; set; }
-
-    /// <summary>
-    /// This event raised whenever a field rendered on page
-    /// </summary>
-    [JsonIgnore]
-    [Parameter] public EventCallback<JingetDynamicField> DynamicFieldAdded { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-            await OnDynamicFieldAdded();
-    }
-    async Task OnDynamicFieldAdded()
-    {
-        await DynamicFieldAdded.InvokeAsync(this);
-    }
-
-    public async void OnChange(ChangeEventArgs e)
-    {
-        await OnDynamicFieldAdded();
-        await ValueChanged.InvokeAsync(e.Value);
-    }
-
-    object? InvokeBindingFunction(string? functionName, params object[] parameters)
-    {
-        if (functionName == null)
-            return null;
-        var method = Binding?.DeclaringType?.GetMethod(functionName);
-        if (method != null)
-        {
-            object? callerObject = null;
-            if (Binding?.DeclaringType != null)
-            {
-                if (Binding.DeclaringType.GetDefaultConstructor() != null)
-                    callerObject = Activator.CreateInstance(Binding.DeclaringType, null);
-                else
-                    throw new Exception($"Properties with {nameof(JingetDropDownListElement)} attribute should have a parameterless constructor.");
-
-                if (Binding.DeclaringType.BaseType != null)
-                {
-                    var propServiceProperty = Binding.DeclaringType.BaseType.GetProperty("ServiceProvider", BindingFlags.NonPublic | BindingFlags.Instance);
-                    if (propServiceProperty != null)
-                    {
-                        propServiceProperty.SetValue(callerObject, serviceProvider);
-                    }
-                }
-            }
-
-            object? data = null;
-
-            if (callerObject != null)
-            {
-                if (method.GetCustomAttribute(typeof(AsyncStateMachineAttribute)) != null)
-                {
-                    data = method.InvokeAsync(callerObject, parameters);
-                }
-                else
-                {
-                    data = method.Invoke(callerObject, parameters);
-                }
-            }
-
-            if (data != null)
-                return data;
-        }
-
-        return null;
-    }
-
-    async Task<List<JingetDropDownItemModel>> GetData()
-    {
-        var preBindingFunction = (Attribute as JingetDropDownListElement)?.PreBindingFunction;
-        object? preBindingResult = null;
-        if (!string.IsNullOrWhiteSpace(preBindingFunction))
-        {
-            preBindingResult = InvokeBindingFunction(preBindingFunction);
-        }
-
-        object? data;
-        var bindingFunction = (Attribute as JingetDropDownListElement)?.BindingFunction;
-        data = InvokeBindingFunction(bindingFunction, preBindingResult);
-
-        data = data == null ? new List<JingetDropDownItemModel>() : data;
-
-        var postBindingFunction = (Attribute as JingetDropDownListElement)?.PostBindingFunction;
-        object? postBindingResult = null;
-        if (!string.IsNullOrWhiteSpace(postBindingFunction))
-        {
-            postBindingResult = InvokeBindingFunction(postBindingFunction, preBindingResult, data);
-        }
-
-        return await Task.FromResult((List<JingetDropDownItemModel>)data);
-    }
 }

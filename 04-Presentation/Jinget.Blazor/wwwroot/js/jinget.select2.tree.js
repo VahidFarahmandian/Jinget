@@ -15,6 +15,7 @@
 
     function onTreeOpened(e) {
         $('input.select2-search__field').prop('placeholder', e.data.searchPlaceholderText);
+
         var $select = $(this);
         setTimeout(function () {
             moveOption($select);
