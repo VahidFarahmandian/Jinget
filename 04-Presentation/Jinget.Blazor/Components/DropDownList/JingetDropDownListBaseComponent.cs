@@ -95,13 +95,7 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
     /// <summary>
     /// Set <seealso cref="SelectedItem"/> using item index in <seealso cref="Items"/>
     /// </summary>
-    public async Task SetSelectedIndexAsync(int index)
-    {
-        if (index < Items.Count)
-        {
-            await SetSelectedItemAsync(Items[index].Value);
-        }
-    }
+    public abstract Task SetSelectedIndexAsync(int index);
 
     /// <summary>
     /// This method is being invoked by jinget.custom.js. whenever searchable dropdownlist's selected item changed

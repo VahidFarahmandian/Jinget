@@ -3,6 +3,7 @@
 @using Jinget.Blazor.Components.Popup
 @using Jinget.Blazor.Models
 @using Jinget.Blazor.Services.Contracts
+@using MudBlazor
 
 @inject ILocalStorageService localStorage
 
@@ -13,19 +14,77 @@ Sample 01: Required
 <JingetDropDownListTree @ref=@ddlTreeSample1
                         Id="ddlTreeSample1"
                         DataProviderFunc=@GetData
-                        DefaultText="---انتخاب کنید---"
-                        NoResultText="جستجو نتیجه ای در پی نداشت"
-                        SearchPlaceholderText="...جستجو..."
+                        DefaultText="---Choose---"
+                        NoResultText="Search returned no data :("
+                        SearchPlaceholderText="...Search..."
                         HelperText="This is sample drop down list tree"
                         DisplayName="DDLSampleTree"
                         IsRequired="true"
-                        IsRtl=true
+                        IsRtl=false
                         IsSearchable=true
                         OnChange=@OnChange1></JingetDropDownListTree>
+<hr />
+Sample 02: Change Selected Item(get from localstorage)
+<JingetDropDownListTree @ref=ddlTreeSample2
+                        Id="ddlTreeSample2"
+                        IsSearchable="true"
+                        IsRtl=false
+                        NoResultText="No Data Found!"
+                        SearchPlaceholderText="...Search..."
+                        DataProviderFunc=@GetData
+                        DefaultText="--Choose---"
+                        OnChange=@OnChange2>
+</JingetDropDownListTree>
+<hr />
+Sample 03: Change Selected Item(On button click)
+<JingetDropDownListTree @ref=ddlTreeSample3
+                        Id="ddlTreeSample3"
+                        IsSearchable=true
+                        DataProviderFunc=@GetData
+                        DefaultText="--Choose---"
+                        OnChange=@OnChange3>
+</JingetDropDownListTree>
+<MudButton FullWidth=true
+           OnClick="SetSelectedItem"
+           Variant="Variant.Filled"
+           Color="Color.Primary">
+    <MudText>Select</MudText>
+</MudButton>
+<MudButton FullWidth=true
+           OnClick="ClearSelection"
+           Variant="Variant.Filled"
+           Color="Color.Primary">
+    <MudText>Clear Selection</MudText>
+</MudButton>
+<hr />
+Sample 04: Set selected index: (SelectedIndex: @selectedIndexSearch)
+<JingetDropDownListTree @ref=ddlTreeSample4
+                        Id="ddlTreeSample4"
+                        IsSearchable=true
+                        DataProviderFunc=@GetData
+                        DefaultText="--Choose---"
+                        OnChange=@OnChange4>
+</JingetDropDownListTree>
+<MudButton FullWidth=true
+           OnClick="SetSelectedIndex"
+           Variant="Variant.Filled"
+           Color="Color.Primary">
+    <MudText>Select</MudText>
+</MudButton>
+<hr />
+Sample 05: Disabled
+<JingetDropDownListTree Id="ddlSampleDisabled"
+                        DataProviderFunc=@GetData
+                        DefaultText="--Choose---"
+                        IsDisabled="true">
+</JingetDropDownListTree>
 @code {
 
     JingetMessageBox? messageBox;
     JingetDropDownListTree ddlTreeSample1;
+    JingetDropDownListTree ddlTreeSample2;
+    JingetDropDownListTree ddlTreeSample3;
+    JingetDropDownListTree ddlTreeSample4;
 
     int selectedIndexSearch;
 
@@ -33,28 +92,62 @@ Sample 01: Required
     {
         return await Task.FromResult(new List<JingetDropDownTreeItemModel>
             {
-                new JingetDropDownTreeItemModel(15,5,"استان تهران"),
-                new JingetDropDownTreeItemModel(1500,15,"شهر تهران"),
-                new JingetDropDownTreeItemModel(1501,15,"پردیس"),
-                new JingetDropDownTreeItemModel(100,null,"آسیا"),
-                new JingetDropDownTreeItemModel(2,null,"اروپا"),
-                new JingetDropDownTreeItemModel(3,null,"آمریکای شمالی"),
-                new JingetDropDownTreeItemModel(4,null,"آفریقا"),
-                new JingetDropDownTreeItemModel(5,100,"ایران"),
-                new JingetDropDownTreeItemModel(6,3,"ایالات متحده آمریکا"),
-                new JingetDropDownTreeItemModel(7,2,"انگلستان"),
-                new JingetDropDownTreeItemModel(8,2,"روسیه"),
-                new JingetDropDownTreeItemModel(9,3,"کانادا"),
-                new JingetDropDownTreeItemModel(10,4,"مراکش"),
-                new JingetDropDownTreeItemModel(11,100,"چین"),
-                new JingetDropDownTreeItemModel(12,null,"آمریکای جنوبی"),
-                new JingetDropDownTreeItemModel(13,12,"برزیل"),
-                new JingetDropDownTreeItemModel(14,null,"اقیانوسیه"),
+                new JingetDropDownTreeItemModel(15,5,"Tehran Province"),
+                new JingetDropDownTreeItemModel(16,15,"Tehran"),
+                new JingetDropDownTreeItemModel(17,15,"Pardis"),
+                new JingetDropDownTreeItemModel(1,null,"Asia"),
+                new JingetDropDownTreeItemModel(2,null,"Europe"),
+                new JingetDropDownTreeItemModel(3,null,"North America"),
+                new JingetDropDownTreeItemModel(4,null,"Africa"),
+                new JingetDropDownTreeItemModel(5,1,"Iran"),
+                new JingetDropDownTreeItemModel(6,3,"USA"),
+                new JingetDropDownTreeItemModel(7,2,"England"),
+                new JingetDropDownTreeItemModel(8,2,"Russia"),
+                new JingetDropDownTreeItemModel(9,3,"Cananda"),
+                new JingetDropDownTreeItemModel(10,4,"Moroco"),
+                new JingetDropDownTreeItemModel(11,1,"China"),
+                new JingetDropDownTreeItemModel(12,null,"South America"),
+                new JingetDropDownTreeItemModel(13,12,"Brazil"),
+                new JingetDropDownTreeItemModel(14,null,"Oceania"),
             });
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await localStorage.SetItemAsync("selectedItem", new Random().Next(1, 17).ToString());
+            await ddlTreeSample2.SetSelectedItemAsync(await localStorage.GetItemAsync("selectedItem"));
+        }
     }
 
     public async Task OnChange1(ChangeEventArgs e)
     {
         await messageBox.ShowInfoAsync("ddlTreeSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlTreeSample1.SelectedItem));
+    }
+    public async Task OnChange2(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("ddlTreeSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlTreeSample2.SelectedItem));
+    }
+    public async Task OnChange3(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("ddlTreeSample3", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlTreeSample3.SelectedItem));
+    }
+    public async Task OnChange4(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("ddlTreeSample4", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlTreeSample4.SelectedItem));
+    }
+    public async Task SetSelectedItem()
+    {
+        await ddlTreeSample3.SetSelectedItemAsync(new Random().Next(1, 17).ToString());
+    }
+    public async Task ClearSelection()
+    {
+        await ddlTreeSample3.SetSelectedItemAsync(null);
+    }
+    public async Task SetSelectedIndex()
+    {
+        selectedIndexSearch = new Random().Next(0, 16);
+        await ddlTreeSample4.SetSelectedIndexAsync(selectedIndexSearch);
     }
 }

@@ -8,9 +8,9 @@
         var opts = $.extend(defaults, options);
         $(this).select2(opts)
             //زمانیکه کامپوننت باز میشود نیاز است تا ایتم ها را بصورت درختی رندر کنیم
-            .on("select2:open", options, onTreeOpened)
+            .off("select2:open").on("select2:open", options, onTreeOpened)
             //در صورتیکه کاربر روی ایکون کلیک کرد نباید چیزی انتخاب شود و صرفا باید درخت اکسپند یا کلپس شود
-            .on("select2:selecting", onTreeItemSelecting);
+            .off("select2:selecting").on("select2:selecting", onTreeItemSelecting);
     };
 
     function onTreeOpened(e) {
@@ -55,7 +55,8 @@
         //عمق تو رفتگی
         $container.attr('data-level', $element.data("level"));
 
-        var hasChild = $select.find("option[data-parent='" + $element.val() + "']").length > 0;
+        //محاسبه آیتمی فرزند فقط برای آیتمی هایی بجز آیتمی پیش فرض انجام می پذیرد
+        var hasChild = data.id != '---' && $select.find("option[data-parent='" + $element.val() + "']").length > 0;
 
         var $icon = $(container.firstChild);
         $icon.attr('id', "icon-" + data.id);
@@ -63,6 +64,7 @@
         $icon.addClass("fa-solid");
 
         var isSearching = $(".select2-search__field").val().length > 0;
+
         if (isSearching) {
             //با استفاده از این صفت بعدا در حالت جستجو امکان اکپند و کلپس پیاده میشود
             $container.attr('status', 'searching');
@@ -80,7 +82,8 @@
             else
                 $icon.removeClass("fa-minus-square").addClass("fa-plus-square");
         }
-        else if (data.id != "---" && !hasChild) {
+        //برای آیتم پیش فرض هیچ ایگونی قرار نده
+        else if (data.id != '---' && !hasChild) {
             if (!$icon.hasClass("fa-minus"))
                 $icon.addClass("fa-minus");
         }
@@ -96,7 +99,7 @@
                 "margin": "5px 0 0 " + padding + "px"
             });
             $icon.css({
-                "margin-left": "5px"
+                "margin-right": "5px"
             });
         }
         else {
@@ -107,6 +110,9 @@
                 "margin-left": "5px"
             });
         }
+        $container.css({
+            "cursor": "pointer"
+        });
         return $markup;
     }
 
@@ -183,7 +189,7 @@
 
         //آیتم پیش فرض نباید در جستجو شرکت کند. آیتم پیش فرض آیتمی است که فاقد ای دی میباشد
         //یعنی تگ روبرو: <option value="" data-parent="">@DefaultText</option>
-        if (data.id != "---" && (childMatched || data.text.toLowerCase().indexOf(term) >= 0)) {
+        if (data.id != '---' && (childMatched || data.text.toLowerCase().indexOf(term) >= 0)) {
             $("#" + data._resultId).css("display", "unset");
             return data;
         }

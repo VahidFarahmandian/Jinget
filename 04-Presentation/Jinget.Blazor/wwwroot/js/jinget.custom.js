@@ -18,10 +18,10 @@ window.initJingetDropDownList = (params = {
             escapeMarkup: function (markup) {
                 return markup;
             }
-        }).on('select2:select', function (e) {
+        }).off('select2:select').on('select2:select', function (e) {
             params.dotnet.invokeMethodAsync('OnJSDropDownListSelectedItemChanged', e.params.data.id);
-        }).on('select2:open', function (e) {
-            $('input.select2-search__field').prop('placeholder', options.searchPlaceholderText);
+        }).off('select2:open').on('select2:open', function (e) {
+            $('input.select2-search__field').prop('placeholder', params.searchPlaceholderText);
         });
 };
 window.jinget_blazor_dropdownlist_selectItem = (id, value) => {
@@ -56,7 +56,7 @@ window.initJingetDropDownListTree = (params = {
                 return markup;
             }
         });
-    $('#' + params.id).on('select2:select', function (e) {
+    $('#' + params.id).off('select2:select').on('select2:select', function (e) {
         params.dotnet.invokeMethodAsync('OnJSDropDownListSelectedItemChanged', e.params.data.id);
     });
 };
@@ -64,7 +64,7 @@ window.jinget_blazor_dropdownlist_tree_selectItem = (id, value) => {
     $('#' + id).val(value).trigger("change");
 };
 window.jinget_blazor_dropdownlist_tree_clear = (id) => {
-    $('#' + id).val(null).trigger("change");
+    $('#' + id).val('---').trigger("change");
 };
 
 /*jinget_select2tree END*/

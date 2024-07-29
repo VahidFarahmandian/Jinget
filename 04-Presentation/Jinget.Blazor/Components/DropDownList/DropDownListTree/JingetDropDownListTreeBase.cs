@@ -24,19 +24,25 @@ public abstract class JingetDropDownListTreeBase : JingetDropDownListBaseCompone
         return route;
     }
 
+    /// <summary>
+    /// Data binded to the drop down list
+    /// </summary>
+    public List<JingetDropDownTreeItemModel> OriginalItems { get; private set; } = [];
+
     protected override async Task OnInitializedAsync()
     {
         if (DataProviderFunc != null)
         {
             //exec given delegate and populate data in Items
-            var data = await DataProviderFunc();
-            Items = data
+            OriginalItems = await DataProviderFunc();
+
+            Items = OriginalItems
                 .Select(x => new
                 {
                     x.Value,
                     x.ParentValue,
                     x.Text,
-                    Route = Traverse(data, x, out int level),
+                    Route = Traverse(OriginalItems, x, out int level),
                     Level = level
                 })
                 .OrderBy(x => x.Route).ThenBy(x => x.Text)
@@ -47,5 +53,16 @@ public abstract class JingetDropDownListTreeBase : JingetDropDownListBaseCompone
         //data is loaded to Items, so the component can start rendering
         connected = true;
         await base.OnInitializedAsync();
+    }
+
+    /// <summary>
+    /// Set <seealso cref="SelectedItem"/> using item index in <seealso cref="OriginalItems"/>
+    /// </summary>
+    public override async Task SetSelectedIndexAsync(int index)
+    {
+        if (index < Items.Count)
+        {
+            await SetSelectedItemAsync(OriginalItems[index].Value);
+        }
     }
 }

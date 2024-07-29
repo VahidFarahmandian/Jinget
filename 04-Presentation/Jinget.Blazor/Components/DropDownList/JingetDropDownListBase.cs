@@ -14,4 +14,15 @@ public abstract class JingetDropDownListBase : JingetDropDownListBaseComponent<J
         connected = true;
         await base.OnInitializedAsync();
     }
+
+    /// <summary>
+    /// Set <seealso cref="SelectedItem"/> using item index in <seealso cref="Items"/>
+    /// </summary>
+    public override async Task SetSelectedIndexAsync(int index)
+    {
+        if (index < Items.Count)
+        {
+            await SetSelectedItemAsync(Items[index].Value);
+        }
+    }
 }

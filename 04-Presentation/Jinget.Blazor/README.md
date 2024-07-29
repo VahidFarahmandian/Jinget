@@ -819,7 +819,13 @@ Add the `JingetDropDownListTree` to your page and start using it;-)
                     OnChange=@OnChange></JingetDropDownListTree>
 ```
 
-Parameters/properties/callbacks and methods for this components are exactly same as `JingetDropDownList` component. 
+***Properties:***
+
+`OriginalItems`: Contains the items which are populated to dropdownlist using `DataProviderFunc`. Data in this property is in the same order as in original data source.
+
+`Items`: Contains a copy of data in `OriginalItems`. Data in this property are NOT in the same order as in original data source.
+
+Other Parameters/properties/callbacks and methods for this components are exactly same as `JingetDropDownList` component. 
 Except that `JingetDropDownList` uses `JingetDropDownItemModel` as it's data model provider class which contains `Value` and `Text` properties.
 But `JingetDropDownListTree` uses `JingetDropDownTreeItemModel` as data model provider which in addition to `JingetDropDownItemModel` properties, also contains `ParentValue` property to construct the tree structure
 
