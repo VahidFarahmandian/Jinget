@@ -616,7 +616,27 @@ Note that if types used for dynamic form creation needs to access `IServiceProvi
                 });
         });
 
+        [JingetDropDownListTreeElement(DisplayName = "Geo", Id = "cmbTreeGeo", IsRtl = false,
+            BindingFunction = nameof(GetGeoAsync), IsSearchable = true, HasLabel = true, LabelCssClass = "overlayed-label", Order = 1)]
+        public int? Geo { get; set; }
+        public async Task<List<JingetDropDownTreeItemModel>> GetGeoAsync(object? preBindingResult)
+            => await new JingetDropDownListTreeElement().BindAsync<GeoModel, int?>(async () =>
+            {
+                return await Task.FromResult(new List<GeoModel> {
+                    new() { Code = 1,ParentCode=null, Title = "Iran" },
+                    new() { Code = 2,ParentCode=null, Title = "USA" },
+                    new() { Code = 3,ParentCode=1, Title = "Tehran" },
+                    new() { Code = 4,ParentCode=3, Title = "Tehran City" },
+                    new() { Code = 5,ParentCode=2, Title = "WA" },
+                    new() { Code = 6,ParentCode=3, Title = "Pardis" }
+                });
+            });
+
         class FlightStatusModel : BaseTypeModel
+        {
+
+        }
+        class GeoModel : BaseTypeTreeModel<int?>
         {
 
         }
@@ -732,6 +752,8 @@ public async Task<List<JingetDropDownItemModel>> GetStatusAsync(string token, ob
     });
 
 ```
+
+`JingetDropDownListTreeElement`: Render a select input containg a tree on the page. Configuration and descriptions for this element is almost same as the `JingetDropDownListElement`.
 
 `JingetLabelElement`: Render a label on the page.
 
