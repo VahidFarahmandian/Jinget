@@ -6,9 +6,9 @@ namespace Jinget.Core.Utilities.Expressions;
 public static class ExpressionUtility
 {
     /// <summary>
-    /// Transform anonymouse expression to non-anonymouse expression
-    /// This method is useful wherever the class's default constructor is not accessable due to its access level
-    /// but you need to use this constructor to define your expression
+    /// Transform anonymous expression to non-anonymous expression
+    /// This method is useful wherever the class's default constructor is not accessible due to its access level
+    /// , but you need to use this constructor to define your expression
     /// </summary>
     internal static Expression Transform(Expression source, Type type)
     {
@@ -49,7 +49,7 @@ public static class ExpressionUtility
     }
 
     /// <summary>
-    /// Try parse an expression and return a string representation of the expression in form of 'A.B.C.etc'
+    /// Try parse an expression and return a string representation of the expression in form of 'A.B.C.etc.'
     /// </summary>
     /// <exception cref="JingetException"></exception>
     internal static bool TryParseExpression(Expression? expression, out string? path)
@@ -228,7 +228,7 @@ public static class ExpressionUtility
     /// <param name="json">a key/value structured json string/object, where keys are types property and values are their value. 
     /// for example:{'name':'vahid','age':'34'} which translates to a dictionary where 'name' and 'age' are keys and their values are 'vahid' and '34'</param>
     /// <param name="treatNullOrEmptyAsTrueCondition">When <paramref name="json"/> is null or empty, then a default condition will be returned.
-    /// if this parameters value is set to true the a default true condition will be returned otherwise a defaule false condition will be returned</param>
+    /// if this parameters value is set to true the default true condition will be returned otherwise a default false condition will be returned</param>
     /// <returns></returns>
     public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(string json, bool treatNullOrEmptyAsTrueCondition = true)
     {
