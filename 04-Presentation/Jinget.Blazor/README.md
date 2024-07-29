@@ -753,7 +753,7 @@ public async Task<List<JingetDropDownItemModel>> GetStatusAsync(string token, ob
 
 ```
 
-`JingetDropDownListTreeElement`: Render a select input containg a tree on the page. Configuration and descriptions for this element is almost same as the `JingetDropDownListElement`.
+`JingetDropDownListTreeElement`: Render a select input containing a tree on the page. Configuration and descriptions for this element is almost same as the `JingetDropDownListElement`.
 
 `JingetLabelElement`: Render a label on the page.
 
