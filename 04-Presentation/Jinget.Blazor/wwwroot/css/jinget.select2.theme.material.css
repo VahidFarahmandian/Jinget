@@ -1499,7 +1499,8 @@ div.dtr-bs-modal table.table tr:first-child td {
 
     .select2-container[dir=rtl] .select2-selection--single .select2-selection__rendered {
         padding-left: 20px;
-        padding-right: 8px
+        padding-right: 8px;
+        width:100%;
     }
 
     .select2-container.select2-container--open .select2-selection--multiple:after {
@@ -1784,7 +1785,7 @@ div.dtr-bs-modal table.table tr:first-child td {
     align-items: center;
     display: -ms-flexbox;
     display: flex;
-    min-height: 3rem;
+    /*min-height: 3rem;*/
     padding: 0 1rem;
     position: relative
 }

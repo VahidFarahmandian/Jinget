@@ -1,4 +1,13 @@
-﻿.select2-container {
+﻿.select2-no-result-text {
+    font-family: 'IRANSans';
+    color: red;
+    font-size: 12px;
+}
+.select2-search__field::placeholder {
+    color: gray;
+    font-family: 'IRANSans';
+}
+.select2-container {
     box-sizing: border-box;
     display: inline-block;
     margin: 0;

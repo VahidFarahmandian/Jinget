@@ -41,14 +41,7 @@
         if (_initialized)
         {
             //initialize drop down list by calling initJingetDropDownList. this functionality is mainly powered by select2.js library.
-            await JS.InvokeVoidAsync("initJingetDropDownList",
-            new
-            {
-                dotnet = DotNetObjectReference.Create(this),
-                Id,
-                IsSearchable,
-                IsRtl
-            });
+            await InitComponentAsync("initJingetDropDownList");
             await base.OnAfterRenderAsync(firstRender);
         }
     }

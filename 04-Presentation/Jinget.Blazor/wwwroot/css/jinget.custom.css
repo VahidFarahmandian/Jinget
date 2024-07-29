@@ -1,6 +1,10 @@
 ﻿/*Select2.js START*/
 .select2-container {
-    width: 100% !important
+    width: auto !important
+}
+
+.select2-search__field {
+    font-family: IRANSans !important;
 }
 
 .select2-container--outlined .select2-selection {

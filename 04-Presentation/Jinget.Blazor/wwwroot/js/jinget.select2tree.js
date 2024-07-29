@@ -1,40 +1,46 @@
 ﻿(function ($) {
-    $.fn.select2tree = function (options) {
+    $.fn.jinget_select2tree = function (options) {
         var defaults = {
             matcher: matchCustom,
             templateResult: formTemplateResult,
             templateSelection: formTemplateSelection
         };
         var opts = $.extend(defaults, options);
-        //زمانیکه کامپوننت باز میشود نیاز است تا ایتم ها را بصورت درختی رندر کنیم
-        $(this).select2(opts).on("select2:open", function (e) {
-            var $select = $(this);
-            setTimeout(function () {
-                moveOption($select);
-            }, 0);
-        });
-        //در صورتیکه کاربر روی ایکون کلیک کرد نباید چیزی انتخاب شود و صرفا باید درخت اکسپند یا کلپس شود
-        $(this).select2(opts).on("select2:selecting", function (e, selector, data, handler) {
-            var iconClicked = $(e.params.args.originalEvent.target).hasClass('fa-plus-square') || $(e.params.args.originalEvent.target).hasClass('fa-minus-square');
-            var toBeOpen = $(e.params.args.originalEvent.target).hasClass('fa-plus-square');
-            var $select = $(this);
-            if (iconClicked) {
-                switchAction($select, e.params.args.data.id, toBeOpen);
-                e.preventDefault();
-            }
-            else {
-                switchAction($select, e.params.args.data.id, toBeOpen);
-            }
-        });
+        $(this).select2(opts)
+            //زمانیکه کامپوننت باز میشود نیاز است تا ایتم ها را بصورت درختی رندر کنیم
+            .on("select2:open", options, onTreeOpened)
+            //در صورتیکه کاربر روی ایکون کلیک کرد نباید چیزی انتخاب شود و صرفا باید درخت اکسپند یا کلپس شود
+            .on("select2:selecting", onTreeItemSelecting);
     };
+
+    function onTreeOpened(e) {
+        $('input.select2-search__field').prop('placeholder', e.data.searchPlaceholderText);
+        var $select = $(this);
+        setTimeout(function () {
+            moveOption($select);
+        }, 0);
+    }
+    function onTreeItemSelecting(e) {
+        var iconClicked = $(e.params.args.originalEvent.target).hasClass('fa-plus-square') || $(e.params.args.originalEvent.target).hasClass('fa-minus-square');
+        var toBeOpen = $(e.params.args.originalEvent.target).hasClass('fa-plus-square');
+        var $select = $(this);
+        if (iconClicked) {
+            switchAction($select, e.params.args.data.id, toBeOpen);
+            e.preventDefault();
+        }
+        else {
+            switchAction($select, e.params.args.data.id, toBeOpen);
+        }
+    }
+
     //زمانیکه ایتمی انتخاب شد مقدار برگشتی از این متد بعنوان مقدار انتخابی در کامپوننت نمایش داده میشود
     function formTemplateSelection(data) {
-        return data.text;
+        return normalizeString(data.text);
     }
     //نحوه رندر شدن ایتم ها در درخت در این متد تنظیم میشوند
     function formTemplateResult(data) {
         if (data.loading) {
-            return data.text;
+            return normalizeString(data.text);
         }
         var $element = $(data.element);
         var $select = $element.parent();
@@ -74,26 +80,31 @@
             else
                 $icon.removeClass("fa-minus-square").addClass("fa-plus-square");
         }
+        else if (data.id != "---" && !hasChild) {
+            if (!$icon.hasClass("fa-minus"))
+                $icon.addClass("fa-minus");
+        }
         var $text = $(container.lastChild);
         $text.attr('id', "text-" + data.id);
-        $text.html(data.text);
+        $text.html(normalizeString(data.text));
 
         var dir = $(data.element.parentNode)[0].dataset.bind.substr(5, 3);
-        var padding = data.element.dataset.level * 2;
+        //برای گره ریشه نیازی به پدینگ نیست
+        var padding = data.element.dataset.level <= 1 ? 0 : (data.element.dataset.level - 1) * 20;
         if (dir == 'ltr') {
             $container.css({
-                "margin-left": padding + "em"
+                "margin": "5px 0 0 " + padding + "px"
             });
             $icon.css({
-                "margin-left": "1em"
+                "margin-left": "5px"
             });
         }
         else {
             $container.css({
-                "margin-right": padding + "em"
+                "margin": "5px " + padding + "px 0 0"
             });
             $icon.css({
-                "margin-left": "1em"
+                "margin-left": "5px"
             });
         }
         return $markup;
@@ -164,23 +175,23 @@
         if (typeof data.text === 'undefined') {
             return null;
         }
-        var term = params.term.toLowerCase();
+
+        var term = params.term.toLowerCase().replace('ي', 'ی').replace('ك', 'ک');
         var $element = $(data.element);
         var $select = $element.parent();
         var childMatched = checkForChildMatch($select, $element, term);
 
         //آیتم پیش فرض نباید در جستجو شرکت کند. آیتم پیش فرض آیتمی است که فاقد ای دی میباشد
         //یعنی تگ روبرو: <option value="" data-parent="">@DefaultText</option>
-        var isData = false;
-        if (data.id != "---")
-            isData = true;
-
-        if (isData && (childMatched || data.text.toLowerCase().indexOf(term) >= 0)) {
+        if (data.id != "---" && (childMatched || data.text.toLowerCase().indexOf(term) >= 0)) {
             $("#" + data._resultId).css("display", "unset");
             return data;
         }
         // Return `null` if the term should not be displayed
         return null;
+    }
+    function normalizeString(input) {
+        return input.replace('ي', 'ی').replace('ك', 'ک');
     }
 
     //برای جستجو در فرزندان گره جاری

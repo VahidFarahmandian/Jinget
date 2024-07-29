@@ -1,5 +1,5 @@
 ﻿@page "/dropdownlisttree"
-@using Jinget.Blazor.Components.DropDownListTree
+@using Jinget.Blazor.Components.DropDownList.DropDownListTree
 @using Jinget.Blazor.Components.Popup
 @using Jinget.Blazor.Models
 @using Jinget.Blazor.Services.Contracts
@@ -13,7 +13,9 @@ Sample 01: Required
 <JingetDropDownListTree @ref=@ddlTreeSample1
                         Id="ddlTreeSample1"
                         DataProviderFunc=@GetData
-                        DefaultText="---Choose---"
+                        DefaultText="---انتخاب کنید---"
+                        NoResultText="جستجو نتیجه ای در پی نداشت"
+                        SearchPlaceholderText="...جستجو..."
                         HelperText="This is sample drop down list tree"
                         DisplayName="DDLSampleTree"
                         IsRequired="true"

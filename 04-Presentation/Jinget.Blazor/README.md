@@ -11,6 +11,7 @@ Blazor components optimised for RTL languaged such as Farsi, Arabic etc.
 - [x] **Table**
 - [x] **Dynamic Form**
 - [x] **JingetDropDownList** 
+- [x] **JingetDropDownListTree** 
 - [x] **Input** 
 
 **Services list:**
@@ -801,6 +802,26 @@ Add the `JingetDropDownList` to your page and start using it;-)
 `SetSelectedItemAsync`: Select item in dropdownlist based on `Value`
 
 `SetSelectedIndexAsync`: Select item in dropdownlist based on the index in `Items`. Index starts from zero(0).
+
+**Jinget DropDownList Tree components**
+
+Add the `JingetDropDownListTree` to your page and start using it;-)
+
+```
+<JingetDropDownListTree @ref=@ddlSampleTree
+                    Id="ddlSampleTree"
+                    DataProviderFunc=@GetData
+                    DefaultText="---Choose---"
+                    HelperText="This is sample drop down list tree"
+                    DisplayName="DDLSample Tree"
+                    IsDisabled=false
+                    IsReadOnly=false
+                    OnChange=@OnChange></JingetDropDownListTree>
+```
+
+Parameters/properties/callbacks and methods for this components are exactly same as `JingetDropDownList` component. 
+Except that `JingetDropDownList` uses `JingetDropDownItemModel` as it's data model provider class which contains `Value` and `Text` properties.
+But `JingetDropDownListTree` uses `JingetDropDownTreeItemModel` as data model provider which in addition to `JingetDropDownItemModel` properties, also contains `ParentValue` property to construct the tree structure
 
 **Jinget Input**
 

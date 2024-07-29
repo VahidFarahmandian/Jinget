@@ -1,22 +1,29 @@
 ﻿/*select2 START*/
-window.initJingetDropDownList = (params = { dotnet, id, isSearchable = false, isRtl = true } = {}) => {
+window.initJingetDropDownList = (params = {
+    dotnet, id, isSearchable = false, isRtl = true, noResultText='Nothing to display!',
+    searchPlaceholderText=''
+} = {}) => {
     var element = $('#' + params.id).select2(
         {
             dir: params.isRtl ? 'rtl' : 'ltr',
             closeOnSelect: true,
             theme: 'outlined',
             width: 'resolve',
-            minimumResultsForSearch: params.isSearchable ? 0 : Infinity
+            minimumResultsForSearch: params.isSearchable ? 0 : Infinity,
+            language: {
+                noResults: function () {
+                    return "<div class='select2-no-result-text'>" + params.noResultText; +"</div>";
+                }
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            }
         }).on('select2:select', function (e) {
-            if (params.dotnet == null)
-                alert('dotnet not initialized');
             params.dotnet.invokeMethodAsync('OnJSDropDownListSelectedItemChanged', e.params.data.id);
+        }).on('select2:open', function (e) {
+            $('input.select2-search__field').prop('placeholder', options.searchPlaceholderText);
         });
-    if (params.isRtl && document.getElementById(params.id).nextSibling != null) {
-        document.getElementById(params.id).nextSibling.querySelector('.select2-selection__arrow').classList.add('select2_selection_arrow_rtl');
-    }
 };
-
 window.jinget_blazor_dropdownlist_selectItem = (id, value) => {
     $('#' + id).val(value).trigger("change");
 };
@@ -25,25 +32,33 @@ window.jinget_blazor_dropdownlist_clear = (id) => {
 };
 /*select2 END*/
 
-/*select2tree START*/
+/*jinget_select2tree START*/
 
-window.initJingetDropDownListTree = (params = { dotnet, id, isSearchable = false, isRtl = true } = {}) => {
-    var element = $('#' + params.id).select2tree(
+window.initJingetDropDownListTree = (params = {
+    dotnet, id, isSearchable = false, isRtl = true,
+    noResultText='Nothing to display!',
+    searchPlaceholderText=''
+} = {}) => {
+    var element = $('#' + params.id).jinget_select2tree(
         {
             dir: params.isRtl ? 'rtl' : 'ltr',
             closeOnSelect: true,
             theme: 'outlined',
             width: 'resolve',
-            minimumResultsForSearch: params.isSearchable ? 0 : Infinity
+            minimumResultsForSearch: params.isSearchable ? 0 : Infinity,
+            searchPlaceholderText: params.searchPlaceholderText,
+            language: {
+                noResults: function () {
+                    return "<div class='select2-no-result-text'>" + params.noResultText; +"</div>";
+                }
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            }
         });
     $('#' + params.id).on('select2:select', function (e) {
-        if (params.dotnet == null)
-            alert('dotnet not initialized');
-        params.dotnet.invokeMethodAsync('OnJSDropDownListTreeSelectedItemChanged', e.params.data.id);
+        params.dotnet.invokeMethodAsync('OnJSDropDownListSelectedItemChanged', e.params.data.id);
     });
-    if (params.isRtl && document.getElementById(params.id).nextSibling != null) {
-        document.getElementById(params.id).nextSibling.querySelector('.select2-selection__arrow').classList.add('select2_selection_arrow_rtl');
-    }
 };
 window.jinget_blazor_dropdownlist_tree_selectItem = (id, value) => {
     $('#' + id).val(value).trigger("change");
@@ -52,7 +67,7 @@ window.jinget_blazor_dropdownlist_tree_clear = (id) => {
     $('#' + id).val(null).trigger("change");
 };
 
-/*select2tree END*/
+/*jinget_select2tree END*/
 
 /*localStorage/sessionStorage START*/
 

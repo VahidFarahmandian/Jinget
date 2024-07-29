@@ -16,6 +16,8 @@ Sample 01: Required
                     Id="ddlSample1"
                     DataProviderFunc=@GetData
                     DefaultText="---Choose---"
+                    NoResultText="Search returns NO element"
+                    SearchPlaceholderText="...Search..."
                     HelperText="This is sample drop down list"
                     DisplayName="DDLSample"
                     IsRequired="true"
@@ -41,6 +43,9 @@ Sample 03: Change Selected Item(get from localstorage)
 <JingetDropDownList @ref=ddlSample3
                     Id="ddlSample3"
                     IsSearchable="true"
+                    IsRtl="true"
+                    NoResultText="No Data Found!"
+                    SearchPlaceholderText="...Search..."
                     DataProviderFunc=@GetDataPersian
                     DefaultText="--Choose---"
                     OnChange=@OnChange3>
