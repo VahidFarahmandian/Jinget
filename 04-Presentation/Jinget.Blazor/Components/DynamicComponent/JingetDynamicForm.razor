@@ -7,7 +7,7 @@
         @foreach (var p in Properties)
         {
             <MudItem lg="6" md="6" xs="12" sm="6" Style=@style>
-                <JingetDynamicField Id=@GetId(p.Attribute)
+                <JingetDynamicField Id=@(string.IsNullOrWhiteSpace(p.Attribute?.Id) ? $"jinget-{p.GetHashCode()}" : p.Attribute.Id)
                                     Value=@GetValue(p.Property)
                                     Attribute="@p.Attribute"
                                     Binding="@p.Property"

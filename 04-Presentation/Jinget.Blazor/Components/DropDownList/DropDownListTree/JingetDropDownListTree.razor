@@ -49,9 +49,12 @@
     {
         if (_initialized)
         {
-            //initialize drop down list by calling initJingetDropDownListTree. this functionality is mainly powered by select2.js library.
-            await InitComponentAsync("initJingetDropDownListTree");
-            await base.OnAfterRenderAsync(firstRender);
+            // if (firstRender)
+            // {
+                //initialize drop down list by calling initJingetDropDownListTree. this functionality is mainly powered by select2.js library.
+                await InitComponentAsync("initJingetDropDownListTree");
+                await base.OnAfterRenderAsync(firstRender);
+            //}
         }
     }
 }

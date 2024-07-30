@@ -64,7 +64,9 @@
         var dropdownPositionOption = this.options.get('dropdownPosition');
 
         if (dropdownPositionOption === 'above' || dropdownPositionOption === 'below') {
+
             newDirection = dropdownPositionOption;
+
         } else {
 
             if (!isCurrentlyAbove && !isCurrentlyBelow) {

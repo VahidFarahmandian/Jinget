@@ -3,6 +3,14 @@
 public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent where T : JingetDropDownItemModelBase
 {
     /// <summary>
+    /// Defines where to attach the dropdown html in page. By default element will be attached to body tag in page.
+    /// But in some cases like Bootstrap modals, which tend to steal focus from other elements outside of the modal. 
+    /// Since by default, Select2 attaches the dropdown menu to the body element, it is considered "outside of the modal". 
+    /// /// To avoid this problem, you may attach the dropdown to the modal itself by setting the modal id in this parameter.
+    /// </summary>
+    [Parameter] public string ParentElementId { get; set; } = "";
+
+    /// <summary>
     /// Default string used to be shown in dropdownlist, whenever user choose nothing.
     /// </summary>
     [Parameter] public string DefaultText { get; set; }
@@ -60,7 +68,8 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
                 IsSearchable,
                 IsRtl,
                 NoResultText,
-                SearchPlaceholderText
+                SearchPlaceholderText,
+                ParentElementId
             });
     }
 

@@ -63,17 +63,17 @@ namespace Jinget.Blazor.Test
 
         [JingetDropDownListTreeElement(DisplayName = "Geo", Id = "cmbTreeGeo", IsRtl = false,
             BindingFunction = nameof(GetGeoAsync), IsSearchable = true, HasLabel = true, LabelCssClass = "overlayed-label", Order = 1)]
-        public int? Geo { get; set; }
+        public Guid? Geo { get; set; }
         public async Task<List<JingetDropDownTreeItemModel>> GetGeoAsync(object? preBindingResult)
-            => await new JingetDropDownListTreeElement().BindAsync<GeoModel, int?>(async () =>
+            => await new JingetDropDownListTreeElement().BindAsync<GeoModel, Guid?>(async () =>
             {
                 return await Task.FromResult(new List<GeoModel> {
-                    new() { Code = 1,ParentCode=null, Title = "Iran" },
-                    new() { Code = 2,ParentCode=null, Title = "USA" },
-                    new() { Code = 3,ParentCode=1, Title = "Tehran" },
-                    new() { Code = 4,ParentCode=3, Title = "Tehran City" },
-                    new() { Code = 5,ParentCode=2, Title = "WA" },
-                    new() { Code = 6,ParentCode=3, Title = "Pardis" }
+                    new() { Code =Guid.Parse("37d6a0c4-3d05-4224-a651-2e5b6349608c"),ParentCode=Guid.Empty, Title = "Iran" },
+                    new() { Code = Guid.Parse("55d6a0c4-3d05-4224-a651-2e5b6349608c"),ParentCode=Guid.Parse("37d6a0c4-3d05-4224-a651-2e5b6349608c"), Title = "USA" },
+                    //new() { Code = 3,ParentCode=1, Title = "Tehran" },
+                    //new() { Code = 4,ParentCode=3, Title = "Tehran City" },
+                    //new() { Code = 5,ParentCode=2, Title = "WA" },
+                    //new() { Code = 6,ParentCode=3, Title = "Pardis" }
                 });
             });
         public class StatusModel : BaseTypeModel
@@ -84,7 +84,7 @@ namespace Jinget.Blazor.Test
         {
 
         }
-        public class GeoModel : BaseTypeTreeModel<int?>
+        public class GeoModel : BaseTypeTreeModel<Guid?>
         {
 
         }

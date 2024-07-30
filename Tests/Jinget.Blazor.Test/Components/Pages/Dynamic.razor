@@ -79,7 +79,7 @@
     {
         dynamicForm.Model.Status = 1;
         dynamicForm.Model.Status2 = guids[2].ToString();
-        dynamicForm.Model.Geo = new Random().Next(1, 6);
+        //dynamicForm.Model.Geo = new Random().Next(1, 6);
         dynamicForm.Model.LastName = "Farahmandian";
         await messageBox.ShowInfoAsync(Model.Name, $"{Model.Name} {Model.LastName}", Newtonsoft.Json.JsonConvert.SerializeObject(Model));
     }

@@ -98,6 +98,10 @@ public class JingetDynamicFormBase<T> : ComponentBase
                         convertedValue = Convert.ChangeType(dateRangeValue, t);
                     }
                 }
+                else if(t == typeof(Guid))
+                {
+                    convertedValue = (value == null) ? null : Guid.Parse(value.ToString());
+                }
                 else
                 {
                     if (value is IConvertible)
@@ -117,10 +121,6 @@ public class JingetDynamicFormBase<T> : ComponentBase
         }
     }
 
-    protected internal string GetId(JingetFormElement? element)
-    {
-        return string.IsNullOrWhiteSpace(element?.Id) ? $"jinget-{element.GetHashCode()}" : element.Id;
-    }
     protected internal object? GetValue(PropertyInfo property)
     {
         object? value = null;

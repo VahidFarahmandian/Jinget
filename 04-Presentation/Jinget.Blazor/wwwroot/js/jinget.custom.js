@@ -1,7 +1,7 @@
 ﻿/*select2 START*/
 window.initJingetDropDownList = (params = {
     dotnet, id, isSearchable = false, isRtl = true, noResultText='Nothing to display!',
-    searchPlaceholderText=''
+    searchPlaceholderText='', parentElementId=''
 } = {}) => {
     var element = $('#' + params.id).select2(
         {
@@ -10,6 +10,12 @@ window.initJingetDropDownList = (params = {
             theme: 'outlined',
             width: 'resolve',
             dropdownPosition: 'auto',
+
+            //example: Bootstrap modals tend to steal focus from other elements outside of the modal.
+            //Since by default, Select2 attaches the dropdown menu to the <body> element, it is considered "outside of the modal".
+            //To avoid this problem, you may attach the dropdown to the modal itself with the dropdownParent setting
+            dropdownParent: params.parentElementId == '' ? null : $('#' + params.parentElementId),
+
             minimumResultsForSearch: params.isSearchable ? 0 : Infinity,
             language: {
                 noResults: function () {
@@ -38,7 +44,7 @@ window.jinget_blazor_dropdownlist_clear = (id) => {
 window.initJingetDropDownListTree = (params = {
     dotnet, id, isSearchable = false, isRtl = true,
     noResultText='Nothing to display!',
-    searchPlaceholderText=''
+    searchPlaceholderText='', parentElementId=''
 } = {}) => {
     var element = $('#' + params.id).jinget_select2tree(
         {
@@ -47,6 +53,12 @@ window.initJingetDropDownListTree = (params = {
             theme: 'outlined',
             width: 'resolve',
             dropdownPosition: 'below',
+
+            //example: Bootstrap modals tend to steal focus from other elements outside of the modal.
+            //Since by default, Select2 attaches the dropdown menu to the <body> element, it is considered "outside of the modal".
+            //To avoid this problem, you may attach the dropdown to the modal itself with the dropdownParent setting
+            dropdownParent: params.parentElementId == '' ? null : $('#' + params.parentElementId),
+
             minimumResultsForSearch: params.isSearchable ? 0 : Infinity,
             searchPlaceholderText: params.searchPlaceholderText,
             language: {
@@ -60,6 +72,7 @@ window.initJingetDropDownListTree = (params = {
         });
     $('#' + params.id).off('select2:select').on('select2:select', function (e) {
         params.dotnet.invokeMethodAsync('OnJSDropDownListSelectedItemChanged', e.params.data.id);
+        jinget_blazor_dropdownlist_tree_selectItem(e.target.id, e.params.data.id);
     });
 };
 window.jinget_blazor_dropdownlist_tree_selectItem = (id, value) => {

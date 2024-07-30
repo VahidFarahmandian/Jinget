@@ -12,7 +12,6 @@
             //در صورتیکه کاربر روی ایکون کلیک کرد نباید چیزی انتخاب شود و صرفا باید درخت اکسپند یا کلپس شود
             .off("select2:selecting").on("select2:selecting", onTreeItemSelecting);
     };
-
     function onTreeOpened(e) {
         $('input.select2-search__field').prop('placeholder', e.data.searchPlaceholderText);
 

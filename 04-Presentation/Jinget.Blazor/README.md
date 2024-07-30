@@ -805,6 +805,11 @@ Add the `JingetDropDownList` to your page and start using it;-)
 
 `DataProviderFunc`: Defines a method which is used to populate the data in dropdownlist.
 
+`ParentElementId`: Defines where to attach the dropdown html in page. By default element will be attached to body tag in page.
+But in some cases like Bootstrap modals, which tend to steal focus from other elements outside of the modal. 
+Since by default, Select2 attaches the dropdown menu to the body element, it is considered "outside of the modal". 
+To avoid this problem, you may attach the dropdown to the modal itself by setting the modal id in this parameter.
+
 ***Callbacks:***
 
 `OnChange`: Fires a callback whenever the selected item changed.

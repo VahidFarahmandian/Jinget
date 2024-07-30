@@ -24,6 +24,18 @@ public abstract class JingetDropDownListTreeBase : JingetDropDownListBaseCompone
         return route;
     }
 
+    object? NormalizeParentValue(object? parentValue)
+    {
+        if (parentValue == null)
+            return null;
+        if (
+            parentValue.ToString() == Guid.Empty.ToString() ||
+            parentValue.ToString() == "0" ||
+            parentValue.ToString() == string.Empty)
+            return null;
+        return parentValue;
+    }
+
     /// <summary>
     /// Data binded to the drop down list
     /// </summary>
@@ -40,7 +52,7 @@ public abstract class JingetDropDownListTreeBase : JingetDropDownListBaseCompone
                 .Select(x => new
                 {
                     x.Value,
-                    x.ParentValue,
+                    ParentValue = NormalizeParentValue(x.ParentValue),
                     x.Text,
                     Route = Traverse(OriginalItems, x, out int level),
                     Level = level

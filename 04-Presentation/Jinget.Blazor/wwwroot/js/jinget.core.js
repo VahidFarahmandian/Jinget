@@ -18,13 +18,13 @@
 loadScript({
     url: '_content/Jinget.Blazor/js/jinget.select2.js',
     callback: loadScript({
-        url: '_content/Jinget.Blazor/js/jinget.select2.ext.js',
+        url: '_content/Jinget.Blazor/js/jinget.select2ext.js',
         callback: loadScript({
             url: '_content/Jinget.Blazor/js/jinget.jalali.picker.date.js',
             callback: loadScript({
                 url: '_content/Jinget.Blazor/js/jinget.custom.js',
                 callback: loadScript({
-                    url: '_content/Jinget.Blazor/js/jinget.select2.tree.js'
+                    url: '_content/Jinget.Blazor/js/jinget.select2tree.js'
                 })
             })
         })

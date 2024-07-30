@@ -46,6 +46,7 @@ else if (Attribute is JingetDropDownListElement dropDown)
 {
     <JingetDropDownList @ref=RefObject
                         Id="@Id"
+                        ParentElementId="@dropDown.ParentElementId"
                         Value=@Value
                         CssClass="@Attribute.CssClass"
                         HelperText="@dropDown.HelperText"
@@ -66,6 +67,7 @@ else if (Attribute is JingetDropDownListTreeElement dropDownTree)
 {
     <JingetDropDownListTree @ref=RefObject
                             Id="@Id"
+                            ParentElementId="@dropDownTree.ParentElementId"
                             Value=@Value
                             CssClass="@Attribute.CssClass"
                             HelperText="@dropDownTree.HelperText"

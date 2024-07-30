@@ -1,11 +1,15 @@
 ﻿@page "/popup/modal"
+@using Jinget.Blazor.Components.DropDownList
+@using Jinget.Blazor.Components.DropDownList.DropDownListTree
 @using Jinget.Blazor.Components.Popup
+@using Jinget.Blazor.Models
 
 <button @onclick=@ShowModal1 class="btn btn-primary">Show Modal(LTR)</button>
 <button @onclick=@ShowModal2 class="btn btn-primary">Show Modal(RTL)</button>
 <button @onclick=@ShowModal3 class="btn btn-primary">Show Modal(Nested)</button>
+<button @onclick=@ShowModal4 class="btn btn-primary">Show Modal(DropDownTree Inside Modal)</button>
 
-<JingetModal @ref="@modal1"
+<JingetModal @ref=@modal1
              Title="Sample Header"
              ShowFooter=true
              ShowHeader=true
@@ -18,7 +22,7 @@
     </ChildContent>
 </JingetModal>
 
-<JingetModal @ref="@modal2"
+<JingetModal @ref=@modal2
              Title="مودال 1"
              ShowFooter=true
              ShowHeader=true>
@@ -29,7 +33,8 @@
     </ChildContent>
 </JingetModal>
 
-<JingetModal @ref="@modal3"
+<JingetModal @ref=@modal3
+             Id="modal3"
              Title="Outer modal"
              ShowFooter=true
              ShowHeader=true
@@ -39,7 +44,8 @@
         This is outer modal
         <button @onclick=@ShowModal31 class="btn btn-primary">Show Modal(Nested-Inner)</button>
 
-        <JingetModal @ref="@modal31"
+        <JingetModal @ref=@modal31
+                     Id="modal31"
                      Title="Inner modal"
                      ShowFooter=true
                      ShowHeader=true
@@ -54,14 +60,141 @@
     </ChildContent>
 </JingetModal>
 
-@code {
-JingetModal? modal1 { get; set; }
-JingetModal? modal2 { get; set; }
-JingetModal? modal3 { get; set; }
-JingetModal? modal31 { get; set; }
+<JingetModal @ref=@modal4
+             Id="modal4"
+             Title="Outer modal"
+             ShowFooter=true
+             ShowHeader=true
+             Rtl=false
+             CloseButtonText="Close">
+    <ChildContent>
+        This is outer modal
+        <button @onclick=@ShowModal41 class="btn btn-primary">Show Modal(Nested-Inner)</button>
 
-async Task ShowModal1() => await modal1?.OpenAsync();
-async Task ShowModal2() => await modal2?.OpenAsync();
-async Task ShowModal3() => await modal3?.OpenAsync();
-async Task ShowModal31() => await modal31?.OpenAsync();
+        <JingetModal @ref=@modal41
+                     Id="modal41"
+                     Title="Inner modal"
+                     ShowFooter=true
+                     ShowHeader=true
+                     Rtl=false
+                     CloseButtonText="Close">
+            <ChildContent>
+                <JingetDropDownListTree @ref=@ddlTreeSample2
+                                        ParentElementId="modal41"
+                                        Id="ddlTreeSample2"
+                                        DataProviderFunc=@GetDataTree
+                                        DefaultText="---انتخاب کنید---"
+                                        SearchPlaceholderText="...Search..."
+                                        IsRtl=true
+                                        IsSearchable=true
+                                        OnChange=@OnChangeTree2></JingetDropDownListTree>
+                <JingetDropDownList @ref=@ddlSample2
+                                    ParentElementId="modal41"
+                                    Id="ddlSample2"
+                                    DataProviderFunc=@GetData
+                                    DefaultText="---انتخاب کنید---"
+                                    SearchPlaceholderText="...Search..."
+                                    IsRtl=true
+                                    IsSearchable=true
+                                    OnChange=@OnChange2></JingetDropDownList>
+            </ChildContent>
+        </JingetModal>
+        <JingetDropDownListTree @ref=@ddlTreeSample1
+                                ParentElementId="modal4"
+                                Id="ddlTreeSample1"
+                                DataProviderFunc=@GetDataTree
+                                DefaultText="---Choose---"
+                                NoResultText="Search returned no data :("
+                                SearchPlaceholderText="...Search..."
+                                IsRtl=false
+                                IsSearchable=true
+                                OnChange=@OnChangeTree1></JingetDropDownListTree>
+        <JingetDropDownList @ref=@ddlSample1
+                            ParentElementId="modal4"
+                            Id="ddlSample1"
+                            DataProviderFunc=@GetData
+                            DefaultText="---Choose---"
+                            NoResultText="Search returned no data :("
+                            SearchPlaceholderText="...Search..."
+                            IsRtl=false
+                            IsSearchable=true
+                            OnChange=@OnChange1></JingetDropDownList>
+    </ChildContent>
+</JingetModal>
+<JingetMessageBox @ref=@messageBox
+                  ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true))></JingetMessageBox>
+
+@code {
+    JingetModal? modal1 { get; set; }
+    JingetModal? modal2 { get; set; }
+    JingetModal? modal3 { get; set; }
+    JingetModal? modal31 { get; set; }
+    JingetModal? modal4 { get; set; }
+    JingetModal? modal41 { get; set; }
+
+    async Task ShowModal1() => await modal1?.OpenAsync();
+    async Task ShowModal2() => await modal2?.OpenAsync();
+    async Task ShowModal3() => await modal3?.OpenAsync();
+    async Task ShowModal31() => await modal31?.OpenAsync();
+    async Task ShowModal4() => await modal4?.OpenAsync();
+    async Task ShowModal41() => await modal41?.OpenAsync();
+
+    JingetDropDownListTree ddlTreeSample1;
+    JingetDropDownListTree ddlTreeSample2;
+
+    JingetDropDownList ddlSample1;
+    JingetDropDownList ddlSample2;
+    JingetMessageBox? messageBox;
+
+    public async Task OnChange1(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("ddlSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample1.SelectedItem));
+    }
+    public async Task OnChange2(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("ddlSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample2.SelectedItem));
+    }
+    public async Task OnChangeTree1(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("ddlTreeSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlTreeSample1.SelectedItem));
+    }
+    public async Task OnChangeTree2(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("ddlTreeSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlTreeSample2.SelectedItem));
+    }
+    async Task<List<JingetDropDownTreeItemModel>> GetDataTree()
+    {
+        return await Task.FromResult(new List<JingetDropDownTreeItemModel>
+            {
+                new JingetDropDownTreeItemModel(15,5,"Tehran Province"),
+                new JingetDropDownTreeItemModel(16,15,"Tehran"),
+                new JingetDropDownTreeItemModel(17,15,"Pardis"),
+                new JingetDropDownTreeItemModel(1,null,"Asia"),
+                new JingetDropDownTreeItemModel(2,null,"Europe"),
+                new JingetDropDownTreeItemModel(3,null,"North America"),
+                new JingetDropDownTreeItemModel(4,null,"Africa"),
+                new JingetDropDownTreeItemModel(5,1,"Iran"),
+                new JingetDropDownTreeItemModel(6,3,"USA"),
+                new JingetDropDownTreeItemModel(7,2,"England"),
+                new JingetDropDownTreeItemModel(8,2,"Russia"),
+                new JingetDropDownTreeItemModel(9,3,"Cananda"),
+                new JingetDropDownTreeItemModel(10,4,"Moroco"),
+                new JingetDropDownTreeItemModel(11,1,"China"),
+                new JingetDropDownTreeItemModel(12,null,"South America"),
+                new JingetDropDownTreeItemModel(13,12,"Brazil"),
+                new JingetDropDownTreeItemModel(14,null,"Oceania"),
+            });
+    }
+    async Task<List<JingetDropDownItemModel>> GetData()
+    {
+        return await Task.FromResult(new List<JingetDropDownItemModel>
+            {
+                new JingetDropDownItemModel(15,"Tehran Province"),
+                new JingetDropDownItemModel(16,"Tehran"),
+                new JingetDropDownItemModel(17,"Pardis"),
+                new JingetDropDownItemModel(1,"Asia"),
+                new JingetDropDownItemModel(2,"Europe"),
+                new JingetDropDownItemModel(3,"North America")
+            });
+    }
 }
