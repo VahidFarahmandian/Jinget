@@ -24,7 +24,7 @@ public abstract class JingetDropDownListTreeBase : JingetDropDownListBaseCompone
         return route;
     }
 
-    object? NormalizeParentValue(object? parentValue)
+    static object? NormalizeParentValue(object? parentValue)
     {
         if (parentValue == null)
             return null;
