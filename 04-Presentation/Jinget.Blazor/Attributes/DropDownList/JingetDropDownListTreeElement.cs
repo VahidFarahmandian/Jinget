@@ -1,4 +1,4 @@
-﻿namespace Jinget.Blazor.Attributes;
+﻿namespace Jinget.Blazor.Attributes.DropDownList;
 
 public class JingetDropDownListTreeElement : JingetDropDownListElementBase
 {
@@ -19,7 +19,7 @@ public class JingetDropDownListTreeElement : JingetDropDownListElementBase
         {
             foreach (T item in data)
             {
-                result.Add(new(item.Code, item.ParentCode, item.Title));
+                result.Add(new(item.Id, item.ParentId, item.Title));
             }
         }
         return result;

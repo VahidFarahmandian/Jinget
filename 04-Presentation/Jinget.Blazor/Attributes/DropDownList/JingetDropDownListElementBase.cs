@@ -1,4 +1,4 @@
-﻿namespace Jinget.Blazor.Attributes;
+﻿namespace Jinget.Blazor.Attributes.DropDownList;
 
 public abstract class JingetDropDownListElementBase : JingetFormElement
 {

@@ -1,4 +1,4 @@
-﻿namespace Jinget.Blazor.Components.DropDownList;
+﻿namespace Jinget.Blazor.Components.DropDownList.DropDownListTree;
 
 public abstract class JingetDropDownListTreeBase : JingetDropDownListBaseComponent<JingetDropDownTreeItemModel>
 {
@@ -36,19 +36,9 @@ public abstract class JingetDropDownListTreeBase : JingetDropDownListBaseCompone
         return parentValue;
     }
 
-    /// <summary>
-    /// Data binded to the drop down list
-    /// </summary>
-    public List<JingetDropDownTreeItemModel> OriginalItems { get; private set; } = [];
-
-    protected override async Task OnInitializedAsync()
+    List<JingetDropDownTreeItemModel> OrganizeItems()
     {
-        if (DataProviderFunc != null)
-        {
-            //exec given delegate and populate data in Items
-            OriginalItems = await DataProviderFunc();
-
-            Items = OriginalItems
+        return OriginalItems
                 .Select(x => new
                 {
                     x.Value,
@@ -60,11 +50,21 @@ public abstract class JingetDropDownListTreeBase : JingetDropDownListBaseCompone
                 .OrderBy(x => x.Route).ThenBy(x => x.Text)
                 .Select(x => new JingetDropDownTreeItemModel(x.Value, x.ParentValue, x.Text) { Padding = x.Level })
                 .ToList();
-            await OnDataBound.InvokeAsync();
+    }
+
+    /// <summary>
+    /// Data binded to the drop down list
+    /// </summary>
+    public List<JingetDropDownTreeItemModel> OriginalItems { get; private set; } = [];
+
+    public override List<JingetDropDownTreeItemModel> Items
+    {
+        get => base.Items;
+        set
+        {
+            OriginalItems = value;
+            base.Items = OrganizeItems();
         }
-        //data is loaded to Items, so the component can start rendering
-        connected = true;
-        await base.OnInitializedAsync();
     }
 
     /// <summary>

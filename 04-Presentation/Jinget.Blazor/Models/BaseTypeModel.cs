@@ -1,15 +1,15 @@
 ﻿namespace Jinget.Blazor.Models;
 
-public class BaseTypeModel<TCode>
+public class BaseTypeModel<TId>
 {
-    public virtual TCode? Code { get; set; }
+    public virtual TId Id { get; set; }
 
     public virtual string? Title { get; set; }
 }
 public class BaseTypeModel : BaseTypeModel<byte> { }
 
-public class BaseTypeTreeModel<TCode> : BaseTypeModel<TCode>
+public class BaseTypeTreeModel<TId> : BaseTypeModel<TId>
 {
-    public virtual TCode? ParentCode { get; set; }
+    public virtual TId? ParentId { get; set; }
 }
 public class BaseTypeTreeModel : BaseTypeTreeModel<int> { }

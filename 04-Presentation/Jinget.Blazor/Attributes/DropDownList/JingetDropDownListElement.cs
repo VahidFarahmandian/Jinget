@@ -19,7 +19,7 @@ public class JingetDropDownListElement : JingetDropDownListElementBase
         {
             foreach (T item in data)
             {
-                result.Add(new(item.Code, item.Title));
+                result.Add(new(item.Id, item.Title));
             }
         }
         return result;

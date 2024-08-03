@@ -38,17 +38,31 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
     /// <summary>
     /// Delegate used to bind data to dropdownlist.
     /// </summary>
-    [Parameter, EditorRequired] public Func<Task<List<T>>>? DataProviderFunc { get; set; }
+    [Parameter] public Func<Task<List<T>>>? DataProviderFunc { get; set; }
 
     /// <summary>
     /// Raised whenever the <seealso cref="Items"/> changed.
     /// </summary>
     [Parameter] public EventCallback OnDataBound { get; set; }
 
+    private List<T> _items = [];
     /// <summary>
     /// Data binded to the drop down list
     /// </summary>
-    public List<T> Items { get; set; } = [];
+    public virtual List<T> Items
+    {
+        get => _items;
+        set
+        {
+            if (_items.SequenceEqual(value))
+                return;
+            _items = value;
+            ItemsChanged.InvokeAsync(value);
+            OnDataBound.InvokeAsync();
+        }
+    }
+    public EventCallback<List<T>> ItemsChanged { get; set; }
+    //[Parameter] public virtual EventCallback<object?> ValueChanged { get; set; }
 
     /// <summary>
     /// Currently selected item among <seealso cref="Items"/> members
@@ -77,6 +91,18 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
     /// This field is only used when <seealso cref="IsSearchable"/> is true, to prevent rendering element before binding data into <seealso cref="Items"/>
     /// </summary>
     protected internal bool connected = false;
+    protected override async Task OnInitializedAsync()
+    {
+        //await DataBind();
+        if (DataProviderFunc != null)
+        {
+            //exec given delegate and populate data in Items
+            Items = await DataProviderFunc();
+        }
+        //data is loaded to Items, so the component can start rendering
+        connected = true;
+        await base.OnInitializedAsync();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -127,4 +153,6 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
         StateHasChanged();
         await OnChange.InvokeAsync(new ChangeEventArgs { Value = e });
     }
+
+    //public abstract Task DataBindAsync();
 }

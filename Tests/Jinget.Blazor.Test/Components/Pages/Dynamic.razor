@@ -1,7 +1,9 @@
 ﻿@page "/dynamic"
 @using Jinget.Blazor.Attributes.DropDownList
 @using Jinget.Blazor.Components.DropDownList
+@using Jinget.Blazor.Components.DropDownList.DropDownListTree
 @using Jinget.Blazor.Components.DynamicComponent
+@using Jinget.Blazor.Attributes
 @using Jinget.Blazor.Components.Popup
 @using MudBlazor
 @using static Jinget.Blazor.Test.SampleModel
@@ -54,10 +56,25 @@
             ((JingetDropDownList)field.RefObject).Items = await new JingetDropDownListElement().BindAsync<StatusGuidModel, string>(
                 async () =>
                  await Task.FromResult(new List<StatusGuidModel> {
-                     new() { Code = guids[0].ToString(), Title = "Active" },
-                     new() { Code = guids[1].ToString(), Title = "Deactive" },
-                     new() { Code = guids[2].ToString(), Title = "Unknown" } })
+                     new() { Id = guids[0].ToString(), Title = "Active" },
+                     new() { Id = guids[1].ToString(), Title = "Deactive" },
+                     new() { Id = guids[2].ToString(), Title = "Unknown" } })
             );
+        }
+        else if (field.Attribute is JingetDropDownListTreeElement && field.Binding != null && field.Binding.Name == nameof(SampleModel.Department))
+        {
+            ((JingetDropDownListTree)field.RefObject).Items =
+            await new JingetDropDownListTreeElement().BindAsync<DepartmentModel, int?>(
+                async () =>
+                 await Task.FromResult(new List<DepartmentModel> {
+                    new() { Id = 1, ParentId = null, Title = "IT" },
+                    new() { Id = 2, ParentId = null, Title = "Finance" },
+                    new() { Id = 3, ParentId= 1, Title = "Software" },
+                    new() { Id = 4, ParentId= 1, Title = "Hardware" },
+                    new() { Id = 5, ParentId= 2, Title = "HQ" }
+                             })
+            );
+            // await ((JingetDropDownListTree)field.RefObject).DataBindAsync();
         }
         await Task.CompletedTask;
     }
@@ -79,7 +96,7 @@
     {
         dynamicForm.Model.Status = 1;
         dynamicForm.Model.Status2 = guids[2].ToString();
-        //dynamicForm.Model.Geo = new Random().Next(1, 6);
+        dynamicForm.Model.Department = new Random().Next(1, 5);
         dynamicForm.Model.LastName = "Farahmandian";
         await messageBox.ShowInfoAsync(Model.Name, $"{Model.Name} {Model.LastName}", Newtonsoft.Json.JsonConvert.SerializeObject(Model));
     }

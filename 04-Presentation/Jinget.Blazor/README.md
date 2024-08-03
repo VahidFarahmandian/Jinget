@@ -623,12 +623,12 @@ Note that if types used for dynamic form creation needs to access `IServiceProvi
             => await new JingetDropDownListTreeElement().BindAsync<GeoModel, int?>(async () =>
             {
                 return await Task.FromResult(new List<GeoModel> {
-                    new() { Code = 1,ParentCode=null, Title = "Iran" },
-                    new() { Code = 2,ParentCode=null, Title = "USA" },
-                    new() { Code = 3,ParentCode=1, Title = "Tehran" },
-                    new() { Code = 4,ParentCode=3, Title = "Tehran City" },
-                    new() { Code = 5,ParentCode=2, Title = "WA" },
-                    new() { Code = 6,ParentCode=3, Title = "Pardis" }
+                    new() { Code = 1,ParentId=null, Title = "Iran" },
+                    new() { Code = 2,ParentId=null, Title = "USA" },
+                    new() { Code = 3,ParentId=1, Title = "Tehran" },
+                    new() { Code = 4,ParentId=3, Title = "Tehran City" },
+                    new() { Code = 5,ParentId=2, Title = "WA" },
+                    new() { Code = 6,ParentId=3, Title = "Pardis" }
                 });
             });
 

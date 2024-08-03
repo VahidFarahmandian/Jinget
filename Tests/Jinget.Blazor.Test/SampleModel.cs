@@ -55,9 +55,9 @@ namespace Jinget.Blazor.Test
         {
             var t = preBindingResult;
             return await Task.FromResult(new List<StatusModel> {
-                new() { Code = 1, Title = "فعال" },
-                new() { Code = 2, Title = "غیرفعال" },
-                new() { Code = 3, Title = "نامشخص" }
+                new() { Id = 1, Title = "فعال" },
+                new() { Id = 2, Title = "غیرفعال" },
+                new() { Id = 3, Title = "نامشخص" }
             });
         });
 
@@ -68,14 +68,16 @@ namespace Jinget.Blazor.Test
             => await new JingetDropDownListTreeElement().BindAsync<GeoModel, Guid?>(async () =>
             {
                 return await Task.FromResult(new List<GeoModel> {
-                    new() { Code =Guid.Parse("37d6a0c4-3d05-4224-a651-2e5b6349608c"),ParentCode=Guid.Empty, Title = "Iran" },
-                    new() { Code = Guid.Parse("55d6a0c4-3d05-4224-a651-2e5b6349608c"),ParentCode=Guid.Parse("37d6a0c4-3d05-4224-a651-2e5b6349608c"), Title = "USA" },
-                    //new() { Code = 3,ParentCode=1, Title = "Tehran" },
-                    //new() { Code = 4,ParentCode=3, Title = "Tehran City" },
-                    //new() { Code = 5,ParentCode=2, Title = "WA" },
-                    //new() { Code = 6,ParentCode=3, Title = "Pardis" }
+                    new() { Id =Guid.Parse("37d6a0c4-3d05-4224-a651-2e5b6349608c"),ParentId=Guid.Empty, Title = "Iran" },
+                    new() { Id = Guid.Parse("55d6a0c4-3d05-4224-a651-2e5b6349608c"),ParentId=null, Title = "USA" },
+                    new() { Id = Guid.Parse("56d6a0c4-3d05-4224-a651-2e5b6349608c"),ParentId=Guid.Parse("37d6a0c4-3d05-4224-a651-2e5b6349608c"), Title = "Tehran" },
                 });
             });
+
+        [JingetDropDownListTreeElement(DisplayName = "Department", Id = "cmbTreeDepartment", IsRtl = false,
+            IsSearchable = true, HasLabel = true, LabelCssClass = "overlayed-label", Order = 2)]
+        public int Department { get; set; }
+
         public class StatusModel : BaseTypeModel
         {
 
@@ -85,6 +87,10 @@ namespace Jinget.Blazor.Test
 
         }
         public class GeoModel : BaseTypeTreeModel<Guid?>
+        {
+
+        }
+        public class DepartmentModel : BaseTypeTreeModel<int?>
         {
 
         }
