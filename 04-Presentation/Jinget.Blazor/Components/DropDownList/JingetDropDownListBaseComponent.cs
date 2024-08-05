@@ -145,6 +145,7 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
         Value = e;
 
         SelectedItem = e == null ? null : Items.FirstOrDefault(x => x.Value?.ToString() == e.ToString());
+   
         StateHasChanged();
         await OnChange.InvokeAsync(new ChangeEventArgs { Value = e });
     }

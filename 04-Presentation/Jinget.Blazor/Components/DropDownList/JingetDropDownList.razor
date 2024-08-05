@@ -1,45 +1,24 @@
-﻿@using Microsoft.AspNetCore.Components.Forms
+﻿@using Jinget.Core.ExtensionMethods
+@using Microsoft.AspNetCore.Components.Forms
 @using MudBlazor
 @inherits JingetDropDownListBase;
 
 @if (connected)
 {
-                <select id="@Id"
-                        class="@CssClass"
-                        disabled="@IsDisabled"
-                        required="@IsRequired">
-                    <option value="">@DefaultText</option>
+    <select id="@Id"
+            class="@CssClass"
+            disabled="@IsDisabled"
+            required="@IsRequired">
+        <option value="">@DefaultText</option>
         @foreach (var item in Items)
         {
             bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
-            @* if (selected)
-            {
-                Task.Run(() =>
-                {
-                    JS.InvokeVoidAsync("jinget_blazor_dropdownlist_selectItem", Id, Value).GetAwaiter().GetResult();
-                });
-            } *@
             <option value="@item.Value" selected="@selected">@item.Text</option>
-                                    @* <option value="@item.Value">@item.Text</option> *@
         }
-        @*         @if (Value == null)
-        {
-            Task.Run(() =>
-            {
-                JS.InvokeVoidAsync("jinget_blazor_dropdownlist_clear", Id).GetAwaiter().GetResult();
-            });
-        }
-        else
-        {
-            Task.Run(() =>
-            {
-                JS.InvokeVoidAsync("jinget_blazor_dropdownlist_selectItem", Id, Value).GetAwaiter().GetResult();
-            });
-        } *@
-                </select>
+    </select>
     @if (!HasSelectedValue())
     {
-                <label style="color:red">@RequiredError</label>
+        <label style="color:red">@RequiredError</label>
     }
 }
 @code {
@@ -52,7 +31,7 @@
             await InitComponentAsync("initJingetDropDownList");
             await base.OnAfterRenderAsync(firstRender);
         }
-        if (Value == null)
+        if (Value == null || Value.HasDefaultValue())
         {
             await JS.InvokeVoidAsync("jinget_blazor_dropdownlist_clear", Id);
         }

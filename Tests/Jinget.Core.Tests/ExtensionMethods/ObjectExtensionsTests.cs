@@ -2,6 +2,7 @@
 using System.Linq;
 using Jinget.Core.Tests._BaseData;
 using static Jinget.Core.ExtensionMethods.ObjectExtensions;
+using System;
 
 namespace Jinget.Core.ExtensionMethods.Tests;
 
@@ -124,5 +125,37 @@ public class ObjectExtensionsTests
         var result = objSource.HasSameValuesAs(objTarget);
 
         Assert.IsTrue(result);
+    }
+
+    [TestMethod()]
+    public void should_return_true_for_guid_default_value()
+    {
+        Guid input = default;
+        var result = input.HasDefaultValue();
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod()]
+    public void should_return_true_for_int_default_value()
+    {
+        int input = default;
+        var result = input.HasDefaultValue();
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod()]
+    public void should_return_false_for_nullable_int_default_value()
+    {
+        int? input = null;
+        var result = input.HasDefaultValue();
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod()]
+    public void should_return_false_for_reference_type_default_value()
+    {
+        TestClass input = new();
+        var result = input.HasDefaultValue();
+        Assert.IsFalse(result);
     }
 }

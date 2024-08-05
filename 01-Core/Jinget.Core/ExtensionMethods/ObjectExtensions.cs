@@ -189,4 +189,30 @@ public static class ObjectExtensions
 
         return JsonConvert.SerializeObject(source, settings) == JsonConvert.SerializeObject(target, settings);
     }
+
+    /// <summary>
+    /// Check if an object has default value or not. This extension method works only for value types.
+    /// For reference types or nullable value types(which has null value) it always returns false.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool HasDefaultValue(this object value)
+    {
+        //null is not default value for non-nullable value types
+        if (value == null)
+            return false;
+
+        Type type = value.GetType();
+
+        // can't be, as would be null
+        if (!type.IsValueType)
+            return false;
+
+        // ditto, Nullable<T>
+        if (Nullable.GetUnderlyingType(type) != null)
+            return false;
+
+        object defaultValue = Activator.CreateInstance(type);
+        return value.Equals(defaultValue);
+    }
 }

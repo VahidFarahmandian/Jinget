@@ -1,4 +1,5 @@
 ﻿@using Jinget.Blazor.Components.DropDownList
+@using Jinget.Core.ExtensionMethods
 @using Microsoft.AspNetCore.Components.Forms
 @using MudBlazor
 @inherits JingetDropDownListTreeBase;
@@ -13,14 +14,6 @@
         <option value="---" data-parent="" data-level=1>@DefaultText</option>
         @foreach (var item in Items)
         {
-            @* bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString()); *@
-            @*           if (selected)
-    {
-    Task.Run(() =>
-    {
-    JS.InvokeVoidAsync("jinget_blazor_dropdownlist_tree_selectItem", Id, Value).GetAwaiter().GetResult();
-    });
-    } *@
             @if (item.ParentValue == null)
             {
                 <option value="@item.Value" data-parent="" data-level="@item.Padding">@item.Text</option>
@@ -30,13 +23,6 @@
                 <option value="@item.Value" data-parent="@item.ParentValue" data-level="@item.Padding">@item.Text</option>
             }
         }
-        @*     @if (Value == null)
-    {
-    Task.Run(() =>
-    {
-    JS.InvokeVoidAsync("jinget_blazor_dropdownlist_tree_clear", Id).GetAwaiter().GetResult();
-    });
-    } *@
     </select>
     @if (!HasSelectedValue())
     {
@@ -53,7 +39,7 @@
             await InitComponentAsync("initJingetDropDownListTree");
             await base.OnAfterRenderAsync(firstRender);
         }
-        if (Value == null)
+        if (Value == null || Value.HasDefaultValue())
         {
             await JS.InvokeVoidAsync("jinget_blazor_dropdownlist_tree_clear", Id);
         }
