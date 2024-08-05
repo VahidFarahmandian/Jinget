@@ -116,6 +116,8 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
         await base.OnAfterRenderAsync(firstRender);
     }
 
+    bool HasValue(object? value) => value != null && value.ToString() != "---";
+
     /// <summary>
     /// Set <seealso cref="SelectedItem"/> using item value(<seealso cref="JingetDropDownItemModel.Value"/>) in <seealso cref="Items"/>
     /// </summary>
@@ -123,8 +125,8 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
     /// <returns></returns>
     public async Task SetSelectedItemAsync(object? value)
     {
-        Value = value;
-        await OnSelectedItemChangedAsync(value);
+        Value = HasValue(value) ? value : null;
+        await OnSelectedItemChangedAsync(Value);
     }
 
     /// <summary>
@@ -136,23 +138,18 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
     /// This method is being invoked by jinget.custom.js. whenever searchable dropdownlist's selected item changed
     /// </summary>
     [JSInvokable]
-    public void OnJSDropDownListSelectedItemChanged(object? e) => OnSelectedItemChangedAsync(e);
+    public void OnJSDropDownListSelectedItemChanged(object? e) => SetSelectedItemAsync(e);
 
     protected async Task OnSelectedItemChangedAsync(object? e)
     {
         Value = e;
 
-        if (e == null)
-        {
-            SelectedItem = null;
-        }
-        else
-        {
-            SelectedItem = Items.FirstOrDefault(x => x.Value?.ToString() == e.ToString());
-        }
+        SelectedItem = e == null ? null : Items.FirstOrDefault(x => x.Value?.ToString() == e.ToString());
         StateHasChanged();
         await OnChange.InvokeAsync(new ChangeEventArgs { Value = e });
     }
-
+    protected internal bool HasSelectedValue() =>
+        IsRequired &&
+        (SelectedItem == null || string.IsNullOrWhiteSpace(SelectedItem.Value?.ToString()));
     //public abstract Task DataBindAsync();
 }

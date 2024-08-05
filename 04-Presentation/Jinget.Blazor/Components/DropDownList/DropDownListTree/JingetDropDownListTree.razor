@@ -13,14 +13,14 @@
         <option value="---" data-parent="" data-level=1>@DefaultText</option>
         @foreach (var item in Items)
         {
-            bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
-            if (selected)
-            {
-                Task.Run(() =>
-                {
-                    JS.InvokeVoidAsync("jinget_blazor_dropdownlist_tree_selectItem", Id, Value).GetAwaiter().GetResult();
-                });
-            }
+            @* bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString()); *@
+            @*           if (selected)
+    {
+    Task.Run(() =>
+    {
+    JS.InvokeVoidAsync("jinget_blazor_dropdownlist_tree_selectItem", Id, Value).GetAwaiter().GetResult();
+    });
+    } *@
             @if (item.ParentValue == null)
             {
                 <option value="@item.Value" data-parent="" data-level="@item.Padding">@item.Text</option>
@@ -29,16 +29,16 @@
             {
                 <option value="@item.Value" data-parent="@item.ParentValue" data-level="@item.Padding">@item.Text</option>
             }
-            @if (Value == null)
-            {
-                Task.Run(() =>
-                {
-                    JS.InvokeVoidAsync("jinget_blazor_dropdownlist_tree_clear", Id).GetAwaiter().GetResult();
-                });
-            }
         }
+        @*     @if (Value == null)
+    {
+    Task.Run(() =>
+    {
+    JS.InvokeVoidAsync("jinget_blazor_dropdownlist_tree_clear", Id).GetAwaiter().GetResult();
+    });
+    } *@
     </select>
-    @if (IsRequired && (SelectedItem == null || string.IsNullOrWhiteSpace(SelectedItem.Value?.ToString())))
+    @if (!HasSelectedValue())
     {
         <label style="color:red">@RequiredError</label>
     }
@@ -49,12 +49,17 @@
     {
         if (_initialized)
         {
-            // if (firstRender)
-            // {
-                //initialize drop down list by calling initJingetDropDownListTree. this functionality is mainly powered by select2.js library.
-                await InitComponentAsync("initJingetDropDownListTree");
-                await base.OnAfterRenderAsync(firstRender);
-            //}
+            //initialize drop down list by calling initJingetDropDownListTree. this functionality is mainly powered by select2.js library.
+            await InitComponentAsync("initJingetDropDownListTree");
+            await base.OnAfterRenderAsync(firstRender);
+        }
+        if (Value == null)
+        {
+            await JS.InvokeVoidAsync("jinget_blazor_dropdownlist_tree_clear", Id);
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("jinget_blazor_dropdownlist_tree_selectItem", Id, Value);
         }
     }
 }

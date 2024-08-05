@@ -4,34 +4,42 @@
 
 @if (connected)
 {
-    <select id="@Id"
-            class="@CssClass"
-            disabled="@IsDisabled"
-            required="@IsRequired">
-        <option value="">@DefaultText</option>
+                <select id="@Id"
+                        class="@CssClass"
+                        disabled="@IsDisabled"
+                        required="@IsRequired">
+                    <option value="">@DefaultText</option>
         @foreach (var item in Items)
         {
             bool selected = item.Value != null && Value != null && item.Value.ToString().Equals(Value.ToString());
-            if (selected)
+            @* if (selected)
             {
                 Task.Run(() =>
                 {
                     JS.InvokeVoidAsync("jinget_blazor_dropdownlist_selectItem", Id, Value).GetAwaiter().GetResult();
                 });
-            }
+            } *@
             <option value="@item.Value" selected="@selected">@item.Text</option>
+                                    @* <option value="@item.Value">@item.Text</option> *@
         }
-        @if (Value == null)
+        @*         @if (Value == null)
         {
             Task.Run(() =>
             {
                 JS.InvokeVoidAsync("jinget_blazor_dropdownlist_clear", Id).GetAwaiter().GetResult();
             });
         }
-    </select>
-    @if (IsRequired && (SelectedItem == null || string.IsNullOrWhiteSpace(SelectedItem.Value?.ToString())))
+        else
+        {
+            Task.Run(() =>
+            {
+                JS.InvokeVoidAsync("jinget_blazor_dropdownlist_selectItem", Id, Value).GetAwaiter().GetResult();
+            });
+        } *@
+                </select>
+    @if (!HasSelectedValue())
     {
-        <label style="color:red">@RequiredError</label>
+                <label style="color:red">@RequiredError</label>
     }
 }
 @code {
@@ -43,6 +51,14 @@
             //initialize drop down list by calling initJingetDropDownList. this functionality is mainly powered by select2.js library.
             await InitComponentAsync("initJingetDropDownList");
             await base.OnAfterRenderAsync(firstRender);
+        }
+        if (Value == null)
+        {
+            await JS.InvokeVoidAsync("jinget_blazor_dropdownlist_clear", Id);
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("jinget_blazor_dropdownlist_selectItem", Id, Value);
         }
     }
 }

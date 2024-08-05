@@ -2,22 +2,49 @@
 
 public class JingetDropDownListTreeElement : JingetDropDownListElementBase
 {
+    /// <summary>
+    /// Use this method whenever the Id property has int type
+    /// </summary>
     public async Task<List<JingetDropDownTreeItemModel>> BindAsync<T>(Func<Task<List<T>>> GetData)
         where T : BaseTypeTreeModel
     {
         return await BindAsync<T, int>(GetData).ConfigureAwait(false);
     }
 
-    public async Task<List<JingetDropDownTreeItemModel>> BindAsync<T, TCode>(Func<Task<List<T>>> GetData)
-        where T : BaseTypeTreeModel<TCode>
+    /// <summary>
+    /// Use this method whenever the Id property has type of struct
+    /// </summary>
+    public async Task<List<JingetDropDownTreeItemModel>> BindAsync<TModel, TId>(Func<Task<List<TModel>>> GetData)
+        where TModel : BaseTypeTreeModel<TId>
+        where TId : struct
     {
         List<JingetDropDownTreeItemModel> result = [];
 
-        List<T> data = await GetData.Invoke().ConfigureAwait(false);
+        List<TModel> data = await GetData.Invoke().ConfigureAwait(false);
 
         if (data != null)
         {
-            foreach (T item in data)
+            foreach (TModel item in data)
+            {
+                result.Add(new(item.Id, item.ParentId, item.Title));
+            }
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Use this method whenever the Id property has string type
+    /// </summary>
+    public async Task<List<JingetDropDownTreeItemModel>> BindStringAsync<TModel>(Func<Task<List<TModel>>> GetData)
+    where TModel : BaseTypeStringTreeModel
+    {
+        List<JingetDropDownTreeItemModel> result = [];
+
+        List<TModel> data = await GetData.Invoke().ConfigureAwait(false);
+
+        if (data != null)
+        {
+            foreach (TModel item in data)
             {
                 result.Add(new(item.Id, item.ParentId, item.Title));
             }

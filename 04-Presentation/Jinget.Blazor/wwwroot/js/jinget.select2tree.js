@@ -7,11 +7,42 @@
         };
         var opts = $.extend(defaults, options);
         $(this).select2(opts)
-            //زمانیکه کامپوننت باز میشود نیاز است تا ایتم ها را بصورت درختی رندر کنیم
+            // When the component is opened, we need to render the items as a tree
             .off("select2:open").on("select2:open", options, onTreeOpened)
-            //در صورتیکه کاربر روی ایکون کلیک کرد نباید چیزی انتخاب شود و صرفا باید درخت اکسپند یا کلپس شود
-            .off("select2:selecting").on("select2:selecting", onTreeItemSelecting);
+            //If the user clicks on the icon, nothing should be selected and the tree should only be expanded or collapsed
+            .off("select2:selecting").on("select2:selecting", onTreeItemSelecting)
+            //To prevent the component from closing when the expand or collapse icon is clicked
+            .off("select2:closing").on("select2:closing", onTreeItemClosing);
+        //$(document).on('keyup', 'span.select2-container--open input.select2-search__field', function (e) {
+        //    if (e.which == 40 || e.which == 38) {
+
+        //        var currentHighlightedIndex = $(this).closest('.select2-dropdown').find('li.select2-results__option--highlighted').index();
+        //        var isCurrentHighlightedCollapsed = $(this).closest('.select2-dropdown').find('li.select2-results__option--highlighted span.fa-plus-square').length > 0;
+        //        var currentHighlightedDataLevel = $(this).closest('.select2-dropdown').find('li.select2-results__option--highlighted div[data-parent]').attr('data-level');
+        //        var currentHighlightedDataParent = $(this).closest('.select2-dropdown').find('li.select2-results__option--highlighted div[data-parent]').attr('data-parent');
+        //        var totalCountSameLevelItems = $(this).closest('.select2-dropdown').find("li div[data-parent='" + currentHighlightedDataParent + "']").length;
+
+        //        if (currentHighlightedIndex < totalCountSameLevelItems) {
+        //            $(this).closest('.select2-dropdown').find("li div[data-parent='" + currentHighlightedDataParent + "']").parent().eq(currentHighlightedIndex).removeClass('select2-results__option--highlighted')
+        //            $(this).closest('.select2-dropdown').find("li div[data-parent='" + currentHighlightedDataParent + "']").parent().eq(currentHighlightedIndex + 1).addClass('select2-results__option--highlighted')
+        //        }
+        //    }
+        //})
     };
+
+    function isIconClicked(e) {
+        if (e == undefined)
+            return false;
+        return $(e.target).hasClass('fa-plus-square') || $(e.target).hasClass('fa-minus-square');
+    }
+
+    //When an item with a child is selected and the list is closed, it is not possible to collapse the item next time, 
+    //and the following code has been written to solve this problem.
+    function onTreeItemClosing(e) {
+        if (isIconClicked(e.params.args.originalEvent)) {
+            onTreeItemSelecting(e);
+        }
+    }
     function onTreeOpened(e) {
         $('input.select2-search__field').prop('placeholder', e.data.searchPlaceholderText);
 
@@ -21,10 +52,9 @@
         }, 0);
     }
     function onTreeItemSelecting(e) {
-        var iconClicked = $(e.params.args.originalEvent.target).hasClass('fa-plus-square') || $(e.params.args.originalEvent.target).hasClass('fa-minus-square');
         var toBeOpen = $(e.params.args.originalEvent.target).hasClass('fa-plus-square');
         var $select = $(this);
-        if (iconClicked) {
+        if (isIconClicked(e.params.args.originalEvent)) {
             switchAction($select, e.params.args.data.id, toBeOpen);
             e.preventDefault();
         }
@@ -33,11 +63,11 @@
         }
     }
 
-    //زمانیکه ایتمی انتخاب شد مقدار برگشتی از این متد بعنوان مقدار انتخابی در کامپوننت نمایش داده میشود
+    //When an item is selected, the return value from this method is displayed as the selected value in the component
     function formTemplateSelection(data) {
         return normalizeString(data.text);
     }
-    //نحوه رندر شدن ایتم ها در درخت در این متد تنظیم میشوند
+    //How to render the items in the tree are set in this method
     function formTemplateResult(data) {
         if (data.loading) {
             return normalizeString(data.text);
@@ -48,14 +78,14 @@
         var container = $markup[0];
         var $container = $(container);
         $container.attr('id', "container-" + data.id);
-        //مقدار گره
+        //item value
         $container.attr('val', $element.val());
-        //شناسه گره پدر
+        //item's parent value
         $container.attr('data-parent', $element.data("parent"));
-        //عمق تو رفتگی
+        //items nesting level
         $container.attr('data-level', $element.data("level"));
 
-        //محاسبه آیتمی فرزند فقط برای آیتمی هایی بجز آیتمی پیش فرض انجام می پذیرد
+        //Child item calculation is done only for items other than the default item
         var hasChild = data.id != '---' && $select.find("option[data-parent='" + $element.val() + "']").length > 0;
 
         var $icon = $(container.firstChild);
@@ -66,10 +96,10 @@
         var isSearching = $(".select2-search__field").val().length > 0;
 
         if (isSearching) {
-            //با استفاده از این صفت بعدا در حالت جستجو امکان اکپند و کلپس پیاده میشود
+            //Using this attribute later in the search mode, it is possible to expand and collapse the tree
             $container.attr('status', 'searching');
         }
-        //اگر در حال جستجو بود و جستجو حاوی نتیجه بود آنگاه درخت را در حالت اکسپند نمایش بده
+        //If it was searching and the search contains results, then display the tree in expand mode
         if (isSearching && hasChild) {
             if ($icon.hasClass("fa-plus-square"))
                 $icon.removeClass("fa-plus-square")
@@ -82,7 +112,7 @@
             else
                 $icon.removeClass("fa-minus-square").addClass("fa-plus-square");
         }
-        //برای آیتم پیش فرض هیچ ایگونی قرار نده
+        //Don't put any icon for the default item
         else if (data.id != '---' && !hasChild) {
             if (!$icon.hasClass("fa-minus"))
                 $icon.addClass("fa-minus");
@@ -92,7 +122,8 @@
         $text.html(normalizeString(data.text));
 
         var dir = $(data.element.parentNode)[0].dataset.bind.substr(5, 3);
-        //برای گره ریشه نیازی به پدینگ نیست
+
+        //No nesting is needed for the root node
         var padding = data.element.dataset.level <= 1 ? 0 : (data.element.dataset.level - 1) * 20;
         if (dir == 'ltr') {
             $container.css({
@@ -116,8 +147,7 @@
         return $markup;
     }
 
-    //برای رندر آیتم های درخت استفاده میشود
-    //همچنین باعث میشود در هنگام باز شدن درخت ایتم های زیرمجموعه دیده نشوند
+    //Used to render the tree items, it also makes the subcategory items not visible when the tree is opened
     function moveOption($select, id) {
         if (id) {
             $select.find(".select2-results__options div[data-parent='" + id + "']").insertAfter(".select2-results__options div[val=" + id + "]");
@@ -133,7 +163,7 @@
         }
     }
 
-    //باز و بسته کردن گره ها در درخت برای نمایش زیرمجموعه
+    //Collapse and expand nodes in the tree to display the subset
     function switchAction($select, id, open) {
 
         var parent = $(".select2-results__options div[val=" + id + "] span[class]:eq(0)");
@@ -150,11 +180,11 @@
         } else {
             childs.each(function () {
                 var childId = $(this).find('div').attr('val');
-                //آیا فرزندی دارد که باز باشد؟
+                //Does it have any children that are collapsed?
                 if ($(".select2-results__options li[opened=true] div[data-parent='" + childId + "']").length > 0)
                     switchAction($select, childId, open);
 
-                //آیا در حالت جستجو بوده و میخواهیم گره را ببندیم؟
+                //Is it in search mode and we want to close the node?
                 if ($(".select2-results__options div[status='searching'][data-parent='" + childId + "']").length > 0)
                     switchAction($select, childId, open);
 
@@ -166,13 +196,13 @@
         }
     }
 
-    //جستجو در درخت
+    //Search in tree
     function matchCustom(params, data) {
-        //اگر چیزی جستجو نشده بود. یعنی فقط درخت باز شده است
+        //If nothing was searched. It means that only the tree is opened
         if (typeof params.term === 'undefined') {
             return data;
         }
-        // اگر عبارت جستجو خالی بود
+        // If the search term was empty
         else if ($.trim(params.term) === '') {
             $('#' + $(data.element).parent()[0].id).select2('close').select2('open')
             return data;
@@ -187,8 +217,8 @@
         var $select = $element.parent();
         var childMatched = checkForChildMatch($select, $element, term);
 
-        //آیتم پیش فرض نباید در جستجو شرکت کند. آیتم پیش فرض آیتمی است که فاقد ای دی میباشد
-        //یعنی تگ روبرو: <option value="" data-parent="">@DefaultText</option>
+        //The default item should not participate in the search. The default item is an item that does not have an ID
+        //Sample default item: <option value="" data-parent="">@DefaultText</option>
         if (data.id != '---' && (childMatched || data.text.toLowerCase().indexOf(term) >= 0)) {
             $("#" + data._resultId).css("display", "unset");
             return data;
@@ -200,7 +230,7 @@
         return input.replace('ي', 'ی').replace('ك', 'ک');
     }
 
-    //برای جستجو در فرزندان گره جاری
+    //To search the children of the current node
     function checkForChildMatch($select, $element, term) {
         var matched = false;
         var val = $element.val();

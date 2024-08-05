@@ -64,7 +64,7 @@
         else if (field.Attribute is JingetDropDownListTreeElement && field.Binding != null && field.Binding.Name == nameof(SampleModel.Department))
         {
             ((JingetDropDownListTree)field.RefObject).Items =
-            await new JingetDropDownListTreeElement().BindAsync<DepartmentModel, int?>(
+            await new JingetDropDownListTreeElement().BindAsync<DepartmentModel, int>(
                 async () =>
                  await Task.FromResult(new List<DepartmentModel> {
                     new() { Id = 1, ParentId = null, Title = "IT" },

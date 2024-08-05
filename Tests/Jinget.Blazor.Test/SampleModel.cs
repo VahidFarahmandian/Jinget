@@ -63,9 +63,9 @@ namespace Jinget.Blazor.Test
 
         [JingetDropDownListTreeElement(DisplayName = "Geo", Id = "cmbTreeGeo", IsRtl = false,
             BindingFunction = nameof(GetGeoAsync), IsSearchable = true, HasLabel = true, LabelCssClass = "overlayed-label", Order = 1)]
-        public Guid? Geo { get; set; }
+        public Guid Geo { get; set; }
         public async Task<List<JingetDropDownTreeItemModel>> GetGeoAsync(object? preBindingResult)
-            => await new JingetDropDownListTreeElement().BindAsync<GeoModel, Guid?>(async () =>
+            => await new JingetDropDownListTreeElement().BindAsync<GeoModel, Guid>(async () =>
             {
                 return await Task.FromResult(new List<GeoModel> {
                     new() { Id =Guid.Parse("37d6a0c4-3d05-4224-a651-2e5b6349608c"),ParentId=Guid.Empty, Title = "Iran" },
@@ -86,11 +86,11 @@ namespace Jinget.Blazor.Test
         {
 
         }
-        public class GeoModel : BaseTypeTreeModel<Guid?>
+        public class GeoModel : BaseTypeTreeModel<Guid>
         {
 
         }
-        public class DepartmentModel : BaseTypeTreeModel<int?>
+        public class DepartmentModel : BaseTypeTreeModel<int>
         {
 
         }

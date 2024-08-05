@@ -48,6 +48,7 @@ window.initJingetDropDownListTree = (params = {
 } = {}) => {
     var element = $('#' + params.id).jinget_select2tree(
         {
+            id: params.id,
             dir: params.isRtl ? 'rtl' : 'ltr',
             closeOnSelect: true,
             theme: 'outlined',
