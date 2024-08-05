@@ -1,4 +1,6 @@
-﻿namespace Jinget.Blazor.Components.DropDownList;
+﻿using Jinget.Core.ExtensionMethods;
+
+namespace Jinget.Blazor.Components.DropDownList;
 
 public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent where T : JingetDropDownItemModelBase
 {
@@ -145,12 +147,13 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
         Value = e;
 
         SelectedItem = e == null ? null : Items.FirstOrDefault(x => x.Value?.ToString() == e.ToString());
-   
+
         StateHasChanged();
         await OnChange.InvokeAsync(new ChangeEventArgs { Value = e });
     }
     protected internal bool HasSelectedValue() =>
         IsRequired &&
-        (SelectedItem == null || string.IsNullOrWhiteSpace(SelectedItem.Value?.ToString()));
-    //public abstract Task DataBindAsync();
+        SelectedItem != null &&
+        !string.IsNullOrWhiteSpace(SelectedItem.Value?.ToString()) &&
+        !SelectedItem.Value.HasDefaultValue();
 }

@@ -62,7 +62,9 @@ namespace Jinget.Blazor.Test
         });
 
         [JingetDropDownListTreeElement(DisplayName = "Geo", Id = "cmbTreeGeo", IsRtl = false,
-            BindingFunction = nameof(GetGeoAsync), IsSearchable = true, HasLabel = true, LabelCssClass = "overlayed-label", Order = 1)]
+            BindingFunction = nameof(GetGeoAsync), 
+            IsRequired =true, RequiredError ="required",
+            IsSearchable = true, HasLabel = true, LabelCssClass = "overlayed-label", Order = 1)]
         public Guid Geo { get; set; }
         public async Task<List<JingetDropDownTreeItemModel>> GetGeoAsync(object? preBindingResult)
             => await new JingetDropDownListTreeElement().BindAsync<GeoModel, Guid>(async () =>
