@@ -102,13 +102,15 @@
         Theme = theme;
         IsFancy = isFancy;
         await modal.OpenAsync();
-        await InvokeAsync(StateHasChanged);
+        StateHasChanged();
+        // await InvokeAsync(StateHasChanged);
     }
 
     public async Task CloseAsync()
     {
         await modal.CloseAsync();
-        await InvokeAsync(StateHasChanged);
+        StateHasChanged();
+        // await InvokeAsync(StateHasChanged);
     }
 
     public async Task ShowErrorAsync(

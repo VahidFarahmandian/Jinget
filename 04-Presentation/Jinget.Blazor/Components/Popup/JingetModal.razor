@@ -1,10 +1,10 @@
 ﻿@using MudBlazor
 @using Jinget.Blazor.Components.Popup;
-
+@inject IJSRuntime JS;
 @inherits JingetPopupBase
 
-<div id="@Id" class="modal @modalClass" tabindex="-1" role="dialog" style="display:@modalDisplay; overflow-y: auto;">
-    <div class="modal-dialog modal-lg" role="document">
+<div id="@Id" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
         <div class='modal-content @(Rtl?"rtl":"ltr")'>
             @if (ShowHeader)
             {
@@ -29,43 +29,49 @@
                     @FooterContent
                 </div>
             }
+
         </div>
     </div>
 </div>
 
+@* if there is no backdrop in page, then add one, otherwise do not add multiple backdrops on page *@
 @if (showBackdrop)
 {
     <div class="modal-backdrop fade show"></div>
 }
 
 @code {
+
     [Parameter] public bool ShowHeader { get; set; } = true;
     [Parameter] public bool ShowFooter { get; set; } = true;
     [Parameter] public string? Title { get; set; }
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
-
     [Parameter] public RenderFragment? FooterContent { get; set; }
 
-    private string modalDisplay = "none;";
-    private string modalClass = string.Empty;
     private bool showBackdrop = false;
 
     public async Task OpenAsync()
     {
-        modalDisplay = "block";
-        modalClass = "show";
         showBackdrop = true;
-        await InvokeAsync(OnOpen.InvokeAsync);
-        StateHasChanged();
+        await JS.InvokeVoidAsync("toggleModal", new
+        {
+            dotnet = DotNetObjectReference.Create(this),
+            Id,
+            show = true
+        });
+        await OnOpen.InvokeAsync();
     }
 
     public async Task CloseAsync()
     {
-        modalDisplay = "none";
-        modalClass = string.Empty;
         showBackdrop = false;
-        await InvokeAsync(OnClose.InvokeAsync);
-        StateHasChanged();
+        await JS.InvokeVoidAsync("toggleModal", new
+        {
+            dotnet = DotNetObjectReference.Create(this),
+            Id,
+            show = false
+        });
+        await OnClose.InvokeAsync();
     }
 }

@@ -2,7 +2,7 @@
 
 public abstract class JingetPopupBase : ComponentBase
 {
-    [Parameter] public string Id { get; set; }
+    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString("N");
     [Parameter] public bool Rtl { get; set; } = true;
 
     [Parameter] public string? CloseButtonText { get; set; } = "بستن";

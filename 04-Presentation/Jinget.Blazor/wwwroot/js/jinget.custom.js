@@ -1,7 +1,12 @@
-﻿/*jinget.json.visualizer START*/
-window.toJsonVisualizer = (params = {
-    id, data, collapsed=false, rootCollapsable=true, withQuotes=false, withLinks=true, bigNumbers=false
-} = {}) => {
+﻿window.toggleModal = (params = { id, show } = {}) => {
+    if (params.show)
+        $('#' + params.id).modal('show');
+    else
+        $('#' + params.id).modal('hide');
+}
+
+/*jinget.json.visualizer START*/
+window.toJsonVisualizer = (params = { id, data, collapsed=false, rootCollapsable=true, withQuotes=false, withLinks=true, bigNumbers=false } = {}) => {
     $('#' + params.id).jsonVisualizer(
         params.data, {
 

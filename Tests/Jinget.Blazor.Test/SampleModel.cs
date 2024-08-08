@@ -3,11 +3,30 @@ using Jinget.Blazor.Attributes;
 using Jinget.Blazor.Models;
 using MudBlazor;
 using Jinget.Blazor.Attributes.DropDownList;
+using System.Text;
 
 namespace Jinget.Blazor.Test
 {
     public class SampleModel : DynamicFormBaseModel
     {
+        public static string EngLongText()
+        {
+            StringBuilder sb=new StringBuilder();
+            for(int i = 0; i <= 200; i++)
+            {
+                sb.AppendLine("This is a very long text");
+            }
+            return sb.ToString();
+        }
+        public static string PersianLongText()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i <= 200; i++)
+            {
+                sb.AppendLine("این یک متن طولانی است.");
+            }
+            return sb.ToString();
+        }
         [JingetTextBoxElement(DisplayName = "نام", HelperText = "نام خود را منطبق با اطلاعات کارت ملی وارد نمایید", Order = 1)]
         public string? Name { get; set; }
 
@@ -62,8 +81,8 @@ namespace Jinget.Blazor.Test
         });
 
         [JingetDropDownListTreeElement(DisplayName = "Geo", Id = "cmbTreeGeo", IsRtl = false,
-            BindingFunction = nameof(GetGeoAsync), 
-            IsRequired =true, RequiredError ="required",
+            BindingFunction = nameof(GetGeoAsync),
+            IsRequired = true, RequiredError = "required",
             IsSearchable = true, HasLabel = true, LabelCssClass = "overlayed-label", Order = 1)]
         public Guid Geo { get; set; }
         public async Task<List<JingetDropDownTreeItemModel>> GetGeoAsync(object? preBindingResult)

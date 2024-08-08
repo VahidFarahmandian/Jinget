@@ -1,19 +1,31 @@
 ﻿@page "/popup/modal"
 @using Jinget.Blazor.Components.DropDownList
 @using Jinget.Blazor.Components.DropDownList.DropDownListTree
+@using Jinget.Blazor.Components.List
 @using Jinget.Blazor.Components.Popup
 @using Jinget.Blazor.Models
+@using System.Text
 
-<button @onclick=@ShowModal1 class="btn btn-primary">Show Modal(LTR)</button>
+<button @onclick=@ShowModal1 class="btn btn-primary">Show Modal(LTR with events history)</button>
+<br />
+Events:
+<br />
+<JingetList Model="@events"></JingetList>
+
+<hr />
 <button @onclick=@ShowModal2 class="btn btn-primary">Show Modal(RTL)</button>
 <button @onclick=@ShowModal3 class="btn btn-primary">Show Modal(Nested)</button>
 <button @onclick=@ShowModal4 class="btn btn-primary">Show Modal(DropDownTree Inside Modal)</button>
+<button @onclick=@ShowModal5 class="btn btn-primary">Show Modal(LTR Scrollable)</button>
+<button @onclick=@ShowModal6 class="btn btn-primary">Show Modal(RTL Scrollable)</button>
 
 <JingetModal @ref=@modal1
              Title="Sample Header"
              ShowFooter=true
              ShowHeader=true
              Rtl=false
+             OnOpen=@OnOpen
+             OnClose=@OnClose
              CloseButtonText="Close">
     <ChildContent>
         <div class="alert alert-secondary" role="alert">
@@ -121,6 +133,24 @@
                             OnChange=@OnChange1></JingetDropDownList>
     </ChildContent>
 </JingetModal>
+<JingetModal @ref=@modal5
+             Title="مودال 5 "
+             Rtl=false
+             ShowFooter=true
+             ShowHeader=true>
+    <ChildContent>
+        @SampleModel.EngLongText()
+    </ChildContent>
+</JingetModal>
+<JingetModal @ref=@modal6
+             Title="مودال 6"
+             Rtl=true
+             ShowFooter=true
+             ShowHeader=true>
+    <ChildContent>
+        @SampleModel.PersianLongText()
+    </ChildContent>
+</JingetModal>
 <JingetMessageBox @ref=@messageBox
                   ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true))></JingetMessageBox>
 
@@ -131,6 +161,8 @@
     JingetModal? modal31 { get; set; }
     JingetModal? modal4 { get; set; }
     JingetModal? modal41 { get; set; }
+    JingetModal? modal5 { get; set; }
+    JingetModal? modal6 { get; set; }
 
     async Task ShowModal1() => await modal1?.OpenAsync();
     async Task ShowModal2() => await modal2?.OpenAsync();
@@ -138,6 +170,8 @@
     async Task ShowModal31() => await modal31?.OpenAsync();
     async Task ShowModal4() => await modal4?.OpenAsync();
     async Task ShowModal41() => await modal41?.OpenAsync();
+    async Task ShowModal5() => await modal5?.OpenAsync();
+    async Task ShowModal6() => await modal6?.OpenAsync();
 
     JingetDropDownListTree ddlTreeSample1;
     JingetDropDownListTree ddlTreeSample2;
@@ -145,6 +179,15 @@
     JingetDropDownList ddlSample1;
     JingetDropDownList ddlSample2;
     JingetMessageBox? messageBox;
+    List<ListItem> events = [];
+    void OnOpen()
+    {
+        events.Add(new ListItem("Modal Opened"));
+    }
+    void OnClose()
+    {
+        events.Add(new ListItem("Modal Closed"));
+    }
 
     public async Task OnChange1(ChangeEventArgs e)
     {
