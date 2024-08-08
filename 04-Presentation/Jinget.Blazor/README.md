@@ -896,12 +896,27 @@ Add the `JingetInput` to your page and start using it;-)
 
 **Jinget JsonVisualizer component**
 
-Add the `JingetJsonVisualizer` to your page and start using it;-)
+Add the `JingetJsonVisualizer` to your page, call the Visualize method and start using it;-)
 
 *Note: that this component is based on [Alexandre Bodelot](https://github.com/abodelot "Alexandre Bodelot") jquery.json-viewer library.*  [View on GitHub](htthttps://github.com/abodelot/jquery.json-viewerp:// "View on GitHub")
 
 ```
 <JingetJsonVisualizer @ref=@JsonVisualizer></JingetJsonVisualizer>
+```
+
+Fore example:
+
+```
+<button @onclick=@Visualize class="btn btn-primary">Visualize</button>
+<JingetJsonVisualizer @ref=@jingetJsonVisualizer></JingetJsonVisualizer>
+@code {
+    JingetJsonVisualizer? jingetJsonVisualizer { get; set; }
+
+    async Task Visualize()
+    {
+        await jingetJsonVisualizer.Visualize(new { Name = "Vahid", LastName = "Farahmandian", Age = 35, Score = 182.25 });
+    }
+}
 ```
 
 ***Parameters:***
