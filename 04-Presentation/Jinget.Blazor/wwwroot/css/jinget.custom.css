@@ -27,16 +27,6 @@
     margin-right: auto !important;
 }
 
-
-/*.select2-container .select2-selection--single .select2-selection__arrow {
-    position: absolute !important;
-    left: 0px !important;
-}*/
-
-
-/*.select2-container .select2-selection--single .select2-selection__rendered {
-    padding-left: 20px !important;
-}*/
 /*Select2.js END*/
 
 /*MudBlazor START*/
@@ -65,10 +55,3 @@
     direction: ltr !important;
 }
 /*MudBlazor END*/
-
-/*JsonViewer START*/
-json-viewer {
-    direction: ltr !important;
-    overflow-wrap: break-word !important;
-}
-/*JsonViewer END*/

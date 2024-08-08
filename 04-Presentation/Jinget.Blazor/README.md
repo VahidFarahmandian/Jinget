@@ -13,6 +13,7 @@ Blazor components optimised for RTL languaged such as Farsi, Arabic etc.
 - [x] **JingetDropDownList** 
 - [x] **JingetDropDownListTree** 
 - [x] **Input** 
+- [x] **JsonVisualizer** 
 
 **Services list:**
 - [x] **LocalStorage**
@@ -31,17 +32,14 @@ You can also use other methods supported by NuGet. Check [Here](https://www.nuge
 Register the required services in your `Program.cs` file:
 
 ```
-
 builder.Services.AddJingetBlazor();
-
 ```
 
 If you need to use `TokenAuthenticationStateProvider` as a provider for handling authentication state(for example in your ASP.NET Core Blazor project), 
 then you need to pass `addAuthenticationStateProvider=true` to `AddJingetBlazor`.
 If you need to use token storage services for storing/retrieving your tokens, then you need to pass `tokenConfigModel` and `addTokenRelatedServices=true` to `AddJingetBlazor`.
 If you do not need to use token storage services, but you want to register `TokenConfigModel` then you need to pass `tokenConfigModel` and `addTokenRelatedServices=false` to `AddJingetBlazor`.
-If you have no plan to use `Jinget.Blazor` components and you just want to use its services, 
-then you can pass `addComponents=false` to `AddJingetBlazor` method.
+If you have no plan to use `Jinget.Blazor` components and you just want to use its services, then you can pass `addComponents=false` to `AddJingetBlazor` method.
 
 
 ## How to Use Methods:
@@ -52,7 +50,6 @@ If you want to authenticate the user and manage user's state via `TokenAuthentic
 to your login form and authenticate the user:
 
 ```
-
 @attribute [AllowAnonymous]
 @layout LoginLayout
 @page "/login"
@@ -107,12 +104,6 @@ Install `MudBlazor` and add reference to `MudBlazor.min.js` in your `_Host.razor
 
 ```
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-```
-
-Install `Texnomic.Blazor.JsonViewer` and add reference to `jsonViewer.js` in your `_Host.razor` or `App.razor` files.
-
-```
-<script src="_content/Texnomic.Blazor.JsonViewer/scripts/jsonViewer.js"></script>
 ```
 
 Add reference to `jinget.core.js` in your `_Host.razor` or `App.razor` files.
@@ -761,6 +752,8 @@ public async Task<List<JingetDropDownItemModel>> GetStatusAsync(string token, ob
 
 `JingetTableElement`: Render a JingetTable on the page.(Used in JingetTable component, for more info go to JingetTable component section)
 
+------------
+
 **Jinget DropDownList components**
 
 Add the `JingetDropDownList` to your page and start using it;-)
@@ -830,6 +823,8 @@ To avoid this problem, you may attach the dropdown to the modal itself by settin
 
 `SetSelectedIndexAsync`: Select item in dropdownlist based on the index in `Items`. Index starts from zero(0).
 
+------------
+
 **Jinget DropDownList Tree components**
 
 Add the `JingetDropDownListTree` to your page and start using it;-)
@@ -855,6 +850,8 @@ Add the `JingetDropDownListTree` to your page and start using it;-)
 Other Parameters/properties/callbacks and methods for this components are exactly same as `JingetDropDownList` component. 
 Except that `JingetDropDownList` uses `JingetDropDownItemModel` as it's data model provider class which contains `Value` and `Text` properties.
 But `JingetDropDownListTree` uses `JingetDropDownTreeItemModel` as data model provider which in addition to `JingetDropDownItemModel` properties, also contains `ParentValue` property to construct the tree structure
+
+------------
 
 **Jinget Input**
 
@@ -895,11 +892,41 @@ Add the `JingetInput` to your page and start using it;-)
 
 `OnChange`: Fires a callback whenever the selected item changed.
 
+------------
+
+**Jinget JsonVisualizer component**
+
+Add the `JingetJsonVisualizer` to your page and start using it;-)
+
+*Note: that this component is based on [Alexandre Bodelot](https://github.com/abodelot "Alexandre Bodelot") jquery.json-viewer library.*  [View on GitHub](htthttps://github.com/abodelot/jquery.json-viewerp:// "View on GitHub")
+
+```
+<JingetJsonVisualizer @ref=@JsonVisualizer></JingetJsonVisualizer>
+```
+
+***Parameters:***
+
+`Id`: Unique identifier for component in page. This parameter is required.
+
+`Collapsed`: All nodes are collapsed at html generation. default is false.
+
+`RootCollapsable`: Allow root element to be collapsed. default is true.
+
+`WithQuotes`: All JSON keys are surrounded with double quotation marks ({"foobar": 1} instead of {foobar: 1}). default is false.
+
+`WithLinks`: All values that are valid links will be clickable, if false they will only be strings. default is true.
+
+`BigNumbers`: Support different libraries for big numbers, if true, display the real number only, 
+false shows object containing big number with all fields instead of number only.
+
+***Methods:***
+
+`Visualize`: Renders the given object in json visualizer
 
 ------------
-**Services**
+## How to Use Services:
 
-***LocalStorage/SessionStorage:***
+**LocalStorage/SessionStorage:**
 
 If you need to work with `localStorage` then you need to inject `ILocalStorageService` and 
 if you want to work with `sessionStorage` then you need to inject `ISessionStorageService` to your page or classes.

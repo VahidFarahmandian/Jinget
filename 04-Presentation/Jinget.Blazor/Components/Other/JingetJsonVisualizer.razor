@@ -1,0 +1,77 @@
+﻿@using System.Text.Json
+
+@inject IJSRuntime JS;
+
+<pre id="@Id"></pre>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "json-visualizer-" + Guid.NewGuid().ToString("N");
+
+    /// <summary>
+    /// All nodes are collapsed at html generation. default is false.
+    /// </summary>
+    [Parameter] public bool Collapsed { get; set; } = true;
+
+    /// <summary>
+    /// Allow root element to be collapsed. default is true.
+    /// </summary>
+    [Parameter] public bool RootCollapsable { get; set; } = false;
+
+    /// <summary>
+    /// All JSON keys are surrounded with double quotation marks ({"foobar": 1} instead of {foobar: 1}). default is false.
+    /// </summary>
+    [Parameter] public bool WithQuotes { get; set; } = false;
+
+    /// <summary>
+    /// All values that are valid links will be clickable, if false they will only be strings. default is true.
+    /// </summary>
+    [Parameter] public bool WithLinks { get; set; } = true;
+
+    /// <summary>
+    /// Support different libraries for big numbers,
+    /// if true, display the real number only, false shows object containing big number with all fields instead of number only.
+    /// </summary>
+    [Parameter] public bool BigNumbers { get; set; } = false;
+
+    DotNetObjectReference<JingetJsonVisualizer>? dotnet;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            dotnet = DotNetObjectReference.Create(this);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    /// <summary>
+    /// renders the given object in json visualizer
+    /// </summary>
+    public async Task Visualize(object data)
+    {
+        await Visualize(JsonSerializer.Serialize(data, new JsonSerializerOptions
+            {
+                ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve
+            }));
+    }
+
+    /// <summary>
+    /// renders the given string in json visualizer
+    /// </summary>
+    public async Task Visualize(string data)
+    {
+        await JS.InvokeVoidAsync("toJsonVisualizer",
+        new
+        {
+            dotnet,
+            Id,
+            data,
+            Collapsed,
+            RootCollapsable,
+            WithQuotes,
+            WithLinks,
+            BigNumbers
+        });
+    }
+}

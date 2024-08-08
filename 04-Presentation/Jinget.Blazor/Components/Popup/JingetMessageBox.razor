@@ -1,8 +1,8 @@
 ﻿@using Jinget.Blazor.Components.List
+@using Jinget.Blazor.Components.Other
 @using MudBlazor
 @using Newtonsoft.Json.Linq
 @using Jinget.Blazor.Components.Popup
-@using Texnomic.Blazor.JsonViewer
 
 @inherits JingetPopupBase
 
@@ -24,7 +24,7 @@
             @Content
         }
 
-        <JsonViewer @ref="@JsonViewer"></JsonViewer>
+        <JingetJsonVisualizer @ref=@JsonVisualizer></JingetJsonVisualizer>
         <JingetList ShowTitle=false
                     Model=@verboseItems>
         </JingetList>
@@ -33,7 +33,7 @@
 
 @code {
     JingetModal modal { get; set; } = new JingetModal();
-    JsonViewer? JsonViewer { get; set; }
+    JingetJsonVisualizer? JsonVisualizer { get; set; }
 
     string? Title { get; set; }
     string? Content { get; set; }
@@ -58,6 +58,7 @@
         Severity theme = Severity.Warning,
         bool isFancy = true)
     {
+
         this.Title = title;
         this.Content = content;
         if (verboseItems != null)
@@ -82,15 +83,15 @@
                 else
                 if (Jinget.Core.Utilities.Json.JsonUtility.IsValid(verboseContent))
                 {
-                    if (JsonViewer != null)
-                        await JsonViewer.Render(verboseContent);
+                    if (JsonVisualizer != null)
+                        await JsonVisualizer.Visualize(verboseContent);
                 }
                 else
                 {
                     try
                     {
-                        if (JsonViewer != null)
-                            await JsonViewer.Render(verboseContent);
+                        if (JsonVisualizer != null)
+                            await JsonVisualizer.Visualize(verboseContent);
                     }
                     catch { }
                     verboseItems.Add(new ListItem(verboseContent, "list-group-item list-group-item-danger"));

@@ -1,4 +1,31 @@
-﻿/*select2 START*/
+﻿/*jinget.json.visualizer START*/
+window.toJsonVisualizer = (params = {
+    id, data, collapsed=false, rootCollapsable=true, withQuotes=false, withLinks=true, bigNumbers=false
+} = {}) => {
+    $('#' + params.id).jsonVisualizer(
+        params.data, {
+
+        //all nodes are collapsed at html generation
+        collapsed: params.collapsed,
+
+        //allow root element to be collasped
+        rootCollapsable: params.rootCollapsable,
+
+        //all JSON keys are surrounded with double quotation marks
+        withQuotes: params.withQuotes,
+
+        //all values that are valid links will be clickable
+        withLinks: params.withLinks,
+
+        //support different libraries for big numbers,
+        //if true display the real number only, false shows object containing big number with all fields instead of number only.
+        bigNumbers: params.bigNumbers
+    });
+}
+
+/*jinget.json.visualizer END*/
+
+/*select2 START*/
 window.initJingetDropDownList = (params = {
     dotnet, id, isSearchable = false, isRtl = true, noResultText='Nothing to display!',
     searchPlaceholderText='', parentElementId=''
