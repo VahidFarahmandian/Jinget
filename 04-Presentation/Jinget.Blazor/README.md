@@ -14,6 +14,7 @@ Blazor components optimised for RTL languaged such as Farsi, Arabic etc.
 - [x] **JingetDropDownListTree** 
 - [x] **Input** 
 - [x] **JsonVisualizer** 
+- [x] **Gauge** 
 
 **Services list:**
 - [x] **LocalStorage**
@@ -937,6 +938,46 @@ false shows object containing big number with all fields instead of number only.
 ***Methods:***
 
 `Visualize`: Renders the given object in json visualizer
+
+------------
+
+**Jinget Gauge component**
+
+Add the `JingetGauge` to your page and start using it;-)
+
+
+```
+<JingetGauge Id="gauge1"
+             HelperText="This is sample gauge"
+             DisplayName="Sample Gauge 1"
+             GaugeBackGroundColor="#123456"
+             GaugeParentElementGroundColor="#ffffff"
+             Value=50></JingetGauge>
+```
+
+***Parameters:***
+
+`Id`: Unique identifier for component in page. This parameter is required.
+
+`ShowValueAsText`: If set to true the the gauge data-value will be shown as a text below the gauge.
+
+`Width`: Width of gauge. Default is 200px
+
+`HueLow`: Choose the starting hue for the active color (for value 0). Default is 1
+
+`HueHigh`: Choose the ending hue for the active color (for value 100). Default is 128.
+
+`Saturation`: Saturation for active color. Saturation should be represented as a percentage number, such as 100%. Default is 100%.
+
+`Lightness`: Lightness for active color. Lightness should be represented as a percentage number, such as 100%. Default is 50%.
+
+`GaugeBackGroundColor`: Background color of Gauge. Default is #1b1b1f.
+
+`GaugeParentElementGroundColor`: This color should match the parent div of the gauge (or beyond). Default is #323138
+
+***Methods:***
+
+`SetValueAsync`: Set new value to gauge.
 
 ------------
 ## How to Use Services:

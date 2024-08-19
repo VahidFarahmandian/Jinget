@@ -1,0 +1,79 @@
+﻿@page "/bi/gauge"
+@using Jinget.Blazor.Components.BI.Gauge
+@using Jinget.Blazor.Components.DropDownList
+@using Jinget.Blazor.Components.Popup
+@using Jinget.Blazor.Models
+@using Jinget.Blazor.Services.Contracts
+@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazor
+
+@inject ILocalStorageService localStorage
+
+<JingetMessageBox @ref=@messageBox
+                  ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true))></JingetMessageBox>
+<h3>JingetGauge</h3>
+Sample 01: Set Value on load
+<JingetGauge @ref=@gauge1
+             Id="gauge1"
+             HelperText="This is sample gauge"
+             DisplayName="Sample Gauge 1"
+             GaugeBackGroundColor="#123456"
+             GaugeParentElementGroundColor="#ffffff"
+             Value=50></JingetGauge>
+<hr />
+Sample 02: Set Value on button click
+<JingetGauge @ref=@gauge2
+             Id="gauge2"
+             ShowValueAsText=true
+             HelperText="This is sample gauge"
+             DisplayName="Sample Gauge 2"
+             GaugeParentElementGroundColor="#ffffff"
+             OnChange=OnChange2></JingetGauge>
+@* <hr /> *@
+<MudButton FullWidth=true
+           OnClick="SetValue"
+           Variant="Variant.Filled"
+           Color="Color.Primary">
+    <MudText>Select</MudText>
+</MudButton>
+<hr />
+Sample 02: Set Value on page after render ecent
+<JingetGauge @ref=@gauge3
+             Id="gauge3"
+             ShowValueAsText=true
+             HelperText="This is sample gauge"
+             DisplayName="Sample Gauge 3"
+             GaugeParentElementGroundColor="#ffffff"></JingetGauge>
+<hr />
+
+
+@code {
+
+    JingetMessageBox? messageBox;
+    JingetGauge gauge1;
+    JingetGauge gauge2;
+    JingetGauge gauge3;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            gauge3.GaugeBackGroundColor = GetRandomColour().ToString();
+            await gauge3.SetValueAsync(new Random().Next(1, 100));
+        }
+    }
+    public async Task OnChange2(ChangeEventArgs e)
+    {
+        await messageBox.ShowInfoAsync("Gauge 2", "Selected Value Changed", Newtonsoft.Json.JsonConvert.SerializeObject(gauge2));
+    }
+    public async Task SetValue()
+    {
+        gauge2.GaugeBackGroundColor = GetRandomColour().ToString();
+        await gauge2.SetValueAsync(new Random().Next(1, 100));
+    }
+    private System.Drawing.Color GetRandomColour()
+    {
+        var rand = new Random();
+        return System.Drawing.Color.FromArgb(rand.Next(256), rand.Next(256), rand.Next(256));
+    }
+}

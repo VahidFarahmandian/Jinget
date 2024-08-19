@@ -5,7 +5,6 @@ public abstract class JingetInputBase : JingetBaseComponent
     [Parameter] public int Rows { get; set; }
     [Parameter] public InputType InputType { get; set; }
 
-
     protected internal Converter<object?> StringConverter = new()
     {
         SetFunc = value => value?.ToString(),

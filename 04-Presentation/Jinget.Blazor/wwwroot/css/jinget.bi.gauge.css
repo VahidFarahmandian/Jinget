@@ -1,0 +1,99 @@
+﻿.gauge-wrap {
+    position: relative;
+    /*margin: 50px;*/
+    width: 200px;
+    height: 100px;
+}
+
+.gauge-core {
+    position: relative;
+    overflow: hidden;
+    height: inherit;
+    width: inherit;
+}
+
+.gauge-wrap-before {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    bottom: -7px; /* 1px less to cover clipping */
+    left: 0px;
+    clip: rect(8px, 16px, 16px, 0px);
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    z-index: 5;
+}
+
+.gauge-wrap-after {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    bottom: -7px; /* 1px less to cover clipping */
+    right: 0px;
+    clip: rect(8px, 16px, 16px, 0px);
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    z-index: 5;
+}
+
+.gauge-bg {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
+    z-index: 0;
+}
+
+.gauge-active-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
+}
+
+.gauge-active {
+    top: 100px;
+    position: absolute;
+    width: 200px;
+    height: 100px;
+    overflow: visible;
+    -webkit-border-radius: 0px 0px 200px 200px;
+    -moz-border-radius: 0px 0px 200px 200px;
+    border-radius: 0px 0px 200px 200px;
+    z-index: 1;
+}
+
+.gauge-active-before {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: inherit;
+    top: -7px; /* 1px less to cover clipping */
+    left: 0px;
+    clip: rect(0px, 16px, 8px, 0px);
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    z-index: 5;
+}
+
+.gauge-cap {
+    position: absolute !important;
+    top: 16px !important;
+    left: 16px !important;
+    width: 168px !important;
+    height: 168px !important;
+    -webkit-border-radius: 84px !important;
+    -moz-border-radius: 84px !important;
+    border-radius: 84px !important;
+    z-index: 5;
+}

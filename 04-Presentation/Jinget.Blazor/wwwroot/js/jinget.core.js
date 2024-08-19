@@ -33,3 +33,11 @@ loadScript({
         })
     })
 });
+
+//load jinget bi resources
+loadScript({
+    url: '_content/Jinget.Blazor/js/jinget.bi.core.js',
+    callback: loadScript({
+        url: '_content/Jinget.Blazor/js/jinget.bi.gauge.js'
+    })
+});
