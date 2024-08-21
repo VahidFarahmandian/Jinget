@@ -9,108 +9,109 @@
 
 @inject IJSRuntime JS;
 @inject IServiceProvider serviceProvider;
+<div class="@Attribute.DivCssClass">
+    @if (Attribute != null && Attribute.HasLabel)
+    {
+        <label style="padding: 0px 5px 0px 5px;" class="@Attribute.LabelCssClass">@Attribute.DisplayName</label>
+    }
 
-@if (Attribute != null && Attribute.HasLabel)
-{
-    <label class="@Attribute.LabelCssClass">@Attribute.DisplayName</label>
-}
+    @if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDatePickerElement datePicker)
+    {
+        <JingetDatePicker @ref=RefObject
+                          Id="@Id"
+                          Value="@(Value==null?null:Convert.ToDateTime(Value))"
+                          Label="@Attribute.DisplayName"
+                          Culture=@datePicker.Culture
+                          EnglishNumber=datePicker.EnglishNumber
+                          IsDisabled="@Attribute.IsDisabled"
+                          IsReadOnly="@Attribute.IsReadOnly"
+                          DateChanged="@((e)=>OnChange(new ChangeEventArgs(){Value=e}))" />
 
-@if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDatePickerElement datePicker)
-{
-    <JingetDatePicker @ref=RefObject
-                      Id="@Id"
-                      Value="@(Value==null?null:Convert.ToDateTime(Value))"
-                      Label="@Attribute.DisplayName"
-                      Culture=@datePicker.Culture
-                      EnglishNumber=datePicker.EnglishNumber
-                      IsDisabled="@Attribute.IsDisabled"
-                      IsReadOnly="@Attribute.IsReadOnly"
-                      DateChanged="@((e)=>OnChange(new ChangeEventArgs(){Value=e}))" />
-
-}
-else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePickerElement dateRangePicker)
-{
-    <JingetDateRangePicker @ref=RefObject
-                           Id="@Id"
-                           Value="@(Value is SelectedDateRangeModel?((SelectedDateRangeModel)Value).DateRange: (DateRange)Value)"
-                           Label="@Attribute.DisplayName"
-                           Culture=@dateRangePicker.Culture
-                           EnglishNumber=dateRangePicker.EnglishNumber
-                           IsDisabled="@Attribute.IsDisabled"
-                           IsReadOnly="@Attribute.IsReadOnly"
-                           DateRangeChanged="((e)=>OnChange(new ChangeEventArgs(){Value=e}))">
-    </JingetDateRangePicker>
-}
-else if (Attribute is JingetDropDownListElement dropDown)
-{
-    <JingetDropDownList @ref=RefObject
-                        Id="@Id"
-                        ParentElementId="@dropDown.ParentElementId"
-                        Value=@Value
-                        CssClass="@Attribute.CssClass"
-                        HelperText="@dropDown.HelperText"
-                        IsDisabled=@Attribute.IsDisabled
-                        IsReadOnly=@Attribute.IsReadOnly
-                        IsRequired="@Attribute.IsRequired"
-                        RequiredError="@Attribute.RequiredError"
-                        DisplayName="@Attribute.DisplayName"
-                        DefaultText="@dropDown.DefaultText"
-                        IsSearchable="@dropDown.IsSearchable"
-                        IsRtl="@dropDown.IsRtl"
-                        NoResultText="@dropDown.NoResultText"
-                        SearchPlaceholderText="@dropDown.SearchPlaceholderText"
-                        DataProviderFunc=@GetDropDownListDataAsync
-                        OnChange=@OnChange></JingetDropDownList>
-}
-else if (Attribute is JingetDropDownListTreeElement dropDownTree)
-{
-    <JingetDropDownListTree @ref=RefObject
+    }
+    else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePickerElement dateRangePicker)
+    {
+        <JingetDateRangePicker @ref=RefObject
+                               Id="@Id"
+                               Value="@(Value is SelectedDateRangeModel?((SelectedDateRangeModel)Value).DateRange: (DateRange)Value)"
+                               Label="@Attribute.DisplayName"
+                               Culture=@dateRangePicker.Culture
+                               EnglishNumber=dateRangePicker.EnglishNumber
+                               IsDisabled="@Attribute.IsDisabled"
+                               IsReadOnly="@Attribute.IsReadOnly"
+                               DateRangeChanged="((e)=>OnChange(new ChangeEventArgs(){Value=e}))">
+        </JingetDateRangePicker>
+    }
+    else if (Attribute is JingetDropDownListElement dropDown)
+    {
+        <JingetDropDownList @ref=RefObject
                             Id="@Id"
-                            ParentElementId="@dropDownTree.ParentElementId"
+                            ParentElementId="@dropDown.ParentElementId"
                             Value=@Value
                             CssClass="@Attribute.CssClass"
-                            HelperText="@dropDownTree.HelperText"
+                            HelperText="@dropDown.HelperText"
                             IsDisabled=@Attribute.IsDisabled
                             IsReadOnly=@Attribute.IsReadOnly
                             IsRequired="@Attribute.IsRequired"
                             RequiredError="@Attribute.RequiredError"
                             DisplayName="@Attribute.DisplayName"
-                            DefaultText="@dropDownTree.DefaultText"
-                            IsSearchable="@dropDownTree.IsSearchable"
-                            IsRtl="@dropDownTree.IsRtl"
-                            NoResultText="@dropDownTree.NoResultText"
-                            SearchPlaceholderText="@dropDownTree.SearchPlaceholderText"
-                            DataProviderFunc=@GetDropDownTreeDataAsync
-                            OnChange=@OnChange></JingetDropDownListTree>
-}
-else if (Attribute is JingetLabelElement label)
-{
-    <label id="@Id" @ref=RefObject class="@Attribute.CssClass">@(Value == null ? "" : Value.ToString())</label>
-    <small class="@label.HelperTextCss">@Attribute.HelperText</small>
-}
-else if (Attribute is JingetBaseInputElement attr)
-{
-    <JingetInput @ref=RefObject
-                 Id="@Id"
-                 @bind-Value="@Value"
-                 DisplayName="@attr.DisplayName"
-                 HelperText="@attr.HelperText"
-                 IsDisabled="@attr.IsDisabled"
-                 IsReadOnly="@attr.IsReadOnly"
-                 InputType=@attr.GetInputType()
-                 Rows="@(attr is JingetTextAreaElement? ((JingetTextAreaElement)attr).Rows:1)"
-                 OnChange="@OnChange">
+                            DefaultText="@dropDown.DefaultText"
+                            IsSearchable="@dropDown.IsSearchable"
+                            IsRtl="@dropDown.IsRtl"
+                            NoResultText="@dropDown.NoResultText"
+                            SearchPlaceholderText="@dropDown.SearchPlaceholderText"
+                            DataProviderFunc=@GetDropDownListDataAsync
+                            OnChange=@OnChange></JingetDropDownList>
+    }
+    else if (Attribute is JingetDropDownListTreeElement dropDownTree)
+    {
+        <JingetDropDownListTree @ref=RefObject
+                                Id="@Id"
+                                ParentElementId="@dropDownTree.ParentElementId"
+                                Value=@Value
+                                CssClass="@Attribute.CssClass"
+                                HelperText="@dropDownTree.HelperText"
+                                IsDisabled=@Attribute.IsDisabled
+                                IsReadOnly=@Attribute.IsReadOnly
+                                IsRequired="@Attribute.IsRequired"
+                                RequiredError="@Attribute.RequiredError"
+                                DisplayName="@Attribute.DisplayName"
+                                DefaultText="@dropDownTree.DefaultText"
+                                IsSearchable="@dropDownTree.IsSearchable"
+                                IsRtl="@dropDownTree.IsRtl"
+                                NoResultText="@dropDownTree.NoResultText"
+                                SearchPlaceholderText="@dropDownTree.SearchPlaceholderText"
+                                DataProviderFunc=@GetDropDownTreeDataAsync
+                                OnChange=@OnChange></JingetDropDownListTree>
+    }
+    else if (Attribute is JingetLabelElement label)
+    {
+        <label id="@Id" @ref=RefObject class="@Attribute.CssClass">@(Value == null ? "" : Value.ToString())</label>
+        <small class="@label.HelperTextCss">@Attribute.HelperText</small>
+    }
+    else if (Attribute is JingetBaseInputElement attr)
+    {
+        <JingetInput @ref=RefObject
+                     Id="@Id"
+                     @bind-Value="@Value"
+                     DisplayName="@attr.DisplayName"
+                     HelperText="@attr.HelperText"
+                     IsDisabled="@attr.IsDisabled"
+                     IsReadOnly="@attr.IsReadOnly"
+                     InputType=@attr.GetInputType()
+                     Rows="@(attr is JingetTextAreaElement? ((JingetTextAreaElement)attr).Rows:1)"
+                     OnChange="@OnChange">
 
-    </JingetInput>
-}
-else
-{
-    <input @ref=RefObject
-           id="@Id"
-           type="@Attribute.ToString()"
-           value="@Value"
-           onchange="@OnChange"
-           class="@Attribute.CssClass"
-           disabled="@Attribute.IsDisabled"
-           readonly="@Attribute.IsReadOnly" />
-}
+        </JingetInput>
+    }
+    else
+    {
+        <input @ref=RefObject
+               id="@Id"
+               type="@Attribute.ToString()"
+               value="@Value"
+               onchange="@OnChange"
+               class="@Attribute.CssClass"
+               disabled="@Attribute.IsDisabled"
+               readonly="@Attribute.IsReadOnly" />
+    }
+</div>

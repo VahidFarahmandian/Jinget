@@ -24,12 +24,25 @@ public abstract class JingetFormElement([CallerMemberName] string? propertyName 
     public string? DisplayName { get; set; } = null;
 
     /// <summary>
-    /// CSS class. default is 'form-control'
+    /// Defines whether to show the label for element or not
     /// </summary>
-    public string LabelCssClass { get; set; } = "col-3";
     public bool HasLabel { get; set; } = false;
-    public string DivCssClass { get; set; } = "col-3";
+
+    /// <summary>
+    /// CSS class for label element
+    /// </summary>
+    public string LabelCssClass { get; set; }
+
+    /// <summary>
+    /// Css class for parent div. default is 'form-horizontal'
+    /// </summary>
+    public string DivCssClass { get; set; } = "form-horizontal";
+
+    /// <summary>
+    /// Css class for element itself. default is 'form-control'
+    /// </summary>
     public string CssClass { get; set; } = "form-control";
+
     //public bool IsVisible { get; set; } = true;
     public bool IsDisabled { get; set; } = false;
     public bool IsReadOnly { get; set; } = false;

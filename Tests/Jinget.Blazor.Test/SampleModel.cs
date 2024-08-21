@@ -45,7 +45,7 @@ namespace Jinget.Blazor.Test
         [Attributes.Picker.JingetDateRangePickerElement(DisplayName = "بازه زمانی سفر", Culture = "fa-IR", Order = 6)]
         public DateRange? TravelDate { get; init; }
 
-        [JingetLabelElement(DisplayName = "امتیاز اکتسابی", HasLabel = true, HelperText = "این امتیاز بصورت خودکار توسط سیستم محاسبه شده است")]
+        [JingetLabelElement(DisplayName = "امتیاز اکتسابی", CssClass = "", HasLabel = true, HelperText = "این امتیاز بصورت خودکار توسط سیستم محاسبه شده است")]
         public int Score { get; set; } = 1850;
 
         [JingetTextAreaElement(DisplayName = "اطلاعات بیشتر", Rows = 3)]
