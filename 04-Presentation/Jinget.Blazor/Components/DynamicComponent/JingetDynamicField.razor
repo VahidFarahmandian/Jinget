@@ -5,7 +5,6 @@
 @using Jinget.Blazor.Components.DropDownList.DropDownListTree
 @using Jinget.Blazor.Components.Input
 @using Jinget.Blazor.Components.Picker
-@using MudBlazor
 @inherits JingetDynamicFieldBase
 
 @inject IJSRuntime JS;
@@ -86,11 +85,8 @@ else if (Attribute is JingetDropDownListTreeElement dropDownTree)
 }
 else if (Attribute is JingetLabelElement label)
 {
-    <MudField HelperText="@label.HelperText"
-              Label="@label.DisplayName"
-              Disabled="@Attribute.IsDisabled"
-              id="@Id"
-              Variant="Variant.Outlined">@(Value == null ? "" : Value.ToString())</MudField>
+    <label id="@Id" @ref=RefObject class="@Attribute.CssClass">@(Value == null ? "" : Value.ToString())</label>
+    <small class="@label.HelperTextCss">@Attribute.HelperText</small>
 }
 else if (Attribute is JingetBaseInputElement attr)
 {

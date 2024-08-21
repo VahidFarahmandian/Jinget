@@ -586,7 +586,7 @@ Note that if types used for dynamic form creation needs to access `IServiceProvi
         [JingetDateRangePickerElement(DisplayName = "Travel Date range",Culture ="fa-IR", Order =5)]
         public DateRange TravelDate { get; init; }
 
-        [JingetLabelElement(DisplayName = "Score", HasLabel = false)]
+        [JingetLabelElement(DisplayName = "Score", HasLabel = true)]
         public int Score { get; init; } = 1850;
 
         [JingetTextAreaElement(DisplayName = "More info", Rows =3)]
