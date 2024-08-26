@@ -152,7 +152,6 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
         await OnChange.InvokeAsync(new ChangeEventArgs { Value = e });
     }
     protected internal bool HasSelectedValue() =>
-        IsRequired &&
         SelectedItem != null &&
         !string.IsNullOrWhiteSpace(SelectedItem.Value?.ToString()) &&
         !SelectedItem.Value.HasDefaultValue();

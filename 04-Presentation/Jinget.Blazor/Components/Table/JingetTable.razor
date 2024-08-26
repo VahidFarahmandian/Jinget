@@ -15,53 +15,66 @@
     <ToolBarContent>
         @if (ShowSearchBar)
         {
-            <MudTextField Clearable=true T="string" ValueChanged="@(s=>OnSearch(s))"
-                          Placeholder=@SearchPlaceHolderText
-                          AdornmentIcon="@Icons.Material.Filled.Search"
-                          IconSize="MudBlazor.Size.Medium"></MudTextField>
-            @if (SearchBarContent != null)
-            {
-                @SearchBarContent
-            }
+                        <div class="@SearchBarDivCss">
+                        <MudTextField Clearable=true T="string" ValueChanged="@(s=>OnSearch(s))"
+                                      Placeholder=@SearchPlaceHolderText
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="MudBlazor.Size.Medium"></MudTextField>
+                @if (SearchBarContent != null)
+                {
+                                              <div class="@SearchBarContentDivCss">
+                        @SearchBarContent
+                                                  </div>
+                }
+                        </div>
         }
     </ToolBarContent>
-    <NoRecordsContent>@NoRecordText</NoRecordsContent>
+    <NoRecordsContent>
+        <div class="@NoRecordDivCss">
+            @NoRecordText
+            </div>
+            </NoRecordsContent>
     <HeaderContent>
-
-        @foreach (var item in columns)
-        {
-            <MudTh>
-                <MudTableSortLabel T=T
-                                   Enabled=@item.Sortable
-                                   SortLabel=@item.Name>
-                    @item.DisplayText
-                </MudTableSortLabel>
-            </MudTh>
-        }
-        @if (ActionContent != null)
-        {
-            <MudTh></MudTh>
-        }
+        <div class="@HeaderRowDivCss">
+            @foreach (var item in columns)
+            {
+                            <MudTh>
+                                <MudTableSortLabel T=T
+                                    Enabled=@item.Sortable
+                                    SortLabel=@item.Name>
+                        @item.DisplayText
+                                    </MudTableSortLabel>
+                                    </MudTh>
+            }
+            @if (ActionContent != null)
+            {
+                            <MudTh></MudTh>
+            }
+        </div>
     </HeaderContent>
     <RowTemplate>
-        @foreach (var cell in columns)
-        {
-            <MudTd DataLabel="@cell.Name">@context?.GetType().GetProperty(cell.Name)?.GetValue(context)</MudTd>
-        }
-        @if (ActionContent != null)
-        {
-            <MudTd>@ActionContent(context)</MudTd>
-        }
+        <div class="@DataRowDivCss">
+            @foreach (var cell in columns)
+            {
+                            <MudTd DataLabel="@cell.Name">@context?.GetType().GetProperty(cell.Name)?.GetValue(context)</MudTd>
+            }
+            @if (ActionContent != null)
+            {
+                        <div class="@ActionContentDivCss">
+                        <MudTd>@ActionContent(context)</MudTd>
+                        </div>
+            }
+        </div>
     </RowTemplate>
     <PagerContent>
         @if (ShowPagination)
         {
-            <div id=@id>
-                <MudTablePager AllItemsText=@PaginationSetting.AllItemsText
-                               HorizontalAlignment=@PaginationSetting.HorizontalAlignment
-                               RowsPerPageString=@PaginationSetting.RowsPerPageString
-                               InfoFormat=@PaginationSetting.InfoFormat />
-            </div>
+                        <div class="@PagerContentDivCss" id=@id>
+                            <MudTablePager AllItemsText=@PaginationSetting.AllItemsText
+                                           HorizontalAlignment=@PaginationSetting.HorizontalAlignment
+                                           RowsPerPageString=@PaginationSetting.RowsPerPageString
+                                           InfoFormat=@PaginationSetting.InfoFormat />
+                        </div>
         }
     </PagerContent>
 
@@ -74,6 +87,13 @@
     [Parameter] public bool ShowSearchBar { get; set; } = true;
     [Parameter] public bool Rtl { get; set; } = true;
     [Parameter] public bool ShowPagination { get; set; } = true;
+    [Parameter] public string SearchBarDivCss { get; set; }
+    [Parameter] public string SearchBarContentDivCss { get; set; }
+    [Parameter] public string NoRecordDivCss { get; set; }
+    [Parameter] public string ActionContentDivCss { get; set; }
+    [Parameter] public string PagerContentDivCss { get; set; }
+    [Parameter] public string DataRowDivCss { get; set; }
+    [Parameter] public string HeaderRowDivCss { get; set; }
     [Parameter] public RenderFragment<object?>? ActionContent { get; set; }
     [Parameter] public RenderFragment? SearchBarContent { get; set; }
     [Parameter] public Func<TableState, string, Task<TableData<T>>>? SearchProviderAsync { get; set; }

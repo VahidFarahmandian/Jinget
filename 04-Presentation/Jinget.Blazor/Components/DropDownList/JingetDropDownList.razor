@@ -16,7 +16,7 @@
             <option value="@item.Value" selected="@selected">@item.Text</option>
         }
     </select>
-    @if (!HasSelectedValue())
+    @if (IsRequired && !HasSelectedValue())
     {
         <label style="color:red">@RequiredError</label>
     }
