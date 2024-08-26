@@ -1,19 +1,18 @@
-﻿@using MudBlazor
-@using Jinget.Blazor.Components.Popup;
+﻿@using Jinget.Blazor.Components.Popup;
 @inject IJSRuntime JS;
 @inherits JingetPopupBase
 
-<div id="@Id" class="modal fade" tabindex="-1" role="dialog">
+<div id="@Id" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
         <div class='modal-content @(Rtl?"rtl":"ltr")'>
             @if (ShowHeader)
             {
                 <div class="modal-header">
                     <h5 class="modal-title">@Title</h5>
-                    <MudButton Class="btn-close"
-                               data-dismiss="modal"
-                               aria-label="Close"
-                               OnClick="CloseAsync"></MudButton>
+                    @if (ShowCloseOnHeader)
+                    {
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick=@CloseAsync></button>
+                    }
                 </div>
             }
             <div class="modal-body">
@@ -22,10 +21,7 @@
             @if (ShowFooter)
             {
                 <div class="modal-footer">
-                    <MudButton Variant="Variant.Filled"
-                               Size="Size.Small"
-                               Color="Color.Primary"
-                               OnClick="CloseAsync">@CloseButtonText</MudButton>
+                    <button type="button" class="@CloseButtonCss" data-dismiss="modal" aria-label="Close" onclick=@CloseAsync>@CloseButtonText</button>
                     @FooterContent
                 </div>
             }
@@ -34,26 +30,20 @@
     </div>
 </div>
 
-@* if there is no backdrop in page, then add one, otherwise do not add multiple backdrops on page *@
-@if (showBackdrop)
-{
-    <div class="modal-backdrop fade show"></div>
-}
-
 @code {
 
     [Parameter] public bool ShowHeader { get; set; } = true;
     [Parameter] public bool ShowFooter { get; set; } = true;
     [Parameter] public string? Title { get; set; }
 
+    [Parameter] public string? CloseButtonCss { get; set; } = "btn btn-secondary";
+    [Parameter] public bool ShowCloseOnHeader { get; set; } = true;
+
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? FooterContent { get; set; }
 
-    private bool showBackdrop = false;
-
     public async Task OpenAsync()
     {
-        showBackdrop = true;
         await JS.InvokeVoidAsync("toggleModal", new
         {
             dotnet = DotNetObjectReference.Create(this),
@@ -65,7 +55,6 @@
 
     public async Task CloseAsync()
     {
-        showBackdrop = false;
         await JS.InvokeVoidAsync("toggleModal", new
         {
             dotnet = DotNetObjectReference.Create(this),

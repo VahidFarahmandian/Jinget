@@ -5,6 +5,7 @@
         $('#' + params.id).modal('hide');
 }
 
+
 /*jinget.json.visualizer START*/
 window.toJsonVisualizer = (params = { id, data, collapsed=false, rootCollapsable=true, withQuotes=false, withLinks=true, bigNumbers=false } = {}) => {
     $('#' + params.id).jsonVisualizer(

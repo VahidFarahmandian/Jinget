@@ -4,6 +4,10 @@
     width: auto !important
 }
 
+div.modal-backdrop ~ span.select2-container {
+    z-index: 9999;
+}
+
 .select2-search__field {
     font-family: IRANSans !important;
 }

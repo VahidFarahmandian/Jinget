@@ -18,6 +18,7 @@ Blazor components optimised for RTL languaged such as Farsi, Arabic etc.
 
 **Services list:**
 - [x] **LocalStorage**
+- [x] **LocalStorage**
 - [x] **SessionStorage**
 
 
@@ -306,6 +307,10 @@ Add the `JingetModal` to your page and start using it;-)
 `Rtl`: If set to true, the the modal content will be rendred Right-to-Left.
 
 `CloseButtonText`: Defines the close button text.
+
+`CloseButtonCss`: Css class used for close button placed in modal's footer.
+
+`ShowCloseOnHeader`: if set true, then close button(X) will be shown on modal's header
 
 ***Callbacks:***
 
@@ -598,7 +603,7 @@ Note that if types used for dynamic form creation needs to access `IServiceProvi
         [JingetDropDownListElement(DisplayName = "Flight Status", BindingFunction = nameof(GetStatusAsync), 
         IsSearchable =true,DefaultText ="---Choose one---",HasLabel =true, LabelCssClass = "overlayed-label", Order =8)]
         public int? Status { get; init; }
-        public async Task<List<JingetDropDownItemModel>> GetStatusAsync()
+        public async Task<List<JingetDropDownItemModel>> GetStatusAsync(object? preBindingResult)
             => await new JingetDropDownListElement().BindAsync<FlightStatusModel>(async () =>
             {
                 return await Task.FromResult(new List<FlightStatusModel>
