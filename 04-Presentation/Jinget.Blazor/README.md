@@ -550,20 +550,6 @@ Add the `JingetTable` to your page and start using it;-)
 
 `SearchPlaceHolderText`: Text used to shown in search bar input box.
 
-`SearchBarDivCss`: Css class used for div containing search bar.
-
-`SearchBarContentDivCss`: Css class used for div containing search bar custom content.
-
-`NoRecordDivCss`: Css class used for div containing no record content custom message.
-
-`ActionContentDivCss`: Css class used for div containing row's action content.
-
-`PagerContentDivCss`: Css class used for div containing pagination content.
-
-`DataRowDivCss`: Css class used for div containing row's data.
-
-`HeaderRowDivCss`: Css class used for div containing table header row.
-
 ***Methods:***
 
 `Reload`: Used to reload the data into the table.
