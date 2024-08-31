@@ -36,9 +36,7 @@ public abstract class JingetDropDownListTreeBase : JingetDropDownListBaseCompone
         return parentValue;
     }
 
-    List<JingetDropDownTreeItemModel> OrganizeItems()
-    {
-        return OriginalItems
+    List<JingetDropDownTreeItemModel> OrganizeItems() => OriginalItems
                 .Select(x => new
                 {
                     x.Value,
@@ -50,7 +48,6 @@ public abstract class JingetDropDownListTreeBase : JingetDropDownListBaseCompone
                 .OrderBy(x => x.Route).ThenBy(x => x.Text)
                 .Select(x => new JingetDropDownTreeItemModel(x.Value, x.ParentValue, x.Text) { Padding = x.Level })
                 .ToList();
-    }
 
     /// <summary>
     /// Data binded to the drop down list

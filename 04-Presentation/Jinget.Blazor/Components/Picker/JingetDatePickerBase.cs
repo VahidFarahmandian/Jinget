@@ -25,8 +25,5 @@ public abstract class JingetDatePickerBase : JingetBaseComponent
         if (EnglishNumber)
             await JS.InvokeVoidAsync("toEnglishNumber", Id);
     }
-    protected async Task OnOpenAsync()
-    {
-        await JS.InvokeVoidAsync("gotoDate", Id);
-    }
+    protected async Task OnOpenAsync() => await JS.InvokeVoidAsync("gotoDate", Id);
 }

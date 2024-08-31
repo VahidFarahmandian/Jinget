@@ -1,17 +1,21 @@
-﻿namespace Jinget.Blazor.Components.Input;
+﻿using Jinget.Core.ExtensionMethods;
+
+namespace Jinget.Blazor.Components.Input;
 
 public abstract class JingetInputBase : JingetBaseComponent
 {
     [Parameter] public int Rows { get; set; }
-    [Parameter] public InputType InputType { get; set; }
+    [Parameter] public Enums.InputType InputType { get; set; }
+    [Parameter] public string? PlaceHolder { get; set; }
 
-    protected internal Converter<object?> StringConverter = new()
+    protected internal async Task OnChangedAsync(ChangeEventArgs? e)
     {
-        SetFunc = value => value?.ToString(),
-        GetFunc = text => text?.ToString(),
-    };
-    protected internal async void OnTextChanged(object? e)
-    {
-        await OnChange.InvokeAsync(new ChangeEventArgs { Value = e });
+        Value = e?.Value;
+        await OnChange.InvokeAsync(new ChangeEventArgs { Value = Value });
     }
+
+    protected internal bool HasValue() =>
+        Value != null &&
+        !string.IsNullOrWhiteSpace(Value?.ToString()) &&
+        !Value.HasDefaultValue();
 }

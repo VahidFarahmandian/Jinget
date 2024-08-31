@@ -1,27 +1,23 @@
-﻿namespace Jinget.Blazor.Attributes.Input
+﻿namespace Jinget.Blazor.Attributes.Input;
+
+public abstract class JingetBaseInputElement : JingetFormElement
 {
-    public abstract class JingetBaseInputElement : JingetFormElement
+    internal Enums.InputType GetInputType() => this switch
     {
-        internal InputType GetInputType()
-        {
-            return this switch
-            {
-                JingetTextBoxElement => InputType.Text,
-                JingetTextAreaElement => InputType.Text,
-                JingetPasswordBoxElement => InputType.Password,
-                JingetHiddenBoxElement => InputType.Hidden,
-                JingetNumberBoxElement => InputType.Number,
-                JingetEmailBoxElement => InputType.Email,
-                JingetUrlBoxElement => InputType.Url,
-                JingetTelephoneBoxElement => InputType.Telephone,
-                JingetColorBoxElement => InputType.Color,
-                JingetTimeBoxElement => InputType.Time,
-                JingetMonthBoxElement => InputType.Month,
-                JingetDateBoxElement => InputType.Date,
-                JingetDateTimeLocalBoxElement => InputType.DateTimeLocal,
-                JingetWeekBoxElement => InputType.Week,
-                _ => InputType.Text,
-            };
-        }
-    }
+        JingetTextBoxElement => Enums.InputType.Text,
+        JingetTextAreaElement => Enums.InputType.Text,
+        JingetPasswordBoxElement => Enums.InputType.Password,
+        JingetHiddenBoxElement => Enums.InputType.Hidden,
+        JingetNumberBoxElement => Enums.InputType.Number,
+        JingetEmailBoxElement => Enums.InputType.Email,
+        JingetUrlBoxElement => Enums.InputType.Url,
+        JingetTelephoneBoxElement => Enums.InputType.Telephone,
+        JingetColorBoxElement => Enums.InputType.Color,
+        JingetTimeBoxElement => Enums.InputType.Time,
+        JingetMonthBoxElement => Enums.InputType.Month,
+        JingetDateBoxElement => Enums.InputType.Date,
+        JingetDateTimeLocalBoxElement => Enums.InputType.DateTimeLocal,
+        JingetWeekBoxElement => Enums.InputType.Week,
+        _ => Enums.InputType.Text,
+    };
 }

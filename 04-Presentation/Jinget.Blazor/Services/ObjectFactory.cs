@@ -1,17 +1,17 @@
-﻿namespace Jinget.Blazor.Services;
+﻿//namespace Jinget.Blazor.Services;
 
-public class JingetObjectFactory<T>
-{
-    public sealed class EmptyTableData : TableData<T>
-    {
-        static readonly Lazy<EmptyTableData> lazy = new(() => new EmptyTableData());
+//public class JingetObjectFactory<T>
+//{
+//    public sealed class EmptyTableData : TableData<T>
+//    {
+//        static readonly Lazy<EmptyTableData> lazy = new(() => new EmptyTableData());
 
-        public static EmptyTableData Instance => lazy.Value;
+//        public static EmptyTableData Instance => lazy.Value;
 
-        private EmptyTableData()
-        {
-            Items = Array.Empty<T>();
-            TotalItems = 0;
-        }
-    }
-}
+//        private EmptyTableData()
+//        {
+//            Items = Array.Empty<T>();
+//            TotalItems = 0;
+//        }
+//    }
+//}

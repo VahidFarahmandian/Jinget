@@ -12,9 +12,7 @@ public static class ILoggerExtensions
         Guid? requestId = null,
         [CallerFilePath] string callerFilePath = "",
         [CallerLineNumber] long callerLineNumber = 0,
-        [CallerMemberName] string callerMember = "")
-    {
-        logger.LogDebug(JsonConvert.SerializeObject(new CustomLog
+        [CallerMemberName] string callerMember = "") => logger.LogDebug(JsonConvert.SerializeObject(new CustomLog
         {
             Description = message,
             CallerFilePath = callerFilePath,
@@ -22,5 +20,4 @@ public static class ILoggerExtensions
             CallerMember = callerMember,
             RequestId = requestId ?? Guid.Empty
         }), null);
-    }
 }

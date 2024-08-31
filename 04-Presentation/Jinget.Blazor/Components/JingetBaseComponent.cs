@@ -8,8 +8,20 @@ public abstract class JingetBaseComponent : ComponentBase
     /// Component identifier. default is set to <code>Guid.NewGuid().ToString("N")</code>
     /// </summary>
     [Parameter, EditorRequired] public virtual required string Id { get; set; } = Guid.NewGuid().ToString("N");
+
+    /// <summary>
+    /// if set to true, then element will be rendered in right to left direction
+    /// </summary>
+    [Parameter] public bool IsRtl { get; set; } = true;
+
     [Parameter] public string? DisplayName { get; set; }
-    [Parameter] public string? CssClass { get; set; }
+
+    /// <summary>
+    /// Css class used for label(display name) element  
+    /// </summary>
+    [Parameter] public string? LabelCssClass { get; set; }
+
+    [Parameter] public virtual string? CssClass { get; set; } = "form-control";
 
     /// <summary>
     /// if set to true, then component will be disabled.
@@ -20,7 +32,13 @@ public abstract class JingetBaseComponent : ComponentBase
     /// if set to true, then component will be rendered as readonly.
     /// </summary>
     [Parameter] public bool IsReadOnly { get; set; }
+
     [Parameter] public string? HelperText { get; set; }
+
+    /// <summary>
+    /// Css class used for helper text element
+    /// </summary>
+    [Parameter] public string? HelperTextCss { get; set; } = "form-text text-muted";
 
     /// <summary>
     /// if set to true, then component will be rendered as required input.
@@ -31,6 +49,8 @@ public abstract class JingetBaseComponent : ComponentBase
     /// MEssage to be shown whenever the <seealso cref="IsRequired"/> is true, and no value is supplied for component
     /// </summary>
     [Parameter] public string? RequiredError { get; set; } = "*";
+
+    [Parameter] public string? RequiredErrorCssClass { get; set; }
 
     private object? _value;
     /// <summary>

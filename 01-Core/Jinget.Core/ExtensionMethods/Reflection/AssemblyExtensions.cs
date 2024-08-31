@@ -39,12 +39,9 @@ public static class AssemblyExtensions
 #pragma warning restore CS8601 // Possible null reference assignment.
     }
 
-    public static List<Type> GetTypes(this Assembly assembly, Expression<Func<Type, bool>>? filter = null)
-    {
-        return assembly.GetTypes()
+    public static List<Type> GetTypes(this Assembly assembly, Expression<Func<Type, bool>>? filter = null) => assembly.GetTypes()
             .Where(c => c.IsClass && !c.IsGenericTypeDefinition && !c.IsAbstract && !c.IsNested)
             .Where(filter?.Compile() ?? BooleanUtility.TrueCondition<object>().Compile()).ToList();
-    }
 
     /// <summary>
     /// Get all methods of th egiven resource type inside an assembly

@@ -99,4 +99,19 @@ public class IQueryableExtensionsTests
         IQueryable<TestClass> input = null;
         input.OrderByDynamic("", OrderByDirection.Descending);
     }
+
+    [TestMethod()]
+    public void Should_return_unsorted_collection_when_orderbymember_is_empty()
+    {
+        TestClass class1 = new() { Property1 = 1, Property2 = "C" };
+        TestClass class2 = new() { Property1 = 2, Property2 = "A" };
+        TestClass class3 = new() { Property1 = 3, Property2 = "B" };
+
+        var input = new List<TestClass>() { class1, class2, class3 }.AsQueryable();
+        var expected = new List<TestClass>() { class1, class2, class3 }.AsQueryable();
+
+        var result = input.OrderByDynamic("", OrderByDirection.Descending);
+
+        Assert.IsTrue(expected.SequenceEqual(result));
+    }
 }

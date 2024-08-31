@@ -3,213 +3,128 @@
 @using Jinget.Blazor.Components.Popup
 @using Jinget.Blazor.Services
 @using Jinget.Blazor.Attributes
-@using MudBlazor;
+@* @using MudBlazor; *@
 @using Jinget.Core.Enumerations;
 @using Jinget.Core.ExtensionMethods.Collections;
-<JingetMessageBox @ref=@messageBox CloseButtonText=@messageBox_closeButtonText ShowVerboseFuncAsync=@(async()=>true)></JingetMessageBox>
-<div class="container">
-    <div class="row">
-        RTL Table:
-        <div class="form-group input-group">
-            <JingetTable Model=@ModelRtl
-                         Rtl=true
-                         SearchProviderAsync=@SearchAsyncRtl
-                         ShowPagination=true
-                         ShowSearchBar=true>
-                <ActionContent>
-                    <MudButton OnClick=@(async ()=> await ShowDetailFarsi((SampleDataFarsi)context))
-                               ButtonType="ButtonType.Reset"
-                               Color="Color.Warning">
-                        جزئیات...
-                    </MudButton>
-                </ActionContent>
-            </JingetTable>
+@using MudBlazor
 
-        </div>
-    </div>
-    <hr />
-    <div class="row">
-        LTR Table:
-        <div class="form-group input-group">
-            <JingetTable Model=@ModelLtr
-                         Rtl=false
-                         SearchProviderAsync=@SearchAsyncLtr
-                         ShowPagination=true
-                         ShowSearchBar=true
-                         SearchPlaceHolderText="Search..."
-                         NoRecordText="No Data!"
-                         PaginationSetting=@(new JingetTable<SampleDataEnglish>.PaginationSettingModel
-                         {
-                         AllItemsText="All",
-                         InfoFormat="{first_item}-{last_item} from {all_items}",
-                         RowsPerPageString="Page Size:"
-                         })>
-                <ActionContent>
-                    <MudButton OnClick=@(async ()=> await ShowDetailEnglish((SampleDataEnglish)context))
-                               ButtonType="ButtonType.Reset"
-                               Color="Color.Warning">Detail...</MudButton>
-                </ActionContent>
-            </JingetTable>
-        </div>
-    </div>
-</div>
+<JingetMessageBox @ref=@messageBox ShowVerboseFuncAsync=@(async()=>true)></JingetMessageBox>
+
+<JingetTable Id="tblSampleFarsi" Model=@ModelFarsi
+             OnDataBind="BindDataFarsi"
+             IsRtl=true
+             SearchPlaceHolderText="جستجو"
+             FirstPageText="اولین"
+             LastPageText="آخرین"
+             PrevPageText="قبلی"
+             NextPageText="بعدی"
+             AllItemsText="همه"
+             InfoFormat="{first_item}-{last_item} از {all_items}"
+             RowsPerPageString="اندازه صفحه:"
+             SortBadgeTextFormat="مرتب سازی براساس {sort_col} بصورت {sort_dir}"
+             SearchBadgeTextFormat="فیلتر براساس {search_term}"
+             SelectedRowBadgeTextFormat="ردیف انتخاب شده: "
+             AscendingSortText="صعودی"
+             DescendingSortText="نزولی"
+             OnRowSelected="@((SampleDataFarsi e)=>RowSelected(e))"
+             RowSelectable=true
+             ShowPagination=true
+             ShowSearchBar=true>
+    <NoRecordContent>رکوردی وجود ندارد</NoRecordContent>
+    <PreActionContent>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Success">
+            <MudText>Pre Sample</MudText>
+        </MudButton>
+    </PreActionContent>
+    <PostActionContent>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary">
+            <MudText>Post Sample</MudText>
+        </MudButton>
+    </PostActionContent>
+</JingetTable>
+<hr />
+
+
+<JingetTable Id="tblSampleEng" Model=@ModelEng
+             OnDataBind="BindDataEng"
+             IsRtl=false
+             ShowBadgeBar=true
+             ShowPagination=true
+             ShowSearchBar=true
+             PaginationPageSizeOptions=[5,9,12,15,30]>
+    <NoRecordContent>No record found!</NoRecordContent>
+    <PreActionContent>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Success">
+            <MudText>Pre Sample</MudText>
+        </MudButton>
+    </PreActionContent>
+    <PostActionContent>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary">
+            <MudText>Post Sample</MudText>
+        </MudButton>
+    </PostActionContent>
+</JingetTable>
 
 @code {
     JingetMessageBox? messageBox;
-    TableData<SampleDataEnglish>? ModelLtr;
-    TableData<SampleDataFarsi>? ModelRtl;
-    string messageBox_closeButtonText = "";
+    JingetTableModel<SampleDataFarsi>? ModelFarsi;
+    JingetTableModel<SampleDataEng>? ModelEng;
 
-    protected override void OnInitialized()
+    void RowSelected(SampleDataFarsi e)
     {
-        ModelLtr = GetDataEnglish();
-        ModelRtl = GetDataFarsi();
+
     }
 
-    async Task ShowDetailEnglish(SampleDataEnglish data)
+    void BindDataFarsi(JingetTableDataBindModel e)
     {
-
-        messageBox_closeButtonText = "Close";
-
-        await messageBox.ShowInfoAsync(
-        data.Id.ToString(),
-        $"{data.Name} {data.LastName}",
-        System.Text.Json.JsonSerializer.Serialize(data), rtl: false);
+        var data = GetDataFarsi()
+                .Where(x => string.IsNullOrWhiteSpace(e.SearchTerm) || x.Name.StartsWith(e.SearchTerm) || x.LastName.StartsWith(e.SearchTerm))
+                .AsQueryable();
+        var items = data
+                    .OrderByDynamic(e.SortColumn, e.SortDirection)
+                    .Skip((e.PageIndex - 1) * e.PageSize)
+                    .Take(e.PageSize)
+                    .ToList();
+        ModelFarsi = new JingetTableModel<SampleDataFarsi>
+            {
+                Items = items,
+                TotalItems = data.Count()
+            };
+        StateHasChanged();
+    }
+    void BindDataEng(JingetTableDataBindModel e)
+    {
+        var data = GetDataEng()
+                .Where(x => string.IsNullOrWhiteSpace(e.SearchTerm) || x.Name.StartsWith(e.SearchTerm) || x.LastName.StartsWith(e.SearchTerm))
+                .AsQueryable();
+        var items = data
+                    .OrderByDynamic(e.SortColumn, e.SortDirection)
+                    .Skip((e.PageIndex - 1) * e.PageSize)
+                    .Take(e.PageSize)
+                    .ToList();
+        ModelEng = new JingetTableModel<SampleDataEng>
+            {
+                Items = items,
+                TotalItems = data.Count()
+            };
+        StateHasChanged();
     }
 
     async Task ShowDetailFarsi(SampleDataFarsi data)
     {
-        messageBox_closeButtonText = "بستن";
-
         await messageBox.ShowInfoAsync(
         data.Id.ToString(),
         $"{data.Name} {data.LastName}",
         System.Text.Json.JsonSerializer.Serialize(data), rtl: true);
     }
 
-    async Task<TableData<SampleDataEnglish>> SearchAsyncLtr(TableState state, string? searchString = null)
+    List<SampleDataFarsi> GetDataFarsi()
     {
-        try
-        {
-            IQueryable<SampleDataEnglish> data;
-            if (searchString == null)
-                data = GetDataEnglish().Items.AsQueryable();
-            else
-                data = GetDataEnglish().Items
-                .Where(x =>
-                    x.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) ||
-                    x.LastName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).AsQueryable();
-
-            int totalCount = data == null ? 0 : data.Count();
-
-            if (!string.IsNullOrWhiteSpace(state.SortLabel))
-            {
-                var sortDirection = state.SortDirection == SortDirection.Ascending ?
-                OrderByDirection.Ascending :
-                OrderByDirection.Descending;
-
-                data = data.OrderByDynamic(state.SortLabel, sortDirection);
-            }
-
-            var response = data
-            .Skip(state.Page * state.PageSize)
-            .Take(state.PageSize).ToList();
-
-            if (response == null || response.Count == 0)
-                return JingetObjectFactory<SampleDataEnglish>.EmptyTableData.Instance;
-
-            return await Task.FromResult(
-                new TableData<SampleDataEnglish>
-                    {
-                        Items = response,
-                        TotalItems = totalCount
-                    });
-        }
-        catch (Exception ex)
-        {
-            await messageBox.ShowErrorAsync("Error", "Unable to search data", ex.Message);
-        }
-        return JingetObjectFactory<SampleDataEnglish>.EmptyTableData.Instance;
-    }
-
-    async Task<TableData<SampleDataFarsi>> SearchAsyncRtl(TableState state, string? searchString = null)
-    {
-        try
-        {
-            IQueryable<SampleDataFarsi> data;
-            if (searchString == null)
-                data = GetDataFarsi().Items.AsQueryable();
-            else
-                data = GetDataFarsi().Items
-                .Where(x =>
-                    x.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) ||
-                    x.LastName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).AsQueryable();
-
-            int totalCount = data == null ? 0 : data.Count();
-
-            if (!string.IsNullOrWhiteSpace(state.SortLabel))
-            {
-                var sortDirection = state.SortDirection == SortDirection.Ascending ?
-                OrderByDirection.Ascending :
-                OrderByDirection.Descending;
-
-                data = data.OrderByDynamic(state.SortLabel, sortDirection);
-            }
-
-            var response = data
-            .Skip(state.Page * state.PageSize)
-            .Take(state.PageSize).ToList();
-
-            if (response == null || response.Count == 0)
-                return JingetObjectFactory<SampleDataFarsi>.EmptyTableData.Instance;
-
-            return await Task.FromResult(
-                new TableData<SampleDataFarsi>
-                    {
-                        Items = response,
-                        TotalItems = totalCount
-                    });
-        }
-        catch (Exception ex)
-        {
-            await messageBox.ShowErrorAsync("Error", "Unable to search data", ex.Message);
-        }
-        return JingetObjectFactory<SampleDataFarsi>.EmptyTableData.Instance;
-    }
-
-    TableData<SampleDataEnglish> GetDataEnglish()
-    {
-        var data = new List<SampleDataEnglish>
-            {
-                new SampleDataEnglish(1,"Vahid","Farahmandian",34,true),
-                new SampleDataEnglish(2,"Ali","Ahmadi",40,true),
-                new SampleDataEnglish(3,"John","Jackson",18,true),
-                new SampleDataEnglish(4,"Peter","Romanson",24,false),
-                new SampleDataEnglish(5,"Sara","Daniel",37,false),
-                new SampleDataEnglish(6,"Albert","McJeremy",29,true),
-                new SampleDataEnglish(7,"Mohammad","Alizade",54,true),
-                new SampleDataEnglish(8,"Al","Pacino",41,true),
-                new SampleDataEnglish(9,"Paul","Washington",19,true),
-                new SampleDataEnglish(10,"Mari","Anderson",38,false),
-                new SampleDataEnglish(11,"Lizza","Paul",47,false),
-                new SampleDataEnglish(12,"Jack","Nicklson",26,true),
-                new SampleDataEnglish(13,"Andrew","Tompson",71,true),
-                new SampleDataEnglish(14,"Saman","Saudi",30,false),
-                new SampleDataEnglish(15,"Yasser","Vahidi",25,true),
-                new SampleDataEnglish(16,"Jack","Taylor",31,false),
-                new SampleDataEnglish(17,"Jason","Newton",18,false),
-                new SampleDataEnglish(18,"Pit","McLaren",24,true),
-            };
-        return new TableData<SampleDataEnglish>
-            {
-                Items = data,
-                TotalItems = data.Count
-            };
-    }
-
-    TableData<SampleDataFarsi> GetDataFarsi()
-    {
-        var data = new List<SampleDataFarsi>
+        return new List<SampleDataFarsi>
             {
                 new SampleDataFarsi(1,"وحید","فرهمندیان",34,true),
                 new SampleDataFarsi(2,"علی","احمدی",40,true),
@@ -247,44 +162,58 @@
                 new SampleDataFarsi(34,"مهراد","نکونام",31,false),
                 new SampleDataFarsi(35,"سامان","گل محمدی",18,false),
                 new SampleDataFarsi(36,"مژگان","سوخته سرائی",24,true),
-            };
-        return new TableData<SampleDataFarsi>
-            {
-                Items = data,
-                TotalItems = data.Count
+                new SampleDataFarsi(37,"امیررضا","پورعلی",34,true),
+                new SampleDataFarsi(38,"سیدعلی محمد","شمسی",40,true),
+                new SampleDataFarsi(39,"رامیت","رضائی",18,true),
+                new SampleDataFarsi(40,"مریم","نریمان نژاد",24,false),
+                new SampleDataFarsi(41,"نازی","میرصادق زاده هاشمی",37,false),
+                new SampleDataFarsi(42,"ساسان","شهاب الدین",29,true),
+                new SampleDataFarsi(43,"حمیدرضا","قنبرزاده",54,true),
+                new SampleDataFarsi(44,"قاسم","صمدپور",41,true),
+                new SampleDataFarsi(45,"عبدالله","محمدعلی نژاد",19,true),
+                new SampleDataFarsi(46,"یوسف","نزاکت خواه",38,false),
+                new SampleDataFarsi(47,"غلامعلی","سماواتی",47,false),
+                new SampleDataFarsi(48,"آفتاب","روشنایی",26,true),
+                new SampleDataFarsi(49,"زهره","خانی زاده",71,true),
+                new SampleDataFarsi(50,"نعیم","یزدانی",30,false),
+                new SampleDataFarsi(51,"سجاد","حسینی",25,true),
+                new SampleDataFarsi(52,"مهراد","نکونام",31,false),
+                new SampleDataFarsi(53,"سامان","گل محمدی",18,false),
+                new SampleDataFarsi(54,"مژگان","سوخته سرائی",24,true)
             };
     }
 
-    [JingetTableElement]
-    class SampleDataEnglish
+    List<SampleDataEng> GetDataEng()
     {
-        public SampleDataEnglish(int id, string name, string lastname, int age, bool isActive)
-        {
-            Id = id;
-            Name = name;
-            LastName = lastname;
-            Age = age;
-            IsActive = isActive;
-        }
-
-        [JingetTableMember(DisplayName = "#")]
-        public int Id { get; set; }
-
-        [JingetTableMember(DisplayName = "First Name")]
-        public string Name { get; set; }
-
-        [JingetTableMember(DisplayName = "Last Name")]
-        public string LastName { get; set; }
-
-        [JingetTableMember(DisplayName = "Age", Sortable = true)]
-        public int Age { get; set; }
-
-        [JingetTableMember(DisplayName = "Status(Active)")]
-        public bool IsActive { get; set; }
+        return new List<SampleDataEng>
+            {
+                new SampleDataEng(1,"Vahid","Farahmandian",34,true),
+                new SampleDataEng(2,"Ali","Ahmadi",40,true),
+                new SampleDataEng(3,"Mohsen","Nowroozi",18,true),
+                new SampleDataEng(4,"Maryam","Ghane'ei",24,false),
+                new SampleDataEng(5,"Sara","Hosseinzadeh",37,false),
+                new SampleDataEng(6,"Amir","Rahmani",29,true),
+                new SampleDataEng(7,"Seyed Rahman","Raoofi Asl",54,true),
+                new SampleDataEng(8,"Saman","Sadeghi",41,true),
+                new SampleDataEng(9,"Aboalfazl","Behnampour",19,true),
+                new SampleDataEng(10,"Zhale","Alizadeh",38,false),
+                new SampleDataEng(11,"Seyedreza","Aboalfathi",47,false),
+                new SampleDataEng(12,"Mahtab","Asemani",26,true),
+                new SampleDataEng(13,"Setareh","Fazaei",71,true),
+                new SampleDataEng(14,"Ramin","Askari",30,false),
+                new SampleDataEng(15,"Elmira","Tabatabaei",25,true),
+                new SampleDataEng(16,"Yasin","Hassanzadeh",31,false),
+                new SampleDataEng(17,"Yasi","Hosseinkhani",18,false),
+                new SampleDataEng(18,"Hassan","Mohammadpour",24,true),
+                new SampleDataEng(19,"Amirreza","PoorAli",34,true),
+                new SampleDataEng(20,"Seyed Ali Mohammad","Shamsi",40,true),
+                new SampleDataEng(21,"Ramin","Rezaei",18,true),
+                new SampleDataEng(22,"Maryam","Narimannezhad",24,false)
+            };
     }
 
     [JingetTableElement]
-    class SampleDataFarsi
+    public class SampleDataFarsi
     {
         public SampleDataFarsi(int id, string name, string lastname, int age, bool isActive)
         {
@@ -308,6 +237,33 @@
         public int Age { get; set; }
 
         [JingetTableMember(DisplayName = "وضعیت")]
+        public bool IsActive { get; set; }
+    }
+    [JingetTableElement]
+    public class SampleDataEng
+    {
+        public SampleDataEng(int id, string name, string lastname, int age, bool isActive)
+        {
+            Id = id;
+            Name = name;
+            LastName = lastname;
+            Age = age;
+            IsActive = isActive;
+        }
+
+        [JingetTableMember(DisplayName = "#")]
+        public int Id { get; set; }
+
+        [JingetTableMember(DisplayName = "Name")]
+        public string Name { get; set; }
+
+        [JingetTableMember(DisplayName = "Lastname")]
+        public string LastName { get; set; }
+
+        [JingetTableMember(DisplayName = "Age", Sortable = true)]
+        public int Age { get; set; }
+
+        [JingetTableMember(DisplayName = "Status")]
         public bool IsActive { get; set; }
     }
 

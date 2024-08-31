@@ -62,11 +62,8 @@ Sample 02: Set Value on page after render ecent
             await gauge3.SetValueAsync(new Random().Next(1, 100));
         }
     }
-    public async Task OnChange2(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("Gauge 2", "Selected Value Changed", Newtonsoft.Json.JsonConvert.SerializeObject(gauge2));
-    }
-    public async Task SetValue()
+        public async Task OnChange2(ChangeEventArgs e) => await messageBox.ShowInfoAsync("Gauge 2", "Selected Value Changed", Newtonsoft.Json.JsonConvert.SerializeObject(gauge2));
+        public async Task SetValue()
     {
         gauge2.GaugeBackGroundColor = GetRandomColour().ToString();
         await gauge2.SetValueAsync(new Random().Next(1, 100));

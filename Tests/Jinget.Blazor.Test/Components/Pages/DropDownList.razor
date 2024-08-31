@@ -114,9 +114,7 @@ Sample 07: Guid Code
 
     int selectedIndexSearch;
 
-    async Task<List<JingetDropDownItemModel>> GetData()
-    {
-        return await Task.FromResult(new List<JingetDropDownItemModel>
+    async Task<List<JingetDropDownItemModel>> GetData() => await Task.FromResult(new List<JingetDropDownItemModel>
     {
     new JingetDropDownItemModel(1,"Iran"),
     new JingetDropDownItemModel(2,"USA"),
@@ -124,10 +122,7 @@ Sample 07: Guid Code
     new JingetDropDownItemModel(4,"Russia"),
     new JingetDropDownItemModel(5,"Canada"),
     new JingetDropDownItemModel(6,"China")});
-    }
-    async Task<List<JingetDropDownItemModel>> GetDataGuid()
-    {
-        return await Task.FromResult(new List<JingetDropDownItemModel>
+    async Task<List<JingetDropDownItemModel>> GetDataGuid() => await Task.FromResult(new List<JingetDropDownItemModel>
     {
     new JingetDropDownItemModel(Guid.NewGuid(),"Iran"),
     new JingetDropDownItemModel(Guid.NewGuid(),"USA"),
@@ -135,10 +130,7 @@ Sample 07: Guid Code
     new JingetDropDownItemModel(Guid.NewGuid(),"Russia"),
     new JingetDropDownItemModel(Guid.NewGuid(),"Canada"),
     new JingetDropDownItemModel(Guid.NewGuid(),"China")});
-    }
-    async Task<List<JingetDropDownItemModel>> GetDataPersian()
-    {
-        return await Task.FromResult(new List<JingetDropDownItemModel>
+    async Task<List<JingetDropDownItemModel>> GetDataPersian() => await Task.FromResult(new List<JingetDropDownItemModel>
     {
     new JingetDropDownItemModel(1,"ایران"),
     new JingetDropDownItemModel(2,"ایالات متحده آمریکا"),
@@ -146,7 +138,6 @@ Sample 07: Guid Code
     new JingetDropDownItemModel(4,"روسیه"),
     new JingetDropDownItemModel(5,"کانادا"),
     new JingetDropDownItemModel(6,"جمهوری خلق چین")});
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -159,42 +150,15 @@ Sample 07: Guid Code
     public async Task ddlSample2_DataBound()
     {
     }
-    public async Task ddlSample2_Rendered()
-    {
-        await ddlSample2.SetSelectedIndexAsync(new Random().Next(1, 6));
-    }
-    public async Task OnChange1(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("ddlSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample1.SelectedItem));
-    }
-    public async Task OnChange2(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("ddlSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample2.SelectedItem));
-    }
-    public async Task OnChange3(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("ddlSample3", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample3.SelectedItem));
-    }
-    public async Task OnChange4(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("ddlSample4", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample4.SelectedItem));
-    }
-    public async Task OnChange5(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("ddlSample5", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample5.SelectedItem));
-    }
-    public async Task OnChange6(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("ddlSample6", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample6.SelectedItem));
-    }
-    public async Task SetSelectedItem()
-    {
-        await ddlSample4.SetSelectedItemAsync(new Random().Next(1, 6).ToString());
-    }
-    public async Task ClearSelection()
-    {
-        await ddlSample4.SetSelectedItemAsync(null);
-    }
+    public async Task ddlSample2_Rendered() => await ddlSample2.SetSelectedIndexAsync(new Random().Next(1, 6));
+    public async Task OnChange1(ChangeEventArgs e) => await messageBox.ShowInfoAsync("ddlSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample1.SelectedItem));
+    public async Task OnChange2(ChangeEventArgs e) => await messageBox.ShowInfoAsync("ddlSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample2.SelectedItem));
+    public async Task OnChange3(ChangeEventArgs e) => await messageBox.ShowInfoAsync("ddlSample3", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample3.SelectedItem));
+    public async Task OnChange4(ChangeEventArgs e) => await messageBox.ShowInfoAsync("ddlSample4", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample4.SelectedItem));
+    public async Task OnChange5(ChangeEventArgs e) => await messageBox.ShowInfoAsync("ddlSample5", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample5.SelectedItem));
+    public async Task OnChange6(ChangeEventArgs e) => await messageBox.ShowInfoAsync("ddlSample6", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample6.SelectedItem));
+    public async Task SetSelectedItem() => await ddlSample4.SetSelectedItemAsync(new Random().Next(1, 6).ToString());
+    public async Task ClearSelection() => await ddlSample4.SetSelectedItemAsync(null);
     public async Task SetSelectedIndex()
     {
         selectedIndexSearch = new Random().Next(0, 6);

@@ -5,10 +5,7 @@ public class DiScannerTest
 {
     private ServiceCollection? _services;
     [TestInitialize]
-    public void Initialize()
-    {
-        _services = [];
-    }
+    public void Initialize() => _services = [];
 
     #region using assembly
 

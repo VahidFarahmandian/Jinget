@@ -25,9 +25,6 @@ namespace Jinget.Core.Utilities.Enum.Tests
 
         [TestMethod()]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void should_throw_exception_for_empty_direction()
-        {
-            OrderByDirectionUtility.Get("");
-        }
+        public void should_throw_exception_for_empty_direction() => OrderByDirectionUtility.Get("");
     }
 }

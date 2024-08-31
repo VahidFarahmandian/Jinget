@@ -181,34 +181,14 @@ Events:
     JingetDropDownList ddlSample2;
     JingetMessageBox? messageBox;
     List<ListItem> events = [];
-    void OnOpen()
-    {
-        events.Add(new ListItem("Modal Opened"));
-    }
-    void OnClose()
-    {
-        events.Add(new ListItem("Modal Closed"));
-    }
+        void OnOpen() => events.Add(new ListItem("Modal Opened"));
+        void OnClose() => events.Add(new ListItem("Modal Closed"));
 
-    public async Task OnChange1(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("ddlSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample1.SelectedItem));
-    }
-    public async Task OnChange2(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("ddlSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample2.SelectedItem));
-    }
-    public async Task OnChangeTree1(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("ddlTreeSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlTreeSample1.SelectedItem));
-    }
-    public async Task OnChangeTree2(ChangeEventArgs e)
-    {
-        await messageBox.ShowInfoAsync("ddlTreeSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlTreeSample2.SelectedItem));
-    }
-    async Task<List<JingetDropDownTreeItemModel>> GetDataTree()
-    {
-        return await Task.FromResult(new List<JingetDropDownTreeItemModel>
+        public async Task OnChange1(ChangeEventArgs e) => await messageBox.ShowInfoAsync("ddlSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample1.SelectedItem));
+        public async Task OnChange2(ChangeEventArgs e) => await messageBox.ShowInfoAsync("ddlSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlSample2.SelectedItem));
+        public async Task OnChangeTree1(ChangeEventArgs e) => await messageBox.ShowInfoAsync("ddlTreeSample1", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlTreeSample1.SelectedItem));
+        public async Task OnChangeTree2(ChangeEventArgs e) => await messageBox.ShowInfoAsync("ddlTreeSample2", "Selected Item Changed", Newtonsoft.Json.JsonConvert.SerializeObject(ddlTreeSample2.SelectedItem));
+        async Task<List<JingetDropDownTreeItemModel>> GetDataTree() => await Task.FromResult(new List<JingetDropDownTreeItemModel>
             {
                 new JingetDropDownTreeItemModel(15,5,"Tehran Province"),
                 new JingetDropDownTreeItemModel(16,15,"Tehran"),
@@ -228,10 +208,7 @@ Events:
                 new JingetDropDownTreeItemModel(13,12,"Brazil"),
                 new JingetDropDownTreeItemModel(14,null,"Oceania"),
             });
-    }
-    async Task<List<JingetDropDownItemModel>> GetData()
-    {
-        return await Task.FromResult(new List<JingetDropDownItemModel>
+        async Task<List<JingetDropDownItemModel>> GetData() => await Task.FromResult(new List<JingetDropDownItemModel>
             {
                 new JingetDropDownItemModel(15,"Tehran Province"),
                 new JingetDropDownItemModel(16,"Tehran"),
@@ -240,5 +217,4 @@ Events:
                 new JingetDropDownItemModel(2,"Europe"),
                 new JingetDropDownItemModel(3,"North America")
             });
-    }
 }

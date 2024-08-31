@@ -21,14 +21,8 @@ public class Type2
 }
 public static class TestClassExtensions
 {
-    public static string[] Method1<T>(this TestClass testClass)
-    {
-        return [typeof(T).Name];
-    }
-    public static string[] Method1<T, U>(this TestClass testClass)
-    {
-        return [typeof(T).Name, typeof(U).Name];
-    }
+    public static string[] Method1<T>(this TestClass testClass) => [typeof(T).Name];
+    public static string[] Method1<T, U>(this TestClass testClass) => [typeof(T).Name, typeof(U).Name];
 }
 public class TestClass
 {

@@ -169,10 +169,7 @@ public class EnumExtensionsTests
 
     [TestMethod()]
     [ExpectedException(typeof(InvalidEnumArgumentException))]
-    public void should_throw_exception_for_empty_enum_min()
-    {
-        EnumUtility.GetMinValue<EmptyEnum, int>();
-    }
+    public void should_throw_exception_for_empty_enum_min() => EnumUtility.GetMinValue<EmptyEnum, int>();
 
     [TestMethod()]
     public void should_return_max_val_in_enum()
@@ -184,10 +181,7 @@ public class EnumExtensionsTests
 
     [TestMethod()]
     [ExpectedException(typeof(InvalidEnumArgumentException))]
-    public void should_throw_exception_for_empty_enum_max()
-    {
-        EnumUtility.GetMaxValue<EmptyEnum, int>();
-    }
+    public void should_throw_exception_for_empty_enum_max() => EnumUtility.GetMaxValue<EmptyEnum, int>();
 
     #endregion
 }

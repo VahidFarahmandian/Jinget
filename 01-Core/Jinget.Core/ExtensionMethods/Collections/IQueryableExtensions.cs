@@ -5,8 +5,8 @@ public static class IQueryableExtensions
     /// <summary>
     /// Sort a collection based on a property name. 
     /// This method is similar to 
-    /// <seealso cref="Enumerable.OrderBy{TSource, TKey}(System.Collections.Generic.IEnumerable{TSource}, Func{TSource, TKey})"/> and 
-    /// <seealso cref="Enumerable.OrderByDescending{TSource, TKey}(System.Collections.Generic.IEnumerable{TSource}, Func{TSource, TKey})"/> 
+    /// <seealso cref="Enumerable.OrderBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})"/> and 
+    /// <seealso cref="Enumerable.OrderByDescending{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})"/> 
     /// methods except that this method sort the collection using property name.
     /// </summary>
     /// <remarks>If the given <paramref name="orderByMember"/> not found and also <paramref name="query"/> has 'null' value, then <paramref name="orderByMember"/>'s <see cref="ArgumentNullException"/> will have presedence over <see cref="NullReferenceException"/>.</remarks>
@@ -15,6 +15,8 @@ public static class IQueryableExtensions
     /// <exception cref="JingetException"></exception>
     public static IQueryable<T> OrderByDynamic<T>(this IQueryable<T> query, string orderByMember, OrderByDirection direction)
     {
+        if (string.IsNullOrWhiteSpace(orderByMember))
+            return query;
         var queryElementTypeParam = Expression.Parameter(typeof(T));
         Expression memberAccess = queryElementTypeParam;
         foreach (var member in orderByMember.Split('.', StringSplitOptions.RemoveEmptyEntries))

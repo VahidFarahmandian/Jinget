@@ -44,10 +44,7 @@ public class JingetDynamicFieldBase : ComponentBase
             await OnDynamicFieldAddedAsync();
     }
 
-    protected async Task OnDynamicFieldAddedAsync()
-    {
-        await DynamicFieldAdded.InvokeAsync(this);
-    }
+    protected async Task OnDynamicFieldAddedAsync() => await DynamicFieldAdded.InvokeAsync(this);
 
     public async void OnChange(ChangeEventArgs e)
     {
@@ -119,13 +116,7 @@ public class JingetDynamicFieldBase : ComponentBase
         return data;
     }
 
-    protected internal async Task<List<JingetDropDownItemModel>> GetDropDownListDataAsync()
-    {
-        return await Task.FromResult((List<JingetDropDownItemModel>)GetData<JingetDropDownItemModel>());
-    }
+    protected internal async Task<List<JingetDropDownItemModel>> GetDropDownListDataAsync() => await Task.FromResult((List<JingetDropDownItemModel>)GetData<JingetDropDownItemModel>());
 
-    protected internal async Task<List<JingetDropDownTreeItemModel>> GetDropDownTreeDataAsync()
-    {
-        return await Task.FromResult((List<JingetDropDownTreeItemModel>)GetData<JingetDropDownTreeItemModel>());
-    }
+    protected internal async Task<List<JingetDropDownTreeItemModel>> GetDropDownTreeDataAsync() => await Task.FromResult((List<JingetDropDownTreeItemModel>)GetData<JingetDropDownTreeItemModel>());
 }

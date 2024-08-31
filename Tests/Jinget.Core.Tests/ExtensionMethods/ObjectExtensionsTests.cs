@@ -79,6 +79,14 @@ public class ObjectExtensionsTests
     }
 
     [TestMethod()]
+    public void should_return_null_when_type_is_null_while_gettting_the_given_property_value()
+    {
+        TestClass obj = null;
+        var result = obj.GetValue(nameof(TestClass.Property2));
+        Assert.IsNull(result);
+    }
+
+    [TestMethod()]
     public void should_get_the_value_of_the_given_property()
     {
         TestClass obj = new()

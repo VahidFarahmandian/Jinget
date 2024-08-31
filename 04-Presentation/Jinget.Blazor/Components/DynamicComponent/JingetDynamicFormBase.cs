@@ -62,14 +62,8 @@ public class JingetDynamicFormBase<T> : ComponentBase
         await OnFieldReady.InvokeAsync(field);
     }
 
-    public List<JingetDynamicFieldBase> FindElement(string id)
-    {
-        return DynamicFields.Where(x => x.Id == id).ToList();
-    }
-    public List<JingetDynamicFieldBase> FindElement<TFormElementType>() where TFormElementType : JingetFormElement
-    {
-        return DynamicFields.Where(x => x.Attribute is TFormElementType).ToList();
-    }
+    public List<JingetDynamicFieldBase> FindElement(string id) => DynamicFields.Where(x => x.Id == id).ToList();
+    public List<JingetDynamicFieldBase> FindElement<TFormElementType>() where TFormElementType : JingetFormElement => DynamicFields.Where(x => x.Attribute is TFormElementType).ToList();
 
     protected void OnValueChanged(string prop, object? value)
     {

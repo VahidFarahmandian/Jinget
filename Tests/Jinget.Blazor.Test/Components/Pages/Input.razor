@@ -1,19 +1,24 @@
 ﻿@page "/input"
 @using Jinget.Blazor.Components.Input
 @using Jinget.Blazor.Components.Popup
+@using Jinget.Blazor.Enums
 @using MudBlazor
+
 <JingetMessageBox @ref=@messageBox
                   Rtl="false"
                   ShowVerboseFuncAsync=@(async ()=>await Task.FromResult<bool>(true))></JingetMessageBox>
 <div class="container">
     text:
     <div class="row">
-        <div class="form-group input-group">
+        <div class="form-group">
             <JingetInput Id="inpText"
-                         InputType="InputType.Text"
-                         @bind-Value="@obj.Name">
+                         InputType="Enums.InputType.Text"
+                         HelperText="Enter your desired value"
+                         DisplayName="نام:"
+                         @bind-Value="@obj.Name"
+                         IsRtl="true"
+                         IsRequired="true">
             </JingetInput>
-
 
             <MudButton FullWidth=true
                        OnClick="submitText"
@@ -25,9 +30,9 @@
     </div>
     password:
     <div class="row">
-        <div class="form-group input-group">
+        <div class="form-group">
             <JingetInput Id="inpPassword"
-                         InputType="MudBlazor.InputType.Password"
+                         InputType="Enums.InputType.Password"
                          @bind-Value="@password_val">
             </JingetInput>
             <MudButton FullWidth=true
@@ -40,10 +45,10 @@
     </div>
     number:
     <div class="row">
-        
-        <div class="form-group input-group">
+
+        <div class="form-group">
             <JingetInput Id="inpNumber"
-                         InputType="MudBlazor.InputType.Number"
+                         InputType="Enums.InputType.Number"
                          @bind-Value="@number_val">
             </JingetInput>
             <MudButton FullWidth=true
@@ -57,9 +62,9 @@
     <hr />
     complete example:
     <div class="row">
-        <div class="form-group input-group">
+        <div class="form-group">
             <JingetInput Id="inpNumber"
-                         InputType="MudBlazor.InputType.Number"
+                         InputType="Enums.InputType.Number"
                          DisplayName="Sample Input"
                          HelperText="Enter your desired value"
                          Rows="3"
@@ -102,25 +107,10 @@
         obj = new();
         return base.OnInitializedAsync();
     }
-    async Task submitText()
-    {
-        await messageBox.ShowInfoAsync("Text input", "You entered:", Newtonsoft.Json.JsonConvert.SerializeObject(obj.Name));
-    }
-    async Task submitPassword()
-    {
-        await messageBox.ShowInfoAsync("Text input", "You entered:", Newtonsoft.Json.JsonConvert.SerializeObject(password_val));
-    }
-    async Task submitNumber()
-    {
-        await messageBox.ShowInfoAsync("Text input", "You entered:", Newtonsoft.Json.JsonConvert.SerializeObject(number_val));
-    }
-    async Task submitComplete()
-    {
-        await messageBox.ShowInfoAsync("Text input", "You entered:", Newtonsoft.Json.JsonConvert.SerializeObject(complete_val));
-    }
-    async Task setValue()
-    {
-        complete_val = "This is auto set";
-    }
+    async Task submitText() => await messageBox.ShowInfoAsync("Text input", "You entered:", Newtonsoft.Json.JsonConvert.SerializeObject(obj.Name));
+    async Task submitPassword() => await messageBox.ShowInfoAsync("Text input", "You entered:", Newtonsoft.Json.JsonConvert.SerializeObject(password_val));
+    async Task submitNumber() => await messageBox.ShowInfoAsync("Text input", "You entered:", Newtonsoft.Json.JsonConvert.SerializeObject(number_val));
+    async Task submitComplete() => await messageBox.ShowInfoAsync("Text input", "You entered:", Newtonsoft.Json.JsonConvert.SerializeObject(complete_val));
+    async Task setValue() => complete_val = "This is auto set";
     async Task OnTextChanged(ChangeEventArgs e) => await messageBox.ShowInfoAsync("Text input", "You entered:", Newtonsoft.Json.JsonConvert.SerializeObject(e));
 }

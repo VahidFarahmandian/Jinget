@@ -6,10 +6,7 @@ public class JingetDropDownListTreeElement : JingetDropDownListElementBase
     /// Use this method whenever the Id property has int type
     /// </summary>
     public async Task<List<JingetDropDownTreeItemModel>> BindAsync<T>(Func<Task<List<T>>> GetData)
-        where T : BaseTypeTreeModel
-    {
-        return await BindAsync<T, int>(GetData).ConfigureAwait(false);
-    }
+        where T : BaseTypeTreeModel => await BindAsync<T, int>(GetData).ConfigureAwait(false);
 
     /// <summary>
     /// Use this method whenever the Id property has type of struct

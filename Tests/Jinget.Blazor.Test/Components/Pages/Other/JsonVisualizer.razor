@@ -8,13 +8,7 @@
 @code {
     JingetJsonVisualizer? jingetJsonVisualizer { get; set; }
 
-    async Task VisualizeObject()
-    {
-        await jingetJsonVisualizer.Visualize(new { Name = "Vahid", LastName = "Farahmandian", Age = 35, Score = 182.25 });
-    }
+        async Task VisualizeObject() => await jingetJsonVisualizer.Visualize(new { Name = "Vahid", LastName = "Farahmandian", Age = 35, Score = 182.25 });
 
-    async Task VisualizeString()
-    {
-        await jingetJsonVisualizer.Visualize("{\"Name\":\"Ali\",\"LastName\":\"Abbasi\", \"Age\":30, \"Score\":145.652}");
-    }
+        async Task VisualizeString() => await jingetJsonVisualizer.Visualize("{\"Name\":\"Ali\",\"LastName\":\"Abbasi\", \"Age\":30, \"Score\":145.652}");
 }

@@ -23,9 +23,7 @@ public class BatchingLogger : ILogger
     }
 
     public void Log<TState>(DateTime timestamp, LogLevel logLevel, EventId eventId, TState state,
-        Exception exception, Func<TState, Exception, string> formatter)
-    {
-        _provider.AddMessage(
+        Exception exception, Func<TState, Exception, string> formatter) => _provider.AddMessage(
             timestamp,
             new LogMessage
             {
@@ -34,5 +32,4 @@ public class BatchingLogger : ILogger
                 Severity = logLevel,
                 Timestamp = timestamp
             });
-    }
 }

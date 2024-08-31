@@ -25,8 +25,5 @@ public abstract class BrowserStorageService(IJSRuntime jsRuntime, string storage
         return JsonConvert.DeserializeObject<Dictionary<string, string>>(stringfiedItems);
     }
 
-    public async Task RemoveAllAsync()
-    {
-        await Js.InvokeVoidAsync($"removeAll_{Storage}Keys").ConfigureAwait(false);
-    }
+    public async Task RemoveAllAsync() => await Js.InvokeVoidAsync($"removeAll_{Storage}Keys").ConfigureAwait(false);
 }

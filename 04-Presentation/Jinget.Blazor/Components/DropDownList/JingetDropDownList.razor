@@ -1,10 +1,13 @@
 ﻿@using Jinget.Core.ExtensionMethods
 @using Microsoft.AspNetCore.Components.Forms
-@using MudBlazor
 @inherits JingetDropDownListBase;
 
 @if (connected)
 {
+    @if (!string.IsNullOrWhiteSpace(DisplayName))
+    {
+        <label for="@Id" class="jinget-element-label @LabelCssClass">@DisplayName</label>
+    }
     <select id="@Id"
             class="@CssClass"
             disabled="@IsDisabled"

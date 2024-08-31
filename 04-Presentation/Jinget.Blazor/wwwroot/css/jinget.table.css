@@ -1,11 +1,30 @@
-﻿.mud-table-page-number-information {
-    direction: rtl !important;
+﻿.jinget-farsi-font {
+    font-family: 'IRANSans'
 }
 
-.mud-table-pagination-toolbar .mud-tablepager-right {
-    flex-direction: row !important;
+.jinget-default-font {
+    font-family: unset;
 }
 
-.mud-table-pagination-information {
-    direction: rtl;
+.jinget-action-content {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.pager-btn {
+    border-radius: unset !important;
+}
+
+tfoot .btn:focus, .btn:active {
+    outline: none !important;
+    box-shadow: none;
+    box-shadow: none !important;
+}
+
+tfoot div, .selected-row {
+    font-size: smaller;
+}
+
+.table {
+    margin: 0px !important;
 }

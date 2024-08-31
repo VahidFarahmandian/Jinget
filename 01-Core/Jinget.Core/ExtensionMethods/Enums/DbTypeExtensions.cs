@@ -5,10 +5,9 @@ public static class DbTypeExtensions
     /// <summary>
     /// Check if given <seealso cref="DbType"/> is a numeric type or not
     /// </summary>
-    public static bool IsNumericDbType(this DbType type)
-    {
+    public static bool IsNumericDbType(this DbType type) =>
 #if NET5_0_OR_GREATER
-        return type switch
+        type switch
         {
             DbType.AnsiString
             or DbType.Binary
@@ -48,7 +47,7 @@ public static class DbTypeExtensions
                 return true;
         }
 #endif
-    }
+
 
     /// <summary>
     /// Check if the given type is an unicode string type such as 'nchar' or 'nvarchar'

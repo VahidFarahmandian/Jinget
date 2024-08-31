@@ -73,4 +73,5 @@ public static class PropertiesExtensions
 #else
         t.GetTypeInfo().IsPrimitive;
 #endif
+
 }

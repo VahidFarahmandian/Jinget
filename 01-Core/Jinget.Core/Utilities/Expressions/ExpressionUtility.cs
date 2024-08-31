@@ -293,20 +293,17 @@ public static class ExpressionUtility
         return query;
     }
 
-    private static Expression GetBinaryExpression(MemberExpression left, ConstantExpression right, Operator @operator)
+    private static Expression GetBinaryExpression(MemberExpression left, ConstantExpression right, Operator @operator) => @operator switch
     {
-        return @operator switch
-        {
-            Operator.Equal => Expression.Equal(left, right),
-            Operator.GreaterThan => Expression.GreaterThan(left, right),
-            Operator.LowerThan => Expression.LessThan(left, right),
-            Operator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(left, right),
-            Operator.LowerThanOrEqual => Expression.LessThanOrEqual(left, right),
-            Operator.NotEqual => Expression.NotEqual(left, right),
-            Operator.Contains => Expression.Call(left, typeof(string).GetMethod("Contains", [typeof(string)]), right),
-            _ => throw new JingetException($"Operator of type {@operator} is not supported by Jinget!"),
-        };
-    }
+        Operator.Equal => Expression.Equal(left, right),
+        Operator.GreaterThan => Expression.GreaterThan(left, right),
+        Operator.LowerThan => Expression.LessThan(left, right),
+        Operator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(left, right),
+        Operator.LowerThanOrEqual => Expression.LessThanOrEqual(left, right),
+        Operator.NotEqual => Expression.NotEqual(left, right),
+        Operator.Contains => Expression.Call(left, typeof(string).GetMethod("Contains", [typeof(string)]), right),
+        _ => throw new JingetException($"Operator of type {@operator} is not supported by Jinget!"),
+    };
 
     public static Expression<Func<T, bool>> CreateEqualCondition<T, TValueType>(string propertyName, object value, string parameterName = "Param_0")
     {

@@ -83,16 +83,13 @@ public class JingetCaptcha : ComponentBase
         Custom
     }
 
-    List<char> GetEnglishChars()
+    List<char> GetEnglishChars() => ContentCaseSensitivity switch
     {
-        return ContentCaseSensitivity switch
-        {
-            CharSetCaseSensitivityOptions.LowerCaseOnly => [.. StringUtility.GetEnglishChars(true).ToCharArray()],
-            CharSetCaseSensitivityOptions.UpperCaseOnly => [.. StringUtility.GetEnglishChars(false).ToCharArray()],
-            CharSetCaseSensitivityOptions.IgnoreCase => [.. StringUtility.GetEnglishChars(true).ToCharArray(), .. StringUtility.GetEnglishChars(false).ToCharArray()],
-            _ => [],
-        };
-    }
+        CharSetCaseSensitivityOptions.LowerCaseOnly => [.. StringUtility.GetEnglishChars(true).ToCharArray()],
+        CharSetCaseSensitivityOptions.UpperCaseOnly => [.. StringUtility.GetEnglishChars(false).ToCharArray()],
+        CharSetCaseSensitivityOptions.IgnoreCase => [.. StringUtility.GetEnglishChars(true).ToCharArray(), .. StringUtility.GetEnglishChars(false).ToCharArray()],
+        _ => [],
+    };
 
     string GetCaptchaWord(int length)
     {
@@ -327,10 +324,7 @@ public class JingetCaptcha : ComponentBase
     /// <summary>
     /// Checks if the given input text is squal to the image's text
     /// </summary>
-    public bool IsValid(string input)
-    {
-        return CaseSesitiveComparison
+    public bool IsValid(string input) => CaseSesitiveComparison
             ? string.Equals(captchaWord, input, StringComparison.Ordinal)
             : string.Equals(captchaWord, input, StringComparison.OrdinalIgnoreCase);
-    }
 }

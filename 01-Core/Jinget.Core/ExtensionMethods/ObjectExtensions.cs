@@ -73,7 +73,12 @@ public static class ObjectExtensions
     /// <summary>
     /// Get the value of the given property
     /// </summary>
-    public static object? GetValue(this object obj, string propertyName) => obj.GetType().GetProperty(propertyName)?.GetValue(obj);
+    public static object? GetValue(this object obj, string propertyName)
+    {
+        if (obj == null)
+            return null;
+        return obj.GetType().GetProperty(propertyName)?.GetValue(obj);
+    }
 
     /// <summary>
     /// Convert two unrelated objects to each other.

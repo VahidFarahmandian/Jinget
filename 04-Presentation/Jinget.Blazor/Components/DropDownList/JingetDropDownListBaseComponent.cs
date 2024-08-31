@@ -23,11 +23,6 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
     [Parameter] public bool IsSearchable { get; set; }
 
     /// <summary>
-    /// if set to true, then dropdownllist items will be rendered in right to left direction
-    /// </summary>
-    [Parameter] public bool IsRtl { get; set; }
-
-    /// <summary>
     /// Text used to be shown when search returns no result, while using searchable DropDownListTree
     /// </summary>
     [Parameter] public string NoResultText { get; set; } = "Nothing to display!";
@@ -74,9 +69,7 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
     /// <summary>
     /// initialize component by calling initJingetDropDownList[Tree]. this functionality is mainly powered by select2.js library.
     /// </summary>
-    internal async Task InitComponentAsync(string jsInitiatorFunction)
-    {
-        await JS.InvokeVoidAsync(jsInitiatorFunction,
+    internal async Task InitComponentAsync(string jsInitiatorFunction) => await JS.InvokeVoidAsync(jsInitiatorFunction,
             new
             {
                 dotnet = DotNetObjectReference.Create(this),
@@ -87,7 +80,6 @@ public abstract class JingetDropDownListBaseComponent<T> : JingetBaseComponent w
                 SearchPlaceholderText,
                 ParentElementId
             });
-    }
 
     /// <summary>
     /// This field is only used when <seealso cref="IsSearchable"/> is true, to prevent rendering element before binding data into <seealso cref="Items"/>

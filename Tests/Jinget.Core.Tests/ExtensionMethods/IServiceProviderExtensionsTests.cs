@@ -27,8 +27,5 @@ public class IServiceProviderExtensionsTests
 
     [TestMethod()]
     [ExpectedException(typeof(InvalidOperationException))]
-    public void should_throw_exception_for_nonregistered_service()
-    {
-        services.GetJingetService<ITestMethod>();
-    }
+    public void should_throw_exception_for_nonregistered_service() => services.GetJingetService<ITestMethod>();
 }

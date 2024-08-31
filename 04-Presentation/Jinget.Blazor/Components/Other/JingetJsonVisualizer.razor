@@ -45,33 +45,27 @@
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    /// <summary>
-    /// renders the given object in json visualizer
-    /// </summary>
-    public async Task Visualize(object data)
-    {
-        await Visualize(JsonSerializer.Serialize(data, new JsonSerializerOptions
-            {
-                ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve
-            }));
-    }
-
-    /// <summary>
-    /// renders the given string in json visualizer
-    /// </summary>
-    public async Task Visualize(string data)
-    {
-        await JS.InvokeVoidAsync("toJsonVisualizer",
-        new
+        /// <summary>
+        /// renders the given object in json visualizer
+        /// </summary>
+        public async Task Visualize(object data) => await Visualize(JsonSerializer.Serialize(data, new JsonSerializerOptions
         {
-            dotnet,
-            Id,
-            data,
-            Collapsed,
-            RootCollapsable,
-            WithQuotes,
-            WithLinks,
-            BigNumbers
-        });
-    }
+            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve
+        }));
+
+        /// <summary>
+        /// renders the given string in json visualizer
+        /// </summary>
+        public async Task Visualize(string data) => await JS.InvokeVoidAsync("toJsonVisualizer",
+            new
+            {
+                dotnet,
+                Id,
+                data,
+                Collapsed,
+                RootCollapsable,
+                WithQuotes,
+                WithLinks,
+                BigNumbers
+            });
 }

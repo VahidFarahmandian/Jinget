@@ -1,6 +1,7 @@
 ﻿@using Jinget.Blazor.Components.List
 @using Jinget.Blazor.Components.Other
-@using MudBlazor
+@using Jinget.Blazor.Enums
+@using Jinget.Core.ExtensionMethods.Enums
 @using Newtonsoft.Json.Linq
 @using Jinget.Blazor.Components.Popup
 
@@ -15,9 +16,9 @@
     <ChildContent>
         @if (IsFancy)
         {
-            <MudAlert Severity="Theme">
+            <div class="alert alert-@(Theme.GetDescription())" role="alert">
                 @((MarkupString)Content)
-            </MudAlert>
+            </div>
         }
         else
         {
@@ -32,6 +33,7 @@
 </JingetModal>
 
 @code {
+
     JingetModal modal { get; set; } = new JingetModal();
     JingetJsonVisualizer? JsonVisualizer { get; set; }
 

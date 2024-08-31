@@ -3,10 +3,7 @@
 public class JingetDropDownListElement : JingetDropDownListElementBase
 {
     public async Task<List<JingetDropDownItemModel>> BindAsync<T>(Func<Task<List<T>>> GetData)
-        where T : BaseTypeModel
-    {
-        return await BindAsync<T, byte>(GetData).ConfigureAwait(false);
-    }
+        where T : BaseTypeModel => await BindAsync<T, byte>(GetData).ConfigureAwait(false);
 
     public async Task<List<JingetDropDownItemModel>> BindAsync<T, TCode>(Func<Task<List<T>>> GetData)
         where T : BaseTypeModel<TCode>

@@ -203,10 +203,7 @@ public class SqlTests
 
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
-    public void Should_throw_exception_for_unsupported_method_call()
-    {
-        Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName.Normalize() == "Vahid").ToSql();
-    }
+    public void Should_throw_exception_for_unsupported_method_call() => Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName.Normalize() == "Vahid").ToSql();
 
     #endregion
 

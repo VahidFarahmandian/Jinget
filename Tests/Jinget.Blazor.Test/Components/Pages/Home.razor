@@ -4,8 +4,5 @@
 @inject ITokenStorageService tokenService
 
 @code {
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await tokenService.SetTokenAsync("abc");
-    }
+    protected override async Task OnAfterRenderAsync(bool firstRender) => await tokenService.SetTokenAsync("abc");
 }

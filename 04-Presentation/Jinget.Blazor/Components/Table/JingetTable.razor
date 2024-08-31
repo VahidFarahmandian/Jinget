@@ -1,178 +1,187 @@
-﻿@using Jinget.Blazor.Attributes
-@using Jinget.Blazor.Services
-@using MudBlazor
-@using System.Reflection
-@using Microsoft.JSInterop
-@using Jinget.Core.Utilities.Expressions;
-@inject IJSRuntime JS;
-
+﻿@using Jinget.Blazor.Components.DropDownList
+@using Jinget.Blazor.Components.Input
+@using Jinget.Core.ExtensionMethods
+@using Jinget.Core.ExtensionMethods.Enums
 @typeparam T
-<MudTable @ref=table
-          Items="Model?.Items"
-          ServerData="@ServerReload"
-          Hover="true"
-          Class=@(Rtl?"rtl":"ltr")>
-    <ToolBarContent>
-        @if (ShowSearchBar)
-        {
+@inherits JingetTableBase<T>
 
-            <MudTextField Clearable=true T="string" ValueChanged="@(s=>OnSearch(s))"
-                          Placeholder=@SearchPlaceHolderText
-                          AdornmentIcon="@Icons.Material.Filled.Search"
-                          IconSize="MudBlazor.Size.Medium"></MudTextField>
-            @if (SearchBarContent != null)
+<div class="table-responsive @(IsRtl?"rtl":"ltr")">
+    <table id="@Id" class="@CssClass table table-hover table-bordered text-center @(IsRtl?"jinget-farsi-font":"jinget-default-font")">
+        <thead class="table-light">
+            @if (ShowSearchBar)
             {
-
-                @SearchBarContent
-
+                <tr>
+                    <td colspan="@TotalColumns">
+                        <JingetInput Id="@(Id+"-inpsearch")"
+                                     InputType="Enums.InputType.Text"
+                                     Value="@currentSearchTerm"
+                                     PlaceHolder="@SearchPlaceHolderText"
+                                     OnChange="@((e)=>SearchAsync(e==null?"":e?.Value.ToString()))"
+                                     IsRtl="@IsRtl">
+                        </JingetInput>
+                        @if (SearchBarContent != null)
+                        {
+                            @SearchBarContent
+                        }
+                    </td>
+                </tr>
             }
-
-        }
-    </ToolBarContent>
-    <NoRecordsContent>
-        @NoRecordText
-
-    </NoRecordsContent>
-    <HeaderContent>
-
-        @foreach (var item in columns)
-        {
-            <MudTh>
-                <MudTableSortLabel T=T
-                                   Enabled=@item.Sortable
-                                   SortLabel=@item.Name>
-                    @item.DisplayText
-                </MudTableSortLabel>
-            </MudTh>
-        }
-        @if (ActionContent != null)
-        {
-            <MudTh></MudTh>
-        }
-
-    </HeaderContent>
-    <RowTemplate>
-
-        @foreach (var cell in columns)
-        {
-            <MudTd DataLabel="@cell.Name">@context?.GetType().GetProperty(cell.Name)?.GetValue(context)</MudTd>
-        }
-        @if (ActionContent != null)
-        {
-            <MudTd>@ActionContent(context)</MudTd>
-        }
-
-    </RowTemplate>
-    <PagerContent>
-        @if (ShowPagination)
-        {
-
-            <MudTablePager AllItemsText=@PaginationSetting.AllItemsText
-                           HorizontalAlignment=@PaginationSetting.HorizontalAlignment
-                           RowsPerPageString=@PaginationSetting.RowsPerPageString
-                           InfoFormat=@PaginationSetting.InfoFormat />
-
-        }
-    </PagerContent>
-
-</MudTable>
-
-@code {
-    string id = Guid.NewGuid().ToString("N");
-
-    [Parameter] public TableData<T>? Model { get; set; }
-    [Parameter] public bool ShowSearchBar { get; set; } = true;
-    [Parameter] public bool Rtl { get; set; } = true;
-    [Parameter] public bool ShowPagination { get; set; } = true;
-    [Parameter] public RenderFragment<object?>? ActionContent { get; set; }
-    [Parameter] public RenderFragment? SearchBarContent { get; set; }
-    [Parameter] public Func<TableState, string, Task<TableData<T>>>? SearchProviderAsync { get; set; }
-
-    [Parameter] public PaginationSettingModel PaginationSetting { get; set; } = new PaginationSettingModel();
-
-    [Parameter] public string NoRecordText { get; set; } = "رکوردی برای نمایش وجود ندارد!";
-
-    [Parameter] public string SearchPlaceHolderText { get; set; } = "جستجو";
-
-    public class PaginationSettingModel
-    {
-        public string RowsPerPageString { get; set; } = "اندازه صفحه:";
-        public string InfoFormat { get; set; } = "{first_item}-{last_item} از {all_items}";
-        public string AllItemsText { get; set; } = "همه";
-        public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Center;
-    }
-
-    MudTable<T>? table;
-    List<(string DisplayText, string Name, bool Sortable)> columns = [];
-    string? searchString;
-
-    protected override void OnInitialized()
-    {
-        if (Model == null)
-            Model = JingetObjectFactory<T>.EmptyTableData.Instance;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!Rtl)
-        {
-            await JS.InvokeVoidAsync("toLtr", id);
-        }
-    }
-
-    protected async override Task OnParametersSetAsync()
-    {
-        columns = new List<(string DisplayText, string Name, bool Sortable)>();
-        if (Model != null)
-        {
-            var genericType = Model.GetType().GetGenericArguments().FirstOrDefault();
-            Type modelType;
-            if (genericType != null)
+            @if (ShowBadgeBar)
             {
-                modelType = genericType;
+                <tr>
+                    <th colspan="@TotalColumns" class="jinget-badge">
+                        @if (HasSearchTerm())
+                        {
+                            <span class="badge rounded-pill bg-secondary">
+                                @GetSearchBadgeText()
+                                <i class="fa fa-times" onclick="@(()=>ClearSearchAsync())" aria-hidden="true"></i>
+                            </span>
+                        }
+                        @if (HasOrderBy())
+                        {
+                            <span class="badge rounded-pill bg-secondary">
+                                @GetSortBadgeText()
+                                <i class="fa fa-times" onclick="@(()=>ClearSortAsync())" aria-hidden="true"></i>
+                            </span>
+                        }
+                        @if (HasSelectedRow())
+                        {
+                            <span class="badge rounded-pill bg-secondary" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                @SelectedRowBadgeTextFormat
+                                <i class="fa fa-times" onclick="@(()=>ClearSelectedRowAsync())" aria-hidden="true"></i>
+                            </span>
+                            <div class="accordion" id="accordionExample">
+                                <div class="accordion-item">
+                                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <JingetTable Model="@(new JingetTableModel<T>{Items = [selectedRow],TotalItems=1})"
+                                                         Id="@(Id+"selected-row")"
+                                                         CssClass="table-sm table-success table-striped selected-row"
+                                                         ShowBadgeBar="false"
+                                                         ShowPagination="false"
+                                                         ShowSearchBar="false"
+                                                         RowSelectable="false"
+                                                         Sortable="false"></JingetTable>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </th>
+                </tr>
+            }
+            <tr>
+                @if (PreActionContent != null)
+                {
+                    <th scope="col" class="jinget-action-content">@PreActionContentHeaderText</th>
+                }
+                @foreach (var item in columns)
+                {
+                    @if (Sortable)
+                    {
+                        <th class="@(item.Sortable?"sortable":"")"
+                            onclick="@(()=>SortAsync(item.Sortable, item.Name))" scope="col">
+                            @item.DisplayText
+                            @if (item.Sortable)
+                            {
+                                <i class="fa fa-@GetSortIcon()" aria-hidden="true"></i>
+                            }
+                        </th>
+                    }
+                    else
+                    {
+                        <th scope="col">
+                            @item.DisplayText
+                        </th>
+                    }
+                }
+                @if (PostActionContent != null)
+                {
+                    <th scope="col" class="jinget-action-content">@PostActionContentHeaderText</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (HasData())
+            {
+                @foreach (T row in Model.Items)
+                {
+                    var type = row?.GetType();
+                    var cssClass = selectedRow != null && row != null && selectedRow.HasSameValuesAs(row) ? "table-info" : "";
+                    <tr class="@cssClass" onclick="@(()=>SelectRowAsync(row))">
+                        @if (PreActionContent != null)
+                        {
+                            <td scope="row" class="align-middle jinget-action-content">@PreActionContent(row)</td>
+                        }
+                        @foreach (var cell in columns)
+                        {
+                            <td scope="row" class="align-middle">@row.GetValue(cell.Name)</td>
+                        }
+                        @if (PostActionContent != null)
+                        {
+                            <td scope="row" class="align-middle jinget-action-content">@PostActionContent(row)</td>
+                        }
+                    </tr>
+                }
             }
             else
             {
-                modelType = Model.GetType();
-            }
-            if (modelType.IsDefined(typeof(JingetTableElement), true))
-            {
-                var properties = modelType.GetProperties()
-                        .Where(x => x.IsDefined(typeof(JingetTableMember), true))
-                        .OrderBy(x => x.GetCustomAttribute<JingetTableMember>()?.Order).ToList();
-
-                foreach (var item in properties)
+                @if (NoRecordContent != null)
                 {
-                    var attr = item.GetCustomAttribute<JingetTableMember>();
-                    if (attr != null)
-                    {
-                        var cellColumn = attr.DisplayName;
-                        var sortable = attr.Sortable;
-                        cellColumn = string.IsNullOrWhiteSpace(cellColumn) ? item.Name : cellColumn;
-                        columns.Add((cellColumn, item.Name, sortable));
-                    }
+                    <tr>
+                        <td colspan="@TotalColumns">
+                            @NoRecordContent
+                        </td>
+                    </tr>
                 }
             }
-        }
-        await Task.CompletedTask;
-    }
+        </tbody>
+        <tfoot>
 
-    async Task<TableData<T>> ServerReload(TableState state)
-    {
-        if (SearchProviderAsync != null)
-        {
-            if (state.SortDirection == SortDirection.None)
-                state.SortDirection = SortDirection.Ascending;
-            Model = await SearchProviderAsync.Invoke(state, searchString == null ? "" : searchString);
-        }
-        return Model == null ? new TableData<T>() : Model;
-    }
+            @if (ShowPagination && GetPageIndexes().Any())
+            {
+                <tr>
+                    <td colspan="@TotalColumns" class="align-middle">
+                        <div class="align-items-center form-group row">
 
-    void OnSearch(string text)
-    {
-        searchString = text;
-        Reload();
-    }
+                            <JingetDropDownList @ref=@ddlPagination
+                                                Id="@(Id+"ddlPagination")"
+                                                DisplayName="@RowsPerPageString"
+                                                LabelCssClass="jinget-smaller-font col-auto"
+                                                CssClass="jinget-smaller-font"
+                                                Value="selectedPageSizeOption"
+                                                DataProviderFunc=@GetPaginationPageSizeOptionsAsync
+                                                OnChange=@((e)=>PageSizeChangedAsync(e))></JingetDropDownList>
 
-    public void Reload() => table?.ReloadServerData();
-}
+                            <button type="button" disabled="@(currentPageIndex <= 1?true:false)" onclick="@(()=>GotoPageAsync(1))" class="pager-btn col-auto btn btn-light">@FirstPageText</button>
+                            <button type="button" disabled="@(currentPageIndex <= 1?true:false)" onclick="@(()=>GotoPageAsync(currentPageIndex-1))" class="pager-btn col-auto btn btn-light">@PrevPageText</button>
+
+                            @foreach (var item in GetPageIndexes())
+                            {
+                                if (item == -1)
+                                {
+                                    <button type="button" disabled class="pager-btn col-auto btn btn-light">...</button>
+                                }
+                                else
+                                {
+                                    <button type="button" disabled="@(currentPageIndex==item?true:false)" onclick="@(()=>GotoPageAsync(item))"
+                                            class="pager-btn col-auto btn btn-light">
+                                        @item
+                                    </button>
+                                }
+                            }
+
+                            <button type="button" disabled="@(currentPageIndex >= lastPageIndex?true:false)" onclick="@(()=>GotoPageAsync(currentPageIndex+1))" class="pager-btn col-auto btn btn-light">@NextPageText</button>
+                            <button type="button" disabled="@(currentPageIndex >= lastPageIndex?true:false)" onclick="@(()=>GotoPageAsync(lastPageIndex))" class="pager-btn col-auto btn btn-light">@LastPageText</button>
+
+                            <span class="pager-btn col-auto btn btn-light" style="cursor:auto">
+                                @InfoFormat
+                            </span>
+
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tfoot>
+    </table>
+</div>

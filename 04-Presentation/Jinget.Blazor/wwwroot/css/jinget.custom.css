@@ -1,5 +1,51 @@
 ﻿
+div.rtl {
+    direction: rtl;
+}
+
+div.ltr {
+    direction: ltr;
+}
+
+.jinget-badge {
+    text-align: justify;
+}
+
+    .jinget-badge span {
+        margin: 0px 5px 0px 5px;
+    }
+
+        .jinget-badge span i {
+            margin: 0px 2px 0 2px;
+            cursor: pointer;
+        }
+
+.sortable {
+    cursor: pointer;
+}
+
+    .sortable i {
+        color: gainsboro;
+        float: inline-end;
+    }
+
+        .sortable i:hover {
+            color: unset;
+        }
+
+.jinget-element-label {
+    padding: 0px 5px 0px 5px;
+}
+
+.jinget_element_required-error {
+    color: red;
+}
+
 /*Select2.js START*/
+.select2-container {
+    min-width: unset !important;
+}
+
 .select2-container {
     width: auto !important
 }

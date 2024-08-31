@@ -2,14 +2,11 @@
 
 public class CalendarService
 {
-    public static CultureInfo GetCulture(string culture)
+    public static CultureInfo GetCulture(string culture) => culture.ToLowerInvariant() switch
     {
-        return culture.ToLowerInvariant() switch
-        {
-            "fa-ir" => FaIRCultureService.GetCulture(),
-            "ar-sa" => ArSACultureService.GetCulture(),
-            _ => CultureInfo.GetCultureInfo(culture),
-        };
-    }
+        "fa-ir" => FaIRCultureService.GetCulture(),
+        "ar-sa" => ArSACultureService.GetCulture(),
+        _ => CultureInfo.GetCultureInfo(culture),
+    };
 
 }

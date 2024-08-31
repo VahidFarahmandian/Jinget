@@ -1,4 +1,6 @@
-﻿namespace Jinget.Blazor.Extensions;
+﻿using MudBlazor.Services;
+
+namespace Jinget.Blazor.Extensions;
 
 public static class WebApplicationBuilderExtensions
 {

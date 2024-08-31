@@ -149,6 +149,10 @@ function gotoDate(id) {
             if (done == false) {
 
                 var startSelector = document.querySelectorAll("[id='" + id + "'] .mud-button-date")[0];
+                if (startSelector == undefined)
+                    return;
+                //    startSelector = document.querySelectorAll("[id='" + id + "']")[0];
+
                 var selectedRangeStartYear = parseInt(startSelector.textContent.substring(0, 4));
                 var selectedRangeStartMonth = parseInt(startSelector.textContent.substring(5, 7));
 

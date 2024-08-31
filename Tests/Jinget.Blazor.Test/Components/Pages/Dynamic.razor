@@ -83,16 +83,10 @@
 
     public SampleModel? Model { get; set; }
 
-    protected override void OnInitialized()
-    {
-        Model = new();
-    }
+        protected override void OnInitialized() => Model = new();
 
-    async Task Submit()
-    {
-        await messageBox.ShowInfoAsync(Model.Name, $"{Model.Name} {Model.LastName}", Newtonsoft.Json.JsonConvert.SerializeObject(Model));
-    }
-    async Task SetValue()
+        async Task Submit() => await messageBox.ShowInfoAsync(Model.Name, $"{Model.Name} {Model.LastName}", Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+        async Task SetValue()
     {
         dynamicForm.Model.Status = 1;
         dynamicForm.Model.Status2 = guids[2].ToString();

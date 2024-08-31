@@ -1,18 +1,39 @@
 ﻿@using Jinget.Blazor.Attributes.Input
-@using MudBlazor
+
 @inherits JingetInputBase;
 
-<MudTextField id="@Id"
-              Class="@CssClass"
-              @bind-Value="Value"
-              Label="@DisplayName"
-              HelperText="@HelperText"
-              Disabled=@IsDisabled
-              ReadOnly=@IsReadOnly
-              InputType=@InputType
-              Lines=@Rows
-              Required=@IsRequired
-              RequiredError="@RequiredError"
-              Variant="Variant.Outlined"
-              TextChanged="OnTextChanged"
-              Converter="StringConverter" />
+<div style="direction:@(IsRtl?"rtl":"ltr")">
+    @if (!string.IsNullOrWhiteSpace(DisplayName))
+    {
+        <label for="@Id" class="jinget-element-label @LabelCssClass">@DisplayName</label>
+    }
+    @if (IsRequired && !HasValue())
+    {
+        <label class="jinget_element_required-error @RequiredErrorCssClass">@RequiredError</label>
+    }
+    @if (Rows <= 1)
+    {
+        <input id="@Id"
+               name="@Id"
+               type="@InputType"
+               value="@Value"
+               class="@CssClass"
+               readonly="@IsReadOnly"
+               placeholder="@PlaceHolder"
+               disabled="@IsDisabled"
+               onchange="@((ChangeEventArgs? e)=>OnChangedAsync(e))" />
+    }
+    else
+    {
+        <textarea id="@Id"
+                  name="@Id"
+                  rows="@Rows"
+                  value="@Value"
+                  class="@CssClass"
+                  disabled="@IsDisabled"
+                  readonly="@IsReadOnly"
+                  placeholder="@PlaceHolder"
+                  onchange="@((ChangeEventArgs? e)=>OnChangedAsync(e))" />
+    }
+    <small class="@HelperTextCss">@HelperText</small>
+</div>

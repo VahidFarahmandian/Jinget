@@ -40,9 +40,6 @@ public class SwaggerExcludeTypeFilter : IDocumentFilter
     }
 
     // Get all types in assembly that contains SwaggerExcludeAttribute
-    public static IEnumerable<Type> GetTypesWithExcludeAttribute(Assembly assembly)
-    {
-        return assembly.GetTypes()
+    public static IEnumerable<Type> GetTypesWithExcludeAttribute(Assembly assembly) => assembly.GetTypes()
             .Where(type => type.GetCustomAttributes(typeof(SwaggerExcludeAttribute), true).Length > 0);
-    }
 }

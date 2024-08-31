@@ -165,31 +165,28 @@ public class Where<T, R> : Query
         return getter();
     }
 
-    private static string NodeTypeToString(ExpressionType nodeType)
+    private static string NodeTypeToString(ExpressionType nodeType) => nodeType switch
     {
-        return nodeType switch
-        {
-            ExpressionType.Add => "+",
-            ExpressionType.And => "&",
-            ExpressionType.AndAlso => "AND",
-            ExpressionType.Divide => "/",
-            ExpressionType.Equal => "=",
-            ExpressionType.ExclusiveOr => "^",
-            ExpressionType.GreaterThan => ">",
-            ExpressionType.GreaterThanOrEqual => ">=",
-            ExpressionType.LessThan => "<",
-            ExpressionType.LessThanOrEqual => "<=",
-            ExpressionType.Modulo => "%",
-            ExpressionType.Multiply => "*",
-            ExpressionType.Negate => "-",
-            ExpressionType.Not => "NOT",
-            ExpressionType.NotEqual => "<>",
-            ExpressionType.Or => "|",
-            ExpressionType.OrElse => "OR",
-            ExpressionType.Subtract => "-",
-            _ => throw new JingetException($"Jinget Says: Unsupported node type: {nodeType}"),
-        };
-    }
+        ExpressionType.Add => "+",
+        ExpressionType.And => "&",
+        ExpressionType.AndAlso => "AND",
+        ExpressionType.Divide => "/",
+        ExpressionType.Equal => "=",
+        ExpressionType.ExclusiveOr => "^",
+        ExpressionType.GreaterThan => ">",
+        ExpressionType.GreaterThanOrEqual => ">=",
+        ExpressionType.LessThan => "<",
+        ExpressionType.LessThanOrEqual => "<=",
+        ExpressionType.Modulo => "%",
+        ExpressionType.Multiply => "*",
+        ExpressionType.Negate => "-",
+        ExpressionType.Not => "NOT",
+        ExpressionType.NotEqual => "<>",
+        ExpressionType.Or => "|",
+        ExpressionType.OrElse => "OR",
+        ExpressionType.Subtract => "-",
+        _ => throw new JingetException($"Jinget Says: Unsupported node type: {nodeType}"),
+    };
 }
 
 public class WherePart
@@ -203,16 +200,13 @@ public class WherePart
         Sql = sql
     };
 
-    private static string ToSqlSyntax(string method, int len = 0)
+    private static string ToSqlSyntax(string method, int len = 0) => method.ToLower() switch
     {
-        return method.ToLower() switch
-        {
-            "tolower" => "LOWER(@P1)",
-            "toupper" => "UPPER(@P1)",
-            "tostring" => $"NVARCHAR({(len <= 0 ? "MAX" : len.ToString())})",
-            _ => string.Empty,
-        };
-    }
+        "tolower" => "LOWER(@P1)",
+        "toupper" => "UPPER(@P1)",
+        "tostring" => $"NVARCHAR({(len <= 0 ? "MAX" : len.ToString())})",
+        _ => string.Empty,
+    };
 
     public static WherePart Cast(string column, string method) =>
         new()
