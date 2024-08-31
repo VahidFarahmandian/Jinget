@@ -97,7 +97,7 @@ public class IQueryableExtensionsTests
     public void Should_throw_NullReferenceException_when_collection_is_null()
     {
         IQueryable<TestClass> input = null;
-        input.OrderByDynamic("", OrderByDirection.Descending);
+        input.OrderByDynamic("Property1", OrderByDirection.Descending);
     }
 
     [TestMethod()]
