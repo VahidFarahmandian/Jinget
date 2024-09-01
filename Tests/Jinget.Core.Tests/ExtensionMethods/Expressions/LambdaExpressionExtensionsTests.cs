@@ -4,8 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using Jinget.Core.Exceptions;
 using Jinget.Core.Tests._BaseData;
+using Jinget.Core.ExtensionMethods.Expressions;
 
-namespace Jinget.Core.ExtensionMethods.Expressions.Tests;
+namespace Jinget.Core.Tests.ExtensionMethods.Expressions;
 
 [TestClass()]
 public class LambdaExpressionExtensionsTests

@@ -2,8 +2,9 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Jinget.Core.Tests._BaseData;
+using Jinget.Core.ExtensionMethods;
 
-namespace Jinget.Core.ExtensionMethods.Tests;
+namespace Jinget.Core.Tests.ExtensionMethods;
 
 [TestClass()]
 public class IServiceProviderExtensionsTests

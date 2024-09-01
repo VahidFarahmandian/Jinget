@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jinget.Core.Security.SqlInjection.Tests;
+namespace Jinget.Core.Tests.Security.SqlInjection;
 
 [TestClass()]
 public class SqlInjectionTests
@@ -10,7 +10,7 @@ public class SqlInjectionTests
     {
         string input = "<script>var x=0;</script>";
         string expectedResult = "var x=0";
-        string result = SqlInjection.SecureString(input);
+        string result = Core.Security.SqlInjection.SqlInjection.SecureString(input);
 
         Assert.AreEqual(expectedResult, result);
     }

@@ -1,4 +1,4 @@
-﻿namespace Jinget.Core.Utilities.Parser;
+﻿namespace Jinget.Core.Utilities.Parser.DatabaseParser;
 
 public static class DatabaseParserUtility
 {

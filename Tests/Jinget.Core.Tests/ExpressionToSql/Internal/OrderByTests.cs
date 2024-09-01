@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Jinget.Core.Tests._BaseData;
 using Jinget.Core.Enumerations;
+using Jinget.Core.ExpressionToSql.Internal;
 
-namespace Jinget.Core.ExpressionToSql.Internal.Tests;
+namespace Jinget.Core.Tests.ExpressionToSql.Internal;
 
 [TestClass()]
 public class OrderByTests

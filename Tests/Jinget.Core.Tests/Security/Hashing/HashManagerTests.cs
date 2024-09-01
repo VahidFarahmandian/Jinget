@@ -1,7 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Jinget.Core.Security.Hashing.Model;
+using Jinget.Core.Security.Hashing;
 
-namespace Jinget.Core.Security.Hashing.Tests;
+namespace Jinget.Core.Tests.Security.Hashing;
 
 [TestClass()]
 public class HashManagerTests

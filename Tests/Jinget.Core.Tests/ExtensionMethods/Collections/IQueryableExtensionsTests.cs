@@ -7,7 +7,7 @@ using Jinget.Core.Tests._BaseData;
 using Jinget.Core.ExtensionMethods.Collections;
 using static Jinget.Core.Tests._BaseData.TestClass;
 
-namespace Jinget.Core.ExtensionMethods.Tests;
+namespace Jinget.Core.Tests.ExtensionMethods.Collections;
 
 [TestClass()]
 public class IQueryableExtensionsTests

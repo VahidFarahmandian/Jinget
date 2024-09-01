@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Jinget.Logger.Configuration.Middlewares.ElasticSearch;
+namespace Jinget.Logger.Configuration.ElasticSearch;
 
 public class ElasticSearchSettingModel
 {

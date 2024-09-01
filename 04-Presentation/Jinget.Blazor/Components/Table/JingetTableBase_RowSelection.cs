@@ -1,4 +1,6 @@
-﻿namespace Jinget.Blazor.Components.Table;
+﻿using Jinget.Blazor.Models.JingetTable;
+
+namespace Jinget.Blazor.Components.Table;
 
 public abstract partial class JingetTableBase<T> : JingetBaseComponent
 {
@@ -46,5 +48,5 @@ public abstract partial class JingetTableBase<T> : JingetBaseComponent
 
     protected async Task ClearSelectedRowAsync() => await SelectRowAsync(default);
 
-    protected JingetTableModel<T> GetSelectedRowModel() => new() { Items = [selectedRow], TotalItems = 1 };
+    protected JingetTableModel<T> GetSelectedRowModel() => new([selectedRow], 1);
 }

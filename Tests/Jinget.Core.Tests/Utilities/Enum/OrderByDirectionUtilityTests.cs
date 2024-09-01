@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Jinget.Core.Enumerations;
 using System;
+using Jinget.Core.Utilities.Enum;
 
-namespace Jinget.Core.Utilities.Enum.Tests
+namespace Jinget.Core.Tests.Utilities.Enum
 {
     [TestClass()]
     public class OrderByDirectionUtilityTests

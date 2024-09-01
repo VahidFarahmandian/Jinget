@@ -3,8 +3,9 @@ using Jinget.Core.Tests._BaseData;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
+using Jinget.Core.ExtensionMethods.Reflection;
 
-namespace Jinget.Core.ExtensionMethods.Reflection.Tests;
+namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
 
 [TestClass()]
 public class PropertiesExtensionsTests

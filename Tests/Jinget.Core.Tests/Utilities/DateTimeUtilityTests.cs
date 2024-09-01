@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Jinget.Core.Utilities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Jinget.Core.Utilities.Tests;
+namespace Jinget.Core.Tests.Utilities;
 
 [TestClass()]
 public class DateTimeUtilityTests

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Jinget.Core.Attributes;
 using Jinget.Core.Exceptions;
+using Jinget.Logger.Configuration.ElasticSearch;
 using Jinget.Logger.Entities;
 using Jinget.Logger.Entities.Log;
 using Jinget.Logger.Handlers;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Nest;
 
-namespace Jinget.Logger.Configuration.Middlewares.ElasticSearch;
+namespace Jinget.Logger.Configuration.SQLServer;
 
 public static class SQLServerConfiguration
 {

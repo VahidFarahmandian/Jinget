@@ -1,4 +1,5 @@
-﻿using Jinget.Core.Enumerations;
+﻿using Jinget.Blazor.Enums;
+using Jinget.Core.Enumerations;
 using Jinget.Core.ExtensionMethods;
 
 namespace Jinget.Blazor.Components.Table;
@@ -34,19 +35,20 @@ public abstract partial class JingetTableBase<T> : JingetBaseComponent
     string GetSortColumn() => string.IsNullOrWhiteSpace(currentSortColumnName) ? "" : currentSortColumnName;
 
     protected bool HasSort() => !string.IsNullOrWhiteSpace(currentSortColumnName) && currentSortDirection != null;
-    protected string GetSortableColumnCssClass(bool isSortable) => isSortable ? "sortable" : "";
     protected string GetDataRowCssClass(T row) => selectedRow != null && row != null && selectedRow.HasSameValuesAs(row) ? SelectedRowCss : "";
-    protected string GetSortIcon()
-    => currentSortDirection switch
-    {
-        null => "sort",
-        OrderByDirection.Ascending => "sort-desc",
-        _ => "sort-asc"
-    };
+    protected string GetSortIcon(string columnName)
+        => currentSortColumnName == columnName
+        ? currentSortDirection switch
+        {
+            OrderByDirection.Ascending => "sort-desc",
+            OrderByDirection.Descending => "sort-asc",
+            _ => "sort"
+        }
+        : "sort";
 
     protected string GetSortBadgeText()
     {
-        string colDisplayText = _columns.FirstOrDefault(x => x.Name == currentSortColumnName).DisplayText;
+        string? colDisplayText = _columns.FirstOrDefault(x => x.Name == currentSortColumnName)?.DisplayText;
         string sortDirectionText = GetSortDirection() == OrderByDirection.Ascending ? AscendingSortText : DescendingSortText;
         return SortBadgeTextFormat
             .Replace("{sort_col}", colDisplayText)

@@ -1,9 +1,9 @@
 ﻿@page "/table"
 @using Jinget.Blazor.Components.Table
 @using Jinget.Blazor.Components.Popup
+@using Jinget.Blazor.Models.JingetTable
 @using Jinget.Blazor.Services
 @using Jinget.Blazor.Attributes
-@* @using MudBlazor; *@
 @using Jinget.Core.Enumerations;
 @using Jinget.Core.ExtensionMethods.Collections;
 @using MudBlazor
@@ -91,11 +91,7 @@
                     .Skip((e.PageIndex - 1) * e.PageSize)
                     .Take(e.PageSize)
                     .ToList();
-        ModelFarsi = new JingetTableModel<SampleDataFarsi>
-            {
-                Items = items,
-                TotalItems = data.Count()
-            };
+        ModelFarsi = new JingetTableModel<SampleDataFarsi>(items, data.Count());
         StateHasChanged();
     }
     void BindDataEng(JingetTableDataBindModel e)
@@ -108,11 +104,7 @@
                     .Skip((e.PageIndex - 1) * e.PageSize)
                     .Take(e.PageSize)
                     .ToList();
-        ModelEng = new JingetTableModel<SampleDataEng>
-            {
-                Items = items,
-                TotalItems = data.Count()
-            };
+        ModelEng = new JingetTableModel<SampleDataEng>(items, data.Count());
         StateHasChanged();
     }
 
@@ -229,10 +221,10 @@
         [JingetTableMember(DisplayName = "#")]
         public int Id { get; set; }
 
-        [JingetTableMember(DisplayName = "نام")]
+        [JingetTableMember(DisplayName = "نام", Sortable = true)]
         public string Name { get; set; }
 
-        [JingetTableMember(DisplayName = "نام خانوادگی")]
+        [JingetTableMember(DisplayName = "نام خانوادگی", Sortable = true)]
         public string LastName { get; set; }
 
         [JingetTableMember(DisplayName = "سن", Sortable = true)]

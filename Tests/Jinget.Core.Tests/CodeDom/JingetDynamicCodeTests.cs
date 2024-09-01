@@ -1,9 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Jinget.Core.CodeDom;
+using Jinget.Core.Utilities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Jinget.Core.CodeDom.Tests;
+namespace Jinget.Core.Tests.CodeDom;
 
 [TestClass()]
 public class JingetDynamicCodeTests
@@ -143,7 +145,7 @@ namespace JingetDynamic {
                     }
                 ]
             },
-            references: [typeof(Utilities.DateTimeUtility).Assembly.Location]);
+            references: [typeof(DateTimeUtility).Assembly.Location]);
 
         Assert.IsFalse(errors.Any());
         Assert.IsFalse(string.IsNullOrEmpty(compiledSourceCode));
@@ -173,7 +175,7 @@ namespace JingetDynamic {
                     }
                 ]
             },
-            references: [typeof(Utilities.DateTimeUtility).Assembly.Location]);
+            references: [typeof(DateTimeUtility).Assembly.Location]);
 
         Assert.IsFalse(errors.Any());
         Assert.IsFalse(string.IsNullOrEmpty(compiledSourceCode));

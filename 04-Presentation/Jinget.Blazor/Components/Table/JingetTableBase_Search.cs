@@ -1,4 +1,6 @@
-﻿namespace Jinget.Blazor.Components.Table;
+﻿using Jinget.Blazor.Enums;
+
+namespace Jinget.Blazor.Components.Table;
 
 public abstract partial class JingetTableBase<T> : JingetBaseComponent
 {

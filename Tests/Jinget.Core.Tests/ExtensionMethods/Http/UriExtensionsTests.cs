@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Jinget.Core.ExtensionMethods.Http;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Jinget.Core.ExtensionMethods.Http.Tests
+namespace Jinget.Core.Tests.ExtensionMethods.Http
 {
     [TestClass()]
     public class UriExtensionsTests

@@ -1,7 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Jinget.Core.Tests._BaseData;
+using Jinget.Core.Operators;
 
-namespace Jinget.Core.Operators.Tests;
+namespace Jinget.Core.Tests.Operators;
 
 [TestClass()]
 public class GenericEqualityOperatorTests

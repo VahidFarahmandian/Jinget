@@ -3,7 +3,6 @@
 /// <summary>
 ///     Used for assigning claims for actions
 /// </summary>
-
 public class ClaimAttribute : AuthorizeAttribute
 {
     /// <summary>

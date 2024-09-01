@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Jinget.Core.Exceptions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Jinget.Core.Exceptions.Tests;
+namespace Jinget.Core.Tests.Exceptions;
 
 [TestClass()]
 public class JingetExceptionTests

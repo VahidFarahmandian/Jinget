@@ -1,4 +1,6 @@
-﻿namespace Jinget.Blazor.Components.Input;
+﻿using Jinget.Blazor.Components.BI;
+
+namespace Jinget.Blazor.Components.BI.Gauge;
 
 public abstract class JingetGaugeBase : JingetBIBaseComponent
 {

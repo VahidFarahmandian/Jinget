@@ -2,7 +2,7 @@
 using Jinget.Core.ExtensionMethods.Database.SqlClient;
 using Jinget.Core.ExtensionMethods;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Database.SqlClient;
+namespace Jinget.Core.Tests.ExtensionMethods;
 
 [TestClass]
 public class StringExtensionsTests

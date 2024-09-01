@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Jinget.Core.ExpressionToSql.Internal;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Text;
 
-namespace Jinget.Core.ExpressionToSql.Internal.Tests;
+namespace Jinget.Core.Tests.ExpressionToSql.Internal;
 
 [TestClass()]
 public class QueryBuilderTests

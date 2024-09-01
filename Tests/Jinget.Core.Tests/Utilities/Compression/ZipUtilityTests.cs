@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.IO;
 using System;
+using Jinget.Core.Utilities.Compression;
 
-namespace Jinget.Core.Utilities.Compression.Tests;
+namespace Jinget.Core.Tests.Utilities.Compression;
 
 [TestClass()]
 public class ZipUtilityTests

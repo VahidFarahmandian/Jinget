@@ -78,12 +78,12 @@
                 {
                     @if (Sortable)
                     {
-                        <th class="@GetSortableColumnCssClass(item.Sortable)"
-                            onclick="@(()=>SortAsync(item.Sortable, item.Name))" scope="col">
+                        <th scope="col" class="@item.CssClass"
+                            onclick="@(()=>SortAsync(item.Sortable, item.Name))">
                             @item.DisplayText
                             @if (item.Sortable)
                             {
-                                <i class="fa fa-@GetSortIcon()" aria-hidden="true"></i>
+                                <i class="fa fa-@GetSortIcon(item.Name)" aria-hidden="true"></i>
                             }
                         </th>
                     }
@@ -139,7 +139,6 @@
                 <tr>
                     <td colspan="@_totalColumns" class="align-middle">
                         <div class="align-items-center form-group row">
-
                             <JingetDropDownList @ref=@ddlPagination
                                                 Id="@(Id+"ddlPagination")"
                                                 DisplayName="@RowsPerPageText"
@@ -150,9 +149,8 @@
                                                 Value="selectedPageSizeOption"
                                                 DataProviderFunc=@GetPaginationPageSizeOptionsAsync
                                                 OnChange=@((e)=>PageSizeChangedAsync(e))></JingetDropDownList>
-
-                            <button type="button" disabled="@_hasPrevButtons" onclick="@(()=>GotoPageAsync(1))" class="pager-btn col-auto btn btn-light">@FirstPageText</button>
-                            <button type="button" disabled="@_hasPrevButtons" onclick="@(()=>GotoPageAsync(currentPageIndex-1))" class="pager-btn col-auto btn btn-light">@PrevPageText</button>
+                            <button type="button" disabled="@_hasPrevButtons" onclick="@(()=>GotoPageAsync(1))" class="pager-static pager-btn col-auto btn btn-light">@FirstPageText</button>
+                            <button type="button" disabled="@_hasPrevButtons" onclick="@(()=>GotoPageAsync(currentPageIndex-1))" class="pager-static pager-btn col-auto btn btn-light">@PrevPageText</button>
 
                             @foreach (var index in GetPageIndexes())
                             {
@@ -162,15 +160,12 @@
                                 }
                                 else
                                 {
-                                    <button type="button" disabled="@IsCurrentPage(index)" onclick="@(()=>GotoPageAsync(index))"
-                                            class="pager-btn col-auto btn btn-light">
-                                        @index
-                                    </button>
+                                    <button type="button" disabled="@IsCurrentPage(index)" onclick="@(()=>GotoPageAsync(index))" class="pager-btn col-auto btn btn-light">@index</button>
                                 }
                             }
 
-                            <button type="button" disabled="@_hasNextButtons" onclick="@(()=>GotoPageAsync(currentPageIndex+1))" class="pager-btn col-auto btn btn-light">@NextPageText</button>
-                            <button type="button" disabled="@_hasNextButtons" onclick="@(()=>GotoPageAsync(lastPageIndex))" class="pager-btn col-auto btn btn-light">@LastPageText</button>
+                            <button type="button" disabled="@_hasNextButtons" onclick="@(()=>GotoPageAsync(currentPageIndex+1))" class="pager-static pager-btn col-auto btn btn-light">@NextPageText</button>
+                            <button type="button" disabled="@_hasNextButtons" onclick="@(()=>GotoPageAsync(lastPageIndex))" class="pager-static pager-btn col-auto btn btn-light">@LastPageText</button>
 
                             <span class="pager-btn col-auto btn btn-light" style="cursor:auto">
                                 @PageInfoTextFormat

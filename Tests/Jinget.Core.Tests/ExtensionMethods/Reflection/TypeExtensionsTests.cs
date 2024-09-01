@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Jinget.Core.Tests._BaseData;
 using System.Linq;
+using Jinget.Core.ExtensionMethods.Reflection;
 
-namespace Jinget.Core.ExtensionMethods.Reflection.Tests;
+namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
 
 [TestClass()]
 public class TypeExtensionsTests

@@ -7,7 +7,7 @@ using System.Linq;
 using Jinget.Core.Utilities.Expressions;
 using Jinget.Core.Types;
 
-namespace Jinget.Core.ExtensionMethods.Expressions.Tests;
+namespace Jinget.Core.Tests.Utilities.Expressions;
 
 [TestClass()]
 public class ExpressionUtilityTests

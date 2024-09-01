@@ -1,9 +1,10 @@
 ﻿using Jinget.Core.Tests._BaseData;
+using Jinget.Core.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Jinget.Core.Utilities.Tests;
+namespace Jinget.Core.Tests.Utilities;
 
 [TestClass()]
 public class StringUtilityTests

@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Jinget.Core.Utilities.Http;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
-namespace Jinget.Core.Utilities.Http.Tests;
+namespace Jinget.Core.Tests.Utilities.Http;
 
 [TestClass()]
 public class HeaderUtilityTests

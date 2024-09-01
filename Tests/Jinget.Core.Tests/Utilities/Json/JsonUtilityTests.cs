@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 
-namespace Jinget.Core.Tests.Utilities.Parser.DatabaseParser;
+namespace Jinget.Core.Tests.Utilities.Json;
 
 [TestClass]
 public class JsonUtilityTests

@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Nest;
 
-namespace Jinget.Logger.Configuration.Middlewares.ElasticSearch;
+namespace Jinget.Logger.Configuration.ElasticSearch;
 
 public static class ElasticSearchConfiguration
 {

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using Jinget.Core.ExpressionToSql.Internal;
+using Jinget.Core.ExtensionMethods.ExpressionToSql;
 using Jinget.Core.Tests._BaseData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jinget.Core.ExtensionMethods.ExpressionToSql;
+namespace Jinget.Core.Tests.ExtensionMethods.ExpressionToSql;
 
 [TestClass()]
 public class OrderByExtensionsTests

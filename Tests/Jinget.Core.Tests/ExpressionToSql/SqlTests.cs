@@ -3,8 +3,9 @@ using Jinget.Core.Tests._BaseData;
 using Jinget.Core.ExpressionToSql.Internal;
 using System.Collections.Generic;
 using System;
+using Jinget.Core.ExpressionToSql;
 
-namespace Jinget.Core.ExpressionToSql.Tests;
+namespace Jinget.Core.Tests.ExpressionToSql;
 
 [TestClass()]
 public class SqlTests

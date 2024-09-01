@@ -1,10 +1,11 @@
 ﻿using Jinget.Core.Tests._BaseData;
+using Jinget.Core.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Jinget.Core.Utilities.Tests;
+namespace Jinget.Core.Tests.Utilities;
 
 [TestClass()]
 public class XmlUtilityTests

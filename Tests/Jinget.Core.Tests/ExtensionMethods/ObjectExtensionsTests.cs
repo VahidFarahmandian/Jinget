@@ -3,8 +3,9 @@ using System.Linq;
 using Jinget.Core.Tests._BaseData;
 using static Jinget.Core.ExtensionMethods.ObjectExtensions;
 using System;
+using Jinget.Core.ExtensionMethods;
 
-namespace Jinget.Core.ExtensionMethods.Tests;
+namespace Jinget.Core.Tests.ExtensionMethods;
 
 [TestClass()]
 public class ObjectExtensionsTests

@@ -1,6 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Jinget.Core.Security.AES;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jinget.Core.Security.AES.Tests;
+namespace Jinget.Core.Tests.Security.AES;
 
 [TestClass()]
 public class AESManagerTests

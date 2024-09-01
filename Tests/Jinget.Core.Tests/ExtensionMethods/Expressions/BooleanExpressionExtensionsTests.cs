@@ -1,9 +1,10 @@
-﻿using Jinget.Core.Tests._BaseData;
+﻿using Jinget.Core.ExtensionMethods.Expressions;
+using Jinget.Core.Tests._BaseData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq.Expressions;
 
-namespace Jinget.Core.ExtensionMethods.Expressions.Tests;
+namespace Jinget.Core.Tests.ExtensionMethods.Expressions;
 
 [TestClass()]
 public class BooleanExpressionExtensionsTests

@@ -1,4 +1,5 @@
 ﻿using Jinget.Blazor.Components.DropDownList;
+using Jinget.Blazor.Enums;
 
 namespace Jinget.Blazor.Components.Table;
 

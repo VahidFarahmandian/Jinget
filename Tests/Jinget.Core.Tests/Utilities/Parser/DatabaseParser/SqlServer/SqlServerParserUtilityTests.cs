@@ -1,7 +1,7 @@
 ﻿using Jinget.Core.Utilities.Parser.DatabaseParser.SqlServer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Jinget.Core.Tests.Utilities.Parser.DatabaseParser;
+namespace Jinget.Core.Tests.Utilities.Parser.DatabaseParser.SqlServer;
 
 [TestClass]
 public class SqlServerParserUtilityTests

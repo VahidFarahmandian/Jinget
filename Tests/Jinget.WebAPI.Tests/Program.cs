@@ -1,6 +1,6 @@
 using Jinget.Core.Filters;
 using Jinget.Logger.Configuration;
-using Jinget.Logger.Configuration.Middlewares.ElasticSearch;
+using Jinget.Logger.Configuration.ElasticSearch;
 using Jinget.Logger.Entities.Log;
 using Jinget.Logger.Handlers.CommandHandlers;
 using Microsoft.Extensions.Primitives;

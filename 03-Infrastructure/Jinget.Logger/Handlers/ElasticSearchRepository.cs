@@ -1,5 +1,5 @@
 ﻿using Jinget.Core.Exceptions;
-using Jinget.Logger.Configuration.Middlewares.ElasticSearch;
+using Jinget.Logger.Configuration.ElasticSearch;
 using Jinget.Logger.Entities.Log;
 using Jinget.Logger.Entities.Log.Base;
 using Jinget.Logger.ViewModels;

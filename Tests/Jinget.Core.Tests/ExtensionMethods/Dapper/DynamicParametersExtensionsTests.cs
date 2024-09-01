@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using Dapper;
+using Jinget.Core.ExtensionMethods.Dapper;
 
-namespace Jinget.Core.ExtensionMethods.Dapper.Tests;
+namespace Jinget.Core.Tests.ExtensionMethods.Dapper;
 
 [TestClass()]
 public class DynamicParametersExtensionsTests

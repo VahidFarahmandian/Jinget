@@ -1,4 +1,6 @@
 ﻿using Jinget.Blazor.Attributes;
+using Jinget.Blazor.Enums;
+using Jinget.Blazor.Models.JingetTable;
 
 namespace Jinget.Blazor.Components.Table;
 
@@ -40,7 +42,7 @@ public abstract partial class JingetTableBase<T> : JingetBaseComponent
     [Parameter] public EventCallback<JingetTableDataBindModel> OnDataBind { get; set; }
 
     protected int _totalColumns { get => _columns.Count + (PreActionContent != null ? 1 : 0) + (PostActionContent != null ? 1 : 0); }
-    protected List<(string DisplayText, string Name, bool Sortable)> _columns = [];
+    internal List<JingetTableColumnModel> _columns = [];
     protected bool _showFooter { get => ShowPagination && GetPageIndexes().Any(); }
     protected string _parentDivCssClass { get => IsRtl ? "rtl" : "ltr"; }
     protected string _tableCssClass { get => IsRtl ? "jinget-farsi-font" : "jinget-default-font"; }
@@ -53,13 +55,13 @@ public abstract partial class JingetTableBase<T> : JingetBaseComponent
         {
             Model ??= JingetTableObjectFactory<T>.EmptyTableData.Instance;
             selectedPageSizeOption = (int)(await GetPaginationPageSizeOptionsAsync()).First().Value;
-            await OnDataBind.InvokeAsync(new JingetTableDataBindModel
+            await OnDataBind.InvokeAsync(new JingetTableDataBindModel(
+                currentSearchTerm,
+                currentPageIndex,
+                selectedPageSizeOption,
+                GetSortColumn(),
+                EventType: JingetTableEventType.None)
             {
-                EventType = JingetTableEventType.None,
-                PageIndex = currentPageIndex,
-                PageSize = selectedPageSizeOption,
-                SearchTerm = currentSearchTerm,
-                SortColumn = GetSortColumn(),
                 SortDirection = GetSortDirection()
             });
         }
@@ -83,7 +85,8 @@ public abstract partial class JingetTableBase<T> : JingetBaseComponent
                     var cellColumn = attr.DisplayName;
                     var sortable = attr.Sortable;
                     cellColumn = string.IsNullOrWhiteSpace(cellColumn) ? item.Name : cellColumn;
-                    _columns.Add((cellColumn, item.Name, sortable));
+                    string cssClass = sortable ? "sortable" : "";
+                    _columns.Add(new JingetTableColumnModel(cellColumn, item.Name, sortable, cssClass));
                 }
             }
         }
@@ -91,13 +94,12 @@ public abstract partial class JingetTableBase<T> : JingetBaseComponent
     }
 
     private async Task BindAsync(JingetTableEventType eventType)
-        => await OnDataBind.InvokeAsync(new JingetTableDataBindModel
-        {
-            EventType = eventType,
-            PageIndex = GetSelectedPageIndex(),
-            PageSize = GetSelectedPageSize(),
-            SearchTerm = GetSearchTerm(),
-            SortColumn = GetSortColumn(),
-            SortDirection = GetSortDirection()
-        });
+        => await OnDataBind.InvokeAsync(
+            new JingetTableDataBindModel(
+                GetSearchTerm(),
+                GetSelectedPageIndex(),
+                GetSelectedPageSize(),
+                GetSortColumn(),
+                GetSortDirection(),
+                eventType));
 }

@@ -1,9 +1,10 @@
 ﻿using Jinget.Core.Tests._BaseData;
+using Jinget.Core.Utilities.Enum;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Data;
 
-namespace Jinget.Core.Utilities.Enum.Tests
+namespace Jinget.Core.Tests.Utilities.Enum
 {
     [TestClass()]
     public class DbTypeUtilityTests

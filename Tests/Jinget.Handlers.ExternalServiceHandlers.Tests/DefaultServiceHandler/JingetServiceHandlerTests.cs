@@ -1,9 +1,10 @@
-﻿using Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler.SampleType;
+﻿using Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler;
+using Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler.SampleType;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests;
+namespace Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler;
 
 [TestClass()]
 public class JingetServiceHandlerTests
@@ -13,7 +14,7 @@ public class JingetServiceHandlerTests
     {
         var jingetServiceHandler = new JingetServiceHandler<List<SampleGetResponse>>("https://jinget.ir", TimeSpan.FromSeconds(1));
 
-        jingetServiceHandler.Events.ExceptionOccurred += (object sender, Exception e) =>
+        jingetServiceHandler.Events.ExceptionOccurred += (sender, e) =>
         {
             Assert.IsTrue(e.Message.Contains("Timeout of 1 seconds"));
         };
@@ -26,19 +27,19 @@ public class JingetServiceHandlerTests
     public async Task Should_call_get_restapiAsync()
     {
         var jingetServiceHandler = new JingetServiceHandler<List<SampleGetResponse>>("https://jsonplaceholder.typicode.com");
-        jingetServiceHandler.Events.ServiceCalled += (object sender, HttpResponseMessage e) =>
+        jingetServiceHandler.Events.ServiceCalled += (sender, e) =>
         {
             Assert.IsTrue(e.IsSuccessStatusCode);
         };
-        jingetServiceHandler.Events.RawResponseReceived += (object sender, string e) =>
+        jingetServiceHandler.Events.RawResponseReceived += (sender, e) =>
         {
             Assert.IsFalse(e == "");
         };
-        jingetServiceHandler.Events.ExceptionOccurred += (object sender, Exception e) =>
+        jingetServiceHandler.Events.ExceptionOccurred += (sender, e) =>
         {
             Assert.IsTrue(e is null);
         };
-        jingetServiceHandler.Events.ResponseDeserialized += (object sender, List<SampleGetResponse> e) =>
+        jingetServiceHandler.Events.ResponseDeserialized += (sender, e) =>
         {
             Assert.IsFalse(e is null);
         };
@@ -52,19 +53,19 @@ public class JingetServiceHandlerTests
     public async Task Should_call_post_restapiAsync()
     {
         var jingetServiceHandler = new JingetServiceHandler<SamplePostResponse>("https://jsonplaceholder.typicode.com", true);
-        jingetServiceHandler.Events.ServiceCalled += (object sender, HttpResponseMessage e) =>
+        jingetServiceHandler.Events.ServiceCalled += (sender, e) =>
         {
             Assert.IsTrue(e.IsSuccessStatusCode);
         };
-        jingetServiceHandler.Events.RawResponseReceived += (object sender, string e) =>
+        jingetServiceHandler.Events.RawResponseReceived += (sender, e) =>
         {
             Assert.IsFalse(e == "");
         };
-        jingetServiceHandler.Events.ExceptionOccurred += (object sender, Exception e) =>
+        jingetServiceHandler.Events.ExceptionOccurred += (sender, e) =>
         {
             Assert.IsTrue(e is null);
         };
-        jingetServiceHandler.Events.ResponseDeserialized += (object sender, SamplePostResponse e) =>
+        jingetServiceHandler.Events.ResponseDeserialized += (sender, e) =>
         {
             Assert.IsFalse(e is null);
         };
@@ -88,19 +89,19 @@ public class JingetServiceHandlerTests
     public async Task Should_call_send_restapiAsync()
     {
         var jingetServiceHandler = new JingetServiceHandler<SamplePutResponse>("https://jsonplaceholder.typicode.com", true);
-        jingetServiceHandler.Events.ServiceCalled += (object sender, HttpResponseMessage e) =>
+        jingetServiceHandler.Events.ServiceCalled += (sender, e) =>
         {
             Assert.IsTrue(e.IsSuccessStatusCode);
         };
-        jingetServiceHandler.Events.RawResponseReceived += (object sender, string e) =>
+        jingetServiceHandler.Events.RawResponseReceived += (sender, e) =>
         {
             Assert.IsFalse(e == "");
         };
-        jingetServiceHandler.Events.ExceptionOccurred += (object sender, Exception e) =>
+        jingetServiceHandler.Events.ExceptionOccurred += (sender, e) =>
         {
             Assert.IsTrue(e is null);
         };
-        jingetServiceHandler.Events.ResponseDeserialized += (object sender, SamplePutResponse e) =>
+        jingetServiceHandler.Events.ResponseDeserialized += (sender, e) =>
         {
             Assert.IsFalse(e is null);
         };
@@ -128,19 +129,19 @@ public class JingetServiceHandlerTests
     public async Task Should_call_get_soapAsync()
     {
         var jingetServiceHandler = new JingetServiceHandler<AddResponse>("http://www.dneonline.com/calculator.asmx");
-        jingetServiceHandler.Events.ServiceCalled += (object sender, HttpResponseMessage e) =>
+        jingetServiceHandler.Events.ServiceCalled += (sender, e) =>
         {
             Assert.IsTrue(e.IsSuccessStatusCode);
         };
-        jingetServiceHandler.Events.RawResponseReceived += (object sender, string e) =>
+        jingetServiceHandler.Events.RawResponseReceived += (sender, e) =>
         {
             Assert.IsFalse(e == "");
         };
-        jingetServiceHandler.Events.ExceptionOccurred += (object sender, Exception e) =>
+        jingetServiceHandler.Events.ExceptionOccurred += (sender, e) =>
         {
             Assert.IsTrue(e is null);
         };
-        jingetServiceHandler.Events.ResponseDeserialized += (object sender, AddResponse e) =>
+        jingetServiceHandler.Events.ResponseDeserialized += (sender, e) =>
         {
             Assert.IsFalse(e is null);
         };
@@ -162,11 +163,11 @@ public class JingetServiceHandlerTests
     public async Task Should_post_multipart_formdataAsync()
     {
         var jingetServiceHandler = new JingetServiceHandler<SamplePostResponse>("https://localhost:7027/api/upload", true);
-        jingetServiceHandler.Events.ServiceCalled += (object sender, HttpResponseMessage e) =>
+        jingetServiceHandler.Events.ServiceCalled += (sender, e) =>
         {
             Assert.IsTrue(e.IsSuccessStatusCode);
         };
-        jingetServiceHandler.Events.ResponseDeserialized += (object sender, SamplePostResponse e) =>
+        jingetServiceHandler.Events.ResponseDeserialized += (sender, e) =>
         {
             Assert.IsFalse(e is null);
         };

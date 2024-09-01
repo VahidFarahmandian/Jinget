@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Jinget.Core.Tests._BaseData;
+using Jinget.Core.ExtensionMethods.Reflection;
 
-namespace Jinget.Core.ExtensionMethods.Reflection.Tests;
+namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
 
 [TestClass()]
 public class MethodInfoExtensionsTests
@@ -16,7 +17,7 @@ public class MethodInfoExtensionsTests
     [TestMethod()]
     public void Should_call_async_method_and_return_result()
     {
-        var method = this.GetType().GetMethod("GetAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var method = GetType().GetMethod("GetAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         var result = (List<Type1>)method.InvokeAsync(this, "vahid");
 
         Assert.IsTrue(result.First().Id == 1);

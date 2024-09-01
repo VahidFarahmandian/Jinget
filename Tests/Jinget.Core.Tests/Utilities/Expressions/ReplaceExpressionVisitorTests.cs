@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq.Expressions;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Expressions;
+namespace Jinget.Core.Tests.Utilities.Expressions;
 
 [TestClass]
 public class ReplaceExpressionVisitorTests

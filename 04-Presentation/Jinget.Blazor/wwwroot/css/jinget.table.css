@@ -1,5 +1,27 @@
-﻿.jinget-farsi-font {
-    font-family: 'IRANSans'
+﻿@media screen and (max-width: 1125px) {
+    tfoot label.jinget-smaller-font, tfoot span.pager-btn, tfoot button.pager-static {
+        display: none;
+    }
+
+    tfoot button.pager-btn {
+        font-size: small;
+    }
+
+    div > table.selected-row {
+        width: -webkit-fill-available !important;
+        padding: 0px !important;
+    }
+}
+
+
+tfoot div {
+    flex-wrap: nowrap !important;
+    background-color: #f8f9fa;
+    margin: 0px 1px 0px 1px !important;
+}
+
+.jinget-farsi-font {
+    font-family: 'IRANSans';
 }
 
 .jinget-default-font {
