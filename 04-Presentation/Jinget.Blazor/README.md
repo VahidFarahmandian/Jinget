@@ -399,165 +399,187 @@ Add the `JingetList` to your page and start using it;-)
 Add the `JingetTable` to your page and start using it;-)
 
 ```
-<JingetTable 
-    Model=@ModelRtl
-    SearchProviderAsync=@SearchAsyncRtl
-    ShowPagination=true
-    ShowSearchBar=true>
-        <ActionContent>
-            <MudButton 
-                OnClick=@(async ()=> await ShowDetailFarsi((SampleDataFarsi)context))
-                ButtonType="ButtonType.Reset"
-                Color="Color.Warning">Details...
-            </MudButton>
-            </ActionContent>
+<JingetTable Id="tblSample" Model=@Model
+             OnDataBind="BindData"
+             OnRowSelected="@((SampleDataModel e)=>RowSelected(e))"
+             FirstPageText="<<"
+             PrevPageText="<"
+             LastPageText=">>"
+             NextPageText=">"
+             RowsPerPageString="Per page:"
+             AllItemsText="All"
+             AscendingSortText="Ascending"
+             DescendingSortText="Descending"
+             PageInfoTextFormat="{first_item}-{last_item} FROM {all_items}"
+             SearchBadgeTextFormat="FILTERED BY:"
+             SearchPlaceHolderText="Search"
+             SelectedRowBadgeTextFormat="SELECTED ROW:"
+             SortBadgeTextFormat="SORTED BY: {sort_col} {sort_dir}"
+             IsRtl=false
+             ShowBadgeBar=true
+             PaginationPageSizeOptions=[5,10,20,30,40]>
+    <NoRecordContent>No record found!</NoRecordContent>
+    <PreActionContent>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Success">
+            <MudText>Pre Sample</MudText>
+        </MudButton>
+    </PreActionContent>
+    <PostActionContent>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary">
+            <MudText>Post Sample</MudText>
+        </MudButton>
+    </PostActionContent>
 </JingetTable>
 ...
 @code {
-    JingetMessageBox messageBox;
-    TableData<SampleDataFarsi> ModelRtl;
-    protected override void OnInitialized() { 
-        ModelRtl = GetDataFarsi();
-    }
+    JingetMessageBox? messageBox;
+    JingetTableModel<SampleDataModel>? Model;
 
-    async Task ShowDetailFarsi(SampleDataFarsi data){
-        messageBox.CloseButtonText =  "بستن";
-        await messageBox.ShowInfoAsync(
-        data.Id.ToString(), 
-        $"{data.Name} {data.LastName}",
-        System.Text.Json.JsonSerializer.Serialize(data), rtl:true);
-    }
-
-    async Task<TableData<SampleDataFarsi>> SearchAsyncRtl(TableState state, string? searchString = null)
+    async Task RowSelected(SampleDataModel? e)
     {
-        try
+        if (e != null)
         {
-            IQueryable<SampleDataFarsi> data;
-            if (searchString == null)
-                data=GetDataFarsi().Items.AsQueryable();
-            else
-                data = GetDataFarsi().Items
-                .Where(x =>
-                    x.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase) ||
-                    x.LastName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)).AsQueryable();
-
-            int totalCount =data==null?0: data.Count();
-
-            if(!string.IsNullOrWhiteSpace(state.SortLabel)){
-                var sortDirection = state.SortDirection == SortDirection.Ascending ?
-                OrderByDirection.Ascending:
-                OrderByDirection.Descending;
-                
-                data = data.OrderByDynamic(state.SortLabel,sortDirection);
-            }
-
-            var response= data
-            .Skip(state.Page*state.PageSize)
-            .Take(state.PageSize).ToList();
-
-            if (response == null || response.Count==0)
-                return JingetObjectFactory<SampleDataFarsi>.EmptyTableData.Instance;
-
-            return await Task.FromResult( 
-                new TableData<SampleDataFarsi>
-                {
-                    Items = response,
-                    TotalItems = totalCount
-                });
+            await messageBox.ShowInfoAsync(
+            e.Id.ToString(),
+            $"{e.Name} {e.LastName}",
+            System.Text.Json.JsonSerializer.Serialize(e), rtl: true);
         }
-        catch (Exception ex)
-        {
-            await messageBox.ShowErrorAsync("Error", "Unable to search data", ex.Message);
-        }
-        return JingetObjectFactory<SampleDataFarsi>.EmptyTableData.Instance;
     }
 
-    TableData<SampleDataFarsi> GetDataFarsi()
+    void BindData(JingetTableDataBindModel e)
     {
-        var data = new List<SampleDataFarsi>
+        var data = GetDataEng()
+                .Where(x => string.IsNullOrWhiteSpace(e.SearchTerm) || x.Name.StartsWith(e.SearchTerm) || x.LastName.StartsWith(e.SearchTerm))
+                .AsQueryable();
+        var items = data
+                    .OrderByDynamic(e.SortColumn, e.SortDirection)
+                    .Skip((e.PageIndex - 1) * e.PageSize)
+                    .Take(e.PageSize)
+                    .ToList();
+        ModelEng = new JingetTableModel<SampleDataModel>
             {
-                new SampleDataFarsi(1,"وحید","فرهمندیان",34,true),
-                new SampleDataFarsi(2,"علی","احمدی",40,true),
-                new SampleDataFarsi(3,"محسن","نوروزی",18,true),
-                new SampleDataFarsi(4,"قانعی","مریم",24,false),
-                new SampleDataFarsi(5,"سارا","حسین زاده",37,false),
-                new SampleDataFarsi(6,"امیر","رحمانی",29,true),
-                new SampleDataFarsi(7,"سید رحمان","رئوفی اصل",54,true),
-                new SampleDataFarsi(8,"سامان","صادقی",41,true),
-                new SampleDataFarsi(9,"ابوالفضل","بهنام پور",19,true),
-                new SampleDataFarsi(10,"ژاله","علیزاده",38,false),
-                new SampleDataFarsi(11,"سیدرضا","ابوالفتحی",47,false),
-                new SampleDataFarsi(12,"مهتاب","آسمانی",26,true),
-                new SampleDataFarsi(13,"ستاره","فضائی",71,true),
-                new SampleDataFarsi(14,"امیررضا","عسکری",30,false),
-                new SampleDataFarsi(15,"عرفان","طباطبائی",25,true),
-                new SampleDataFarsi(16,"پانته آ","قوام",31,false),
-                new SampleDataFarsi(17,"یحیی","فرهمند",18,false),
-                new SampleDataFarsi(18,"ناصر","ملک زاده",24,true),
+                Items = items,
+                TotalItems = data.Count()
             };
-        return new TableData<SampleDataFarsi>
+        StateHasChanged();
+    }
+
+    List<SampleDataModel> GetData()
+    {
+        return new List<SampleDataModel>
             {
-                Items = data,
-                TotalItems = data.Count
+                new SampleDataModel(1,"Vahid","Farahmandian",34,true),
+                new SampleDataModel(2,"Ali","Ahmadi",40,true),
+                new SampleDataModel(3,"Mohsen","Nowroozi",18,true),
+                new SampleDataModel(4,"Maryam","Ghane'ei",24,false),
+                new SampleDataModel(5,"Sara","Hosseinzadeh",37,false),
+                new SampleDataModel(6,"Amir","Rahmani",29,true),
+                new SampleDataModel(7,"Seyed Rahman","Raoofi Asl",54,true),
+                new SampleDataModel(8,"Saman","Sadeghi",41,true),
+                new SampleDataModel(9,"Aboalfazl","Behnampour",19,true),
+                new SampleDataModel(10,"Zhale","Alizadeh",38,false),
+                new SampleDataModel(11,"Seyedreza","Aboalfathi",47,false),
+                new SampleDataModel(12,"Mahtab","Asemani",26,true)
             };
     }
 
     [JingetTableElement]
-    class SampleDataFarsi
+    public class SampleDataModel
     {
-        public SampleDataFarsi(int id, string name, string lastname,int age, bool isActive)
+        public SampleDataModel(int id, string name, string lastname, int age, bool isActive)
         {
-            Id=id;
-            Name=name;
-            LastName=lastname;
+            Id = id;
+            Name = name;
+            LastName = lastname;
             Age = age;
             IsActive = isActive;
         }
 
         [JingetTableMember(DisplayName = "#")]
         public int Id { get; set; }
-        
+
         [JingetTableMember(DisplayName = "Name")]
-        public string Name{get;set;}
+        public string Name { get; set; }
 
-        [JingetTableMember(DisplayName = "Last name")]
-        public string LastName{get;set;}
+        [JingetTableMember(DisplayName = "Lastname")]
+        public string LastName { get; set; }
 
-        [JingetTableMember(DisplayName = "Age", Sortable=true)]
-        public int Age{get;set;}
+        [JingetTableMember(DisplayName = "Age", Sortable = true)]
+        public int Age { get; set; }
 
         [JingetTableMember(DisplayName = "Status")]
-        public bool IsActive{get;set;}
+        public bool IsActive { get; set; }
     }
-
 }
 ```
 
 ***Parameters:***
 
-`Model`: Model used to bind to the component. Class defining the model should have `JingetTable` attributes. Also each property used to rendered as table's column should have `JingetTableMember` attribute. 
+`Model`: Model used to bind the table. Class defining the model should have `JingetTable` attributes. Also each property used to rendered as table's column should have `JingetTableMember` attribute. 
 
-`ShowSearchBar`: Defines whether to show the search bar or not
+`IsRtl`: If set to true, the the modal content will be rendred Right-to-Left. Default is `true`
 
-`Rtl`: If set to true, the the modal content will be rendred Right-to-Left. Default is `true`
+`NoRecordContent`: Dynamic content used to load inside table body, whenever table contains no data
 
-`ShowPagination`: Defines whether to show the pagination bar or not
+`PreActionContentHeaderText`: header text used to display as pre action content column header.
 
-`ActionContent`: Defines the content which should be rendered in each rows as custom actions.
+`PreActionContent`: Dynamic content which is rendered before rendering the data row.
 
-`SearchBarContent`: Defines the custom content which should be rendered in search bar.
+`PostActionContentHeaderText`: header text used to display as post action content column header.
 
-`SearchProviderAsync`: Defines a Func delegate to do the search action.
+`PostActionContent`: Dynamic content which is rendered after rendering the data row.
 
-`PaginationSetting`: Settings used for table's pagination section.
+`ShowBadgeBar`: Defines whether to show to badge bar or not.
 
-`NoRecordText`: Text used to show when there is no data to display in table.
+`ShowPagination`: Defines whether to show the pagination bar or not. default is true.
 
-`SearchPlaceHolderText`: Text used to shown in search bar input box.
+`FirstPageText`: First page button text in pagination bar. default is 'اولین'.
 
-***Methods:***
+`PrevPageText`: Prev page button text in pagination bar. default is 'قبلی'.
 
-`Reload`: Used to reload the data into the table.
+`NextPageText`: Next page button text in pagination bar. default is 'بعدی'.
+
+`LastPageText`: Last page button text in pagination bar. default is 'آخرین'.
+
+`AllItemsText`: All items text inside the pagi size dropdownlist in pagination bar. default is 'همه'.
+
+`PaginationPageSizeOptions`: Page size options inside the page size dropdownlist in pagination bar. default is [5,10,20,50,100].
+
+`RowsPerPageText`: Page size label text in pagination bar. default is 'اندازه در هر صفحه:'.
+
+`PageInfoTextFormat`: page info label text in pagination bar. default is '{first_item}-{last_item} از {all_items}'.
+
+`RowIsSelectable`: Defines whether to select row on row click or not.
+
+`ShowSelectedRowInBadgeBar`: Defines whether to show selected row in badge bar or not. default is 'false'.
+
+`SelectedRowBadgeTextFormat`: Selected row label text in badge bar. default is 'سطر انتخابی:'.
+
+`SelectedRowCss`: Css class used to style the selected row. default is 'table-info'.
+
+`ShowSearchBar`: Defines whether to show the search bar or not. default is true.
+
+`SearchPlaceHolderText`: Text used to bind as search input placeholder. default is 'جستجو'.
+
+`SearchBadgeTextFormat`: Search term badge text format. default is: 'فیلتر شده براساس مقدار: {search_term}'.
+
+`SearchBarContent`: Dynamic content used to load inside search bar.
+
+`Sortable`: Defines whether columns in table are sortable or not. If columns are sortable then each sortable column should have Sortable=true in its attribute. default is 'true'
+
+`SortBadgeTextFormat`: sort badge text format. default is: 'مرتب شده براساس: {sort_col} بصورت {sort_dir}'.
+
+`AscendingSortText`: ascending sort badge text. default is 'صعودی'.
+
+`DescendingSortText`: descending sort badge text. default is 'صعودی'.
+
+***Events:***
+
+`OnDataBind`: Event which is fired whenever the table is being binded.
+
+`OnRowSelected`: Event which is fired whenever the user selects a row in table.
 
 ------------
 

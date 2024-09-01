@@ -12,24 +12,9 @@
 
 <JingetTable Id="tblSampleFarsi" Model=@ModelFarsi
              OnDataBind="BindDataFarsi"
-             IsRtl=true
-             SearchPlaceHolderText="جستجو"
-             FirstPageText="اولین"
-             LastPageText="آخرین"
-             PrevPageText="قبلی"
-             NextPageText="بعدی"
-             AllItemsText="همه"
-             InfoFormat="{first_item}-{last_item} از {all_items}"
-             RowsPerPageString="اندازه صفحه:"
-             SortBadgeTextFormat="مرتب سازی براساس {sort_col} بصورت {sort_dir}"
-             SearchBadgeTextFormat="فیلتر براساس {search_term}"
-             SelectedRowBadgeTextFormat="ردیف انتخاب شده: "
-             AscendingSortText="صعودی"
-             DescendingSortText="نزولی"
              OnRowSelected="@((SampleDataFarsi e)=>RowSelected(e))"
-             RowSelectable=true
-             ShowPagination=true
-             ShowSearchBar=true>
+             RowIsSelectable=true
+             ShowSelectedRowInBadgeBar=true>
     <NoRecordContent>رکوردی وجود ندارد</NoRecordContent>
     <PreActionContent>
         <MudButton Variant="Variant.Filled"
@@ -49,11 +34,22 @@
 
 <JingetTable Id="tblSampleEng" Model=@ModelEng
              OnDataBind="BindDataEng"
+             FirstPageText="<<"
+             PrevPageText="<"
+             LastPageText=">>"
+             NextPageText=">"
+             RowsPerPageText="Per page:"
+             AllItemsText="All"
+             AscendingSortText="Ascending"
+             DescendingSortText="Descending"
+             PageInfoTextFormat="{first_item}-{last_item} FROM {all_items}"
+             SearchBadgeTextFormat="FILTERED BY:"
+             SearchPlaceHolderText="Search"
+             SelectedRowBadgeTextFormat="SELECTED ROW:"
+             SortBadgeTextFormat="SORTED BY: {sort_col} {sort_dir}"
              IsRtl=false
              ShowBadgeBar=true
-             ShowPagination=true
-             ShowSearchBar=true
-             PaginationPageSizeOptions=[5,9,12,15,30]>
+             PaginationPageSizeOptions=[5,10,20,30,40]>
     <NoRecordContent>No record found!</NoRecordContent>
     <PreActionContent>
         <MudButton Variant="Variant.Filled"
@@ -74,9 +70,15 @@
     JingetTableModel<SampleDataFarsi>? ModelFarsi;
     JingetTableModel<SampleDataEng>? ModelEng;
 
-    void RowSelected(SampleDataFarsi e)
+    async Task RowSelected(SampleDataFarsi? e)
     {
-
+        if (e != null)
+        {
+            await messageBox.ShowInfoAsync(
+            e.Id.ToString(),
+            $"{e.Name} {e.LastName}",
+            System.Text.Json.JsonSerializer.Serialize(e), rtl: true);
+        }
     }
 
     void BindDataFarsi(JingetTableDataBindModel e)

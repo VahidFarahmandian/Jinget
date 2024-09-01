@@ -10,7 +10,7 @@ public abstract class JingetBaseComponent : ComponentBase
     [Parameter, EditorRequired] public virtual required string Id { get; set; } = Guid.NewGuid().ToString("N");
 
     /// <summary>
-    /// if set to true, then element will be rendered in right to left direction
+    /// if set to true, then element will be rendered in right to left direction. default is true.
     /// </summary>
     [Parameter] public bool IsRtl { get; set; } = true;
 

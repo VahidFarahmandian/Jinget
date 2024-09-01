@@ -1,17 +1,16 @@
 ﻿@using Jinget.Blazor.Components.DropDownList
 @using Jinget.Blazor.Components.Input
 @using Jinget.Core.ExtensionMethods
-@using Jinget.Core.ExtensionMethods.Enums
 @typeparam T
 @inherits JingetTableBase<T>
 
-<div class="table-responsive @(IsRtl?"rtl":"ltr")">
-    <table id="@Id" class="@CssClass table table-hover table-bordered text-center @(IsRtl?"jinget-farsi-font":"jinget-default-font")">
+<div class="table-responsive @_parentDivCssClass">
+    <table id="@Id" class="@CssClass table table-hover table-bordered text-center @_tableCssClass">
         <thead class="table-light">
             @if (ShowSearchBar)
             {
                 <tr>
-                    <td colspan="@TotalColumns">
+                    <td colspan="@_totalColumns">
                         <JingetInput Id="@(Id+"-inpsearch")"
                                      InputType="Enums.InputType.Text"
                                      Value="@currentSearchTerm"
@@ -29,7 +28,7 @@
             @if (ShowBadgeBar)
             {
                 <tr>
-                    <th colspan="@TotalColumns" class="jinget-badge">
+                    <th colspan="@_totalColumns" class="jinget-badge">
                         @if (HasSearchTerm())
                         {
                             <span class="badge rounded-pill bg-secondary">
@@ -37,7 +36,7 @@
                                 <i class="fa fa-times" onclick="@(()=>ClearSearchAsync())" aria-hidden="true"></i>
                             </span>
                         }
-                        @if (HasOrderBy())
+                        @if (HasSort())
                         {
                             <span class="badge rounded-pill bg-secondary">
                                 @GetSortBadgeText()
@@ -46,21 +45,21 @@
                         }
                         @if (HasSelectedRow())
                         {
-                            <span class="badge rounded-pill bg-secondary" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <span class="badge rounded-pill bg-secondary" data-bs-toggle="collapse" data-bs-target="#selected-row-accordion-row" aria-expanded="true" aria-controls="selected-row-accordion-row">
                                 @SelectedRowBadgeTextFormat
                                 <i class="fa fa-times" onclick="@(()=>ClearSelectedRowAsync())" aria-hidden="true"></i>
                             </span>
-                            <div class="accordion" id="accordionExample">
+                            <div class="accordion" id="selected-row-accordion">
                                 <div class="accordion-item">
-                                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                    <div id="selected-row-accordion-row" class="accordion-collapse collapse show" data-bs-parent="#selected-row-accordion">
                                         <div class="accordion-body">
-                                            <JingetTable Model="@(new JingetTableModel<T>{Items = [selectedRow],TotalItems=1})"
+                                            <JingetTable Model="@GetSelectedRowModel()"
                                                          Id="@(Id+"selected-row")"
                                                          CssClass="table-sm table-success table-striped selected-row"
                                                          ShowBadgeBar="false"
                                                          ShowPagination="false"
                                                          ShowSearchBar="false"
-                                                         RowSelectable="false"
+                                                         RowIsSelectable="false"
                                                          Sortable="false"></JingetTable>
                                         </div>
                                     </div>
@@ -75,11 +74,11 @@
                 {
                     <th scope="col" class="jinget-action-content">@PreActionContentHeaderText</th>
                 }
-                @foreach (var item in columns)
+                @foreach (var item in _columns)
                 {
                     @if (Sortable)
                     {
-                        <th class="@(item.Sortable?"sortable":"")"
+                        <th class="@GetSortableColumnCssClass(item.Sortable)"
                             onclick="@(()=>SortAsync(item.Sortable, item.Name))" scope="col">
                             @item.DisplayText
                             @if (item.Sortable)
@@ -106,14 +105,12 @@
             {
                 @foreach (T row in Model.Items)
                 {
-                    var type = row?.GetType();
-                    var cssClass = selectedRow != null && row != null && selectedRow.HasSameValuesAs(row) ? "table-info" : "";
-                    <tr class="@cssClass" onclick="@(()=>SelectRowAsync(row))">
+                    <tr class="@GetDataRowCssClass(row)" onclick="@(()=>SelectRowAsync(row))">
                         @if (PreActionContent != null)
                         {
                             <td scope="row" class="align-middle jinget-action-content">@PreActionContent(row)</td>
                         }
-                        @foreach (var cell in columns)
+                        @foreach (var cell in _columns)
                         {
                             <td scope="row" class="align-middle">@row.GetValue(cell.Name)</td>
                         }
@@ -129,7 +126,7 @@
                 @if (NoRecordContent != null)
                 {
                     <tr>
-                        <td colspan="@TotalColumns">
+                        <td colspan="@_totalColumns">
                             @NoRecordContent
                         </td>
                     </tr>
@@ -137,47 +134,47 @@
             }
         </tbody>
         <tfoot>
-
-            @if (ShowPagination && GetPageIndexes().Any())
+            @if (_showFooter)
             {
                 <tr>
-                    <td colspan="@TotalColumns" class="align-middle">
+                    <td colspan="@_totalColumns" class="align-middle">
                         <div class="align-items-center form-group row">
 
                             <JingetDropDownList @ref=@ddlPagination
                                                 Id="@(Id+"ddlPagination")"
-                                                DisplayName="@RowsPerPageString"
+                                                DisplayName="@RowsPerPageText"
                                                 LabelCssClass="jinget-smaller-font col-auto"
+                                                IsRtl="@IsRtl"
+                                                ParentElementId="@Id"
                                                 CssClass="jinget-smaller-font"
                                                 Value="selectedPageSizeOption"
                                                 DataProviderFunc=@GetPaginationPageSizeOptionsAsync
                                                 OnChange=@((e)=>PageSizeChangedAsync(e))></JingetDropDownList>
 
-                            <button type="button" disabled="@(currentPageIndex <= 1?true:false)" onclick="@(()=>GotoPageAsync(1))" class="pager-btn col-auto btn btn-light">@FirstPageText</button>
-                            <button type="button" disabled="@(currentPageIndex <= 1?true:false)" onclick="@(()=>GotoPageAsync(currentPageIndex-1))" class="pager-btn col-auto btn btn-light">@PrevPageText</button>
+                            <button type="button" disabled="@_hasPrevButtons" onclick="@(()=>GotoPageAsync(1))" class="pager-btn col-auto btn btn-light">@FirstPageText</button>
+                            <button type="button" disabled="@_hasPrevButtons" onclick="@(()=>GotoPageAsync(currentPageIndex-1))" class="pager-btn col-auto btn btn-light">@PrevPageText</button>
 
-                            @foreach (var item in GetPageIndexes())
+                            @foreach (var index in GetPageIndexes())
                             {
-                                if (item == -1)
+                                if (index == -1)
                                 {
                                     <button type="button" disabled class="pager-btn col-auto btn btn-light">...</button>
                                 }
                                 else
                                 {
-                                    <button type="button" disabled="@(currentPageIndex==item?true:false)" onclick="@(()=>GotoPageAsync(item))"
+                                    <button type="button" disabled="@IsCurrentPage(index)" onclick="@(()=>GotoPageAsync(index))"
                                             class="pager-btn col-auto btn btn-light">
-                                        @item
+                                        @index
                                     </button>
                                 }
                             }
 
-                            <button type="button" disabled="@(currentPageIndex >= lastPageIndex?true:false)" onclick="@(()=>GotoPageAsync(currentPageIndex+1))" class="pager-btn col-auto btn btn-light">@NextPageText</button>
-                            <button type="button" disabled="@(currentPageIndex >= lastPageIndex?true:false)" onclick="@(()=>GotoPageAsync(lastPageIndex))" class="pager-btn col-auto btn btn-light">@LastPageText</button>
+                            <button type="button" disabled="@_hasNextButtons" onclick="@(()=>GotoPageAsync(currentPageIndex+1))" class="pager-btn col-auto btn btn-light">@NextPageText</button>
+                            <button type="button" disabled="@_hasNextButtons" onclick="@(()=>GotoPageAsync(lastPageIndex))" class="pager-btn col-auto btn btn-light">@LastPageText</button>
 
                             <span class="pager-btn col-auto btn btn-light" style="cursor:auto">
-                                @InfoFormat
+                                @PageInfoTextFormat
                             </span>
-
                         </div>
                     </td>
                 </tr>
