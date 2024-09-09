@@ -20,16 +20,16 @@ loadScript({
     callback: loadScript({
         url: '_content/Jinget.Blazor/js/jinget.json.visualizer.js',
         callback: loadScript({
-            url: '_content/Jinget.Blazor/js/jinget.jalali.picker.date.js',
+            //url: '_content/Jinget.Blazor/js/jinget.jalali.picker.date.js',
+            //callback: loadScript({
+            url: '_content/Jinget.Blazor/js/jinget.custom.js',
             callback: loadScript({
-                url: '_content/Jinget.Blazor/js/jinget.custom.js',
+                url: '_content/Jinget.Blazor/js/jinget.select2ext.js',
                 callback: loadScript({
-                    url: '_content/Jinget.Blazor/js/jinget.select2ext.js',
-                    callback: loadScript({
-                        url: '_content/Jinget.Blazor/js/jinget.select2tree.js'
-                    })
+                    url: '_content/Jinget.Blazor/js/jinget.select2tree.js'
                 })
             })
+            /*})*/
         })
     })
 });

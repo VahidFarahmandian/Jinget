@@ -5,6 +5,7 @@
 
 <MudDateRangePicker @ref=@_dateRangePicker
                     id="@Id"
+                    DateRange=@SelectedDateRange
                     Disabled=@IsDisabled
                     ReadOnly=@IsReadOnly
                     Label=@Label
@@ -13,33 +14,64 @@
                     Clearable=@Clearable
                     MinDate=@MinDate
                     MaxDate=@MaxDate
-                    DateRange=@((DateRange?)Value)
                     Required=@IsRequired
                     RequiredError="@RequiredError"
                     Culture=@CalendarService.GetCulture(Culture)
                     TitleDateFormat=@DateFormat
                     DateFormat=@DateFormat
-                    Mask=@(new DateMask(DateFormat))
+                    Mask=@(Editable ? new DateMask(DateFormat) : null)
                     AdditionalDateClassesFunc=@CustomDateStyleFunc
                     IsDateDisabledFunc=@DisabledDateFunc
                     DateRangeChanged=@DateRangeChangedAsync
-                    PickerOpened=@OnOpenAsync />
+                    data-dir=@(IsRtl ? "rtl" : "ltr")
+                    PickerOpened=@OnOpenAsync/>
+
 @code {
     MudDateRangePicker? _dateRangePicker;
 
     [Parameter] public override string Label { get; set; } = "بازه تاریخی";
 
-    [Parameter] public EventCallback<SelectedDateRangeModel> DateRangeChanged { get; set; }
-
-    async Task DateRangeChangedAsync(DateRange e)
+    public override object? Value
     {
-        var dateRange = new DateRange(e.Start, e.End);
-        await DateRangeChanged.InvokeAsync(new SelectedDateRangeModel
-            {
-                DateRange = dateRange,
-                StartDateJalali = e.Start.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.Start.Value) : null,
-                EndDateJalali = e.End.HasValue ? Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(e.End.Value) : null
-            }
-        );
+        get => throw new Exception();
+        set => throw new Exception();
     }
+
+    private DateRange? _selectedDateRange;
+
+    /// <summary>
+    /// Component's value. This property is two-way bindable
+    /// </summary>
+    [Parameter]
+    public virtual DateRange? SelectedDateRange
+    {
+        get => _selectedDateRange;
+        set
+        {
+            if (_selectedDateRange == value) return;
+            _selectedDateRange = value;
+            SelectedDateRangeChanged.InvokeAsync(ToDateRangeModel(value));
+        }
+    }
+
+    /// <summary>
+    /// Call callback whenever the <see cref="SelectedDate"/> is changed.
+    /// </summary>
+    [Parameter]
+    public virtual EventCallback<SelectedDateRangeModel> SelectedDateRangeChanged { get; set; }
+
+    async Task DateRangeChangedAsync(DateRange e) => await SelectedDateRangeChanged.InvokeAsync(ToDateRangeModel(e));
+
+    async Task OnOpenAsync() => await JS.InvokeVoidAsync("gotoDate", Id, Culture.ToLower() == "fa-ir");
+
+    SelectedDateRangeModel ToDateRangeModel(DateRange? range)
+    {
+        return new SelectedDateRangeModel
+        {
+            DateRange = range,
+            StartDateJalali = range == null ? null : DateTimeUtility.ToSolarDate(range.Start),
+            EndDateJalali = range == null ? null : DateTimeUtility.ToSolarDate(range.End)
+        };
+    }
+
 }

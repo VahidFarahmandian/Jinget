@@ -12,33 +12,30 @@
 <div class="@Attribute.DivCssClass">
     @if (Attribute != null && Attribute.HasLabel)
     {
-        <label style="padding: 0px 5px 0px 5px;" class="@Attribute.LabelCssClass">@Attribute.DisplayName</label>
+        <label class="dyno-form-label @Attribute.LabelCssClass">@Attribute.DisplayName</label>
     }
 
     @if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDatePickerElement datePicker)
     {
         <JingetDatePicker @ref=RefObject
                           Id="@Id"
-                          Value="@(Value==null?null:Convert.ToDateTime(Value))"
+                          SelectedDate="@(Value == null ? null : Convert.ToDateTime(Value))"
                           Label="@Attribute.DisplayName"
                           Culture=@datePicker.Culture
-                          EnglishNumber=datePicker.EnglishNumber
                           IsDisabled="@Attribute.IsDisabled"
                           IsReadOnly="@Attribute.IsReadOnly"
-                          DateChanged="@((e)=>OnChange(new ChangeEventArgs(){Value=e}))" />
-
+                          SelectedDateChanged="@((e) => OnChange(new ChangeEventArgs() { Value = e }))"/>
     }
     else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePickerElement dateRangePicker)
     {
         <JingetDateRangePicker @ref=RefObject
                                Id="@Id"
-                               Value="@(Value is SelectedDateRangeModel?((SelectedDateRangeModel)Value).DateRange: (DateRange)Value)"
+                               SelectedDateRange="@(Value is SelectedDateRangeModel ? ((SelectedDateRangeModel)Value).DateRange : (DateRange)Value)"
                                Label="@Attribute.DisplayName"
                                Culture=@dateRangePicker.Culture
-                               EnglishNumber=dateRangePicker.EnglishNumber
                                IsDisabled="@Attribute.IsDisabled"
                                IsReadOnly="@Attribute.IsReadOnly"
-                               DateRangeChanged="((e)=>OnChange(new ChangeEventArgs(){Value=e}))">
+                               SelectedDateRangeChanged="((e) => OnChange(new ChangeEventArgs() { Value = e }))">
         </JingetDateRangePicker>
     }
     else if (Attribute is JingetDropDownListElement dropDown)
@@ -60,7 +57,8 @@
                             NoResultText="@dropDown.NoResultText"
                             SearchPlaceholderText="@dropDown.SearchPlaceholderText"
                             DataProviderFunc=@GetDropDownListDataAsync
-                            OnChange=@OnChange></JingetDropDownList>
+                            OnChange=@OnChange>
+        </JingetDropDownList>
     }
     else if (Attribute is JingetDropDownListTreeElement dropDownTree)
     {
@@ -81,7 +79,8 @@
                                 NoResultText="@dropDownTree.NoResultText"
                                 SearchPlaceholderText="@dropDownTree.SearchPlaceholderText"
                                 DataProviderFunc=@GetDropDownTreeDataAsync
-                                OnChange=@OnChange></JingetDropDownListTree>
+                                OnChange=@OnChange>
+        </JingetDropDownListTree>
     }
     else if (Attribute is JingetLabelElement label)
     {
@@ -98,7 +97,7 @@
                      IsDisabled="@attr.IsDisabled"
                      IsReadOnly="@attr.IsReadOnly"
                      InputType=@attr.GetInputType()
-                     Rows="@(attr is JingetTextAreaElement? ((JingetTextAreaElement)attr).Rows:1)"
+                     Rows="@(attr is JingetTextAreaElement ? ((JingetTextAreaElement)attr).Rows : 1)"
                      OnChange="@OnChange">
 
         </JingetInput>
@@ -112,6 +111,6 @@
                onchange="@OnChange"
                class="@Attribute.CssClass"
                disabled="@Attribute.IsDisabled"
-               readonly="@Attribute.IsReadOnly" />
+               readonly="@Attribute.IsReadOnly"/>
     }
 </div>

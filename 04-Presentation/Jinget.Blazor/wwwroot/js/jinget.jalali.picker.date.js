@@ -34,11 +34,12 @@
                             var elementId = $datePicker.attr('id');
                             if (hasExplicitDigitType) {
                                 let modifiedValue;
-                                if (digitType == 'fa') {
-                                    modifiedValue = toPersianNum($datePicker.val());
-                                } else if (digitType == 'en') {
-                                    modifiedValue = toEnglishNum($datePicker.val());
-                                }
+                                //if (digitType == 'fa') {
+                                //    modifiedValue = toPersianNum($datePicker.val());
+                                //} else if (digitType == 'en') {
+                                //    modifiedValue = toEnglishNum($datePicker.val());
+                                //}
+                                modifiedValue = $datePicker.val();
                                 $datePicker.val(modifiedValue);
                             }
                             adjustPosition($datePicker, pickerAlign, pickerTop);
@@ -50,11 +51,13 @@
                             var elementId = $datePicker.attr('id');
                             if (hasExplicitDigitType) {
                                 let modifiedValue;
-                                if (digitType == 'fa') {
-                                    modifiedValue = toPersianNum($datePicker.val());
-                                } else if (digitType == 'en') {
-                                    modifiedValue = toEnglishNum($datePicker.val());
-                                }
+                                //if (digitType == 'fa') {
+                                //    modifiedValue = toPersianNum($datePicker.val());
+                                //} else if (digitType == 'en') {
+                                //    modifiedValue = toEnglishNum($datePicker.val());
+                                //}
+                                modifiedValue = $datePicker.val();
+
                                 $datePicker.val(modifiedValue);
                             }
                             adjustPosition($datePicker, pickerAlign, pickerTop);
@@ -128,50 +131,50 @@ function adjustPosition($datePicker, align, top) {
     picker.css("top", top + "px")
 }
 
-function toPersianNum(num, dontTrim) {
+//function toPersianNum(num, dontTrim) {
 
-    var i = 0,
+//    var i = 0,
 
-        dontTrim = dontTrim || false,
+//        dontTrim = dontTrim || false,
 
-        num = dontTrim ? num.toString() : num.toString().trim(),
-        len = num.length,
+//        num = dontTrim ? num.toString() : num.toString().trim(),
+//        len = num.length,
 
-        res = '',
-        pos,
+//        res = '',
+//        pos,
 
-        persianNumbers = typeof persianNumber == 'undefined' ?
-            ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'] :
-            persianNumbers;
+//        persianNumbers = typeof persianNumber == 'undefined' ?
+//            ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'] :
+//            persianNumbers;
 
-    for (; i < len; i++)
-        if ((pos = persianNumbers[num.charAt(i)]))
-            res += pos;
-        else
-            res += num.charAt(i);
+//    for (; i < len; i++)
+//        if ((pos = persianNumbers[num.charAt(i)]))
+//            res += pos;
+//        else
+//            res += num.charAt(i);
 
-    return res;
-};
+//    return res;
+//};
 
-function toEnglishNum(num, dontTrim) {
-    var i = 0,
-        j = 0,
-        dontTrim = dontTrim || false,
-        num = dontTrim ? num.toString() : num.toString().trim(),
-        len = num.length,
-        res = '',
-        pos,
-        persianNumbers = typeof persianNumber == 'undefined' ?
-            ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'] :
-            persianNumbers;
+//function toEnglishNum(num, dontTrim) {
+//    var i = 0,
+//        j = 0,
+//        dontTrim = dontTrim || false,
+//        num = dontTrim ? num.toString() : num.toString().trim(),
+//        len = num.length,
+//        res = '',
+//        pos,
+//        persianNumbers = typeof persianNumber == 'undefined' ?
+//            ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'] :
+//            persianNumbers;
 
-    for (; i < len; i++)
-        if (~(pos = persianNumbers.indexOf(num.charAt(i))))
-            res += pos;
-        else
-            res += num.charAt(i);
-    return res;
-};
+//    for (; i < len; i++)
+//        if (~(pos = persianNumbers.indexOf(num.charAt(i))))
+//            res += pos;
+//        else
+//            res += num.charAt(i);
+//    return res;
+//};
 
 try {
     !function (e, t) {

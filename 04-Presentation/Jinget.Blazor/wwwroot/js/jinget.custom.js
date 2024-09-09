@@ -1,4 +1,4 @@
-﻿window.toggleModal = (params = { id, show } = {}) => {
+﻿window.toggleModal = (params = {id, show} = {}) => {
     if (params.show)
         $('#' + params.id).modal('show');
     else
@@ -7,34 +7,42 @@
 
 
 /*jinget.json.visualizer START*/
-window.toJsonVisualizer = (params = { id, data, collapsed=false, rootCollapsable=true, withQuotes=false, withLinks=true, bigNumbers=false } = {}) => {
+window.toJsonVisualizer = (params = {
+    id,
+    data,
+    collapsed = false,
+    rootCollapsable = true,
+    withQuotes = false,
+    withLinks = true,
+    bigNumbers = false
+} = {}) => {
     $('#' + params.id).jsonVisualizer(
         params.data, {
 
-        //all nodes are collapsed at html generation
-        collapsed: params.collapsed,
+            //all nodes are collapsed at html generation
+            collapsed: params.collapsed,
 
-        //allow root element to be collasped
-        rootCollapsable: params.rootCollapsable,
+            //allow root element to be collasped
+            rootCollapsable: params.rootCollapsable,
 
-        //all JSON keys are surrounded with double quotation marks
-        withQuotes: params.withQuotes,
+            //all JSON keys are surrounded with double quotation marks
+            withQuotes: params.withQuotes,
 
-        //all values that are valid links will be clickable
-        withLinks: params.withLinks,
+            //all values that are valid links will be clickable
+            withLinks: params.withLinks,
 
-        //support different libraries for big numbers,
-        //if true display the real number only, false shows object containing big number with all fields instead of number only.
-        bigNumbers: params.bigNumbers
-    });
+            //support different libraries for big numbers,
+            //if true display the real number only, false shows object containing big number with all fields instead of number only.
+            bigNumbers: params.bigNumbers
+        });
 }
 
 /*jinget.json.visualizer END*/
 
 /*select2 START*/
 window.initJingetDropDownList = (params = {
-    dotnet, id, isSearchable = false, isRtl = true, noResultText='Nothing to display!',
-    searchPlaceholderText='', parentElementId=''
+    dotnet, id, isSearchable = false, isRtl = true, noResultText = 'Nothing to display!',
+    searchPlaceholderText = '', parentElementId = ''
 } = {}) => {
     var element = $('#' + params.id).select2(
         {
@@ -47,22 +55,22 @@ window.initJingetDropDownList = (params = {
             //example: Bootstrap modals tend to steal focus from other elements outside of the modal.
             //Since by default, Select2 attaches the dropdown menu to the <body> element, it is considered "outside of the modal".
             //To avoid this problem, you may attach the dropdown to the modal itself with the dropdownParent setting
-            dropdownParent: params.parentElementId == '' ? null : $('#' + params.parentElementId),
+            dropdownParent: params.parentElementId === '' ? null : $('#' + params.parentElementId),
 
             minimumResultsForSearch: params.isSearchable ? 0 : Infinity,
             language: {
                 noResults: function () {
-                    return "<div class='select2-no-result-text'>" + params.noResultText; +"</div>";
+                    return "<div class='select2-no-result-text'>" + params.noResultText + "</div>";
                 }
             },
             escapeMarkup: function (markup) {
                 return markup;
             }
         }).off('select2:select').on('select2:select', function (e) {
-            params.dotnet.invokeMethodAsync('OnJSDropDownListSelectedItemChanged', e.params.data.id);
-        }).off('select2:open').on('select2:open', function (e) {
-            $('input.select2-search__field').prop('placeholder', params.searchPlaceholderText);
-        });
+        params.dotnet.invokeMethodAsync('OnJSDropDownListSelectedItemChanged', e.params.data.id);
+    }).off('select2:open').on('select2:open', function (e) {
+        $('input.select2-search__field').prop('placeholder', params.searchPlaceholderText);
+    });
 };
 window.jinget_blazor_dropdownlist_selectItem = (id, value) => {
     $('#' + id).val(value).trigger("change");
@@ -76,8 +84,8 @@ window.jinget_blazor_dropdownlist_clear = (id) => {
 
 window.initJingetDropDownListTree = (params = {
     dotnet, id, isSearchable = false, isRtl = true,
-    noResultText='Nothing to display!',
-    searchPlaceholderText='', parentElementId=''
+    noResultText = 'Nothing to display!',
+    searchPlaceholderText = '', parentElementId = ''
 } = {}) => {
     var element = $('#' + params.id).jinget_select2tree(
         {
@@ -91,13 +99,13 @@ window.initJingetDropDownListTree = (params = {
             //example: Bootstrap modals tend to steal focus from other elements outside of the modal.
             //Since by default, Select2 attaches the dropdown menu to the <body> element, it is considered "outside of the modal".
             //To avoid this problem, you may attach the dropdown to the modal itself with the dropdownParent setting
-            dropdownParent: params.parentElementId == '' ? null : $('#' + params.parentElementId),
+            dropdownParent: params.parentElementId === '' ? null : $('#' + params.parentElementId),
 
             minimumResultsForSearch: params.isSearchable ? 0 : Infinity,
             searchPlaceholderText: params.searchPlaceholderText,
             language: {
                 noResults: function () {
-                    return "<div class='select2-no-result-text'>" + params.noResultText; +"</div>";
+                    return "<div class='select2-no-result-text'>" + params.noResultText + "</div>";
                 }
             },
             escapeMarkup: function (markup) {
@@ -139,64 +147,23 @@ window.getAll_sessionStorageKeys = () => {
 /*localStorage/sessionStorage END*/
 
 /*DateRange/Date Picker START*/
-function gotoDate(id) {
 
-    var done = false;
+function gotoDate(id, refresh) {
+    let done = false;
     const targetNode = document.querySelector("body");
-    const config = { attributes: true, childList: true, subtree: true };
-    var observer = new MutationObserver(() => {
-        var CONTROL_INTERVAL = setInterval(function () {
-            if (done == false) {
-
-                var startSelector = document.querySelectorAll("[id='" + id + "'] .mud-button-date")[0];
-                if (startSelector == undefined)
+    const config = {attributes: true, childList: true, subtree: true};
+    let observer = new MutationObserver(() => {
+        let CONTROL_INTERVAL = setInterval(function () {
+            if (done === false) {
+                hideHeader(id);
+                let startSelector = $('#' + id + ' .mud-button-date')[0];
+                if (startSelector.textContent === '') {
+                    done = true;
                     return;
-                //    startSelector = document.querySelectorAll("[id='" + id + "']")[0];
-
-                var selectedRangeStartYear = parseInt(startSelector.textContent.substring(0, 4));
-                var selectedRangeStartMonth = parseInt(startSelector.textContent.substring(5, 7));
-
-                var currentDateButton = document.getElementsByClassName('mud-picker-calendar-header-switch')[0].querySelectorAll('.mud-picker-slide-transition')[0];
-                var currentYear = parseInt(currentDateButton.textContent.substring(0, 4));
-                var currentMonth = parseInt(GetMonthNumber(currentDateButton.textContent.substring(5).trim()));
-
-                var yearDistance = selectedRangeStartYear - currentYear;
-                yearDistance = isNaN(yearDistance) ? 0 : yearDistance;
-                var monthDistance = selectedRangeStartMonth - currentMonth;
-                monthDistance = isNaN(monthDistance) ? 0 : monthDistance;
-
-                if (yearDistance != 0 || monthDistance != 0) {
-
-                    document.getElementsByClassName('mud-picker-content')[0].style = 'visibility:hidden';
-                    currentDateButton.click();
-
-                    setTimeout(() => {
-                        var yearChangerButtons = document.getElementsByClassName('mud-picker-calendar-header-switch')[0].querySelectorAll('.mud-flip-x-rtl');
-                        if (yearDistance < 0) {
-                            while (yearDistance != 0) {
-                                var GotoPrevYear = yearChangerButtons[0];
-                                if (GotoPrevYear != undefined) {
-                                    GotoPrevYear.click();
-                                    yearDistance++;
-                                }
-                            }
-                        }
-                        else if (yearDistance > 0) {
-                            while (yearDistance != 0) {
-                                var GotoNextYear = yearChangerButtons[1];
-                                if (GotoNextYear != undefined) {
-                                    GotoNextYear.click();
-                                    yearDistance--;
-                                }
-                            }
-                        }
-                        setTimeout(() => {
-                            var monthSelector = document.getElementsByClassName('mud-picker-month-container')[0].querySelectorAll('.mud-picker-month');
-                            monthSelector[selectedRangeStartMonth - 1].click();
-                            document.getElementsByClassName('mud-picker-content')[0].style = 'visibility:visible';
-                        }, 50);
-                    }, 100);
                 }
+                if (refresh === false)
+                    return;
+                selectDate(startSelector);
                 done = true;
             }
             clearInterval(CONTROL_INTERVAL);
@@ -206,68 +173,30 @@ function gotoDate(id) {
     observer.observe(targetNode, config);
 }
 
-function GetMonthNumber(monthName) {
-    switch (monthName) {
-
-        case 'فروردین': return 1;
-        case 'اردیبهشت': return 2;
-        case 'خرداد': return 3;
-        case 'تیر': return 4;
-        case 'مرداد': return 5;
-        case 'شهریور': return 6;
-        case 'مهر': return 7;
-        case 'آبان': return 8;
-        case 'آذر': return 9;
-        case 'دی': return 10;
-        case 'بهمن': return 11;
-        case 'اسفند': return 12;
-    }
-}
-function refreshDatePicker() {
-
-    var done = false;
-    const targetNode = document.querySelector("body");
-    const config = { attributes: true, childList: true, subtree: true };
-    var observer = new MutationObserver(() => {
-        var CONTROL_INTERVAL = setInterval(function () {
-            if (document.querySelectorAll('.mud-picker-calendar-day:not(.mud-hidden)').length > 0) {
-                //if month days are not start from 1
-                if (document.querySelectorAll('.mud-picker-calendar-day:not(.mud-hidden)')[0].textContent != '1') {
-                    if (done == false) {
-                        document.getElementsByClassName('mud-picker-nav-button-next')[0].click();
-                        done = true;
-                    }
-                    clearInterval(CONTROL_INTERVAL);
-                    observer.disconnect();
-                }
-                else {
-                    clearInterval(CONTROL_INTERVAL);
-                    observer.disconnect();
-                }
-            }
-        }, 100);
-    });
-    observer.observe(targetNode, config);
+function hideHeader(id) {
+    let startSelector = $('#' + id + ' .mud-button-date')[0];
+    if (startSelector.textContent === '' || startSelector.textContent === undefined)
+        $('#' + id + ' .mud-picker-datepicker-toolbar').css('display', 'none');
+    else
+        $('#' + id + ' .mud-picker-container button.mud-button-year').css('display', 'none');
 }
 
-function toEnglishNumber(id) {
-    const targetNode = document.querySelector("body");
-    const config = { attributes: true, childList: true, subtree: true };
-    var observer = new MutationObserver(() => {
-        var CONTROL_INTERVAL = setInterval(function () {
-            if (document.getElementById(id) != undefined) {// && container != undefined) {
-                [...document.querySelectorAll("[id='" + id + "'] *")].forEach((el) => {
-                    el.setAttribute('style', 'font-family:sans-serif !important;');
-                });
-                [...document.querySelectorAll("[id='" + id + "'] .mud-picker-calendar-transition *")].forEach((el) => {
-                    el.setAttribute('style', 'font-family:sans-serif !important;');
-                });
-                clearInterval(CONTROL_INTERVAL);
-                observer.disconnect();
-            }
-        }, 100);
-    });
-    observer.observe(targetNode, config);
+function selectDate(startSelector) {
+    let year = parseInt(startSelector.textContent.substring(0, 4));
+    let month = parseInt(startSelector.textContent.substring(5, 7));
+    //transit to month view
+    $('button.mud-picker-slide-transition')[0].click();
+    setTimeout(function () {
+        //transit to year view
+        $('button.mud-picker-slide-transition')[0].click();
+        setTimeout(function () {
+            let yearElement = $('#pickerYears .mud-picker-year *:contains(' + year + ')')[0];
+            yearElement.click()
+            setTimeout(function () {
+                $('.mud-picker-month-container .mud-picker-month')[month - 1].click()
+            }, 20);
+        }, 20);
+    }, 20);
 }
 
 /*Picker END*/

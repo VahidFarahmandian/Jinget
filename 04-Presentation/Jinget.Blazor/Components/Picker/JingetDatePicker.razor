@@ -1,59 +1,75 @@
 ﻿@using Jinget.Blazor.Components.Picker.CultureService
 @using Microsoft.JSInterop
 @using MudBlazor;
-@using System.Runtime.CompilerServices
 @inherits JingetDatePickerBase;
-<MudDatePicker id=@Id
-               @ref=_datePicker
-               Disabled=@IsDisabled
-               ReadOnly=@IsReadOnly
-               Label=@Label
+
+<MudDatePicker id=@Id @ref=_datePicker
+               Date=@SelectedDate
+               DateChanged=@DateChangedAsync
+               Culture=@CalendarService.GetCulture(Culture)
                Editable=@Editable
                ImmediateText=false
                Clearable=@Clearable
                MinDate=@MinDate
                MaxDate=@MaxDate
-               Date=@((DateTime?)Value)
-               Required=@IsRequired
-               RequiredError="@RequiredError"
-               Culture=@CalendarService.GetCulture(Culture)
-               TitleDateFormat=@DateFormat
-               DateFormat=@DateFormat
-               Mask=@(new DateMask(DateFormat))
+               Label=@Label
                AdditionalDateClassesFunc=@CustomDateStyleFunc
                IsDateDisabledFunc=@DisabledDateFunc
-               DateChanged=@((e)=>DateChangedAsync(e))
-               PickerOpened=@OnOpen>
+               Disabled=@IsDisabled
+               ReadOnly=@IsReadOnly
+               Required=@IsRequired
+               RequiredError=@RequiredError
+               PickerOpened=@OnOpen
+               TitleDateFormat=@DateFormat
+               DateFormat=@DateFormat
+               data-dir=@(IsRtl ? "rtl" : "ltr")
+               Mask=@(Editable ? new DateMask(DateFormat) : null)>
 </MudDatePicker>
 
 @code {
     MudDatePicker? _datePicker;
 
     [Parameter] public override string Label { get; set; } = "تاریخ";
-    [Parameter] public EventCallback<DateTime?> DateChanged { get; set; }
 
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    public override object? Value
     {
-        await base.OnAfterRenderAsync(firstRender);
-        if (firstRender)
+        get => throw new Exception();
+        set => throw new Exception();
+    }
+
+    private DateTime? _selectedDate;
+
+    /// <summary>
+    /// Component's value. This property is two-way bindable
+    /// </summary>
+    [Parameter]
+    public virtual DateTime? SelectedDate
+    {
+        get => _selectedDate;
+        set
         {
-            _datePicker.GoToDate();
+            if (_selectedDate == value) return;
+            _selectedDate = value;
+            SelectedDateChanged.InvokeAsync(value);
         }
     }
 
-    async Task DateChangedAsync(DateTime? e)
-    {
-        if (e != null && e.HasValue)
-        {
-            await _datePicker.GoToDate(e.Value);
-        }
-        await DateChanged.InvokeAsync(e).ConfigureAwait(false);
-    }
+    /// <summary>
+    /// Call callback whenever the <see cref="SelectedDate"/> is changed.
+    /// </summary>
+    [Parameter]
+    public virtual EventCallback<DateTime?> SelectedDateChanged { get; set; }
+
+    async Task DateChangedAsync(DateTime? e) => await SelectedDateChanged.InvokeAsync(e);
 
     async Task OnOpen()
     {
-        await JS.InvokeVoidAsync("refreshDatePicker");
-        await base.OnOpenAsync();
+        if (SelectedDate != null)
+        {
+            await _datePicker.GoToDate(Convert.ToDateTime(SelectedDate));
+        }
+
+        await JS.InvokeVoidAsync("gotoDate", Id, Culture.ToLower() == "fa-ir");
     }
+
 }

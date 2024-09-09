@@ -7,7 +7,7 @@ public abstract class JingetBaseComponent : ComponentBase
     /// <summary>
     /// Component identifier. default is set to <code>Guid.NewGuid().ToString("N")</code>
     /// </summary>
-    [Parameter, EditorRequired] public virtual required string Id { get; set; } = Guid.NewGuid().ToString("N");
+    [Parameter] public virtual required string Id { get; set; } = Guid.NewGuid().ToString("N");
 
     /// <summary>
     /// if set to true, then element will be rendered in right to left direction. default is true.

@@ -1,37 +1,99 @@
 ﻿
-div.rtl {
-    direction: rtl;
+.dyno-form-label {
+    padding: 0px 5px 0px 5px;
 }
 
-div.ltr {
-    direction: ltr;
+.rtl,
+div.rtl,
+.mud-paper[data-dir="rtl"] .mud-picker-calendar-content-2,
+.mud-paper[data-dir="rtl"] .mud-picker-calendar-header-day,
+.mud-paper[data-dir="rtl"] .mud-picker-calendar-header-switch,
+.mud-paper[data-dir="rtl"] .mud-picker-calendar-transition {
+    direction: rtl !important;
+}
+
+.rtl,
+.mud-paper[data-dir="rtl"] *,
+input[data-dir="rtl"],
+.select2-search__field,
+.select2-results__option--selectable,
+.mud-typography,
+.mud-picker {
+    font-family: IRANSans !important;
+}
+
+.ltr,
+div.ltr,
+.mud-paper[data-dir="ltr"] .mud-picker-calendar-content-2,
+.mud-paper[data-dir="ltr"] .mud-picker-calendar-header-day,
+.mud-paper[data-dir="ltr"] .mud-picker-calendar-header-switch,
+.mud-paper[data-dir="ltr"] .mud-picker-calendar-transition {
+    direction: ltr !important;
+}
+
+.ltr,
+.mud-paper[data-dir="ltr"] *,
+input[data-dir="ltr"] {
+    font-family: sans-serif !important;
+}
+
+.mud-paper[data-dir="rtl"] span.mud-icon-button-label {
+    -webkit-transform: rotate(180deg) !important;
+    -moz-transform: rotate(180deg) !important;
+    -ms-transform: rotate(180deg) !important;
+    -o-transform: rotate(180deg) !important;
+    transform: rotate(180deg) !important;
+}
+
+.mud-paper[data-dir="rtl"] button.mud-range-start-selected {
+    border-radius: 0% 50% 50% 0% !important;
+}
+
+.mud-paper[data-dir="rtl"] button.mud-range-end-selected {
+    border-radius: 50% 0% 0% 50% !important;
+}
+
+.mud-paper[data-dir="rtl"] button.mud-range-selection:hover:not(.mud-range-start-selected) {
+    border-radius: 50% 0% 0% 50% !important;
+}
+
+.mud-paper[data-dir="ltr"] button.mud-range-start-selected {
+    border-radius: 50% 0% 0% 50% !important;
+}
+
+.mud-paper[data-dir="ltr"] button.mud-range-end-selected {
+    border-radius: 0% 50% 50% 0% !important;
+}
+
+.mud-paper[data-dir="ltr"] button.mud-range-selection:hover:not(.mud-range-start-selected) {
+    border-radius: 0% 50% 50% 0% !important;
 }
 
 .jinget-badge {
     text-align: justify;
 }
 
-    .jinget-badge span {
-        margin: 0px 5px 0px 5px;
-    }
+.jinget-badge span {
+    margin: 0px 5px 0px 5px;
+}
 
-        .jinget-badge span i {
-            margin: 0px 2px 0 2px;
-            cursor: pointer;
-        }
+.jinget-badge span i {
+    margin: 0px 2px 0 2px;
+    cursor: pointer;
+}
 
 .sortable {
     cursor: pointer;
 }
 
-    .sortable i {
-        color: gainsboro;
-        float: inline-end;
-    }
+.sortable i {
+    color: gainsboro;
+    float: inline-end;
+}
 
-        .sortable i:hover {
-            color: unset;
-        }
+.sortable i:hover {
+    color: unset;
+}
 
 .jinget-element-label {
     padding: 0px 5px 0px 5px;
@@ -54,10 +116,6 @@ div.modal-backdrop ~ span.select2-container {
     z-index: 9999;
 }
 
-.select2-search__field {
-    font-family: IRANSans !important;
-}
-
 .select2-container--outlined .select2-selection {
     font-family: IRANSans !important;
     border-top: none !important;
@@ -69,10 +127,6 @@ div.modal-backdrop ~ span.select2-container {
     padding: 0 !important;
 }
 
-.select2-results__option--selectable {
-    font-family: IRANSans !important;
-}
-
 .select2_selection_arrow_rtl {
     margin-left: unset !important;
     margin-right: auto !important;
@@ -81,9 +135,6 @@ div.modal-backdrop ~ span.select2-container {
 /*Select2.js END*/
 
 /*MudBlazor START*/
-.mud-typography, .mud-picker {
-    font-family: IRANSans;
-}
 
 .mud-input-label-inputcontrol {
     left: unset;
@@ -91,18 +142,15 @@ div.modal-backdrop ~ span.select2-container {
 
 .mud-button-label {
     font-family: IRANSans !important;
+    font-size: 14px;
+}
+
+.mud-picker-toolbar {
+    height: unset !important;
 }
 
 .mud-alert-message {
     width: 100% !important;
 }
 
-.rtl {
-    direction: rtl !important;
-    font-family: IranSans;
-}
-
-.ltr {
-    direction: ltr !important;
-}
 /*MudBlazor END*/
