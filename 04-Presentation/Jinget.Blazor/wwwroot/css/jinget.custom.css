@@ -1,4 +1,52 @@
-﻿
+﻿.jinget-picker {
+    background-color: unset !important;
+    position: relative;
+    /*display: inline-block;*/
+    display: inline-flex;
+}
+
+div.jinget-picker button {
+    color: unset !important;
+    position: absolute;
+}
+
+div.jinget-picker > button {
+    left: 40px;
+}
+
+div.jinget-picker > button.mud-icon-button-edge-end {
+    margin-right: unset !important;
+    margin-inline-end: unset !important;
+    margin-inline-start: unset !important;
+    left: 25px !important;
+}
+
+div.jinget-picker div.mud-input-adornment {
+    padding: 13px 0 0 0px;
+    position: absolute;
+    left: 35px;
+}
+
+div.jinget-picker div.mud-input-adornment button {
+    /*top: -23px;*/
+    left: -23px;
+    padding: 0;
+}
+
+.jinget-picker input {
+    width: inherit !important;
+}
+
+.jinget-picker input:focus {
+    outline: none !important;
+}
+
+div.mud-input:has(input.jinget-picker):before,
+div.mud-input:has(input.jinget-picker):after {
+    transition: none !important;
+    border-bottom: none !important;
+}
+
 .dyno-form-label {
     padding: 0px 5px 0px 5px;
 }

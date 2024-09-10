@@ -163,6 +163,7 @@ function gotoDate(id, refresh) {
                 }
                 if (refresh === false)
                     return;
+                $('#' + id + ' div.jinget-picker svg.mud-range-input-separator').css('visibility', 'visible');
                 selectDate(startSelector);
                 done = true;
             }
@@ -197,6 +198,12 @@ function selectDate(startSelector) {
             }, 20);
         }, 20);
     }, 20);
+}
+
+function reStylePicker(id) {
+
+    $('input[id=' + id + ']').parent().removeClass();
+    $('input[id=' + id + ']').parent().addClass('form-control jinget-picker');
 }
 
 /*Picker END*/

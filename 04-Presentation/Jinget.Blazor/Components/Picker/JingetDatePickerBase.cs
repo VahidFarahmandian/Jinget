@@ -24,4 +24,10 @@ public abstract class JingetDatePickerBase : JingetBaseComponent
             Editable = false;
         await base.OnInitializedAsync();
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JS.InvokeVoidAsync("reStylePicker", Id);
+        await base.OnAfterRenderAsync(firstRender);
+    }
 }

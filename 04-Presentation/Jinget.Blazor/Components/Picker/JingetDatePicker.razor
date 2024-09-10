@@ -12,7 +12,7 @@
                Clearable=@Clearable
                MinDate=@MinDate
                MaxDate=@MaxDate
-               Label=@Label
+               Placeholder=@Label
                AdditionalDateClassesFunc=@CustomDateStyleFunc
                IsDateDisabledFunc=@DisabledDateFunc
                Disabled=@IsDisabled
@@ -22,6 +22,7 @@
                PickerOpened=@OnOpen
                TitleDateFormat=@DateFormat
                DateFormat=@DateFormat
+               Margin="Margin.None"
                data-dir=@(IsRtl ? "rtl" : "ltr")
                Mask=@(Editable ? new DateMask(DateFormat) : null)>
 </MudDatePicker>
