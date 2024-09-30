@@ -688,6 +688,8 @@ Note that if types used for dynamic form creation needs to access `IServiceProvi
 
 `OnModelChanged`: This event raised whenever a member's value changed.
 
+`OnModelChangedException`: This event raised whenever an exception occurred while handling OnModelChanged
+
 `OnFieldReady`: This event raised whenever a field rendered on page. This event gives an object of `JingetDynamicField` which contains a property called `RefObject`
 which refers to the form element on page. For example in order to get the drop down list items in `OnFieldReady` using `((JingetDropDownList)field.RefObject).Items`.
 

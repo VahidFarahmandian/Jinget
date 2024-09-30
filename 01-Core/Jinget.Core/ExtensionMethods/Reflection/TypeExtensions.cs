@@ -98,7 +98,7 @@ public static class TypeExtensions
 
     /// <summary>
     /// Get reference-type properties of the given type.
-    /// By default string properties will be ignored.
+    /// By default, string properties will be ignored.
     /// </summary>
     public static List<PropertyInfo> GetReferenceTypeProperties(
         this Type type,
@@ -121,7 +121,7 @@ public static class TypeExtensions
 
     /// <summary>
     /// Get reference-type properties of the given type.
-    /// By default string properties will be ignored.
+    /// By default, string properties will be ignored.
     /// </summary>
     public static List<PropertyInfo> GetReferenceTypeProperties(
         this Type type,

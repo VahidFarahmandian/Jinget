@@ -347,9 +347,9 @@ public static class ExpressionUtility
             if (memberInfo != null)
                 return Expression.MakeMemberAccess(expression, memberInfo);
 
-            throw new JingetException($"Jinget Says: {type.Name} does not {member} member.", 1000);
+            throw new JingetException($"Jinget Says: {type.Name} does not contain {member} member.", 1000);
         }
 
-        throw new JingetException($"Jinget Says: {type.Name} does not {member} member.", 1000);
+        throw new JingetException($"Jinget Says: {type.Name} does not contain {member} member.", 1000);
     }
 }
