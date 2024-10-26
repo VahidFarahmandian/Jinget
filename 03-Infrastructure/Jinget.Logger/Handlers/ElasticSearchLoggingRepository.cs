@@ -17,7 +17,8 @@ public class ElasticSearchLoggingRepository : IElasticSearchLoggingRepository
             await CreateIndexAsync(param.ParitionKey);
         string indexName = GetIndexName(param.ParitionKey);
 
-        var result = await _elasticClient.IndexAsync(param, i => i.Index(indexName));
+        var result = await _elasticClient.IndexAsync(param, i => i.Index(indexName).Refresh(settings.RefreshType));
+
         if (result.IsValid)
             return result.IsValid;
         throw new JingetException("Jinget Says: " + result.OriginalException.ToString());

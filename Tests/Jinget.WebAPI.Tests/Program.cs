@@ -14,7 +14,7 @@ string[] blacklist = ["/logs/"];
 builder.Host.LogToElasticSearch(blacklist);
 var elasticSearchSetting = new ElasticSearchSettingModel
 {
-    CreateIndexPerPartition = true,
+    CreateIndexPerPartition = false,
     UserName = "elastic",
     Password = "Aa@123456",
     Url = "localhost:9200",
@@ -25,25 +25,25 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.UseWhen(p => elasticSearchSetting.CreateIndexPerPartition, appBuilder =>
-{
-    appBuilder.Use(async (context, next) =>
-    {
-        context.Items.Add("jinget.log.partitionkey", $"{DateTime.Now.ToString("yyyyMMdd")}");
-        await next.Invoke();
-    });
-});
-app.UseWhen(ctx => ctx.Request.Path.Value.EndsWith("detailedlog"),
-    appbuilder => appbuilder.Use(async (ctx, next) =>
-    {
-        ctx.Items["AdditionalData"] = new
-        {
-            Name = "Vahid",
-            Lastname = "Farahmandian"
-        };
-        ctx.Response.Headers.Append("AdditionalData", "some more information");
-        await next.Invoke();
-    }));
+//app.UseWhen(p => elasticSearchSetting.CreateIndexPerPartition, appBuilder =>
+//{
+//    appBuilder.Use(async (context, next) =>
+//    {
+//        context.Items.Add("jinget.log.partitionkey", $"{DateTime.Now.ToString("yyyyMMdd")}");
+//        await next.Invoke();
+//    });
+//});
+//app.UseWhen(ctx => ctx.Request.Path.Value.EndsWith("detailedlog"),
+//    appbuilder => appbuilder.Use(async (ctx, next) =>
+//    {
+//        ctx.Items["AdditionalData"] = new
+//        {
+//            Name = "Vahid",
+//            Lastname = "Farahmandian"
+//        };
+//        ctx.Response.Headers.Append("AdditionalData", "some more information");
+//        await next.Invoke();
+//    }));
 app.UseJingetLogging();
 
 app.MapGet("customlog", (ILogger<SampleModel> logger) =>

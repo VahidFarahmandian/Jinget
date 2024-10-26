@@ -38,4 +38,12 @@ public class ElasticSearchSettingModel
     /// for custom logs, <see cref="Entities.Log.CustomLog"/> will be used.
     /// </summary>
     public bool CreateIndexPerPartition { get; set; }
+
+    /// <summary>
+    /// Control when changes made by the request are made visible to search. Default is <seealso cref="Refresh.WaitFor"/><para></para>
+    /// <seealso cref="Refresh.True"/>: Refresh the relevant primary and replica shards (not the whole index) immediately after the operation occurs. Use with CAUTIONS<para></para>
+    /// <seealso cref="Refresh.WaitFor"/>: Wait for the changes made by the request to be made visible by a refresh before replying. This doesn’t force an immediate refresh, rather, it waits for a refresh to happen. Elasticsearch automatically refreshes shards that have changed every index.refresh_interval which defaults to one second.<para></para>
+    /// <seealso cref="Refresh.False"/>: Take no refresh related actions. The changes made by this request will be made visible at some point after the request returns.
+    /// </summary>
+    public Refresh RefreshType { get; set; } = Refresh.WaitFor;
 }

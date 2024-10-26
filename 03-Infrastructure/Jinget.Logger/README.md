@@ -41,6 +41,8 @@ builder.Services.ConfigureElasticSearchLogger<OperationLog, ErrorLog, CustomLog>
 
 `CreateIndexPerPartition`: Create index per partition using HttpContext.Items["jinget.log.partitionkey"] value. If this mode is selected, then index creation will be deferred until the first document insertion. foreach partition key, a separated index will be created. all the indexes will share the same data model.
 
+`RefreshType`: In Elasticsearch, the Index, Update, Delete, and Bulk APIs support setting refresh to control when changes made by this request are made visible to search.
+
 If you want to use partition key:
 ```csharp
 builder.Host.LogToElasticSearch(blacklist);
