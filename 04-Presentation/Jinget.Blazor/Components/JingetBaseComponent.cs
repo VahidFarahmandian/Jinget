@@ -1,4 +1,6 @@
-﻿namespace Jinget.Blazor.Components;
+﻿using Jinget.Core.ExtensionMethods;
+
+namespace Jinget.Blazor.Components;
 
 public abstract class JingetBaseComponent : ComponentBase
 {
@@ -94,4 +96,13 @@ public abstract class JingetBaseComponent : ComponentBase
         //when base.OnInitializedAsync is completed then _initialized can set to true to notify children components to continue rendering
         _initialized = true;
     }
+    
+    /// <summary>
+    /// check whether the <seealso cref="Value"/> is empty or not
+    /// </summary>
+    /// <returns></returns>
+    protected internal bool HasValue() =>
+        Value != null &&
+        !string.IsNullOrWhiteSpace(Value?.ToString()) &&
+        !Value.HasDefaultValue();
 }

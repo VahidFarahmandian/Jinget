@@ -2,7 +2,7 @@
 
 @inherits JingetInputBase;
 
-<div style="direction:@(IsRtl?"rtl":"ltr")">
+<div style="direction:@(IsRtl ? "rtl" : "ltr")">
     @if (!string.IsNullOrWhiteSpace(DisplayName))
     {
         <label for="@Id" class="jinget-element-label @LabelCssClass">@DisplayName</label>
@@ -21,7 +21,8 @@
                readonly="@IsReadOnly"
                placeholder="@PlaceHolder"
                disabled="@IsDisabled"
-               onchange="@((ChangeEventArgs? e)=>OnChangedAsync(e))" />
+               @attributes="@DataAttributes"
+               onchange="@((ChangeEventArgs? e) => OnChangedAsync(e))"/>
     }
     else
     {
@@ -33,7 +34,8 @@
                   disabled="@IsDisabled"
                   readonly="@IsReadOnly"
                   placeholder="@PlaceHolder"
-                  onchange="@((ChangeEventArgs? e)=>OnChangedAsync(e))" />
+                  @attributes="@DataAttributes"
+                  onchange="@((ChangeEventArgs? e) => OnChangedAsync(e))" />
     }
     <small class="@HelperTextCss">@HelperText</small>
 </div>

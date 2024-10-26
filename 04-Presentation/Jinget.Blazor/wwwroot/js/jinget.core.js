@@ -1,43 +1,66 @@
-﻿function loadScript(args) {
+﻿// function loadScript() {
+//     let script = document.createElement('script');
+//     script.setAttribute('data-main', 'js/require.con.js');
+//     script.src = '_content/Jinget.Blazor/js/infra/require.js';
+//
+//     let jinget = document.getElementById("jinget");
+//     //fire the loading
+//     jinget.after(script);
+//     return true;
+// }
+//
+// loadScript();
 
-    var script = document.createElement('script');
+
+function loadScript(args) {
+    let script = document.createElement('script');
     script.type = 'text/javascript';
-    script.src = args.url;
+    script.src = '_content/Jinget.Blazor/js/' + args.url;
 
     // Then bind the event to the callback function.
     // There are several events for cross browser compatibility.
     script.onreadystatechange = args.callback;
     script.onload = args.callback;
-
-    var jinget = document.getElementById("jinget");
-
+    let jinget = document.getElementById("jinget");
     //fire the loading
     jinget.after(script);
+    return true;
 }
 
 loadScript({
-    url: '_content/Jinget.Blazor/js/jinget.select2.js',
+    // url: 'infra/RequireJS2.3.5.js',
+    // callback: loadScript({
+    url: "datepicker/jinget.dp.js",
     callback: loadScript({
-        url: '_content/Jinget.Blazor/js/jinget.json.visualizer.js',
+        url: "datepicker/jinget.dp.datepicker.js",
         callback: loadScript({
-            //url: '_content/Jinget.Blazor/js/jinget.jalali.picker.date.js',
-            //callback: loadScript({
-            url: '_content/Jinget.Blazor/js/jinget.custom.js',
+            url: "datepicker/jinget.dp.daterangepicker.js",
             callback: loadScript({
-                url: '_content/Jinget.Blazor/js/jinget.select2ext.js',
+                url: 'jsonvisualizer/jinget.json.visualizer.js',
                 callback: loadScript({
-                    url: '_content/Jinget.Blazor/js/jinget.select2tree.js'
+                    url: 'common/jinget.custom.js'
                 })
             })
-            /*})*/
         })
+    })
+    //})
+});
+
+//load bi resources
+loadScript({
+    url: 'bi/jinget.bi.core.js',
+    callback: loadScript({
+        url: 'bi/jinget.bi.gauge.js'
     })
 });
 
-//load jinget bi resources
+//load dropdown resources
 loadScript({
-    url: '_content/Jinget.Blazor/js/jinget.bi.core.js',
+    url: 'dropdown/jinget.select2.js',
     callback: loadScript({
-        url: '_content/Jinget.Blazor/js/jinget.bi.gauge.js'
+        url: 'dropdown/jinget.select2ext.js',
+        callback: loadScript({
+            url: "dropdown/jinget.select2tree.js"
+        })
     })
 });

@@ -1,8 +1,9 @@
-﻿namespace Jinget.Blazor.Attributes.Picker;
+﻿using Jinget.Blazor.Enums;
 
+namespace Jinget.Blazor.Attributes.Picker;
 
 public abstract class JingetBaseDatePickerElement : JingetFormElement
 {
-    public string? Culture { get; set; }
-    public bool EnglishNumber { get; set; }
+    public JingetCalendarType CalendarType { get; set; }
+    public bool ShowPickerButton { get; set; }
 }

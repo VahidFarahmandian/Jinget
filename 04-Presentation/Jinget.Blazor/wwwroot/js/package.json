@@ -1,0 +1,25 @@
+{
+  "name": "jinget-blazor",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "bootstrap": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
+    "expose-loader": "^5.0.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.6.3",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "scripts": {
+    "build": "webpack --mode production",
+    "watch": "webpack --watch"
+  },
+  "keywords": [
+    "jinget"
+  ],
+  "author": "Vahid Farahmandian",
+  "license": "ISC"
+}

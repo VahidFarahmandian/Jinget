@@ -148,7 +148,19 @@ window.getAll_sessionStorageKeys = () => {
 
 /*DateRange/Date Picker START*/
 
-function gotoDate(id, refresh) {
+function setDatePicker(id) {
+    setTimeout(function () {
+        hideHeader(id);
+        $('#' + id + ' button.mud-picker-nav-button-next').click();
+        setTimeout(function () {
+            if ($('#' + id + ' button.mud-selected').length == 0) {
+                $('#' + id + ' button.mud-picker-nav-button-prev').click();
+            }
+        }, 10);
+    }, 50);
+}
+
+function setDatePicker(id, refresh) {
     let done = false;
     const targetNode = document.querySelector("body");
     const config = {attributes: true, childList: true, subtree: true};
@@ -163,13 +175,14 @@ function gotoDate(id, refresh) {
                 }
                 if (refresh === false)
                     return;
-                $('#' + id + ' div.jinget-picker svg.mud-range-input-separator').css('visibility', 'visible');
+                //$('#' + id + ' button.mud-picker-nav-button-next').click();
+                // $('#' + id + ' div.jinget-picker svg.mud-range-input-separator').css('visibility', 'visible');
                 selectDate(startSelector);
                 done = true;
             }
             clearInterval(CONTROL_INTERVAL);
             observer.disconnect();
-        }, 100);
+        }, 50);
     });
     observer.observe(targetNode, config);
 }

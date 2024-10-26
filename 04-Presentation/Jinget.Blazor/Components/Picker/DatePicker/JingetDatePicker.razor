@@ -1,0 +1,37 @@
+﻿@using Jinget.Blazor.Components.Input
+@using Jinget.Blazor.Enums
+@inherits JingetDatePickerBase
+
+<div class="@(IsRtl ? "rtl" : "ltr") jinget-picker">
+    @if (!string.IsNullOrWhiteSpace(DisplayName))
+    {
+        <label for="@Id" class="jinget-element-label @LabelCssClass">@DisplayName</label>
+    }
+    @if (IsRequired && !HasValue())
+    {
+        <label class="jinget_element_required-error @RequiredErrorCssClass">@RequiredError</label>
+    }
+    <div class="input-group" disabled="@IsDisabled">
+        @if (ShowPickerButton)
+        {
+            <div class="input-group-prepend">
+                <span class="input-group-text cursor-pointer" id=@buttonId>📅</span>
+            </div>
+        }
+        <JingetInput
+            InputType="InputType.Text"
+            Id="@Id"
+            data-name="@Id"
+            data-has-btn=@(ShowPickerButton ? "true" : "false")
+            IsReadOnly="@IsReadOnly"
+            CssClass="@CssClass"
+            PlaceHolder="@Label"
+            IsRtl="@IsRtl">
+        </JingetInput>
+        <JingetInput
+            InputType="InputType.Hidden"
+            data-name="@inputId">
+        </JingetInput>
+    </div>
+    <small class="@HelperTextCss">@HelperText</small>
+</div>

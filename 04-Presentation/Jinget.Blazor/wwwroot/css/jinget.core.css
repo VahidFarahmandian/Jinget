@@ -4,8 +4,12 @@
 
 @import url('../../../_content/MudBlazor/MudBlazor.min.css');
 @import url('jinget.captcha.css');
-@import url('jinget.jalali.picker.date.css');
-@import url('jinget.jalali.picker.daterange.css');
+/*@import url('jinget.jalali.picker.date.css');*/
+/*@import url('jinget.jalali.picker.daterange.css');*/
+
+@import url('jinget.dp.core.css');
+@import url('jinget.dp.datepicker.css');
+
 @import url('jinget.modal.css');
 @import url('jinget.table.css');
 @import url('jinget.select2.css');

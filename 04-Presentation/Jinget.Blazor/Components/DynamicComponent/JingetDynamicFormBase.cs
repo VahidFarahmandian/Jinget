@@ -95,11 +95,11 @@ public class JingetDynamicFormBase<T> : ComponentBase
                 value = value?.ToString();
             }
 
-            if (value is SelectedDateRangeModel dateRangeValue)
+            if (value is DateRangeModel dateRangeValue)
             {
                 if (t == typeof(DateRange))
                 {
-                    convertedValue = Convert.ChangeType(dateRangeValue.DateRange, t);
+                    // convertedValue = Convert.ChangeType(dateRangeValue.DateRange, t);
                 }
                 else
                 {

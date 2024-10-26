@@ -49,5 +49,6 @@ public abstract class JingetFormElement([CallerMemberName] string? propertyName 
     public bool IsRequired { get; set; } = false;
     public string RequiredError { get; set; } = "*";
     public string HelperText { get; set; }
+    public bool IsRtl { get; set; }
 
 }

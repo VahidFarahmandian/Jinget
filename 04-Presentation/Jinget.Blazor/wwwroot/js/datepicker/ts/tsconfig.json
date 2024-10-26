@@ -1,0 +1,34 @@
+﻿{
+  "compilerOptions": {
+    //enable defining property without initializing them
+    "strictPropertyInitialization": false,
+    //When this option is set, TypeScript will issue an error if a program tries to include a file by a casing different from the casing on disk.
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "alwaysStrict": true,
+    "removeComments": true,
+    "target": "ES2017",
+    "module": "ES6",
+    "lib": [
+      "es2020",
+      "dom"
+    ]
+  },
+  "exclude": [
+    "./../node_modules"
+  ]
+}

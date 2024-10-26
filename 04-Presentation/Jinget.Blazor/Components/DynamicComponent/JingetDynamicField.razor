@@ -5,6 +5,8 @@
 @using Jinget.Blazor.Components.DropDownList.DropDownListTree
 @using Jinget.Blazor.Components.Input
 @using Jinget.Blazor.Components.Picker
+@using Jinget.Blazor.Components.Picker.DatePicker
+@using Jinget.Blazor.Components.Picker.DateRangePicker
 @inherits JingetDynamicFieldBase
 
 @inject IJSRuntime JS;
@@ -19,23 +21,25 @@
     {
         <JingetDatePicker @ref=RefObject
                           Id="@Id"
-                          SelectedDate="@(Value == null ? null : Convert.ToDateTime(Value))"
+                          Value="@(Value == null ? null : Convert.ToDateTime(Value))"
                           Label="@Attribute.DisplayName"
-                          Culture=@datePicker.Culture
                           IsDisabled="@Attribute.IsDisabled"
                           IsReadOnly="@Attribute.IsReadOnly"
-                          SelectedDateChanged="@((e) => OnChange(new ChangeEventArgs() { Value = e }))"/>
+                          CalendarType="@datePicker.CalendarType"
+                          IsRtl="@datePicker.IsRtl"
+                          ShowTimePicker="@datePicker.ShowPickerButton"
+                          OnChange="@OnChange"/>
     }
     else if (Attribute is Jinget.Blazor.Attributes.Picker.JingetDateRangePickerElement dateRangePicker)
     {
         <JingetDateRangePicker @ref=RefObject
                                Id="@Id"
-                               SelectedDateRange="@(Value is SelectedDateRangeModel ? ((SelectedDateRangeModel)Value).DateRange : (DateRange)Value)"
+                               @* SelectedDateRange="@(Value is SelectedDateRangeModel ? ((SelectedDateRangeModel)Value).DateRange : (DateRange)Value)" *@
                                Label="@Attribute.DisplayName"
-                               Culture=@dateRangePicker.Culture
                                IsDisabled="@Attribute.IsDisabled"
                                IsReadOnly="@Attribute.IsReadOnly"
-                               SelectedDateRangeChanged="((e) => OnChange(new ChangeEventArgs() { Value = e }))">
+                               CalendarType="@dateRangePicker.CalendarType"
+                               OnChange="@(e => OnChange(new ChangeEventArgs { Value = e }))">
         </JingetDateRangePicker>
     }
     else if (Attribute is JingetDropDownListElement dropDown)
