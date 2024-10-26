@@ -24,7 +24,6 @@ Jinget provides the following benefits:
 - Jinget.Core.DiScanner: Helps you to automatically register your source code dependencies without the need to write repetitive and annoying codes
 - Jinget.Handlers.ExternalServiceHandlers: Helps you to consume different types of Web APIs and SOAP web services with ease of use.
 - Jinget.Logger: Helps you to store your log messages into Elasticsearch or files
-- Jinget.Blazor: Contains some useful components optimised for RTL languages.
   
 # How to install
 In order to install Jinget please refer to [nuget.org](https://www.nuget.org/profiles/Jinget "nuget.org")
