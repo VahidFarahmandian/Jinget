@@ -13,7 +13,7 @@ public static class JingetProgram
         =>
         webHostBuilder.ConfigureLogging(builder => builder.AddElasticSearch(f =>
         {
-            f.BlackListStrings = blackList;
+            f.BlackListStrings = blackList.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
             f.MinAllowedLogLevel = minAllowedLoglevels;
         }));
 
@@ -30,7 +30,7 @@ public static class JingetProgram
             f.FileName = fileNamePrefix;
             f.LogDirectory = logDirectory;
             f.RetainedFileCountLimit = retainFileCountLimit;
-            f.BlackListStrings = blackList;
+            f.BlackListStrings = blackList.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
             f.FileSizeLimit = fileSizeLimit;
             f.MinAllowedLogLevel = minAllowedLoglevels;
         }));

@@ -1,8 +1,8 @@
 ﻿namespace Jinget.Logger;
 
-public struct LogMessage
+public class LogMessage
 {
-    public DateTime Timestamp { get; set; }
+    public DateTime Timestamp { get; set; } = DateTime.Now;
     public string Description { get; set; }
     public Microsoft.Extensions.Logging.LogLevel Severity { get; set; }
     public string Exception { get; set; }

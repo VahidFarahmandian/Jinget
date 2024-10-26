@@ -13,10 +13,10 @@ public class Log<TCategoryName>
         Next = next;
         Logger = logger;
 
-        BlackListHeaders = blackListHeaders.Value.Headers?.Where(x => x != null).Select(x => x.ToLower()).ToList();
+        BlackListHeaders = blackListHeaders.Value.Headers?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToList();
         BlackListHeaders ??= new List<string>();
 
-        WhiteListHeaders = whiteListHeaders.Value.Headers?.Where(x => x != null).Select(x => x.ToLower()).ToList();
+        WhiteListHeaders = whiteListHeaders.Value.Headers?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToList();
         WhiteListHeaders ??= new List<string>();
     }
 }

@@ -26,7 +26,7 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
         _interval = loggerOptions.FlushPeriod;
         _batchSize = loggerOptions.BatchSize;
         _queueSize = loggerOptions.BackgroundQueueSize;
-        _blacklistStrings = loggerOptions.BlackListStrings ?? Array.Empty<string>();
+        _blacklistStrings = loggerOptions.BlackListStrings.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray() ?? Array.Empty<string>();
         _minAllowedLogLevel = loggerOptions.MinAllowedLogLevel;
 
         Start();
