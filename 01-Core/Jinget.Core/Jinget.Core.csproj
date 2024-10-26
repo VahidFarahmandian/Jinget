@@ -18,14 +18,14 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="DotNetZip" Version="1.16.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="8.0.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.9.28" />
+    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="8.0.10" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.11.20" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SoapFormatter" Version="1.1.9" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.9.0" />
     <PackageReference Include="System.CodeDom" Version="8.0.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
   </ItemGroup>
   
   <ItemGroup>

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Text;
-using Microsoft.Extensions.Logging;
-
-namespace Jinget.Logger;
+﻿namespace Jinget.Logger;
 
 public struct LogMessage
 {
     public DateTime Timestamp { get; set; }
     public string Description { get; set; }
-    public LogLevel Severity { get; set; }
+    public Microsoft.Extensions.Logging.LogLevel Severity { get; set; }
     public string Exception { get; set; }
 
     public override string ToString()

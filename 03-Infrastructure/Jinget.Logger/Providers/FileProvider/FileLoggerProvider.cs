@@ -1,12 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
-namespace Jinget.Logger.Providers.FileProvider;
+﻿namespace Jinget.Logger.Providers.FileProvider;
 
 /// <summary>
 ///     An <see cref="ILoggerProvider" /> that writes logs

@@ -1,11 +1,4 @@
-﻿using System;
-using Jinget.Logger.Entities.Log;
-using Jinget.Logger.Entities.Log.Base;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-
-namespace Jinget.Logger.ExceptionHandler;
+﻿namespace Jinget.Logger.ExceptionHandler;
 
 public class ExceptionHandler<TCategoryName> : IExceptionHandler<TCategoryName>
 {
@@ -20,7 +13,7 @@ public class ExceptionHandler<TCategoryName> : IExceptionHandler<TCategoryName>
 
     public void Handle(Exception ex, object details)
     {
-        ErrorLog logEntity = new()
+        LogModel logEntity = new()
         {
             Description = JsonConvert.SerializeObject(new
             {
@@ -33,20 +26,20 @@ public class ExceptionHandler<TCategoryName> : IExceptionHandler<TCategoryName>
             _accessor.HttpContext.Items["jinget.log.partitionkey"] != null ?
             _accessor.HttpContext.Items["jinget.log.partitionkey"].ToString() :
             "",
-            Severity = LogLevel.Error.ToString()
+            Severity = Microsoft.Extensions.Logging.LogLevel.Error.ToString(),
+
         };
-        if (details is LogBaseEntity entity)
+        if (details is LogModel entity)
         {
             logEntity.RequestId = entity.RequestId;
             logEntity.SubSystem = entity.SubSystem;
-            logEntity.When = entity.When;
             logEntity.Url = entity.Url;
+            logEntity.TimeStamp = entity.TimeStamp;
         }
         else
         {
             logEntity.RequestId = new Guid(_accessor.HttpContext.Response.Headers["RequestId"].ToString());
             logEntity.SubSystem = AppDomain.CurrentDomain.FriendlyName;
-            logEntity.When = DateTime.Now;
         }
         _logger.LogError(JsonConvert.SerializeObject(logEntity));
         return;

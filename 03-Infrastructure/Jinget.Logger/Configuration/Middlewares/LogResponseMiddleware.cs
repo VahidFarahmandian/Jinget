@@ -1,11 +1,4 @@
-﻿using System.Threading.Tasks;
-using Jinget.Core.IOptionTypes.Log;
-using Jinget.Logger.Members;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
-namespace Jinget.Logger.Configuration.Middlewares;
+﻿namespace Jinget.Logger.Configuration.Middlewares;
 
 public class LogResponseMiddleware
 {

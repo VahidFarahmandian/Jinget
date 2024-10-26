@@ -1,9 +1,23 @@
 ﻿using System.Globalization;
+using System.Security.Policy;
 
 namespace Jinget.Core.Utilities;
 
 public static class DateTimeUtility
 {
+    /// <summary>
+    /// Converts given Gregorian date to its Solar equivalent.
+    /// Minimum supported Gregorian date is: year: 622,month: 3,day: 22. 
+    /// See also: <seealso cref="PersianCalendar.MinSupportedDateTime"/>
+    /// </summary>
+    public static string? ToSolarDate(DateOnly? gregorianDate)
+    {
+        if (!gregorianDate.HasValue)
+            return null;
+        var gregorianDateTime = gregorianDate.Value.ToDateTime(new TimeOnly());
+        return ToSolarDate(gregorianDateTime);
+    }
+
     /// <summary>
     /// Converts given Gregorian date to its Solar equivalent.
     /// Minimum supported Gregorian date is: year: 622,month: 3,day: 22. 
@@ -17,7 +31,7 @@ public static class DateTimeUtility
         if (gregorianDate < calendar.MinSupportedDateTime)
             throw new ArgumentOutOfRangeException($"Date should be after {calendar.MinSupportedDateTime} ");
         return
-        $"{calendar.GetYear(gregorianDate.Value)}/{calendar.GetMonth(gregorianDate.Value):D2}/{calendar.GetDayOfMonth(gregorianDate.Value):D2}";
+            $"{calendar.GetYear(gregorianDate.Value)}/{calendar.GetMonth(gregorianDate.Value):D2}/{calendar.GetDayOfMonth(gregorianDate.Value):D2}";
     }
 
     /// <summary>
@@ -43,9 +57,11 @@ public static class DateTimeUtility
     ///  it should be also greater than the zero
     /// You can check the date validity using minimum acceptable date nad maximum acceptable date ranges
     /// </summary>
-    public static bool IsValidPersianDate(string persianDate, string minAcceptableDate = "", string maxAcceptableDate = "")
+    public static bool IsValidPersianDate(string persianDate, string minAcceptableDate = "",
+        string maxAcceptableDate = "")
     {
-        if (string.IsNullOrWhiteSpace(persianDate) || !StringUtility.IsDigitOnly(persianDate) || Convert.ToInt32(persianDate) < 0 || persianDate.Length != 8)
+        if (string.IsNullOrWhiteSpace(persianDate) || !StringUtility.IsDigitOnly(persianDate) ||
+            Convert.ToInt32(persianDate) < 0 || persianDate.Length != 8)
             return false;
 
         DateTime? givenDate = ToGregorianDate(persianDate);
@@ -67,36 +83,40 @@ public static class DateTimeUtility
     public static string Format(string input, string currentFormat = "yyyyMMdd", string newFormat = "yyyy/MM/dd")
     {
         var isDate = DateTime.TryParseExact(
-        input,
-        currentFormat,
-        CultureInfo.InvariantCulture,
-        DateTimeStyles.None,
-        out DateTime date);
+            input,
+            currentFormat,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out DateTime date);
 
         return isDate ? date.ToString(newFormat) : input;
     }
 
-    public static string[] GetJalaliDayNames() => ["یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"];
+    public static string[] GetJalaliDayNames() =>
+        ["یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"];
 
     public static string[] GetJalaliDayAbbrNames() => ["ی", "د", "س", "چ", "پ", "ج", "ش"];
 
-    public static string[] GetJalaliMonthNames() => [
-            "فروردین","اردیبهشت","خرداد",
-            "تیر","مرداد","شهریور",
-            "مهر","آبان","آذر",
-            "دی","بهمن","اسفند",
-            "",
-        ];
+    public static string[] GetJalaliMonthNames() =>
+    [
+        "فروردین", "اردیبهشت", "خرداد",
+        "تیر", "مرداد", "شهریور",
+        "مهر", "آبان", "آذر",
+        "دی", "بهمن", "اسفند",
+        "",
+    ];
 
-    public static string[] GetArabicDayNames() => ["الأحَد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+    public static string[] GetArabicDayNames() =>
+        ["الأحَد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
 
     public static string[] GetArabicDayAbbrNames() => ["أح", "إث", "ث", "أر", "خ", "ج", "س"];
 
-    public static string[] GetArabicMonthNames() => [
-            "ٱلْمُحَرَّم","صَفَر","رَبِيع ٱلْأَوَّل",
-            "رَبِيع ٱلثَّانِي","جُمَادَىٰ ٱلْأُولَىٰ","جُمَادَىٰ ٱلثَّانِيَة",
-            "رَجَب","شَعْبَان","رَمَضَان",
-            "شَوَّال","ذُو ٱلْقَعْدَة","ذُو ٱلْحِجَّة",
-            "",
-        ];
+    public static string[] GetArabicMonthNames() =>
+    [
+        "ٱلْمُحَرَّم", "صَفَر", "رَبِيع ٱلْأَوَّل",
+        "رَبِيع ٱلثَّانِي", "جُمَادَىٰ ٱلْأُولَىٰ", "جُمَادَىٰ ٱلثَّانِيَة",
+        "رَجَب", "شَعْبَان", "رَمَضَان",
+        "شَوَّال", "ذُو ٱلْقَعْدَة", "ذُو ٱلْحِجَّة",
+        "",
+    ];
 }

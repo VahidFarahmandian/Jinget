@@ -1,19 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Threading.Tasks;
-using Jinget.Core.IOptionTypes.Log;
-using Jinget.Logger.Entities.Log;
-using Jinget.Logger.ExceptionHandler;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json;
-
-namespace Jinget.Logger.Members;
+﻿namespace Jinget.Logger.Members;
 
 public class RequestLogger<TCategoryName> : Log<TCategoryName>, ILog
 {
@@ -68,11 +53,10 @@ public class RequestLogger<TCategoryName> : Log<TCategoryName>, ILog
                 .Where(x => WhiteListHeaders.Contains(x.Key.ToLower()))
                 .Select(x => x.ToString()), Formatting.Indented);
 
-        var model = new OperationLog
+        var model = new LogModel
         {
             ParitionKey = context.Items["jinget.log.partitionkey"] != null ? context.Items["jinget.log.partitionkey"].ToString() : "",
-            UserName = context.User.Identity.Name,
-            When = DateTime.Now,
+            Username = context.User.Identity.Name,
             Method = context.Request.Method,
             Body = requestBodyText,
             Headers = headers,
@@ -81,7 +65,11 @@ public class RequestLogger<TCategoryName> : Log<TCategoryName>, ILog
             IsResponse = false,
             Description = null,
             RequestId = new Guid(context.Response.Headers["RequestId"].ToString()),
-            Detail = context.Request.Headers["Detail"],
+            AdditionalData = JsonConvert.SerializeObject(new
+            {
+                AdditionalDataInHeader = context.Request.Headers["AdditionalData"],
+                AdditionalDataInCtx = context.Items["AdditionalData"]?.ToString()
+            }),
             SubSystem = AppDomain.CurrentDomain.FriendlyName,
             PageUrl = pageUrl.FirstOrDefault(),
             ContentLength = contentLength

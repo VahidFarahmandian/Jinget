@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
-namespace Jinget.Logger.Providers;
+﻿namespace Jinget.Logger.Providers;
 
 public abstract class BatchingLoggerProvider : ILoggerProvider
 {
-    private readonly LogLevel[] _allowedLogLevels;
+    private readonly Microsoft.Extensions.Logging.LogLevel _minAllowedLogLevel;
     private readonly int? _batchSize;
     private readonly string[] _blacklistStrings;
     private readonly List<LogMessage> _currentBatch = new();
@@ -36,14 +27,7 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
         _batchSize = loggerOptions.BatchSize;
         _queueSize = loggerOptions.BackgroundQueueSize;
         _blacklistStrings = loggerOptions.BlackListStrings ?? Array.Empty<string>();
-        _allowedLogLevels = loggerOptions.AllowedLogLevels ?? new LogLevel[] {
-            LogLevel.Trace,
-            LogLevel.Debug,
-            LogLevel.Information,
-            LogLevel.Warning,
-            LogLevel.Error,
-            LogLevel.Critical
-        };
+        _minAllowedLogLevel = loggerOptions.MinAllowedLogLevel;
 
         Start();
     }
@@ -90,10 +74,10 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
 
     protected virtual Task IntervalAsync(TimeSpan interval, CancellationToken cancellationToken) => Task.Delay(interval, cancellationToken);
 
-    internal void AddMessage(DateTimeOffset timestamp, LogMessage message)
+    internal void AddMessage(LogMessage message)
     {
         //if log severity level is not allowed then ignore it
-        if (!_allowedLogLevels.Contains(message.Severity))
+        if (message.Severity < _minAllowedLogLevel)
             return;
 
         //if log contains blacklist string then ignore it

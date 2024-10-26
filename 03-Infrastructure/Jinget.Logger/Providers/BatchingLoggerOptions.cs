@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-
-namespace Jinget.Logger.Providers;
+﻿namespace Jinget.Logger.Providers;
 
 public class BatchingLoggerOptions
 {
@@ -9,24 +6,12 @@ public class BatchingLoggerOptions
     private int? _batchSize = 32;
     private string[] _blacklistStrings = Array.Empty<string>();
     private TimeSpan _flushPeriod = TimeSpan.FromSeconds(1);
-    private LogLevel[] allowedLogLevels;
 
     /// <summary>
-    /// Defines what log levels should processed
-    /// Defaults to <c>Trace, Debug, Information, Warning, Error, Critical</c>
+    /// Defines the min log level that should processed
+    /// Defaults to <seealso cref="Microsoft.Extensions.Logging.LogLevel.Error"/>
     /// </summary>
-    public LogLevel[] AllowedLogLevels
-    {
-        get => allowedLogLevels;
-        set => allowedLogLevels = value ?? new LogLevel[] {
-            LogLevel.Trace,
-            LogLevel.Debug,
-            LogLevel.Information,
-            LogLevel.Warning,
-            LogLevel.Error,
-            LogLevel.Critical
-        };
-    }
+    public Microsoft.Extensions.Logging.LogLevel MinAllowedLogLevel { get; set; } = Microsoft.Extensions.Logging.LogLevel.Information;
 
     /// <summary>
     ///     Gets or sets the period after which logs will be flushed to the store.

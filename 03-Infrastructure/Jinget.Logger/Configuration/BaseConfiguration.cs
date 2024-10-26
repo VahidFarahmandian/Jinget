@@ -1,10 +1,4 @@
-﻿using Jinget.Logger.Configuration.Middlewares;
-using Jinget.Logger.ExceptionHandler;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
-namespace Jinget.Logger.Configuration;
+﻿namespace Jinget.Logger.Configuration;
 
 public static class BaseConfiguration
 {

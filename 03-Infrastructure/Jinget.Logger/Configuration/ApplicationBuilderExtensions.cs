@@ -1,7 +1,4 @@
-﻿using Jinget.Logger.Configuration.Middlewares;
-using Microsoft.AspNetCore.Builder;
-
-namespace Jinget.Logger.Configuration;
+﻿namespace Jinget.Logger.Configuration;
 
 public static class ApplicationBuilderExtensions
 {

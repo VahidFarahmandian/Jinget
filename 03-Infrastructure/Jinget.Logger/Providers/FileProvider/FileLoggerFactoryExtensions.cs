@@ -1,8 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
-namespace Jinget.Logger.Providers.FileProvider;
+﻿namespace Jinget.Logger.Providers.FileProvider;
 
 /// <summary>
 ///     Extensions for adding the <see cref="FileLoggerProvider" /> to the <see cref="ILoggingBuilder" />

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Jinget.Logger.Providers.FileProvider;
+﻿namespace Jinget.Logger.Providers.FileProvider;
 
 /// <summary>
 ///     Options for file logging.

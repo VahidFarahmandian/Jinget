@@ -134,7 +134,7 @@ public class DateTimeUtilityTests
     [TestMethod()]
     public void Should_return_null_for_null_gregorian_date()
     {
-        var result = DateTimeUtility.ToSolarDate(null);
+        var result = DateTimeUtility.ToSolarDate((DateOnly?)null);
         Assert.IsNull(result);
     }
 

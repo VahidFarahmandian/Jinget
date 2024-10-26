@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Jinget.Logger.Configuration.ElasticSearch;
+﻿namespace Jinget.Logger.Configuration.ElasticSearch;
 
 public class ElasticSearchSettingModel
 {
@@ -29,17 +26,6 @@ public class ElasticSearchSettingModel
     /// Set whether to validate ssl certificate or not.
     /// </summary>
     public bool BypassCertificateValidation { get; set; } = true;
-
-    /// <summary>
-    /// foreach type specified in this list, an index in Elasticsearch will be created
-    /// </summary>
-    public List<Type> DiscoveryTypes { get; set; }
-
-    /// <summary>
-    /// check if Elasticsearch default log models such as OperationLog, ErrorLog and CustomLog related domain services and repositories and etc
-    /// should be registered in DI container or not
-    /// </summary>
-    public bool RegisterDefaultLogModels { get; set; }
 
     /// <summary>
     /// Create index per partition using HttpContext.Items["jinget.log.partitionkey"] value.

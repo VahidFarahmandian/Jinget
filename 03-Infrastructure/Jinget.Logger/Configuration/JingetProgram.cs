@@ -1,10 +1,4 @@
-﻿using Jinget.Logger.Entities.Log;
-using Jinget.Logger.Providers.ElasticSearchProvider;
-using Jinget.Logger.Providers.FileProvider;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
-namespace Jinget.Logger.Configuration;
+﻿namespace Jinget.Logger.Configuration;
 
 public static class JingetProgram
 {
@@ -12,29 +6,15 @@ public static class JingetProgram
         Host.CreateDefaultBuilder(args)
             .UseDefaultServiceProvider(provider => provider.ValidateScopes = false);
 
-    public static IHostBuilder LogToElasticSearch<TOperationalEntity, TErrorEntity, TCustomEntity>(
-        this IHostBuilder webHostBuilder,
-        string[] blackList,
-        LogLevel[] allowedLoglevels = null)
-        where TOperationalEntity : OperationLog, new()
-        where TErrorEntity : ErrorLog, new()
-        where TCustomEntity : CustomLog, new()
-        =>
-        webHostBuilder.ConfigureLogging(builder => builder.AddElasticSearch<TOperationalEntity, TErrorEntity, TCustomEntity>(f =>
-        {
-            f.BlackListStrings = blackList;
-            f.AllowedLogLevels = allowedLoglevels;
-        }));
-
     public static IHostBuilder LogToElasticSearch(
         this IHostBuilder webHostBuilder,
         string[] blackList,
-        LogLevel[] allowedLoglevels = null)
+        Microsoft.Extensions.Logging.LogLevel minAllowedLoglevels = Microsoft.Extensions.Logging.LogLevel.Information)
         =>
         webHostBuilder.ConfigureLogging(builder => builder.AddElasticSearch(f =>
         {
             f.BlackListStrings = blackList;
-            f.AllowedLogLevels = allowedLoglevels;
+            f.MinAllowedLogLevel = minAllowedLoglevels;
         }));
 
     public static IHostBuilder LogToFile(
@@ -44,7 +24,7 @@ public static class JingetProgram
         string logDirectory = "Logs",
         int retainFileCountLimit = 5,
         int fileSizeLimit = 10,
-        LogLevel[] allowedLoglevels = null) =>
+        Microsoft.Extensions.Logging.LogLevel minAllowedLoglevels = Microsoft.Extensions.Logging.LogLevel.Error) =>
         webHostBuilder.ConfigureLogging(builder => builder.AddFile(f =>
         {
             f.FileName = fileNamePrefix;
@@ -52,6 +32,6 @@ public static class JingetProgram
             f.RetainedFileCountLimit = retainFileCountLimit;
             f.BlackListStrings = blackList;
             f.FileSizeLimit = fileSizeLimit;
-            f.AllowedLogLevels = allowedLoglevels;
+            f.MinAllowedLogLevel = minAllowedLoglevels;
         }));
 }

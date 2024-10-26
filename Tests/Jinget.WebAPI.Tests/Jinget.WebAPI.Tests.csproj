@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\01-Core\Jinget.Core\Jinget.Core.csproj" />
     <ProjectReference Include="..\..\03-Infrastructure\Jinget.Logger\Jinget.Logger.csproj" />
   </ItemGroup>

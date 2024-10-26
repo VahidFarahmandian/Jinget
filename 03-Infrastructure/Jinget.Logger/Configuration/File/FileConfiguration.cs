@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace Jinget.Logger.Configuration.File;
+﻿namespace Jinget.Logger.Configuration.File;
 
 public static class FileConfiguration
 {

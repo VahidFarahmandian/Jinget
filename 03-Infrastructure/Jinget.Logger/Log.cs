@@ -1,11 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Jinget.Core.IOptionTypes.Log;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
-namespace Jinget.Logger;
+﻿namespace Jinget.Logger;
 
 public class Log<TCategoryName>
 {
