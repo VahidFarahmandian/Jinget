@@ -4,6 +4,7 @@ using Jinget.Blazor.Models;
 using MudBlazor;
 using Jinget.Blazor.Attributes.DropDownList;
 using System.Text;
+using Jinget.Blazor.Enums;
 using Jinget.Core.ExtensionMethods.Enums;
 
 namespace Jinget.Blazor.Test
@@ -46,11 +47,15 @@ namespace Jinget.Blazor.Test
         [JingetEmailBoxElement(DisplayName = "پست الکترونیکی", Order = 4)]
         public string? EMail { get; init; }
 
-        [Attributes.Picker.JingetDatePickerElement(DisplayName = "تاریخ تولد", Culture = "fa-IR", Order = 5)]
+        [Attributes.Picker.JingetDatePickerElement(DisplayName = "تاریخ تولد",
+            CalendarType = JingetCalendarType.Jalali,
+            IsRtl = true,
+            ShowPickerButton = true,
+            Order = 5)]
         public string? DoB { get; init; }
 
-        [Attributes.Picker.JingetDateRangePickerElement(DisplayName = "بازه زمانی سفر", Culture = "fa-IR", Order = 6)]
-        public DateRange? TravelDate { get; init; }
+        // [Attributes.Picker.JingetDateRangePickerElement(DisplayName = "بازه زمانی سفر", Culture = "fa-IR", Order = 6)]
+        // public DateRange? TravelDate { get; init; }
 
         [JingetLabelElement(DisplayName = "امتیاز اکتسابی", CssClass = "", HasLabel = true,
             HelperText = "این امتیاز بصورت خودکار توسط سیستم محاسبه شده است")]
@@ -146,7 +151,7 @@ namespace Jinget.Blazor.Test
 
         public enum UserLevel : byte
         {
-            Admin,
+            Admin = 1,
             Ordinal,
             Unknown
         }

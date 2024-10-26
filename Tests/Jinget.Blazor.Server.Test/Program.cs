@@ -1,5 +1,5 @@
-using Jinget.Blazor.Test.Components;
 using Jinget.Blazor.Extensions;
+using Jinget.Blazor.Server.Test.Components;
 using Jinget.Blazor.Services.Contracts;
 using Jinget.Blazor.Test;
 var builder = WebApplication.CreateBuilder(args);

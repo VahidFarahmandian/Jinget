@@ -1,0 +1,131 @@
+﻿@page "/datepicker"
+
+@using Jinget.Blazor.Components.Picker.DatePicker
+@using Jinget.Blazor.Components.Popup
+@using Jinget.Blazor.Enums
+@using Jinget.Core.ExtensionMethods
+
+<JingetMessageBox @ref=@messageBox
+                  ShowVerboseFuncAsync=@(async () => await Task.FromResult<bool>(true))>
+</JingetMessageBox>
+
+<div class="container">
+    <div class="row">
+        Jalali Date time picker
+        <div class="form-group">
+            <JingetDatePicker
+                @ref=@picker1
+                Id="picker1"
+                IsRtl="true"
+                IsDisabled="false"
+                IsReadOnly="false"
+                CalendarType="JingetCalendarType.Jalali"
+                ShowPickerButton="true"
+                ShowTimePicker="true"
+                DisableAfterToday="false"
+                DisableBeforeToday="false"
+                DisableBeforeDate="DateTime.Now.AddDays(-5).ToDateOnly()"
+                DisableAfterDate="DateTime.Now.AddDays(5).ToDateOnly()"
+                Holidays="[DateTime.Now.AddDays(-1).ToDateOnly(), DateTime.Now.AddDays(-3).ToDateOnly()]"
+                SpecialDates="[DateTime.Now.AddDays(-2).ToDateOnly(), DateTime.Now.AddDays(-4).ToDateOnly()]"
+                DisabledDates="[DateTime.Now.AddDays(-3).ToDateOnly(), DateTime.Now.AddDays(-5).ToDateOnly()]"
+                Label="تاریخ را انتخاب کنید"
+                TextFormat="تاریخ yyyy/MM/dd ساعت HH:mm tt"
+                DisplayName="تاریخ"
+                IsRequired="true"
+                RequiredError="الزامی"
+                HelperText="ورود تاریخ تولد فراموش نشود!"
+                OnChange="@OnDateChanged_1">
+            </JingetDatePicker>
+        </div>
+        <button @onclick=@SetDate1 class="btn btn-primary">Set Jalali Date(Random)</button>
+    </div>
+    <hr/>
+    <div class="row">
+        Gregorian Date time picker
+        <div class="form-group">
+            <JingetDatePicker
+                @ref=@picker2
+                Id="picker2"
+                IsRtl="false"
+                CalendarType="JingetCalendarType.Gregorian"
+                ShowPickerButton="true"
+                ShowTimePicker="true"
+                Label="Choose date time"
+                TextFormat="yyyy/MM/dd HH:mm tt"
+                DisplayName="Date"
+                IsRequired="true"
+                RequiredError="Required"
+                HelperText="Don't forget to select the date!"
+                OnChange="@OnDateChanged_2">
+            </JingetDatePicker>
+        </div>
+        <button @onclick=@SetDate2 class="btn btn-primary">Set Gregorian Date(Random)</button>
+    </div>
+    <div class="row">
+        Calendar inside modal
+        <div class="form-group">
+            <button @onclick=@ShowModal class="btn btn-primary">Show modal</button>
+        </div>
+    </div>
+</div>
+
+<JingetModal @ref=@modal Rtl="false" CloseButtonText="Close">
+    <ChildContent>
+        <JingetDatePicker
+            @ref=@picker3
+            Id="picker3"
+            IsRtl="false"
+            CalendarType="JingetCalendarType.Gregorian"
+            ShowPickerButton="true"
+            ShowTimePicker="true"
+            Label="Choose date time"
+            TextFormat="yyyy/MM/dd HH:mm tt"
+            DisplayName="Date"
+            HelperText="Don't forget to select the date!">
+        </JingetDatePicker>
+        <button @onclick=@SetDate3 class="btn btn-primary">Set Gregorian Date(Random)</button>
+    </ChildContent>
+</JingetModal>
+
+@code {
+    JingetMessageBox? messageBox;
+    JingetModal? modal;
+    JingetDatePicker? picker1;
+    JingetDatePicker? picker2;
+    JingetDatePicker? picker3;
+
+    async Task ShowModal() => await modal.OpenAsync();
+
+    async Task OnDateChanged_1(ChangeEventArgs? e) =>
+        await messageBox.ShowInfoAsync("picker 1", "Selected Date",
+            Newtonsoft.Json.JsonConvert.SerializeObject(new { picker1.SelectedDateJalali }));
+
+    async Task OnDateChanged_2(ChangeEventArgs? e) =>
+        await messageBox.ShowInfoAsync("picker 2", "Selected Date",
+            Newtonsoft.Json.JsonConvert.SerializeObject(new { picker2.SelectedDate }));
+
+    async Task SetDate1()
+    {
+        var rnd = new Random();
+        var selectedDate = $"{rnd.Next(1398, 1402)}/{rnd.Next(1, 12)}/{rnd.Next(1, 25)}";
+        var date = DateTimeUtility.ToGregorianDate(selectedDate);
+
+        await picker1.SetSelectedDateAsync(date.Value.SetTime(new TimeOnly(rnd.Next(0, 24), rnd.Next(0, 60))));
+    }
+
+    async Task SetDate2()
+    {
+        var rnd = new Random();
+        var date = new DateTime(rnd.Next(2000, 2024), rnd.Next(1, 12), rnd.Next(1, 25));
+        await picker2.SetSelectedDateAsync(date.SetTime(new TimeOnly(rnd.Next(0, 24), rnd.Next(0, 60))));
+    }
+
+    async Task SetDate3()
+    {
+        var rnd = new Random();
+        var date = new DateTime(rnd.Next(2000, 2024), rnd.Next(1, 12), rnd.Next(1, 25));
+        await picker3.SetSelectedDateAsync(date.SetTime(new TimeOnly(rnd.Next(0, 24), rnd.Next(0, 60))));
+    }
+
+}
