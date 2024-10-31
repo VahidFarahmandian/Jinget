@@ -1,11 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Data;
-using Jinget.Core.ExtensionMethods.Database.SqlClient;
-using Jinget.Core.ExpressionToSql;
-using Jinget.Core.Tests._BaseData;
-
-namespace Jinget.Core.Tests.ExtensionMethods.Database.SqlClient;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Database.SqlClient;
 
 [TestClass]
 public class IDbConnectionExtensionsTests
@@ -22,7 +15,7 @@ public class IDbConnectionExtensionsTests
         mockDbConnection.Setup(x => x.State).Returns(() => state);
 
     }
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_open_connection_status()
     {
         var cnn = mockDbConnection.Object;
@@ -31,7 +24,7 @@ public class IDbConnectionExtensionsTests
         Assert.IsTrue(cnn.State == ConnectionState.Open);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_create_query_for_generic_order_by_message()
     {
         var select = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest");
@@ -41,7 +34,7 @@ public class IDbConnectionExtensionsTests
         Assert.IsFalse(string.IsNullOrWhiteSpace(result.queryText));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_create_query_for_nongeneric_order_by_message()
     {
         var select = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest");
@@ -51,7 +44,7 @@ public class IDbConnectionExtensionsTests
         Assert.IsFalse(string.IsNullOrWhiteSpace(result.queryText));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_create_same_query_for_different_order_by_type_same_message()
     {
         var select = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest");

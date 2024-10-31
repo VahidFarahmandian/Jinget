@@ -1,13 +1,9 @@
-﻿using Jinget.Core.Utilities.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
+﻿namespace Jinget.Core.Tests.Utilities.Http;
 
-namespace Jinget.Core.Tests.Utilities.Http;
-
-[TestClass()]
+[TestClass]
 public class HeaderUtilityTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_return_true_when_contenttype_exists()
     {
         Dictionary<string, string> headers = new()
@@ -18,7 +14,7 @@ public class HeaderUtilityTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_true_for_text_xml_contenttype_header()
     {
         Dictionary<string, string> headers = new()
@@ -29,7 +25,7 @@ public class HeaderUtilityTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_true_for_application_xml_contenttype_header()
     {
         Dictionary<string, string> headers = new()
@@ -40,7 +36,7 @@ public class HeaderUtilityTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_true_for_application_json_contenttype_header()
     {
         Dictionary<string, string> headers = new()
@@ -51,7 +47,7 @@ public class HeaderUtilityTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_false_for_non_xml_json_contenttype_header()
     {
         Dictionary<string, string> headers = new()
@@ -62,7 +58,7 @@ public class HeaderUtilityTests
         Assert.IsFalse(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_contenttype_header_name()
     {
         string expectedResult = "content-type";

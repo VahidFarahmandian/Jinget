@@ -1,15 +1,9 @@
-﻿using Jinget.Core.ExtensionMethods.Expressions;
-using Jinget.Core.Tests._BaseData;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq.Expressions;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Expressions;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Expressions;
-
-[TestClass()]
+[TestClass]
 public class BooleanExpressionExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_negate_the_given_exoression()
     {
         Expression<Func<TestClass, bool>> expression = x => x.Property1 > 0;
@@ -20,7 +14,7 @@ public class BooleanExpressionExtensionsTests
         Assert.AreEqual(expectedExpression.Body.ToString(), result.Body.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_combine_conditions_by_and()
     {
         Expression<Func<TestClass, bool>> expression = x => x.Property1 > 0;
@@ -31,7 +25,7 @@ public class BooleanExpressionExtensionsTests
         Assert.AreEqual(expectedExpression.Body.ToString(), result.Body.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_combine_conditions_by_or()
     {
         Expression<Func<TestClass, bool>> expression = x => x.Property1 > 0;

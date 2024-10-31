@@ -1,6 +1,5 @@
 ﻿using Jinget.Core.Attributes;
 using Microsoft.AspNetCore.Authorization;
-using System;
 
 namespace Jinget.Core.Tests._BaseData;
 

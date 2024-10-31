@@ -1,13 +1,9 @@
-﻿using Jinget.Core.Exceptions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿namespace Jinget.Core.Tests.Exceptions;
 
-namespace Jinget.Core.Tests.Exceptions;
-
-[TestClass()]
+[TestClass]
 public class JingetExceptionTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void Shsould_throw_jinget_expection_with_default_params()
     {
         string exceptionMessage = "This is test exception";
@@ -31,7 +27,7 @@ public class JingetExceptionTests
         }
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Shsould_throw_jinget_expection_with_inner_exception()
     {
         Exception innerException = new AccessViolationException();

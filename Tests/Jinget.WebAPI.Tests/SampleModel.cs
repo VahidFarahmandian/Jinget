@@ -1,6 +1,4 @@
-﻿using Jinget.Core.Attributes;
-
-namespace Jinget.WebAPI.Tests;
+﻿namespace Jinget.WebAPI.Tests;
 
 public class SampleModel
 {

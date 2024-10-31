@@ -1,13 +1,11 @@
-﻿using Jinget.Core.Utilities.Json;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
 namespace Jinget.Core.Tests.Utilities.Json;
 
 [TestClass]
 public class JsonUtilityTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_return_true_for_valid_json_object_string()
     {
         string sampleJson = "{ id: 1, name: \"Leanne Graham\", username: \"Bret\", address: { street: \"Kulas Light\", city: \"Gwenborough\", geo: { lat: \"-37.3159\", lng: \"81.1496\" } }}";
@@ -15,7 +13,7 @@ public class JsonUtilityTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_true_for_valid_json_array_string()
     {
         string sampleJson = "[ { id: 1, name: \"Leanne Graham\", address: { city: \"Gwenborough\" }},{ id: 2, name: \"Vahid Farahmandian\", address: { city: \"Urmia\" }} ]";
@@ -23,7 +21,7 @@ public class JsonUtilityTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_false_for_invalid_json()
     {
         string invalidJsonString = "InvalidJsonString";
@@ -39,7 +37,7 @@ public class JsonUtilityTests
         Assert.IsFalse(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_unescape_escaped_json_string()
     {
         string escapedString = "{\\\"Id\\\":\\\"i1\\\"}";
@@ -49,7 +47,7 @@ public class JsonUtilityTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_merge_two_json_string()
     {
         string json1 = "{\"Id\":\"i1\"}";

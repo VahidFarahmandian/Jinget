@@ -1,14 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Jinget.Core.Tests._BaseData;
-using Jinget.Core.Enumerations;
-using Jinget.Core.ExpressionToSql.Internal;
+﻿namespace Jinget.Core.Tests.ExpressionToSql.Internal;
 
-namespace Jinget.Core.Tests.ExpressionToSql.Internal;
-
-[TestClass()]
+[TestClass]
 public class OrderByTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_return_orderby_clause_simple_expression()
     {
         string expectedResult = "[Property1] ASC";

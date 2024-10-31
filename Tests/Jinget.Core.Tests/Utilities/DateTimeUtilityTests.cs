@@ -1,13 +1,9 @@
-﻿using Jinget.Core.Utilities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿namespace Jinget.Core.Tests.Utilities;
 
-namespace Jinget.Core.Tests.Utilities;
-
-[TestClass()]
+[TestClass]
 public class DateTimeUtilityTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_return_solar_date()
     {
         string expectedResult = "1399/07/21";
@@ -19,7 +15,7 @@ public class DateTimeUtilityTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void should_throw_exception_for_out_of_supported_range_date()
     {
@@ -27,7 +23,7 @@ public class DateTimeUtilityTests
         DateTimeUtility.ToSolarDate(input);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_gregorian_date()
     {
         DateTime expectedResult = new(2020, 10, 12);
@@ -39,7 +35,7 @@ public class DateTimeUtilityTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_timespan()
     {
         TimeSpan expectedResult = new(2, 30, 0);
@@ -51,7 +47,7 @@ public class DateTimeUtilityTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_true_for_valid_persian_date()
     {
         string input = "14010101";
@@ -64,7 +60,7 @@ public class DateTimeUtilityTests
         Assert.IsTrue(DateTimeUtility.IsValidPersianDate(input));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_true_for_valid_persian_date_in_given_range()
     {
         string input = "14010101";
@@ -79,7 +75,7 @@ public class DateTimeUtilityTests
         Assert.IsTrue(DateTimeUtility.IsValidPersianDate(input, maxAcceptableDate: maxDate));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_false_for_invalid_persian_date()
     {
         string input = "1401011";
@@ -89,7 +85,7 @@ public class DateTimeUtilityTests
         Assert.IsFalse(DateTimeUtility.IsValidPersianDate(input));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_false_for_persian_date_outside_given_range()
     {
         string input = "13820101";
@@ -104,7 +100,7 @@ public class DateTimeUtilityTests
         Assert.IsFalse(DateTimeUtility.IsValidPersianDate(input, maxAcceptableDate: maxDate));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_format_string_based_on_newFormat_slash()
     {
         string input = "14020901";
@@ -117,7 +113,7 @@ public class DateTimeUtilityTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_format_string_based_on_newFormat_hyphen()
     {
         string input = "1402/09/01";
@@ -131,14 +127,14 @@ public class DateTimeUtilityTests
     }
 
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_null_for_null_gregorian_date()
     {
         var result = DateTimeUtility.ToSolarDate((DateOnly?)null);
         Assert.IsNull(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_null_for_null_solar_date()
     {
         var result = DateTimeUtility.ToGregorianDate(null);

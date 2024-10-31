@@ -1,15 +1,9 @@
-﻿using Jinget.Core.Tests._BaseData;
-using Jinget.Core.Utilities.Enum;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Data;
-
-namespace Jinget.Core.Tests.Utilities.Enum
+﻿namespace Jinget.Core.Tests.Utilities.Enum
 {
-    [TestClass()]
+    [TestClass]
     public class DbTypeUtilityTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void should_return_corresponding_dbtype_based_on_given_type()
         {
             var expectedType = DbType.Int32;
@@ -17,7 +11,7 @@ namespace Jinget.Core.Tests.Utilities.Enum
             Assert.AreEqual(expectedType, result);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void should_return_corresponding_dbtype_based_on_generic_type()
         {
             var expectedType = DbType.Int32;
@@ -25,7 +19,7 @@ namespace Jinget.Core.Tests.Utilities.Enum
             Assert.AreEqual(expectedType, result);
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void should_raise_exception_for_unknown_dbtype() => DbTypeUtility.GetDbType<SampleInterfaceClass>();
     }

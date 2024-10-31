@@ -1,14 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Jinget.Core.Tests._BaseData;
-using System.Linq;
-using Jinget.Core.ExtensionMethods.Reflection;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
-
-[TestClass()]
+[TestClass]
 public class TypeExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_true_for_anonymous_type()
     {
         var input = new { Name = "Vahid", Age = 32 };
@@ -16,7 +11,7 @@ public class TypeExtensionsTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_false_for_anonymous_type()
     {
         var input = new TestClass();
@@ -24,7 +19,7 @@ public class TypeExtensionsTests
         Assert.IsFalse(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_call_method_dynamically()
     {
         string expectedResult = "string is: vahid, integer is: 123, generic type is: SubType";
@@ -39,7 +34,7 @@ public class TypeExtensionsTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_call_overloaded_static_method_dynamically()
     {
         int expectedResult = 250;
@@ -53,7 +48,7 @@ public class TypeExtensionsTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_call_generic_overloaded_extension_method_dynamically()
     {
         string[] expectedResult = ["TestClass", "SoapSample"];
@@ -68,7 +63,7 @@ public class TypeExtensionsTests
         Assert.AreEqual(expectedResult.Last(), ((string[])result).Last());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void shuold_return_all_reference_type_properties_except_string_types()
     {
         var result = typeof(TestClass).GetReferenceTypeProperties();
@@ -76,7 +71,7 @@ public class TypeExtensionsTests
         Assert.IsTrue(result.Any(x => x.Name == "InnerSingularProperty"));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void shuold_return_all_reference_type_properties_including_string_types()
     {
         var result = typeof(TestClass).GetReferenceTypeProperties(includeStringTypes: true);
@@ -84,7 +79,7 @@ public class TypeExtensionsTests
         Assert.IsTrue(result.Any(x => x.Name == "Property2"));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_the_default_value_for_given_type()
     {
         var result = typeof(string).GetDefaultValue();

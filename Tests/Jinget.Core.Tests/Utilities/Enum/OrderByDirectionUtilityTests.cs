@@ -1,14 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Jinget.Core.Enumerations;
-using System;
-using Jinget.Core.Utilities.Enum;
-
-namespace Jinget.Core.Tests.Utilities.Enum
+﻿namespace Jinget.Core.Tests.Utilities.Enum
 {
-    [TestClass()]
+    [TestClass]
     public class OrderByDirectionUtilityTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void should_get_order_by_direction_using_asc_string()
         {
             var expectedResult = OrderByDirection.Descending;
@@ -16,7 +11,7 @@ namespace Jinget.Core.Tests.Utilities.Enum
             Assert.AreEqual(expectedResult, result);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void should_get_order_by_direction_using_ascending_string()
         {
             var expectedResult = OrderByDirection.Ascending;
@@ -24,7 +19,7 @@ namespace Jinget.Core.Tests.Utilities.Enum
             Assert.AreEqual(expectedResult, result);
         }
 
-        [TestMethod()]
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void should_throw_exception_for_empty_direction() => OrderByDirectionUtility.Get("");
     }

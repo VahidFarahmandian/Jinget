@@ -30,6 +30,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.AspNetCore.Builder;
 global using Elasticsearch.Net;
+global using Jinget.Logger.Enums;
 global using Jinget.Logger.Handlers;
 global using Jinget.Logger.Handlers.CommandHandlers;
 global using Jinget.Logger.Members;

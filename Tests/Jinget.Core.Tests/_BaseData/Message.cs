@@ -1,6 +1,4 @@
 ﻿using Jinget.Core.Contracts;
-using Jinget.Core.ExpressionToSql.Internal;
-using System.Collections.Generic;
 
 namespace Jinget.Core.Tests._BaseData
 {

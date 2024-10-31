@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace Jinget.Core.Security.AES;
+﻿namespace Jinget.Core.Security.AES;
 
 /// <summary>
 /// Encrypt & Decrypt string using System.Security.Cryptography.RijndaelManaged algorithm

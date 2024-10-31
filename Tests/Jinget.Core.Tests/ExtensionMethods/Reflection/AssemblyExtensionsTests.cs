@@ -1,14 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
-using Jinget.Core.Tests._BaseData;
-using Jinget.Core.ExtensionMethods.Reflection;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
-
-[TestClass()]
+[TestClass]
 public class AssemblyExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_get_all_types_in_an_assembly()
     {
         var result = GetType().Assembly.GetTypes(typeof(NonGenericParent), normalizingPattern: @"Parent`1$");
@@ -17,7 +12,7 @@ public class AssemblyExtensionsTests
         Assert.IsTrue(result.All(x => x.Summary != string.Empty));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_get_all_authorized_methods_in_a_type()
     {
         var result = GetType().Assembly.GetMethods(typeof(NonGenericParent), typeof(Attributes.SummaryAttribute));
@@ -27,7 +22,7 @@ public class AssemblyExtensionsTests
     }
 
 
-    [TestMethod()]
+    [TestMethod]
     public void should_get_all_methods_in_a_type()
     {
         var result = GetType().Assembly.GetMethods(typeof(NonGenericParent), typeof(Attributes.SummaryAttribute), onlyAuthorizedMethods: false);

@@ -1,17 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.Linq;
-using Jinget.Core.ExtensionMethods.Collections;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Collections;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Collections;
-
-[TestClass()]
+[TestClass]
 public class IDictionaryExtensionsTests
 {
     public IDictionary<string, string> First { get; private set; }
     public IDictionary<string, string> Second { get; private set; }
 
-    [TestInitialize()]
+    [TestInitialize]
     public void Initialize()
     {
         First = new Dictionary<string, string>()
@@ -28,7 +23,7 @@ public class IDictionaryExtensionsTests
         };
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_merge_two_dictionaries_and_ignore_duplicates()
     {
         Dictionary<string, string> expected = new()
@@ -50,7 +45,7 @@ public class IDictionaryExtensionsTests
         Assert.IsTrue(result["name"] == "vahid");
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_merge_two_dictionaries_and_overwrite_the_duplicates()
     {
         Dictionary<string, string> expected = new()

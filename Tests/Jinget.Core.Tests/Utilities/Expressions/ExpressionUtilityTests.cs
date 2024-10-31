@@ -1,18 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq.Expressions;
-using Jinget.Core.Tests._BaseData;
-using System.Collections.Generic;
-using System.Linq;
-using Jinget.Core.Utilities.Expressions;
-using Jinget.Core.Types;
+﻿namespace Jinget.Core.Tests.Utilities.Expressions;
 
-namespace Jinget.Core.Tests.Utilities.Expressions;
-
-[TestClass()]
+[TestClass]
 public class ExpressionUtilityTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_create_a_member_init_expression()
     {
         string[] inputs = ["Property1", "Property2"];
@@ -36,7 +27,7 @@ public class ExpressionUtilityTests
     //    Assert.AreEqual(expectedExpression.Type, result.Type);
     //}
 
-    [TestMethod()]
+    [TestMethod]
     public void should_create_a_equal_condition_expression()
     {
         Expression<Func<TestClass, bool>> expectedResult = x => x.Property1 == 1;

@@ -1,13 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Jinget.Core.Security.Hashing.Model;
+﻿using Jinget.Core.Security.Hashing.Model;
 using Jinget.Core.Security.Hashing;
 
 namespace Jinget.Core.Tests.Security.Hashing;
 
-[TestClass()]
+[TestClass]
 public class HashManagerTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_compare_given_input_with_its_hashed_value_and_return_true()
     {
         string input = "vahid";
@@ -18,7 +17,7 @@ public class HashManagerTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_hash_input_with_random_generated_salt()
     {
         string input = "vahid";
@@ -28,7 +27,7 @@ public class HashManagerTests
         Assert.IsFalse(string.IsNullOrWhiteSpace(result.HashedValue));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_hash_input_with_specific_salt()
     {
         string input = "vahid";

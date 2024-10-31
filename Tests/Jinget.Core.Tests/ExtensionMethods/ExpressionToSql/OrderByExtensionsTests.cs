@@ -1,15 +1,9 @@
-﻿using System.Collections.Generic;
-using Jinget.Core.ExpressionToSql.Internal;
-using Jinget.Core.ExtensionMethods.ExpressionToSql;
-using Jinget.Core.Tests._BaseData;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.ExpressionToSql;
 
-namespace Jinget.Core.Tests.ExtensionMethods.ExpressionToSql;
-
-[TestClass()]
+[TestClass]
 public class OrderByExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_return_empty_string()
     {
         List<OrderBy> lstOrderBy = null;
@@ -19,7 +13,7 @@ public class OrderByExtensionsTests
         Assert.IsTrue(string.IsNullOrWhiteSpace(result));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_stringfied_order_by_clause()
     {
         List<OrderBy> lstOrderBy =
@@ -43,7 +37,7 @@ public class OrderByExtensionsTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_stringfied_order_by_clause_complex_type()
     {
         List<OrderBy> lstOrderBy =
@@ -62,7 +56,7 @@ public class OrderByExtensionsTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_stringfied_order_by_clause_complex_type_generic()
     {
         List<OrderBy<TestClass>> lstOrderBy =
@@ -81,7 +75,7 @@ public class OrderByExtensionsTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_stringfied_order_by_clause_stringfied_type_name()
     {
         List<OrderBy> lstOrderBy =
@@ -100,7 +94,7 @@ public class OrderByExtensionsTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_stringfied_order_by_clause_using_string_name()
     {
         List<OrderBy> lstOrderBy =

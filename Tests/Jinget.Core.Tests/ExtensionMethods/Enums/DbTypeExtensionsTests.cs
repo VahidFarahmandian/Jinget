@@ -1,34 +1,30 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-using Jinget.Core.ExtensionMethods.Enums;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Enums;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Enums;
-
-[TestClass()]
+[TestClass]
 public class GenericTypeExtensionsTests
 {
     
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_true_for_numeric_dbType() => Assert.IsTrue(DbType.Int32.IsNumericDbType());
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_false_for_non_numeric_dbType() => Assert.IsFalse(DbType.Binary.IsNumericDbType());
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_true_for_unicode_dbType_IsUnicodeType() => Assert.IsTrue(DbType.String.IsUnicodeDbType());
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_false_for_non_unicode_dbType_IsUnicodeType() => Assert.IsFalse(DbType.AnsiString.IsUnicodeDbType());
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_false_for_non_unicode_dbType_IsNonUnicodeType() => Assert.IsFalse(DbType.String.IsNonUnicodeDbType());
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_true_for_non_unicode_dbType_IsNonUnicodeType() => Assert.IsTrue(DbType.AnsiString.IsNonUnicodeDbType());
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_false_for_non_bool_dbType_IsBooleanType() => Assert.IsTrue(DbType.Boolean.IsBooleanDbType());
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_true_for_bool_dbType_IsBooleanType() => Assert.IsTrue(DbType.Boolean.IsBooleanDbType());
 }

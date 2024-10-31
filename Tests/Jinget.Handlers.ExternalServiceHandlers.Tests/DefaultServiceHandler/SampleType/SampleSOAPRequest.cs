@@ -1,7 +1,4 @@
-﻿using Jinget.Core.Utilities;
-using System.Xml.Serialization;
-
-namespace Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler.SampleType;
+﻿namespace Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler.SampleType;
 
 /// <summary>
 /// defines a full soap request for method Add inside the <see cref="http://www.dneonline.com/calculator.asmx"/>

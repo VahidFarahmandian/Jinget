@@ -1,12 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using Microsoft.Extensions.DependencyInjection;
-using Jinget.Core.Tests._BaseData;
-using Jinget.Core.ExtensionMethods;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Jinget.Core.Tests.ExtensionMethods;
 
-[TestClass()]
+[TestClass]
 public class IServiceProviderExtensionsTests
 {
     IServiceProvider services;
@@ -18,7 +14,7 @@ public class IServiceProviderExtensionsTests
         services = serviceCollection.BuildServiceProvider();
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_registered_service()
     {
         var result = services.GetJingetService<ISampleInterface>();
@@ -26,7 +22,7 @@ public class IServiceProviderExtensionsTests
         Assert.IsInstanceOfType(result, typeof(SampleInterfaceClass));
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void should_throw_exception_for_nonregistered_service() => services.GetJingetService<ITestMethod>();
 }

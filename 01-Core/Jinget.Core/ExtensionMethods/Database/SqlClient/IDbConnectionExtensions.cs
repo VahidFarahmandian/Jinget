@@ -1,8 +1,4 @@
-﻿using Jinget.Core.Contracts;
-using Jinget.Core.ExtensionMethods.ExpressionToSql;
-using Jinget.Core.ExtensionMethods.Collections;
-
-[assembly: InternalsVisibleTo("Jinget.Core.Tests")]
+﻿[assembly: InternalsVisibleTo("Jinget.Core.Tests")]
 namespace Jinget.Core.ExtensionMethods.Database.SqlClient;
 
 public static class IDbConnectionExtensions

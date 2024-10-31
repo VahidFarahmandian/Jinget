@@ -1,16 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Jinget.Core.Tests._BaseData;
-using System.Linq;
-using System.Collections.Generic;
-using System.Reflection;
-using Jinget.Core.ExtensionMethods.Reflection;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
-
-[TestClass()]
+[TestClass]
 public class PropertiesExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_true_for_nullable_type()
     {
         var input = typeof(int?);
@@ -22,7 +15,7 @@ public class PropertiesExtensionsTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_all_writable_primitive_properties()
     {
         Dictionary<string, PropertyInfo> expectedResult = new()

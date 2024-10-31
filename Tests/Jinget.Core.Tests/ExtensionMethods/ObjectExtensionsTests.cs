@@ -1,16 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
-using Jinget.Core.Tests._BaseData;
-using static Jinget.Core.ExtensionMethods.ObjectExtensions;
-using System;
-using Jinget.Core.ExtensionMethods;
+﻿namespace Jinget.Core.Tests.ExtensionMethods;
 
-namespace Jinget.Core.Tests.ExtensionMethods;
-
-[TestClass()]
+[TestClass]
 public class ObjectExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_check_if_given_type_is_a_numeric_type_or_not()
     {
         int x = 0;
@@ -26,7 +19,7 @@ public class ObjectExtensionsTests
         Assert.IsFalse(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_convert_given_type_to_dictionary()
     {
         TestClass obj = new()
@@ -49,7 +42,7 @@ public class ObjectExtensionsTests
         Assert.IsTrue(result.Keys.Any(x => x == "InnerSingularProperty"));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_convert_given_type_to_dictionary_custom_options()
     {
         TestClass obj = new()
@@ -79,7 +72,7 @@ public class ObjectExtensionsTests
         Assert.IsTrue(result.Keys.Any(x => x == "InnerSingularProperty"));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_null_when_type_is_null_while_gettting_the_given_property_value()
     {
         TestClass obj = null;
@@ -87,7 +80,7 @@ public class ObjectExtensionsTests
         Assert.IsNull(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_get_the_value_of_the_given_property()
     {
         TestClass obj = new()
@@ -102,7 +95,7 @@ public class ObjectExtensionsTests
     }
 
 
-    [TestMethod()]
+    [TestMethod]
     public void should_convert_object_to_given_type()
     {
         Type1 obj = new()
@@ -118,7 +111,7 @@ public class ObjectExtensionsTests
         Assert.IsTrue(result.SurName == null);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_true_for_two_objects_with_same_structure_and_value()
     {
         Type1 objSource = new()
@@ -136,7 +129,7 @@ public class ObjectExtensionsTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_true_for_guid_default_value()
     {
         Guid input = default;
@@ -144,7 +137,7 @@ public class ObjectExtensionsTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_true_for_int_default_value()
     {
         int input = default;
@@ -152,7 +145,7 @@ public class ObjectExtensionsTests
         Assert.IsTrue(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_false_for_nullable_int_default_value()
     {
         int? input = null;
@@ -160,7 +153,7 @@ public class ObjectExtensionsTests
         Assert.IsFalse(result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_false_for_reference_type_default_value()
     {
         TestClass input = new();

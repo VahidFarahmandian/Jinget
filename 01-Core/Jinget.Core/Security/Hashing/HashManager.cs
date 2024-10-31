@@ -1,8 +1,4 @@
-﻿using System.Security.Cryptography;
-using Jinget.Core.Security.Hashing.Model;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-
-namespace Jinget.Core.Security.Hashing;
+﻿namespace Jinget.Core.Security.Hashing;
 
 /// <summary>
 /// Hash string using Pbkdf2 algorithm. This class cannot be inherited.

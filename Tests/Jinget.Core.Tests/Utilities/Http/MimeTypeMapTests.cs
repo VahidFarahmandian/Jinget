@@ -1,12 +1,9 @@
-﻿using Jinget.Core.Utilities.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿namespace Jinget.Core.Tests.Utilities.Http;
 
-namespace Jinget.Core.Tests.Utilities.Http;
-
-[TestClass()]
+[TestClass]
 public class MimeTypeMapTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_try_return_valid_mimetype_for_givent_filename()
     {
         bool result = MimeTypeMap.TryGetMimeType("sample.txt", out string mimeType);
@@ -14,14 +11,14 @@ public class MimeTypeMapTests
         Assert.AreEqual("text/plain", mimeType);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_valid_mimetype_for_givent_filename()
     {
         string result = MimeTypeMap.GetMimeType("sample.txt");
         Assert.AreEqual("text/plain", result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_file_extension_for_given_mimetype()
     {
         string result = MimeTypeMap.GetExtension("text/plain");

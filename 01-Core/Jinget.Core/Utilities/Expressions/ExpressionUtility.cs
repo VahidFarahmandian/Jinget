@@ -1,7 +1,4 @@
-﻿using Jinget.Core.Types;
-using Jinget.Core.ExtensionMethods.Collections;
-
-namespace Jinget.Core.Utilities.Expressions;
+﻿namespace Jinget.Core.Utilities.Expressions;
 
 public static class ExpressionUtility
 {

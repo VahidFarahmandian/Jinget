@@ -1,9 +1,4 @@
-﻿using Jinget.Core.Attributes;
-using Jinget.Core.ExtensionMethods;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
-
-namespace Jinget.Core.Filters;
+﻿namespace Jinget.Core.Filters;
 
 public class SwaggerExcludePropertyFilter : ISchemaFilter
 {

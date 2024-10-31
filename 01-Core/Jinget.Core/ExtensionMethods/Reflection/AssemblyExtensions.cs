@@ -1,8 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Jinget.Core.Attributes;
-using Jinget.Core.Utilities;
-
-namespace Jinget.Core.ExtensionMethods.Reflection;
+﻿namespace Jinget.Core.ExtensionMethods.Reflection;
 
 public static class AssemblyExtensions
 {

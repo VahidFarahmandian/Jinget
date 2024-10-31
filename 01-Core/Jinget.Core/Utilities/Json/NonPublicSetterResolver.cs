@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Serialization;
-
-namespace Jinget.Core.Utilities.Json;
+﻿namespace Jinget.Core.Utilities.Json;
 
 /// <summary>
 /// Serialize even properties with non public setter

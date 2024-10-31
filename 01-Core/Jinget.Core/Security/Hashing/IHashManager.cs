@@ -1,6 +1,4 @@
-﻿using Jinget.Core.Security.Hashing.Model;
-
-namespace Jinget.Core.Security.Hashing;
+﻿namespace Jinget.Core.Security.Hashing;
 
 public interface IHashManager
 {

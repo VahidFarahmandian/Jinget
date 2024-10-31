@@ -1,8 +1,4 @@
-﻿using System;
-using Jinget.Core.ExtensionMethods;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Jinget.Core.Tests.ExtensionMethods;
+﻿namespace Jinget.Core.Tests.ExtensionMethods;
 
 [TestClass]
 public class DateTimeExtensionsTest

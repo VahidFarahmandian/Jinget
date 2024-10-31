@@ -3,8 +3,6 @@
 // Project-level suppressions either have no target or are given
 // a specific target and scoped to a namespace, type, member, etc.
 
-using System.Diagnostics.CodeAnalysis;
-
 [assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests.JingetServiceHandlerTests.Should_call_get_restapi~System.Threading.Tasks.Task")]
 [assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests.JingetServiceHandlerTests.Should_call_get_soap~System.Threading.Tasks.Task")]
 [assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler.Tests.JingetServiceHandlerTests.Should_call_post_restapi~System.Threading.Tasks.Task")]

@@ -1,15 +1,9 @@
-﻿using Jinget.Core.Tests._BaseData;
-using Jinget.Core.Utilities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.Linq;
+﻿namespace Jinget.Core.Tests.Utilities;
 
-namespace Jinget.Core.Tests.Utilities;
-
-[TestClass()]
+[TestClass]
 public class StringUtilityTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_create_random_string_using_given_characterset()
     {
         int length = 5;
@@ -21,14 +15,14 @@ public class StringUtilityTests
         Assert.IsTrue(result.ToCharArray().All(x => charset.Contains(x)));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_true_for_numeric_string()
     {
         string input = "1234567890";
         Assert.IsTrue(StringUtility.IsDigitOnly(input));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_false_for_non_numeric_string()
     {
         string input = "vahid123";

@@ -1,21 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using Jinget.Core.ExtensionMethods.Enums;
-using Jinget.Core.Tests._BaseData;
-using System.Collections.Generic;
-using System.Linq;
-using static Jinget.Core.Tests._BaseData.SampleEnum;
-using System.ComponentModel;
-using Jinget.Core.Utilities.Enum;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Enums;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Enums;
-
-[TestClass()]
+[TestClass]
 public class EnumExtensionsTests
 {
     #region DisplayName
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_default_display_name()
     {
         ProgrammingLanguage langauge = default;
@@ -25,7 +15,7 @@ public class EnumExtensionsTests
         Assert.AreEqual(expected, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_display_name_for_member_with_display_attribute()
     {
         ProgrammingLanguage langauge = ProgrammingLanguage.FSharp;
@@ -35,7 +25,7 @@ public class EnumExtensionsTests
         Assert.AreEqual(expected, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_display_name_for_member_without_display_attribute()
     {
         ProgrammingLanguage langauge = ProgrammingLanguage.Golang;
@@ -45,7 +35,7 @@ public class EnumExtensionsTests
         Assert.AreEqual(expected, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_enum_value_where_display_name_provided()
     {
         string enumDisplayName = "C#";
@@ -56,7 +46,7 @@ public class EnumExtensionsTests
         Assert.IsTrue(expected.SequenceEqual(result));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_enum_value_where_display_name_not_provided()
     {
         string enumDisplayName = "Golang";
@@ -67,7 +57,7 @@ public class EnumExtensionsTests
         Assert.IsTrue(expected.SequenceEqual(result));
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(System.ComponentModel.InvalidEnumArgumentException))]
     public void should_throw_exception_where_display_name_not_found()
     {
@@ -75,7 +65,7 @@ public class EnumExtensionsTests
         EnumUtility.GetValueFromDisplayName<ProgrammingLanguage>(enumDescription);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void should_throw_exception_where_enum_type_is_invalid_in_display_name()
     {
@@ -87,7 +77,7 @@ public class EnumExtensionsTests
 
     #region Description
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_default_description()
     {
         ProgrammingLanguage langauge = default;
@@ -97,7 +87,7 @@ public class EnumExtensionsTests
         Assert.AreEqual(expected, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_description_for_member_with_description_attribute()
     {
         ProgrammingLanguage langauge = ProgrammingLanguage.FSharp;
@@ -107,7 +97,7 @@ public class EnumExtensionsTests
         Assert.AreEqual(expected, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_description_for_member_without_description_attribute()
     {
         ProgrammingLanguage langauge = ProgrammingLanguage.CSharp;
@@ -117,7 +107,7 @@ public class EnumExtensionsTests
         Assert.AreEqual(expected, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_enum_value_where_description_provided()
     {
         string enumDescription = "F#.Net";
@@ -128,7 +118,7 @@ public class EnumExtensionsTests
         Assert.AreEqual(expected, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_enum_value_where_description_not_provided()
     {
         string enumDescription = "VB";
@@ -139,7 +129,7 @@ public class EnumExtensionsTests
         Assert.AreEqual(expected, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(System.ComponentModel.InvalidEnumArgumentException))]
     public void should_throw_exception_where_description_not_found()
     {
@@ -147,7 +137,7 @@ public class EnumExtensionsTests
         EnumUtility.GetValueFromDescription<ProgrammingLanguage>(enumDescription);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void should_throw_exception_where_enum_type_is_invalid_in_description()
     {
@@ -159,7 +149,7 @@ public class EnumExtensionsTests
 
     #region Min & Max Values
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_min_val_in_enum()
     {
         int expectedMinVal = 1;
@@ -167,11 +157,11 @@ public class EnumExtensionsTests
         Assert.AreEqual(expectedMinVal, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(InvalidEnumArgumentException))]
     public void should_throw_exception_for_empty_enum_min() => EnumUtility.GetMinValue<EmptyEnum, int>();
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_max_val_in_enum()
     {
         int expectedMinVal = 4;
@@ -179,7 +169,7 @@ public class EnumExtensionsTests
         Assert.AreEqual(expectedMinVal, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(InvalidEnumArgumentException))]
     public void should_throw_exception_for_empty_enum_max() => EnumUtility.GetMaxValue<EmptyEnum, int>();
 

@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.Threading;
-
-namespace Jinget.Core.ExtensionMethods.Reflection;
+﻿namespace Jinget.Core.ExtensionMethods.Reflection;
 
 public static class MethodInfoExtensions
 {

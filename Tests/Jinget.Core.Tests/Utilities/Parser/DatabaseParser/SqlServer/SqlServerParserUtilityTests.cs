@@ -1,12 +1,9 @@
-﻿using Jinget.Core.Utilities.Parser.DatabaseParser.SqlServer;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Jinget.Core.Tests.Utilities.Parser.DatabaseParser.SqlServer;
+﻿namespace Jinget.Core.Tests.Utilities.Parser.DatabaseParser.SqlServer;
 
 [TestClass]
 public class SqlServerParserUtilityTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_parse_connectionstring()
     {
         string connectionString = "Server=YOURSERVERNAME; Database=YOURDATABASENAME; Trusted_Connection=True; MultipleActiveResultSets=true";
@@ -19,7 +16,7 @@ public class SqlServerParserUtilityTests
         Assert.IsTrue(result.ContainsKey("MultipleActiveResultSets"));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_empty_result()
     {
         string invalidConnectionString = "InvalidConnectionString";

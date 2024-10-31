@@ -1,11 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿namespace Jinget.Core.Tests.Security.SqlInjection;
 
-namespace Jinget.Core.Tests.Security.SqlInjection;
-
-[TestClass()]
+[TestClass]
 public class SqlInjectionTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_immunize_string()
     {
         string input = "<script>var x=0;</script>";

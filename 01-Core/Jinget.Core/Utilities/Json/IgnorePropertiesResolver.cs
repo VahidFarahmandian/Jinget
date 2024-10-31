@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Serialization;
-
-namespace Jinget.Core.Utilities.Json;
+﻿namespace Jinget.Core.Utilities.Json;
 
 /// <summary>
 /// ignore the given properties, while serializing an object

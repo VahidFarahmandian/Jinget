@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace Jinget.Core.Security.SqlInjection;
+﻿namespace Jinget.Core.Security.SqlInjection;
 
 /// <summary>
 /// SqlInjection preventation class

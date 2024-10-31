@@ -1,13 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Jinget.Core.Tests._BaseData;
-using Jinget.Core.ExtensionMethods.Reflection;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
-
-[TestClass()]
+[TestClass]
 public class ConstructorExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_public_default_constructor()
     {
         var ctor = typeof(TestClass).GetDefaultConstructor();
@@ -17,7 +13,7 @@ public class ConstructorExtensionsTests
         Assert.IsTrue(ctor.IsPublic);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_private_default_constructor()
     {
         var ctor = typeof(SubType).GetDefaultConstructor();
@@ -27,7 +23,7 @@ public class ConstructorExtensionsTests
         Assert.IsFalse(ctor.IsPublic);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_invoke_default_constructor()
     {
         var obj = typeof(SubType).InvokeDefaultConstructor<SubType>();

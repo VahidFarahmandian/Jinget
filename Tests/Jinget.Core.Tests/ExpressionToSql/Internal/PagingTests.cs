@@ -1,12 +1,9 @@
-﻿using Jinget.Core.ExpressionToSql.Internal;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿namespace Jinget.Core.Tests.ExpressionToSql.Internal;
 
-namespace Jinget.Core.Tests.ExpressionToSql.Internal;
-
-[TestClass()]
+[TestClass]
 public class PagingTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_return_paging_clause()
     {
         string expectedResult = "OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY";
@@ -14,7 +11,7 @@ public class PagingTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_paging_clause_default_page_size()
     {
         string expectedResult = "OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY";
@@ -22,7 +19,7 @@ public class PagingTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_nothing()
     {
         string expectedResult = "";

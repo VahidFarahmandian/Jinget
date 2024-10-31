@@ -1,13 +1,9 @@
-﻿using Jinget.Core.ExtensionMethods.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-
-namespace Jinget.Core.Tests.ExtensionMethods.Http
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Http
 {
-    [TestClass()]
+    [TestClass]
     public class UriExtensionsTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void should_add_querystring_to_simple_uri()
         {
             string expectedUrl = "https://jinget.ir?name=vahid&country=iran";
@@ -17,7 +13,7 @@ namespace Jinget.Core.Tests.ExtensionMethods.Http
             Assert.AreEqual(expectedUrl, uri.ToString());
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void should_add_querystring_to_simple_uri_and_ignore_empty_names()
         {
             string expectedUrl = "https://jinget.ir?country=iran";
@@ -29,7 +25,7 @@ namespace Jinget.Core.Tests.ExtensionMethods.Http
             Assert.AreEqual(expectedUrl, uri.ToString());
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void should_add_querystring_to_uri_with_path()
         {
             string expectedUrl = "https://jinget.ir/books?name=vahid&country=iran";
@@ -39,7 +35,7 @@ namespace Jinget.Core.Tests.ExtensionMethods.Http
             Assert.AreEqual(expectedUrl, uri.ToString());
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void should_add_querystring_to_uri_with_path_and_port()
         {
             string expectedUrl = "https://jinget.ir:44325/books?name=vahid&country=iran";
@@ -49,7 +45,7 @@ namespace Jinget.Core.Tests.ExtensionMethods.Http
             Assert.AreEqual(expectedUrl, uri.ToString());
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void should_add_querystring_to_uri_with_path_and_port_and_prev_querystring()
         {
             string expectedUrl = "https://jinget.ir:44325/books?title=software&name=vahid&country=iran";

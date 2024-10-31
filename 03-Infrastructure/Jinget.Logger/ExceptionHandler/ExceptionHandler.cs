@@ -21,27 +21,28 @@ public class ExceptionHandler<TCategoryName> : IExceptionHandler<TCategoryName>
                 Details = JsonConvert.SerializeObject(details),
                 ex.StackTrace
             }),
-
+            Type = LogType.Error,
             ParitionKey =
-            _accessor.HttpContext.Items["jinget.log.partitionkey"] != null ?
-            _accessor.HttpContext.Items["jinget.log.partitionkey"].ToString() :
-            "",
+                _accessor.HttpContext.Items["jinget.log.partitionkey"] != null
+                    ? _accessor.HttpContext.Items["jinget.log.partitionkey"].ToString()
+                    : "",
             Severity = Microsoft.Extensions.Logging.LogLevel.Error.ToString(),
-
         };
         if (details is LogModel entity)
         {
-            logEntity.RequestId = entity.RequestId;
+            logEntity.TraceIdentifier = entity.TraceIdentifier;
             logEntity.SubSystem = entity.SubSystem;
             logEntity.Url = entity.Url;
             logEntity.TimeStamp = entity.TimeStamp;
         }
         else
         {
-            logEntity.RequestId = new Guid(_accessor.HttpContext.Response.Headers["RequestId"].ToString());
+            logEntity.TraceIdentifier =
+                _accessor.HttpContext
+                    .TraceIdentifier; //new Guid(_accessor.HttpContext.Response.Headers["RequestId"].ToString());
             logEntity.SubSystem = AppDomain.CurrentDomain.FriendlyName;
         }
+
         _logger.LogError(JsonConvert.SerializeObject(logEntity));
-        return;
     }
 }

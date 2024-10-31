@@ -1,18 +1,14 @@
-﻿using Jinget.Core.Tests._BaseData;
-using Jinget.Core.Utilities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Serialization;
 
 namespace Jinget.Core.Tests.Utilities;
 
-[TestClass()]
+[TestClass]
 public class XmlUtilityTests
 {
     XmlSample samplexml;
     SoapSample samplesoap;
-    [TestInitialize()]
+    [TestInitialize]
     public void Init()
     {
         samplexml = new()
@@ -42,7 +38,7 @@ public class XmlUtilityTests
         };
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_serialize_object_to_xml()
     {
         XmlDocument expectedXml = new();
@@ -58,7 +54,7 @@ public class XmlUtilityTests
         Assert.AreEqual(expectedXml.InnerXml, resultXml.InnerXml);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_serialize_object_to_xml_without_xmldeclartion()
     {
         XmlDocument expectedXml = new();
@@ -74,7 +70,7 @@ public class XmlUtilityTests
         Assert.AreEqual(expectedXml.InnerXml, resultXml.InnerXml);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_serialize_object_to_xml_with_namespaces()
     {
         XmlDocument expectedXml = new();
@@ -93,7 +89,7 @@ public class XmlUtilityTests
         Assert.AreEqual(expectedXml.InnerXml, resultXml.InnerXml);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_deserialize_xml_descendants_to_custom_type_and_return_all_of_them()
     {
         List<XmlSample.InnerXmlSample> expectedObjects =
@@ -115,7 +111,7 @@ public class XmlUtilityTests
         Assert.AreEqual(expectedObjects.Count, result.Count);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_deserialize_xml_descendants_to_custom_type_and_return_first_among_them()
     {
         var expectedObjects = new XmlSample.InnerXmlSample()
@@ -130,7 +126,7 @@ public class XmlUtilityTests
         Assert.AreEqual(expectedObjects.Data, result.Data);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_serialize_object_to_soapxml()
     {
         XmlDocument expectedXml = new();

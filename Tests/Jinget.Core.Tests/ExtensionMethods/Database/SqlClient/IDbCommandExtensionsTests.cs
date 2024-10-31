@@ -1,15 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-using Jinget.Core.ExtensionMethods.Database.SqlClient;
-using System.Data.SqlClient;
-using System;
-
-namespace Jinget.Core.Tests.ExtensionMethods.Database.SqlClient;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Database.SqlClient;
 
 [TestClass]
 public class IDbCommandExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_replace_arabic_YeKe_in_sqlcommand_with_its_farsi_equalivants()
     {
         IDbCommand command = new SqlCommand

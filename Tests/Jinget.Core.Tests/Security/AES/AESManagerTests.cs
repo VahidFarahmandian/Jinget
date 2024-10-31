@@ -1,12 +1,11 @@
 ﻿using Jinget.Core.Security.AES;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Jinget.Core.Tests.Security.AES;
 
-[TestClass()]
+[TestClass]
 public class AESManagerTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_encrypt_the_string_using_given_key_and_iv()
     {
         string input = "vahid";
@@ -18,7 +17,7 @@ public class AESManagerTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_decrypt_the_string_using_given_key_and_iv()
     {
         string encryptedInput = "sQyEKQhH++6olei3SXbWag==";

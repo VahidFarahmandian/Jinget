@@ -1,14 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using Dapper;
-using Jinget.Core.ExtensionMethods.Dapper;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Dapper;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Dapper;
-
-[TestClass()]
+[TestClass]
 public class DynamicParametersExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_get_key_value_pairs_for_dynamicparameter()
     {
         DynamicParameters parameters = new();
@@ -26,7 +21,7 @@ public class DynamicParametersExtensionsTests
         Assert.IsTrue(result.GetValueOrDefault("sampleBool") == true);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_convert_values_to_sql_values()
     {
         DynamicParameters parameters = new();

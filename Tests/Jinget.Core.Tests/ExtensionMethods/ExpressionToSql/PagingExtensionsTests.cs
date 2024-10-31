@@ -1,16 +1,9 @@
-﻿using System.Collections.Generic;
-using Jinget.Core.Exceptions;
-using Jinget.Core.ExpressionToSql.Internal;
-using Jinget.Core.ExtensionMethods.ExpressionToSql;
-using Jinget.Core.Tests._BaseData;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.ExpressionToSql;
 
-namespace Jinget.Core.Tests.ExtensionMethods.ExpressionToSql;
-
-[TestClass()]
+[TestClass]
 public class PagingExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_return_empty_string()
     {
         Paging paging = null;
@@ -21,7 +14,7 @@ public class PagingExtensionsTests
         Assert.IsTrue(string.IsNullOrWhiteSpace(result));
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(JingetException), AllowDerivedTypes = false)]
     public void should_throw_jinget_exception()
     {
@@ -35,7 +28,7 @@ public class PagingExtensionsTests
         paging.GetPaging(lstOrderBy);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_stringfied_order_by_clause()
     {
         Paging paging = null;
@@ -54,7 +47,7 @@ public class PagingExtensionsTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_stringfied_paging_clause()
     {
         Paging paging = new()
@@ -83,7 +76,7 @@ public class PagingExtensionsTests
         Assert.AreEqual(expectedResult, result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_stringfied_paging_clause_generic_orderby()
     {
         Paging paging = new()

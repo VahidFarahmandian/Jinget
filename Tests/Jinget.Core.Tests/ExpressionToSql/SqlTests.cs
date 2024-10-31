@@ -1,13 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Jinget.Core.Tests._BaseData;
-using Jinget.Core.ExpressionToSql.Internal;
-using System.Collections.Generic;
-using System;
-using Jinget.Core.ExpressionToSql;
+﻿namespace Jinget.Core.Tests.ExpressionToSql;
 
-namespace Jinget.Core.Tests.ExpressionToSql;
-
-[TestClass()]
+[TestClass]
 public class SqlTests
 {
     #region SELECT

@@ -1,17 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq;
-using System.Linq.Expressions;
-using Jinget.Core.Exceptions;
-using Jinget.Core.Tests._BaseData;
-using Jinget.Core.ExtensionMethods.Expressions;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Expressions;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Expressions;
-
-[TestClass()]
+[TestClass]
 public class LambdaExpressionExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void stringfy_constant_exppression()
     {
         Expression<Func<TestClass, object>> expr = x => 1;
@@ -19,7 +11,7 @@ public class LambdaExpressionExtensionsTests
         Assert.AreEqual("1", result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void stringfy_member_exppression()
     {
         Expression<Func<TestClass, object>> expr = x => x.Property1;
@@ -27,7 +19,7 @@ public class LambdaExpressionExtensionsTests
         Assert.AreEqual("Property1", result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void stringfy_methodcall_select_exppression()
     {
         Expression<Func<TestClass, object>> expr = x => x.InnerProperty.Select(y => y.InnerProperty1);
@@ -35,7 +27,7 @@ public class LambdaExpressionExtensionsTests
         Assert.AreEqual("InnerProperty.InnerProperty1", result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void stringfy_methodcall_tostring_exppression()
     {
         Expression<Func<TestClass, object>> expr = x => x.Property2.ToString();
@@ -43,7 +35,7 @@ public class LambdaExpressionExtensionsTests
         Assert.AreEqual("Property2", result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void stringfy_methodcall_tolower_exppression()
     {
         Expression<Func<TestClass, object>> expr = x => x.Property2.ToLower();
@@ -51,7 +43,7 @@ public class LambdaExpressionExtensionsTests
         Assert.AreEqual("Property2", result);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(JingetException))]
     public void stringfy_methodcall_where_exppression()
     {
@@ -59,7 +51,7 @@ public class LambdaExpressionExtensionsTests
         var result = expr.Stringfy();
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(JingetException))]
     public void stringfy_methodcall_orderby_exppression()
     {

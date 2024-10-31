@@ -1,16 +1,9 @@
-﻿using Jinget.Core.CodeDom;
-using Jinget.Core.Utilities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿namespace Jinget.Core.Tests.CodeDom;
 
-namespace Jinget.Core.Tests.CodeDom;
-
-[TestClass()]
+[TestClass]
 public class JingetDynamicCodeTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_compile_and_execute_dynamic_code_at_runtime_void_parameterless()
     {
         string expectedSource = @"

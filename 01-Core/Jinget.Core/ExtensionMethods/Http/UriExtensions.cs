@@ -1,6 +1,4 @@
-﻿using System.Web;
-
-namespace Jinget.Core.ExtensionMethods.Http;
+﻿namespace Jinget.Core.ExtensionMethods.Http;
 
 public static class UriExtensions
 {

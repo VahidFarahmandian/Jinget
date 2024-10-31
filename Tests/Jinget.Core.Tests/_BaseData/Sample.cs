@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Jinget.Core.Tests._BaseData;
+﻿namespace Jinget.Core.Tests._BaseData;
 
 public class SampleInterfaceClass : ISampleInterface
 {

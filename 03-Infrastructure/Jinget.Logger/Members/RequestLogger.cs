@@ -1,6 +1,6 @@
 ﻿namespace Jinget.Logger.Members;
 
-public class RequestLogger<TCategoryName> : Log<TCategoryName>, ILog
+public class RequestLogger<TCategoryName> : BaseLogger<TCategoryName>, ILog
 {
     private readonly IExceptionHandler<TCategoryName> _exception;
 
@@ -15,9 +15,7 @@ public class RequestLogger<TCategoryName> : Log<TCategoryName>, ILog
         string requestBodyText;
         Stream originalRequestBody = null;
 
-        if (context.Request.GetTypedHeaders() != null &&
-            context.Request.GetTypedHeaders().ContentType != null &&
-            context.Request.GetTypedHeaders().ContentType.MediaType.Value.ToLower().StartsWith("multipart/form-data"))
+        if (IsMultipartContentType(context))
         {
             requestBodyText = "--REQUEST BODY TRIMMED BY LOGGER-- multipart/form-data";
         }
@@ -25,51 +23,34 @@ public class RequestLogger<TCategoryName> : Log<TCategoryName>, ILog
         {
             var requestBodyStream = new MemoryStream();
             originalRequestBody = context.Request?.Body;
-
             await context.Request?.Body.CopyToAsync(requestBodyStream);
-
             requestBodyStream.Seek(0, SeekOrigin.Begin);
-
             requestBodyText = await new StreamReader(requestBodyStream).ReadToEndAsync();
-
             requestBodyStream.Seek(0, SeekOrigin.Begin);
             context.Request.Body = requestBodyStream;
         }
 
-        context.Response.Headers.Add("RequestId", Guid.NewGuid().ToString());
+        //context.Response.Headers.Add("RequestId", Guid.NewGuid().ToString());
 
         var contentLength = context.Request.ContentLength ??
-                            string.Join(",", context.Request.Headers.Select(x => x.Key + ":" + x.Value).ToList()).Length +
+                            string.Join(",", context.Request.Headers.Select(x => x.Key + ":" + x.Value).ToList())
+                                .Length +
                             requestBodyText.Length;
         context.Request.Headers.TryGetValue("Referer", out StringValues pageUrl);
 
-        string headers = "";
-        if (BlackListHeaders.Any())
-            headers = JsonConvert.SerializeObject(context.Response.Headers
-                .Where(x => !BlackListHeaders.Contains(x.Key.ToLower()))
-                .Select(x => x.ToString()), Formatting.Indented);
-        else if (WhiteListHeaders.Any())
-            headers = JsonConvert.SerializeObject(context.Response.Headers
-                .Where(x => WhiteListHeaders.Contains(x.Key.ToLower()))
-                .Select(x => x.ToString()), Formatting.Indented);
-
         var model = new LogModel
         {
-            ParitionKey = context.Items["jinget.log.partitionkey"] != null ? context.Items["jinget.log.partitionkey"].ToString() : "",
+            ParitionKey = GetPartitionKey(context),
             Username = context.User.Identity.Name,
             Method = context.Request.Method,
             Body = requestBodyText,
-            Headers = headers,
+            Headers = GetHeaders(context, isRequestHeader: true),
             Url = context.Request.GetDisplayUrl(),
-            IP = context.Connection.RemoteIpAddress == null ? "Unknown" : context.Connection.RemoteIpAddress.ToString(),
-            IsResponse = false,
+            IP = GetIp(context),
+            Type = LogType.Request,
             Description = null,
-            RequestId = new Guid(context.Response.Headers["RequestId"].ToString()),
-            AdditionalData = JsonConvert.SerializeObject(new
-            {
-                AdditionalDataInHeader = context.Request.Headers["AdditionalData"],
-                AdditionalDataInCtx = context.Items["AdditionalData"]?.ToString()
-            }),
+            TraceIdentifier = context.TraceIdentifier,
+            AdditionalData = GetAdditionalData(context, isRequestData: true),
             SubSystem = AppDomain.CurrentDomain.FriendlyName,
             PageUrl = pageUrl.FirstOrDefault(),
             ContentLength = contentLength
@@ -85,7 +66,6 @@ public class RequestLogger<TCategoryName> : Log<TCategoryName>, ILog
         catch (Exception ex)
         {
             _exception.Handle(ex, model);
-
             context.Response.StatusCode = 500;
             context.Response.ContentType = MediaTypeNames.Application.Json;
             await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = ex.Message }));

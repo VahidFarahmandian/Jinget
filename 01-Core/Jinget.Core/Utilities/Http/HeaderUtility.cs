@@ -1,6 +1,4 @@
-﻿using System.Net.Mime;
-
-namespace Jinget.Core.Utilities.Http;
+﻿namespace Jinget.Core.Utilities.Http;
 
 public class HeaderUtility
 {

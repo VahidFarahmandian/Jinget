@@ -1,6 +1,4 @@
-﻿using Jinget.Core.Types;
-
-namespace Jinget.Core.ExtensionMethods.Collections;
+﻿namespace Jinget.Core.ExtensionMethods.Collections;
 
 public static class IDictionaryExtensions
 {

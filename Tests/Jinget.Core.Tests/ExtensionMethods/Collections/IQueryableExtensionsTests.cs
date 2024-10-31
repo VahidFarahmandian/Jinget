@@ -1,18 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Jinget.Core.Enumerations;
-using Jinget.Core.Tests._BaseData;
-using Jinget.Core.ExtensionMethods.Collections;
-using static Jinget.Core.Tests._BaseData.TestClass;
+﻿namespace Jinget.Core.Tests.ExtensionMethods.Collections;
 
-namespace Jinget.Core.Tests.ExtensionMethods.Collections;
-
-[TestClass()]
+[TestClass]
 public class IQueryableExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void Should_sort_the_list_based_on_given_property()
     {
         TestClass class1 = new() { Property1 = 1, Property2 = "C" };
@@ -27,7 +18,7 @@ public class IQueryableExtensionsTests
         Assert.IsTrue(expected.SequenceEqual(result));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_sort_the_nested_member_based_on_given_property()
     {
         TestClass parent1 = new() { Property1 = 1, Property2 = "C", InnerSingularProperty = new() { InnerProperty1 = 10, InnerProperty2 = "CC" } };
@@ -42,7 +33,7 @@ public class IQueryableExtensionsTests
         Assert.IsTrue(expected.SequenceEqual(result));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_sort_the_nested_list_based_on_given_property()
     {
         InnerClass child1 = new() { InnerProperty1 = 10, InnerProperty2 = "AA" };
@@ -72,7 +63,7 @@ public class IQueryableExtensionsTests
         }
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_empty_collection_when_collection_is_empty()
     {
         var input = new List<TestClass>().AsQueryable();
@@ -83,7 +74,7 @@ public class IQueryableExtensionsTests
         Assert.IsTrue(expected.SequenceEqual(result));
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Should_throw_ArgumentException_when_property_name_is_invalid()
     {
@@ -92,7 +83,7 @@ public class IQueryableExtensionsTests
         input.OrderByDynamic("PropertyXYZ", OrderByDirection.Descending);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(NullReferenceException))]
     public void Should_throw_NullReferenceException_when_collection_is_null()
     {
@@ -100,7 +91,7 @@ public class IQueryableExtensionsTests
         input.OrderByDynamic("Property1", OrderByDirection.Descending);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void Should_return_unsorted_collection_when_orderbymember_is_empty()
     {
         TestClass class1 = new() { Property1 = 1, Property2 = "C" };

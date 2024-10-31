@@ -1,13 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Jinget.Core.ExtensionMethods.Database.SqlClient;
-using Jinget.Core.ExtensionMethods;
-
-namespace Jinget.Core.Tests.ExtensionMethods;
+﻿namespace Jinget.Core.Tests.ExtensionMethods;
 
 [TestClass]
 public class StringExtensionsTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_replace_arabic_YeKe_in_string_with_its_farsi_equalivants()
     {
         string input = "Sample text with علي and روشنك";
@@ -18,7 +14,7 @@ public class StringExtensionsTests
         Assert.AreEqual(expected, input);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_empty_string()
     {
         Assert.IsTrue("".ApplyCorrectYeKe() == string.Empty);
@@ -26,7 +22,7 @@ public class StringExtensionsTests
         Assert.IsTrue(string.Empty.ApplyCorrectYeKe() == string.Empty);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_CamelCase_string()
     {
         string input = "Vahid Farahmandian";

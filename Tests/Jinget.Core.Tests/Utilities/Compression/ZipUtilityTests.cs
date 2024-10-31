@@ -1,20 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.IO;
-using System;
+﻿using System.IO;
 using Jinget.Core.Utilities.Compression;
 
 namespace Jinget.Core.Tests.Utilities.Compression;
 
-[TestClass()]
+[TestClass]
 public class ZipUtilityTests
 {
     ZipUtility zip;
     [TestInitialize]
     public void Initialize() => zip = new ZipUtility();
 
-    [TestMethod()]
+    [TestMethod]
     public async Task should_compress_and_chunkAsync()
     {
         FileInfo file = new("sample.txt");
@@ -27,7 +23,7 @@ public class ZipUtilityTests
         Assert.IsTrue(file.Directory.GetFiles("sample.txt.z??").Length != 0);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public async Task should_compress_using_password_and_chunkAsync()
     {
         FileInfo file = new("sample.txt");
@@ -38,7 +34,7 @@ public class ZipUtilityTests
         Assert.IsTrue(file.Directory.GetFiles("sample.txt.z??").Length != 0);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public async Task should_decompressed_fileAsync()
     {
         string fileName = Guid.NewGuid() + ".txt";
@@ -60,7 +56,7 @@ public class ZipUtilityTests
         Assert.IsTrue(file.Directory.GetFiles(fileName).Length != 0);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public async Task should_decompressed_using_passwordAsync()
     {
         string fileName = Guid.NewGuid() + ".txt";

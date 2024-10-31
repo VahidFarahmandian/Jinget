@@ -1,10 +1,4 @@
-﻿using Jinget.Core.Tests._BaseData;
-using Jinget.Core.Utilities.Expressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq.Expressions;
-
-namespace Jinget.Core.Tests.Utilities.Expressions;
+﻿namespace Jinget.Core.Tests.Utilities.Expressions;
 
 [TestClass]
 public class ReplaceExpressionVisitorTests

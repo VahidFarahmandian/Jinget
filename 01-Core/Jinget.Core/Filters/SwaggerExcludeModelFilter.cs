@@ -1,8 +1,4 @@
-﻿using Jinget.Core.Attributes;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
-
-namespace Jinget.Core.Filters;
+﻿namespace Jinget.Core.Filters;
 
 public class SwaggerExcludeTypeFilter : IDocumentFilter
 {

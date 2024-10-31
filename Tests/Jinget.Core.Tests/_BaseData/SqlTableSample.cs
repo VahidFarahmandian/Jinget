@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Jinget.Core.Tests._BaseData;
+﻿namespace Jinget.Core.Tests._BaseData;
 
 public class SqlTableSample
 {

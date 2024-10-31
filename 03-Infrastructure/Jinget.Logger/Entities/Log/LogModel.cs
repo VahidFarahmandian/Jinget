@@ -1,7 +1,9 @@
-﻿namespace Jinget.Logger.Entities.Log;
+﻿using Jinget.Core.ExtensionMethods.Enums;
+
+namespace Jinget.Logger.Entities.Log;
 
 [Entity(ElasticSearchEnabled = true)]
-public class LogModel : BaseEntity<long>//LogBaseEntity
+public class LogModel : BaseEntity<long> //LogBaseEntity
 {
     public DateTime TimeStamp { get; set; }
     public string Url { get; set; }
@@ -19,9 +21,9 @@ public class LogModel : BaseEntity<long>//LogBaseEntity
     public string ParitionKey { get; set; }
 
     /// <summary>
-    /// unique identifier for a request and response
+    /// unique identifier for a request and response. value is read from HttpContext.TraceIdentifier
     /// </summary>
-    public Guid RequestId { get; set; } = Guid.Empty;
+    public string TraceIdentifier { get; set; }
 
     /// <summary>
     /// Http Method
@@ -44,9 +46,11 @@ public class LogModel : BaseEntity<long>//LogBaseEntity
     public string IP { get; set; }
 
     /// <summary>
-    /// Is the record for request or reponse?
+    /// Is the record for request or response?
     /// </summary>
-    public bool IsResponse { get; set; }
+    public LogType Type { get; set; }
+
+    public string TypeDescription => Type.GetDescription();
 
     /// <summary>
     /// Page url initiating the request. 
@@ -77,13 +81,15 @@ public class LogModel : BaseEntity<long>//LogBaseEntity
     /// <summary>
     /// This property only filled whenever calling <seealso cref="ILoggerExtensions.LogCustom"/> method.
     /// </summary>
-    public string CallerFilePath { get; set; }
+    public string CallerFilePath { get; set; } = null;
+
     /// <summary>
     /// This property only filled whenever calling <seealso cref="ILoggerExtensions.LogCustom"/> method.
     /// </summary>
-    public long CallerLineNumber { get; set; }
+    public long? CallerLineNumber { get; set; } = null;
+
     /// <summary>
     /// This property only filled whenever calling <seealso cref="ILoggerExtensions.LogCustom"/> method.
     /// </summary>
-    public string CallerMember { get; set; }
+    public string CallerMember { get; set; } = null;
 }

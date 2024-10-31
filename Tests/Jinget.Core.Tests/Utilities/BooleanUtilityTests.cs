@@ -1,14 +1,9 @@
-﻿using Jinget.Core.Utilities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq.Expressions;
+﻿namespace Jinget.Core.Tests.Utilities;
 
-namespace Jinget.Core.Tests.Utilities;
-
-[TestClass()]
+[TestClass]
 public class BooleanUtilityTests
 {
-    [TestMethod()]
+    [TestMethod]
     public void should_return_expression_contains_true_condition()
     {
         Expression<Func<_BaseData.TestClass, bool>> expectedResult = x => 1 == 1;
@@ -18,7 +13,7 @@ public class BooleanUtilityTests
         Assert.AreEqual(expectedResult.Compile()(new _BaseData.TestClass()), result.Compile()(new _BaseData.TestClass()));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_expression_contains_false_condition()
     {
         Expression<Func<_BaseData.TestClass, bool>> expectedResult = x => 1 == 0;

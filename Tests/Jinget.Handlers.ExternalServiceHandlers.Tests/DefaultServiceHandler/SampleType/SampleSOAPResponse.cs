@@ -1,6 +1,4 @@
-﻿using System.Xml.Serialization;
-
-namespace Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler.SampleType;
+﻿namespace Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler.SampleType;
 
 /// <summary>
 /// The returned soap response should contain a node with the name same as this class

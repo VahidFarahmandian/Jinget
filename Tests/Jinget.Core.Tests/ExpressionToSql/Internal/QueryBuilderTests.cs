@@ -1,10 +1,6 @@
-﻿using Jinget.Core.ExpressionToSql.Internal;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Text;
+﻿namespace Jinget.Core.Tests.ExpressionToSql.Internal;
 
-namespace Jinget.Core.Tests.ExpressionToSql.Internal;
-
-[TestClass()]
+[TestClass]
 public class QueryBuilderTests
 {
     private QueryBuilder _qb;
@@ -12,7 +8,7 @@ public class QueryBuilderTests
     [TestInitialize]
     public void Initialize() => _qb = new QueryBuilder(new StringBuilder());
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_top_expression()
     {
         string expectedResult = "SELECT TOP 10";
@@ -20,7 +16,7 @@ public class QueryBuilderTests
         Assert.AreEqual(expectedResult, result.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_columns()
     {
         string expectedResult = "SELECT c.[Col1], c.[Col2]";
@@ -28,7 +24,7 @@ public class QueryBuilderTests
         Assert.AreEqual(expectedResult, result.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_table_name()
     {
         string expectedResult = "SELECT FROM [Sch].[MyTable] AS T";
@@ -40,7 +36,7 @@ public class QueryBuilderTests
         Assert.AreEqual(expectedResult, result.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void should_return_function_name()
     {
         string expectedResult = "SELECT FROM [Sch].[Function]() AS F";

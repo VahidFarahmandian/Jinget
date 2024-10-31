@@ -105,7 +105,7 @@ public class ElasticSearchLoggingRepository : IElasticSearchLoggingRepository
                                                         f => f.Method,
                                                         f => f.PageUrl,
                                                         f => f.ParitionKey,
-                                                        f => f.RequestId,
+                                                        f => f.TraceIdentifier,
                                                         f => f.SubSystem,
                                                         f => f.Url,
                                                         f => f.Username))
@@ -123,12 +123,12 @@ public class ElasticSearchLoggingRepository : IElasticSearchLoggingRepository
                                             : b.Must(queryContainer.ToArray());
                                         });
                                     })
-                                    .Aggregations(a => a.Terms("req_id", x => x.Field(f => f.RequestId.Suffix("raw"))))
+                                    .Aggregations(a => a.Terms("req_id", x => x.Field(f => f.TraceIdentifier.Suffix("raw"))))
                                     .From((pageNumber - 1) * pageSize)
                                     .Take(pageSize * 2)//because each operation consists of 1 req + 1 response
                                     .Sort(s => s.Descending(d => d.TimeStamp))).ConfigureAwait(true);
 
-        var logs = searchResult.Documents.GroupBy(x => x.RequestId);
+        var logs = searchResult.Documents.GroupBy(x => x.TraceIdentifier);
 
         var result = logs.Select(l => new LogSearchViewModel(l.Key, l.Select(o => o))).ToList();
 

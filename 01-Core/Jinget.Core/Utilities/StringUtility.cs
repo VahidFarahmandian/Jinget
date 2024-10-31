@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace Jinget.Core.Utilities;
+﻿namespace Jinget.Core.Utilities;
 
 public static class StringUtility
 {
