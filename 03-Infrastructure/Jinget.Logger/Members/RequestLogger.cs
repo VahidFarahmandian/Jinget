@@ -89,6 +89,7 @@ public class RequestLogger<TCategoryName> : Log<TCategoryName>, ILog
             context.Response.StatusCode = 500;
             context.Response.ContentType = MediaTypeNames.Application.Json;
             await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = ex.Message }));
+            throw;
         }
 
         if (originalRequestBody != null) context.Request.Body = originalRequestBody;
