@@ -187,29 +187,33 @@ builder.Services.Configure<WhiteListHeader>(x => x.Headers = ["header1","header2
 
 `LogToFile`: By calling this method, you are going to save your logs in files
 ```csharp
-builder.Host.LogToFile(blacklist, fileNamePrefix: "Log-", logDirectory: "D:\\logs", 10, 15);
+FileSettingModel fileSetting = new FileSettingModel
+{
+    FileNamePrefix = "Log-",
+    LogDirectory = "D:\\Logs",
+    RetainFileCountLimit = 5,
+    FileSizeLimitMB = 10,
+    UseGlobalExceptionHandler = true,
+    Handle4xxResponses = true,
+};
+builder.Host.LogToFile(blacklist, fileSetting);
 ```
 
 `blacklist`: Log messages contain the blacklist array items will not be logged.
 
 `minAllowedLoglevel`: Defines the minimum allowed log level. Default log level is `LogLevel.Information`.
 
-`fileNamePrefix`: Gets or sets the filename prefix to use for log files. Defaults is `logs-`
+`FileNamePrefix`: Gets or sets the filename prefix to use for log files. Defaults is `logs-`
 
-`logDirectory`: The directory in which log files will be written, relative to the app process. Default is `Logs` directory.
+`LogDirectory`: The directory in which log files will be written, relative to the app process. Default is `Logs` directory.
 
-`retainedFileCountLimit`: Gets or sets a strictly positive value representing the maximum retained file count or null for no limit. Defaults is 2 files.
+`RetainedFileCountLimit`: Gets or sets a strictly positive value representing the maximum retained file count or null for no limit. Defaults is 2 files.
 
-`fileSizeLimit`: Gets or sets a strictly positive value representing the maximum log size in MB or null for no limit. Once the log is full, no more messages will be appended. Defaults is `10MB`.
+`FileSizeLimit`: Gets or sets a strictly positive value representing the maximum log size in MB or null for no limit. Once the log is full, no more messages will be appended. Defaults is `10MB`.
 
 After setting the logging destination, you need to configure file logger:
 ```csharp
-builder.Services.ConfigureFileLogger(
-    new FileSettingModel
-    {
-        UseGlobalExceptionHandler = <true|false>,
-        Handle4xxResponses = <true|false>
-    });
+builder.Services.ConfigureFileLogger(fileSetting);
 ```
 
 Here is the complete configuration for a .NET Web API application:
@@ -222,12 +226,16 @@ var builder = WebApplication.CreateBuilder(args);
 var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true).Build();
 
 var blacklist = config.GetSection("logging:BlackList").Get<string[]>();
-builder.Host.LogToFile(blacklist, "Log-", "D:\\logs", 10, 15);
-var fileSetting = new FileSettingModel
+FileSettingModel fileSetting = new FileSettingModel
 {
+    FileNamePrefix = "Log",
+    LogDirectory = "Logs",
+    RetainFileCountLimit = 5,
+    FileSizeLimitMB = 10,
     UseGlobalExceptionHandler = true,
-    Handle4xxResponses = false
+    Handle4xxResponses = true,
 };
+builder.Host.LogToFile(blacklist, fileSetting);
 builder.Services.ConfigureFileLogger(fileSetting);
 
 builder.Services.AddControllers();

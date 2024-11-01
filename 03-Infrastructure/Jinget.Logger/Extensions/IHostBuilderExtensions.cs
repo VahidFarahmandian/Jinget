@@ -1,4 +1,6 @@
-﻿namespace Jinget.Logger.Extensions;
+﻿using Jinget.Logger.Configuration.File;
+
+namespace Jinget.Logger.Extensions;
 
 public static class IHostBuilderExtensions
 {
@@ -20,18 +22,15 @@ public static class IHostBuilderExtensions
     public static IHostBuilder LogToFile(
         this IHostBuilder webHostBuilder,
         string[] blackList,
-        string fileNamePrefix = "Log",
-        string logDirectory = "Logs",
-        int retainFileCountLimit = 5,
-        int fileSizeLimit = 10,
+        FileSettingModel fileSettingModel,
         Microsoft.Extensions.Logging.LogLevel minAllowedLoglevels = Microsoft.Extensions.Logging.LogLevel.Error) =>
         webHostBuilder.ConfigureLogging(builder => builder.AddFile(f =>
         {
-            f.FileName = fileNamePrefix;
-            f.LogDirectory = logDirectory;
-            f.RetainedFileCountLimit = retainFileCountLimit;
+            f.FileName = fileSettingModel.FileNamePrefix;
+            f.LogDirectory = fileSettingModel.LogDirectory;
+            f.RetainedFileCountLimit = fileSettingModel.RetainFileCountLimit;
             f.BlackListStrings = blackList.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
-            f.FileSizeLimit = fileSizeLimit;
+            f.FileSizeLimit = fileSettingModel.FileSizeLimitMB;
             f.MinAllowedLogLevel = minAllowedLoglevels;
         }));
 }

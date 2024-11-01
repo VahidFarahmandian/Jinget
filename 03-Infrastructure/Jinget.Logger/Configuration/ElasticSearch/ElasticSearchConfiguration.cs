@@ -1,6 +1,4 @@
-﻿using Jinget.ExceptionHandler.Entities.Log;
-using Jinget.Logger.Extensions;
-using Mapster;
+﻿using Jinget.Logger.Extensions;
 
 namespace Jinget.Logger.Configuration.ElasticSearch;
 
