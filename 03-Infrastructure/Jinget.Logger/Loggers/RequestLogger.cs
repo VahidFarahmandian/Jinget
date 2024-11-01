@@ -1,7 +1,7 @@
-﻿using Jinget.ExceptionHandler.Entities.Log;
-using Jinget.ExceptionHandler.Extensions;
+﻿using Jinget.ExceptionHandler.Extensions;
+using Jinget.Logger;
 
-namespace Jinget.Logger.Members;
+namespace Jinget.Logger.Loggers;
 
 public class RequestLogger<TCategoryName> : Log<TCategoryName>, ILog
 {

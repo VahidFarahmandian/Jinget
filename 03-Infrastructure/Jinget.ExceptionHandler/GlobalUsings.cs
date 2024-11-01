@@ -14,3 +14,6 @@ global using Microsoft.AspNetCore.Http.Extensions;
 global using System.Net.Http;
 global using Jinget.Core.Attributes;
 global using Microsoft.Extensions.Primitives;
+global using Jinget.ExceptionHandler.Handlers;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.DependencyInjection.Extensions;

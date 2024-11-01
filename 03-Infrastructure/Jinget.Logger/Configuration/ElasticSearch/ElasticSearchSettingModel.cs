@@ -1,6 +1,4 @@
-﻿using Jinget.ExceptionHandler.Entities;
-
-namespace Jinget.Logger.Configuration.ElasticSearch;
+﻿namespace Jinget.Logger.Configuration.ElasticSearch;
 
 public class ElasticSearchSettingModel : BaseSettingModel
 {

@@ -1,4 +1,6 @@
-﻿namespace Jinget.Logger.Configuration.Middlewares;
+﻿using Jinget.Logger.Loggers;
+
+namespace Jinget.Logger.Middlewares;
 
 public class LogRequestMiddleware(
     RequestDelegate next,

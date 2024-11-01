@@ -1,5 +1,6 @@
 using Jinget.ExceptionHandler.Entities;
 using Jinget.ExceptionHandler.Extensions;
+using Jinget.Logger.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

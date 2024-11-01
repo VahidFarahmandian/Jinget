@@ -1,13 +1,9 @@
-﻿using Jinget.ExceptionHandler.Entities;
-using Jinget.ExceptionHandler.Handlers;
+﻿namespace Jinget.ExceptionHandler.Extensions;
 
-namespace Jinget.Logger.Configuration;
-
-public static class BaseConfiguration
+public static class IServiceCollectionExtensions
 {
-    public static void ConfigureJingetLoggerPrerequisites(this IServiceCollection services, BaseSettingModel baseSetting)
+    public static void ConfigureJingetExceptionHandler(this IServiceCollection services, BaseSettingModel baseSetting)
     {
-        services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         if (baseSetting.UseGlobalExceptionHandler)
         {
             services.TryAddSingleton(baseSetting);

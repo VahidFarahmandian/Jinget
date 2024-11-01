@@ -1,4 +1,6 @@
-﻿namespace Jinget.Logger.Configuration.File;
+﻿using Jinget.Logger.Extensions;
+
+namespace Jinget.Logger.Configuration.File;
 
 public static class FileConfiguration
 {

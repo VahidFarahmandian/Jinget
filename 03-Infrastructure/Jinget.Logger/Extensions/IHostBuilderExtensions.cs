@@ -1,6 +1,6 @@
-﻿namespace Jinget.Logger.Configuration;
+﻿namespace Jinget.Logger.Extensions;
 
-public static class JingetProgram
+public static class IHostBuilderExtensions
 {
     public static IHostBuilder Configure(string[] args) =>
         Host.CreateDefaultBuilder(args)
