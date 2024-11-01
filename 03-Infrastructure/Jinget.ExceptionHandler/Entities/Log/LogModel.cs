@@ -8,7 +8,7 @@ public class LogModel : BaseEntity<long>
     {
     }
 
-    internal static LogModel GetNew(HttpContext context)
+    internal static LogModel GetNew(HttpContext? context = null)
     {
         var log = new LogModel
         {
@@ -35,6 +35,9 @@ public class LogModel : BaseEntity<long>
             log.Method = context.Request.Method;
             log.Url = context.Request.GetDisplayUrl();
             log.IP = context.GetIpAddress();
+
+            var requestDateTime = context.GetRequestDateTime();
+            log.ElapsedMilliseconds = requestDateTime == null ? 0 : (DateTime.Now - requestDateTime.Value).TotalMilliseconds;
         }
 
         return log;
@@ -46,14 +49,9 @@ public class LogModel : BaseEntity<long>
         obj.Type = LogType.Request;
         obj.Body = body;
         obj.Headers = headers;
-        obj.ElapsedMilliseconds = 0;
         context.SetRequestDateTime(obj.TimeStamp);
         obj.AdditionalData = context.GetLoggerAdditionalData(isRequestData: true);
-        var contentLength = context.Request.ContentLength ??
-                            string.Join(",", context.Request.Headers.Select(x => x.Key + ":" + x.Value).ToList())
-                                .Length +
-                            body.Length;
-        obj.ContentLength = contentLength;
+        obj.ContentLength = context.GetRequestContentLength(body);
         return obj;
     }
 
@@ -61,17 +59,13 @@ public class LogModel : BaseEntity<long>
     {
         var obj = GetNew(context);
         obj.Type = LogType.CustomLog;
-        var requestDateTime = context.GetRequestDateTime();
-        obj.ElapsedMilliseconds = requestDateTime == null ? 0 : (DateTime.Now - requestDateTime.Value).TotalMilliseconds;
         return obj;
     }
 
-    public static LogModel GetNewErrorObject(HttpContext context = null)
+    public static LogModel GetNewErrorObject(HttpContext? context = null)
     {
         var obj = GetNew(context);
         obj.Type = LogType.Error;
-        var requestDateTime = context.GetRequestDateTime();
-        obj.ElapsedMilliseconds = requestDateTime == null ? 0 : (DateTime.Now - requestDateTime.Value).TotalMilliseconds;
         obj.Severity = LogLevel.Error.ToString();
         return obj;
     }
@@ -84,22 +78,13 @@ public class LogModel : BaseEntity<long>
         obj.Headers = headers;
         obj.Description = JsonConvert.SerializeObject(new { context.Response.StatusCode });
         obj.AdditionalData = context.GetLoggerAdditionalData(isRequestData: false);
-        var requestDateTime = context.GetRequestDateTime();
-        obj.ElapsedMilliseconds = requestDateTime == null ? 0 : (DateTime.Now - requestDateTime.Value).TotalMilliseconds;
-        var contentLength = context.Response.ContentLength ??
-                            string.Join(",",
-                                    context.Response.Headers.Select(x => x.Key + ":" + x.Value)
-                                        .ToList())
-                                .Length +
-                            body.Length;
-        obj.ContentLength = contentLength;
+        obj.ContentLength = context.GetResponseContentLength(body);
         return obj;
     }
 
     public DateTime TimeStamp { get; set; }
     public string Url { get; set; }
     public string Description { get; set; }
-
     public string EnvironmentInfo { get; set; }
 
     /// <summary>

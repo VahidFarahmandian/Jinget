@@ -24,7 +24,7 @@ public class ElasticSearchLoggerProvider : BatchingLoggerProvider
         {
             foreach (var item in group)
             {
-                var log = LogModel.GetNew(null);
+                var log = LogModel.GetNew();
                 try
                 {
                     log = JsonConvert.DeserializeObject<LogModel>(item.Description);

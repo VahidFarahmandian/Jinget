@@ -2,6 +2,24 @@
 
 public static class HttpContextExtensions
 {
+    public static long GetRequestContentLength(this HttpContext context, string body)
+    {
+        return context.Request.ContentLength ??
+                           string.Join(",", context.Request.Headers.Select(x => x.Key + ":" + x.Value).ToList())
+                               .Length +
+                           body.Length;
+    }
+
+    public static long GetResponseContentLength(this HttpContext context, string body)
+    {
+        return context.Response.ContentLength ??
+                            string.Join(",",
+                                    context.Response.Headers.Select(x => x.Key + ":" + x.Value)
+                                        .ToList())
+                                .Length +
+                            body.Length;
+    }
+
     /// <summary>
     /// set current datetime to HttpContext.Items. <seealso cref="GetRequestDateTime(HttpContext)"/>
     /// </summary>
