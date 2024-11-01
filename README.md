@@ -7,18 +7,19 @@
 
 **NOTE** `Jinget.Blazor` has been moved to : https://github.com/VahidFarahmandian/jinget.blazor
 
-Jinget is a framework written using .NET 6.0 , and built using DDD+CQRS. Jinget boosts your productivity by providing robust infrastructure for source codes.
+Jinget is a framework written using .NET, and built using DDD+CQRS. Jinget boosts your productivity by providing robust infrastructure for source codes.
 
 Jinget provides the following benefits:
 
 - Easy to config data access layer using Entity Framework Core and Dapper
 - Communicating with external services and web APIs(SOAP, RestFul and gRPC services)
-- Logging requests and responses into variouse destinations such as File, SQL Server database or Elasticsearch
+- Logging requests and responses into variouse destinations such as File or Elasticsearch
+- easy to use exception handler
 - Robust infrastructure for authentication and authorization mechanisms
-- Versioning and tracing entities
 - Extensive collection of functionalities useful for different projects such as numerous  extension methods, helpers, converters and dynamic code providers
 - Easy to run health check infrastructure for different types of resources such as server availability, database health, web service/API's health etc.
 - Auto injected security considerations based on OWASP Top 10
+- Supports Read & Write pipelines separations
 
 # Which parts are available now:
 
@@ -26,6 +27,7 @@ Jinget provides the following benefits:
 - Jinget.Core.DiScanner: Helps you to automatically register your source code dependencies without the need to write repetitive and annoying codes
 - Jinget.Handlers.ExternalServiceHandlers: Helps you to consume different types of Web APIs and SOAP web services with ease of use.
 - Jinget.Logger: Helps you to store your log messages into Elasticsearch or files
+- Jinget.ExceptionHandler: Helps you to handle exceptions globally.
   
 # How to install
 In order to install Jinget please refer to [nuget.org](https://www.nuget.org/profiles/Jinget "nuget.org")

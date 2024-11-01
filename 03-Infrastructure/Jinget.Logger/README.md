@@ -1,5 +1,5 @@
 # Jinget Logger
-Using this library, you can easily save your application logs in Elasticsearch database or files.
+Using this library, you can easily save your application logs in Elasticsearch database or files, by calling logger.Logxxx methods.
 
 ## How to Use:
 
@@ -21,13 +21,16 @@ builder.Host.LogToElasticSearch(blacklist);
 
 After setting the logging destination, you need to configure Elasticsearch:
 ```csharp
-builder.Services.ConfigureElasticSearchLogger<OperationLog, ErrorLog, CustomLog>(
+builder.Services.ConfigureElasticSearchLogger(
     new ElasticSearchSettingModel
     {
+        CreateIndexPerPartition = <true|false>,
         UserName = <authentication username>,
         Password = <authentication password>,
         Url = <ElasticSearch Url>,
-        UseSsl = <true|false>
+        UseSsl = <true|false>,
+        UseGlobalExceptionHandler = <true|false>,
+        Handle4xxResponses = <true|false>
     });
 ```
 
@@ -43,21 +46,9 @@ builder.Services.ConfigureElasticSearchLogger<OperationLog, ErrorLog, CustomLog>
 
 `RefreshType`: In Elasticsearch, the Index, Update, Delete, and Bulk APIs support setting refresh to control when changes made by this request are made visible to search.
 
-If you want to use partition key:
-```csharp
-builder.Host.LogToElasticSearch(blacklist);
-...
+`UseGlobalExceptionHandler`: If set to true then global exception handler will be used which in turn will be rewrite the exception response output.
 
-var elasticSearchSetting = new ElasticSearchSettingModel
-{
-    CreateIndexPerPartition = true,
-    UserName = <authentication username>,
-    Password = <authentication password>,
-    Url = <ElasticSearch Url>,
-    UseSsl = <true|false>
-};
-builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
-```
+`Handle4xxResponses`: If set to true then http request exception handler will be used which in turn will be handle the 4xx responses.
 
 And finally you need to add the Jinget.Logger middleware to your pipeline:
 ```csharp
@@ -73,7 +64,7 @@ app.UseWhen(p => elasticSearchSetting.CreateIndexPerPartition, appBuilder =>
         //define the partitioning logic
         bool partitionKeyExists = context.Request.Headers.TryGetValue("jinget.client_id", out StringValues partitionKey);
         if (partitionKeyExists)
-            context.Items.Add("jinget.log.partitionkey", $"test.{partitionKey}");
+            context.SetPartitionKey($"test.{partitionKey}");
 
         await next.Invoke();
     });
@@ -112,7 +103,9 @@ var elasticSearchSetting = new ElasticSearchSettingModel
     UserName = "myuser",
     Password = "mypass",
     Url = "192.168.1.1:9200",
-    UseSsl = false
+    UseSsl = false,
+    UseGlobalExceptionHandler = true,
+    Handle4xxResponses = false
 };
 builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
 
@@ -149,7 +142,9 @@ var elasticSearchSetting = new ElasticSearchSettingModel
     UserName = "myuser",
     Password = "mypass",
     Url = "192.168.1.1:9200",
-    UseSsl = false
+    UseSsl = false,
+    UseGlobalExceptionHandler = true,
+    Handle4xxResponses = false
 };
 builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
 
@@ -164,7 +159,7 @@ app.UseWhen(p => elasticSearchSetting.CreateIndexPerPartition, appBuilder =>
     {
         bool partitionKeyExists = context.Request.Headers.TryGetValue("jinget.client_id", out StringValues partitionKey);
         if (partitionKeyExists)
-            context.Items.Add("jinget.log.partitionkey", $"test.{partitionKey}");
+            context.SetPartitionKey($"test.{partitionKey}");
 
         await next.Invoke();
     });
@@ -207,9 +202,14 @@ builder.Host.LogToFile(blacklist, fileNamePrefix: "Log-", logDirectory: "D:\\log
 
 `fileSizeLimit`: Gets or sets a strictly positive value representing the maximum log size in MB or null for no limit. Once the log is full, no more messages will be appended. Defaults is `10MB`.
 
-After setting the logging destination, you need to configure Elasticsearch:
+After setting the logging destination, you need to configure file logger:
 ```csharp
-builder.Services.ConfigureFileLogger();
+builder.Services.ConfigureFileLogger(
+    new FileSettingModel
+    {
+        UseGlobalExceptionHandler = <true|false>,
+        Handle4xxResponses = <true|false>
+    });
 ```
 
 Here is the complete configuration for a .NET Web API application:
@@ -223,7 +223,12 @@ var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, t
 
 var blacklist = config.GetSection("logging:BlackList").Get<string[]>();
 builder.Host.LogToFile(blacklist, "Log-", "D:\\logs", 10, 15);
-builder.Services.ConfigureFileLogger();
+var fileSetting = new FileSettingModel
+{
+    UseGlobalExceptionHandler = true,
+    Handle4xxResponses = false
+};
+builder.Services.ConfigureFileLogger(fileSetting);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

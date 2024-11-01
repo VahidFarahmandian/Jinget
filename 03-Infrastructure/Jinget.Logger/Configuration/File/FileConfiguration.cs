@@ -2,5 +2,5 @@
 
 public static class FileConfiguration
 {
-    public static void ConfigureFileLogger(this IServiceCollection services) => services.ConfigureJingetLoggerPrerequisites();
+    public static void ConfigureFileLogger(this IServiceCollection services, FileSettingModel fileSetting) => services.ConfigureJingetLoggerPrerequisites(fileSetting);
 }

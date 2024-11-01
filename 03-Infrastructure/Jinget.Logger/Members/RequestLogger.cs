@@ -1,77 +1,49 @@
-﻿namespace Jinget.Logger.Members;
+﻿using Jinget.ExceptionHandler.Entities.Log;
+using Jinget.ExceptionHandler.Extensions;
 
-public class RequestLogger<TCategoryName> : BaseLogger<TCategoryName>, ILog
+namespace Jinget.Logger.Members;
+
+public class RequestLogger<TCategoryName> : Log<TCategoryName>, ILog
 {
-    private readonly IExceptionHandler<TCategoryName> _exception;
-
     public RequestLogger(RequestDelegate next, ILogger<TCategoryName> logger,
-        IExceptionHandler<TCategoryName> exception,
         IOptions<BlackListHeader> blackListHeaders,
         IOptions<WhiteListHeader> whiteListHeaders)
-        : base(next, logger, blackListHeaders, whiteListHeaders) => _exception = exception;
+        : base(next, logger, blackListHeaders, whiteListHeaders)
+    {
+    }
 
     public async Task LogAsync(HttpContext context)
     {
+        context.Request.EnableBuffering();
         string requestBodyText;
-        Stream originalRequestBody = null;
-
-        if (IsMultipartContentType(context))
+        bool ismultiPart = false;
+        var originalRequestBody = context.Request?.Body;
+        if (context.IsMultipartContentType())
         {
             requestBodyText = "--REQUEST BODY TRIMMED BY LOGGER-- multipart/form-data";
+            ismultiPart = true;
         }
         else
         {
             var requestBodyStream = new MemoryStream();
-            originalRequestBody = context.Request?.Body;
             await context.Request?.Body.CopyToAsync(requestBodyStream);
             requestBodyStream.Seek(0, SeekOrigin.Begin);
-            requestBodyText = await new StreamReader(requestBodyStream).ReadToEndAsync();
-            requestBodyStream.Seek(0, SeekOrigin.Begin);
-            context.Request.Body = requestBodyStream;
+            requestBodyText = await new StreamReader(requestBodyStream, Encoding.UTF8).ReadToEndAsync();
         }
 
-        //context.Response.Headers.Add("RequestId", Guid.NewGuid().ToString());
+        SetLog(context, requestBodyText);
+        if (!ismultiPart)
+            context.Request.Body = originalRequestBody;
 
-        var contentLength = context.Request.ContentLength ??
-                            string.Join(",", context.Request.Headers.Select(x => x.Key + ":" + x.Value).ToList())
-                                .Length +
-                            requestBodyText.Length;
-        context.Request.Headers.TryGetValue("Referer", out StringValues pageUrl);
+        await Next(context);
+    }
 
-        var model = new LogModel
-        {
-            ParitionKey = GetPartitionKey(context),
-            Username = context.User.Identity.Name,
-            Method = context.Request.Method,
-            Body = requestBodyText,
-            Headers = GetHeaders(context, isRequestHeader: true),
-            Url = context.Request.GetDisplayUrl(),
-            IP = GetIp(context),
-            Type = LogType.Request,
-            Description = null,
-            TraceIdentifier = context.TraceIdentifier,
-            AdditionalData = GetAdditionalData(context, isRequestData: true),
-            SubSystem = AppDomain.CurrentDomain.FriendlyName,
-            PageUrl = pageUrl.FirstOrDefault(),
-            ContentLength = contentLength
-        };
+    private void SetLog(HttpContext context, string requestBodyText)
+    {
+        var model = LogModel.GetNewRequestObject(context, requestBodyText,
+            context.GetLoggerHeaders(BlackListHeaders, WhiteListHeaders, isRequestHeader: true));
 
-        try
-        {
-            if (context.Request.Method != "OPTIONS")
-                Logger.LogInformation(JsonConvert.SerializeObject(model));
-
-            await Next(context);
-        }
-        catch (Exception ex)
-        {
-            _exception.Handle(ex, model);
-            context.Response.StatusCode = 500;
-            context.Response.ContentType = MediaTypeNames.Application.Json;
-            await context.Response.WriteAsync(JsonConvert.SerializeObject(new { error = ex.Message }));
-            throw;
-        }
-
-        if (originalRequestBody != null) context.Request.Body = originalRequestBody;
+        if (context.Request.Method != "OPTIONS")
+            Logger.LogInformation(JsonConvert.SerializeObject(model));
     }
 }

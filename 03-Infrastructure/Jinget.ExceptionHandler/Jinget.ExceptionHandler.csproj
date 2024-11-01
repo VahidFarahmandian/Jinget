@@ -7,14 +7,14 @@
 		<Authors>Vahid Farahmandian</Authors>
 		<RepositoryUrl>https://github.com/VahidFarahmandian/Jinget</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Description>Using this library, you can easily save your application logs in ElasticSearch database or files.</Description>
+		<Description>Using this library, you can make use of different exception handling mechanisms.</Description>
 		<Copyright>All Rights Reserved</Copyright>
 		<PackageIcon>icon.png</PackageIcon>
 		<Company>Jinget</Company>
 		<Product>Jinget</Product>
-		<Title>Jinget Logger</Title>
+		<Title>Jinget ExceptionHandler</Title>
 		<PackageProjectUrl>https://github.com/VahidFarahmandian/Jinget</PackageProjectUrl>
-		<PackageTags>jinget, elasticsearch, log, logger, utility, file</PackageTags>
+		<PackageTags>jinget, exception, error, 404, log, logger</PackageTags>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 	<ItemGroup>
@@ -24,21 +24,20 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Mapster" Version="7.4.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
-		<PackageReference Include="NEST" Version="7.17.5" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\01-Core\Jinget.Core\Jinget.Core.csproj" />
-		<ProjectReference Include="..\Jinget.ExceptionHandler\Jinget.ExceptionHandler.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Update="README.md">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\01-Core\Jinget.Core\Jinget.Core.csproj" />
 	</ItemGroup>
 
 </Project>

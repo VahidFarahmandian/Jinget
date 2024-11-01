@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
-using System.Net.Http;
+﻿using Microsoft.AspNetCore.Builder;
 using Jinget.Core.ExtensionMethods;
 using Jinget.ExceptionHandler.Entities;
 
-namespace Jinget.Logger.Configuration;
+namespace Jinget.ExceptionHandler;
 
 public static class ApplicationBuilderExtensions
 {
     /// <summary>
     /// Add logging required middlewares to pipeline
     /// </summary>
-    public static IApplicationBuilder UseJingetLogging(this IApplicationBuilder app)
+    public static IApplicationBuilder UseJingetExceptionHandler(this IApplicationBuilder app)
     {
         app.UseExceptionHandler();
         app.Use(async (ctx, next) =>
@@ -25,8 +24,6 @@ public static class ApplicationBuilderExtensions
                 }
             }
         });
-        app.UseMiddleware<LogRequestMiddleware>();
-        app.UseMiddleware<LogResponseMiddleware>();
 
         return app;
     }

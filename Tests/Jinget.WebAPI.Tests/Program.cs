@@ -1,3 +1,6 @@
+using Jinget.ExceptionHandler.Entities;
+using Jinget.ExceptionHandler.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true).Build();
@@ -11,7 +14,9 @@ var elasticSearchSetting = new ElasticSearchSettingModel
     UserName = "elastic",
     Password = "Aa@123456",
     Url = "localhost:9200",
-    UseSsl = false
+    UseSsl = false,
+    UseGlobalExceptionHandler = true,
+    Handle4xxResponses = true
 };
 builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
 builder.Services.AddControllers();
@@ -22,7 +27,7 @@ app.UseWhen(p => elasticSearchSetting.CreateIndexPerPartition, appBuilder =>
 {
     appBuilder.Use(async (context, next) =>
     {
-        context.Items.Add("jinget.log.partitionkey", $"{DateTime.Now.ToString("yyyyMMdd")}");
+        context.SetLoggerPartitionKey($"{DateTime.Now:yyyyMMdd}");
         await next.Invoke();
     });
 });
@@ -30,8 +35,8 @@ app.UseWhen(p => p.Request.Path == "/detailedlog", appBuilder =>
 {
     appBuilder.Use(async (context, next) =>
     {
-        context.Items.Add("jinget.log.partitionkey", $"{DateTime.Now.ToString("yyyyMMdd")}");
-        context.Request.Headers.Add("req-header", $"{DateTime.Now.ToString("yyyyMMdd")}");
+        context.Request.Headers.Add("req-header", $"{DateTime.Now:yyyyMMdd}");
+        context.Request.Headers.Add("AdditionalData", $"{DateTime.Now:yyyyMMdd}");
         await next.Invoke();
     });
 });
@@ -41,21 +46,29 @@ app.UseWhen(p => p.Request.Path == "/detailedlog", appBuilder =>
     appBuilder.Use(async (context, next) =>
     {
         await next.Invoke();
-        context.Response.Headers.Add("res-header", $"{DateTime.Now.ToString("yyyyMMdd")}");
+        context.Response.Headers.Add("res-header", $"{DateTime.Now:yyyyMMdd}");
+        context.Items.Add("AdditionalData", $"{DateTime.Now:yyyyMMdd}");
     });
 });
-app.MapGet("customlog", (ILogger<SampleModel> logger) =>
+app.MapGet("customlog", (IHttpContextAccessor httpContextAccessor, ILogger<SampleModel> logger) =>
 {
-    logger.LogInformation("Sample Custom message!");
-    logger.LogCustom("Sample Custom message2!");
+    logger.LogInformation(httpContextAccessor.HttpContext, "Sample Custom message!");
+    logger.LogCustom(httpContextAccessor.HttpContext, "Sample Custom message2!");
     return "custom log saved";
 });
-app.MapGet("errorlog", (ILogger<SampleModel> logger) => { throw new Exception("Sample Exception!"); });
-app.MapGet("successlog", (ILogger<SampleModel> logger) => "Hello vahid");
-app.MapGet("detailedlog", (HttpContext ctx, ILogger<SampleModel> logger) => "Sample Success");
+app.MapGet("errorlog", (IHttpContextAccessor httpContextAccessor, ILogger<SampleModel> logger) =>
+{
+    logger.LogError(httpContextAccessor.HttpContext, "Sample Error message1!");
+    logger.LogError(httpContextAccessor.HttpContext, "Sample Error message2!");
+    logger.LogError(httpContextAccessor.HttpContext, "Sample Error message3!");
+
+    throw new Exception("Sample exception");
+});
+app.MapGet("successlog", () => "Hello vahid");
+app.MapGet("detailedlog", () => "Sample Success");
+app.MapPost("save", (BaseSettingModel setting) => setting);
 
 app.MapGet("/logs/{search}/{page}/{pagesize}", async (
-        HttpContext ctx,
         IElasticSearchLoggingDomainService domainService, string search, int page, int pagesize) =>
     await domainService.SearchAsync("20241026", search, page, pagesize, origin: "/logs/"));
 

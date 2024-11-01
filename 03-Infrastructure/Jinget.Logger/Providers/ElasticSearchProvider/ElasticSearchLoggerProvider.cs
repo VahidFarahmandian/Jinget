@@ -1,4 +1,6 @@
-﻿namespace Jinget.Logger.Providers.ElasticSearchProvider;
+﻿using Jinget.ExceptionHandler.Entities.Log;
+
+namespace Jinget.Logger.Providers.ElasticSearchProvider;
 
 /// <summary>
 ///     An <see cref="ILoggerProvider" /> that writes logs
@@ -7,42 +9,42 @@
 public class ElasticSearchLoggerProvider : BatchingLoggerProvider
 {
     private readonly IServiceProvider _serviceProvider;
-    private IElasticSearchLoggingDomainService _logService;
 
     public ElasticSearchLoggerProvider(
         IOptions<ElasticSearchLoggerOptions> options,
-        IServiceProvider serviceProvider) : base(options) => _serviceProvider = serviceProvider;
-
-    protected override async Task WriteMessagesAsync(IEnumerable<LogMessage> messages, CancellationToken cancellationToken)
+        IServiceProvider serviceProvider) : base(options)
     {
-        _logService = _serviceProvider.GetJingetService<IElasticSearchLoggingDomainService>();
+        _serviceProvider = serviceProvider;
+    }
 
+    protected override async Task WriteMessagesAsync(IEnumerable<LogMessage> messages,
+        CancellationToken cancellationToken)
+    {
+        var _logService = _serviceProvider.GetJingetService<IElasticSearchLoggingDomainService>();
 
         foreach (var group in messages.GroupBy(GetGrouping))
         {
-            foreach (LogMessage item in group)
+            foreach (var item in group)
             {
-                LogModel log = null;
+                var log = LogModel.GetNew(null);
                 try
                 {
                     log = JsonConvert.DeserializeObject<LogModel>(item.Description);
                 }
-                catch (JsonReaderException) //it means that the message is an error reporting message
+                catch (JsonReaderException) //it means that the message is an error message(not error log)
                 {
-                    log = new LogModel
+                    log = LogModel.GetNewErrorObject();
+                    log.AdditionalData = JsonConvert.SerializeObject(new
                     {
-                        Description = JsonConvert.SerializeObject(new
-                        {
-                            item.Description,
-                            item.Exception
-                        })
-                    };
+                        item.Description,
+                        item.Exception
+                    });
                 }
                 finally
                 {
                     log.TimeStamp = item.Timestamp;
                     log.Severity = item.Severity.ToString();
-                    var result = await _logService.CreateAsync(log);
+                    await _logService.CreateAsync(log);
                 }
             }
         }

@@ -1,4 +1,6 @@
-﻿namespace Jinget.Logger.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Jinget.ExceptionHandler.Entities;
 
 public abstract class BaseEntity<TKeyType>
 {

@@ -1,38 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Authors>Vahid Farahmandian</Authors>
-    <RepositoryUrl>https://github.com/VahidFarahmandian/Jinget</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <Description>Facilitates consuming HTTP resources</Description>
-    <Copyright>All Rights Reserved</Copyright>
-    <PackageIcon>icon.png</PackageIcon>
-    <Company>Jinget</Company>
-    <Product>Jinget</Product>
-    <PackageProjectUrl>https://github.com/VahidFarahmandian/Jinget</PackageProjectUrl>
-    <PackageTags>jinget, framework, webapi, http, soap, xml</PackageTags>
-    <Title>Jinget External Service Handler</Title>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<LangVersion>latestmajor</LangVersion>
+		<Nullable>enable</Nullable>
+		<Authors>Vahid Farahmandian</Authors>
+		<RepositoryUrl>https://github.com/VahidFarahmandian/Jinget</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Description>Facilitates consuming HTTP resources</Description>
+		<Copyright>All Rights Reserved</Copyright>
+		<PackageIcon>icon.png</PackageIcon>
+		<Company>Jinget</Company>
+		<Product>Jinget</Product>
+		<PackageProjectUrl>https://github.com/VahidFarahmandian/Jinget</PackageProjectUrl>
+		<PackageTags>jinget, framework, webapi, http, soap, xml</PackageTags>
+		<Title>Jinget External Service Handler</Title>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\01-Core\Jinget.Core\Jinget.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\01-Core\Jinget.Core\Jinget.Core.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\..\.editorconfig" Link=".editorconfig" />
-    <None Include="assets\icon.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\.editorconfig" Link=".editorconfig" />
+		<None Include="assets\icon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

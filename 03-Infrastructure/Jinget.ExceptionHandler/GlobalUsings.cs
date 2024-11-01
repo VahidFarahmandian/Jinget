@@ -1,0 +1,16 @@
+﻿global using Jinget.Core.Types;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.WebUtilities;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Logging;
+global using Newtonsoft.Json;
+global using System;
+global using System.Threading;
+global using System.Threading.Tasks;
+global using Jinget.ExceptionHandler.Entities;
+global using Microsoft.AspNetCore.Diagnostics;
+global using Microsoft.AspNetCore.Http.Extensions;
+global using System.Net.Http;
+global using Jinget.Core.Attributes;
+global using Microsoft.Extensions.Primitives;

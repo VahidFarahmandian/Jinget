@@ -8,7 +8,8 @@ public class BatchingLogger : ILogger
 
     public IDisposable BeginScope<TState>(TState state) => null;
 
-    public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) => logLevel != Microsoft.Extensions.Logging.LogLevel.None;
+    public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) =>
+        logLevel != Microsoft.Extensions.Logging.LogLevel.None;
 
     public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception exception,
         Func<TState, Exception, string> formatter)

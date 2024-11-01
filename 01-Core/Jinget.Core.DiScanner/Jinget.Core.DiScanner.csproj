@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<LangVersion>latest</LangVersion>
+		<TargetFramework>net8.0</TargetFramework>
+		<LangVersion>latestmajor</LangVersion>
 		<Nullable>enable</Nullable>
 		<Authors>Vahid Farahmandian</Authors>
 		<RepositoryUrl>https://github.com/VahidFarahmandian/Jinget</RepositoryUrl>
