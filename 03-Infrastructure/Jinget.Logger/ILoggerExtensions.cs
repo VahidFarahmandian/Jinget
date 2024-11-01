@@ -1,5 +1,4 @@
-﻿using Jinget.ExceptionHandler.Entities.Log;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+﻿using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Jinget.Logger;
 

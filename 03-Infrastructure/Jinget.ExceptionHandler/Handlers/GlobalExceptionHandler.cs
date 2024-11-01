@@ -1,5 +1,3 @@
-using Jinget.ExceptionHandler.Entities;
-
 namespace Jinget.ExceptionHandler.Handlers;
 
 public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger, IHostEnvironment env, BaseSettingModel baseSetting) :

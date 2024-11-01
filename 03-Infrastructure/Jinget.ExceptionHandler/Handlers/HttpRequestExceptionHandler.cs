@@ -1,5 +1,3 @@
-using Jinget.ExceptionHandler.Entities;
-
 namespace Jinget.ExceptionHandler.Handlers;
 
 public sealed class HttpRequestExceptionHandler

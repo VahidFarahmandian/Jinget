@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Jinget.Core.ExtensionMethods;
 
 namespace Jinget.ExceptionHandler.Extensions;
 

@@ -1,6 +1,4 @@
-﻿using Jinget.ExceptionHandler.Entities.Log;
-
-namespace Jinget.Logger.Providers.ElasticSearchProvider;
+﻿namespace Jinget.Logger.Providers.ElasticSearchProvider;
 
 /// <summary>
 ///     An <see cref="ILoggerProvider" /> that writes logs

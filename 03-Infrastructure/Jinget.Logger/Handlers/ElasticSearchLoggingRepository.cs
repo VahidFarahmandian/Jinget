@@ -1,6 +1,4 @@
-﻿using Jinget.ExceptionHandler.Entities.Log;
-
-namespace Jinget.Logger.Handlers;
+﻿namespace Jinget.Logger.Handlers;
 
 public class ElasticSearchLoggingRepository : IElasticSearchLoggingRepository
 {

@@ -1,6 +1,5 @@
 using Jinget.ExceptionHandler.Entities;
 using Jinget.ExceptionHandler.Extensions;
-using Jinget.Logger.Configuration.File;
 using Jinget.Logger.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,17 +8,17 @@ var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, t
 
 string[] blacklist = ["/logs/"];
 
-FileSettingModel fileSetting = new FileSettingModel
-{
-    FileNamePrefix = "Log",
-    LogDirectory = "Logs",
-    RetainFileCountLimit = 5,
-    FileSizeLimitMB = 10,
-    UseGlobalExceptionHandler = true,
-    Handle4xxResponses = true,
-};
-builder.Host.LogToFile(blacklist, fileSetting);
-builder.Services.ConfigureFileLogger(fileSetting);
+//FileSettingModel fileSetting = new FileSettingModel
+//{
+//    FileNamePrefix = "Log",
+//    LogDirectory = "Logs",
+//    RetainFileCountLimit = 5,
+//    FileSizeLimitMB = 10,
+//    UseGlobalExceptionHandler = true,
+//    Handle4xxResponses = true,
+//};
+//builder.Host.LogToFile(blacklist, fileSetting);
+//builder.Services.ConfigureFileLogger(fileSetting);
 builder.Host.LogToElasticSearch(blacklist);
 var elasticSearchSetting = new ElasticSearchSettingModel
 {

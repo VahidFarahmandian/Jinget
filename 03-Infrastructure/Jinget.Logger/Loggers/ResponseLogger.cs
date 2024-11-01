@@ -1,5 +1,4 @@
-﻿using Jinget.ExceptionHandler.Entities.Log;
-using Jinget.ExceptionHandler.Extensions;
+﻿using Jinget.ExceptionHandler.Extensions;
 using Jinget.Logger;
 
 namespace Jinget.Logger.Loggers;

@@ -1,11 +1,4 @@
-﻿using Jinget.Core.Enumerations;
-using Jinget.Core.ExtensionMethods;
-using Jinget.Core.ExtensionMethods.Enums;
-using Jinget.ExceptionHandler.Extensions;
-using System.Linq;
-using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("Jinget.Logger")]
+﻿[assembly: InternalsVisibleTo("Jinget.Logger")]
 namespace Jinget.ExceptionHandler.Entities.Log;
 
 [Entity(ElasticSearchEnabled = true)]
@@ -68,7 +61,8 @@ public class LogModel : BaseEntity<long>
     {
         var obj = GetNew(context);
         obj.Type = LogType.CustomLog;
-        obj.ElapsedMilliseconds = (DateTime.Now - context.GetRequestDateTime()).TotalMilliseconds;
+        var requestDateTime = context.GetRequestDateTime();
+        obj.ElapsedMilliseconds = requestDateTime == null ? 0 : (DateTime.Now - requestDateTime.Value).TotalMilliseconds;
         return obj;
     }
 
@@ -76,7 +70,8 @@ public class LogModel : BaseEntity<long>
     {
         var obj = GetNew(context);
         obj.Type = LogType.Error;
-        obj.ElapsedMilliseconds = (DateTime.Now - context.GetRequestDateTime()).TotalMilliseconds;
+        var requestDateTime = context.GetRequestDateTime();
+        obj.ElapsedMilliseconds = requestDateTime == null ? 0 : (DateTime.Now - requestDateTime.Value).TotalMilliseconds;
         obj.Severity = LogLevel.Error.ToString();
         return obj;
     }
@@ -89,7 +84,8 @@ public class LogModel : BaseEntity<long>
         obj.Headers = headers;
         obj.Description = JsonConvert.SerializeObject(new { context.Response.StatusCode });
         obj.AdditionalData = context.GetLoggerAdditionalData(isRequestData: false);
-        obj.ElapsedMilliseconds = (DateTime.Now - context.GetRequestDateTime()).TotalMilliseconds;
+        var requestDateTime = context.GetRequestDateTime();
+        obj.ElapsedMilliseconds = requestDateTime == null ? 0 : (DateTime.Now - requestDateTime.Value).TotalMilliseconds;
         var contentLength = context.Response.ContentLength ??
                             string.Join(",",
                                     context.Response.Headers.Select(x => x.Key + ":" + x.Value)

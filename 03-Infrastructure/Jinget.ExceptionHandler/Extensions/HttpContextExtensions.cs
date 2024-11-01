@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Jinget.ExceptionHandler.Extensions;
+﻿namespace Jinget.ExceptionHandler.Extensions;
 
 public static class HttpContextExtensions
 {
@@ -14,8 +11,8 @@ public static class HttpContextExtensions
     /// <summary>
     /// get saved datetime from HttpContext.Items. <seealso cref="SetRequestDateTime(HttpContext, DateTime)"/>
     /// </summary>
-    public static DateTime GetRequestDateTime(this HttpContext context) =>
-        Convert.ToDateTime(context.Items["jinget.log.request.datetime"]);
+    public static DateTime? GetRequestDateTime(this HttpContext context) =>
+        context.Items.ContainsKey("jinget.log.request.datetime") ? Convert.ToDateTime(context.Items["jinget.log.request.datetime"]) : null;
 
     /// <summary>
     /// Get the partition key used for logging
@@ -48,8 +45,7 @@ public static class HttpContextExtensions
     /// <summary>
     /// get request/response headers used for logging
     /// </summary>
-    public static string GetLoggerHeaders(this HttpContext context, List<string> blackListHeaders,
-        List<string> whiteListHeaders, bool isRequestHeader)
+    public static string GetLoggerHeaders(this HttpContext context, List<string> blackListHeaders, List<string> whiteListHeaders, bool isRequestHeader)
     {
         string headers;
         var rawHeaders = isRequestHeader ? context.Request.Headers : context.Response.Headers;
