@@ -4,9 +4,9 @@ public static class IServiceCollectionExtensions
 {
     public static void ConfigureJingetExceptionHandler(this IServiceCollection services, BaseSettingModel baseSetting)
     {
+        services.TryAddSingleton(baseSetting);
         if (baseSetting.UseGlobalExceptionHandler)
         {
-            services.TryAddSingleton(baseSetting);
             services.AddProblemDetails();
 
             if (baseSetting.Handle4xxResponses)

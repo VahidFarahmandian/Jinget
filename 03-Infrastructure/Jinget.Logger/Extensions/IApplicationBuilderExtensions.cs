@@ -10,7 +10,10 @@ public static class IApplicationBuilderExtensions
     /// </summary>
     public static IApplicationBuilder UseJingetLogging(this IApplicationBuilder app)
     {
-        app.UseJingetExceptionHandler();
+        var settings = app.ApplicationServices.GetJingetService<BaseSettingModel>();
+
+        if (settings != null && settings.UseGlobalExceptionHandler)
+            app.UseJingetExceptionHandler();
         app.UseMiddleware<LogRequestMiddleware>();
         app.UseMiddleware<LogResponseMiddleware>();
 

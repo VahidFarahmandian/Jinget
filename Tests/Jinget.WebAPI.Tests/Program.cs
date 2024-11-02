@@ -28,7 +28,7 @@ var elasticSearchSetting = new ElasticSearchSettingModel
     Url = "localhost:9200",
     UseSsl = false,
     UseGlobalExceptionHandler = true,
-    Handle4xxResponses = true
+    Handle4xxResponses = false
 };
 builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
 builder.Services.AddControllers();
