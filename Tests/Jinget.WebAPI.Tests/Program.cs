@@ -28,7 +28,7 @@ var elasticSearchSetting = new ElasticSearchSettingModel
     Url = "localhost:9200",
     UseSsl = false,
     UseGlobalExceptionHandler = true,
-    Handle4xxResponses = false
+    Handle4xxResponses = true
 };
 builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
 builder.Services.AddControllers();
@@ -78,10 +78,14 @@ app.MapGet("errorlog", (IHttpContextAccessor httpContextAccessor, ILogger<Sample
 });
 app.MapGet("successlog", () => "Hello vahid");
 app.MapGet("detailedlog", () => "Sample Success");
-app.MapPost("save", (BaseSettingModel setting) => setting);
+app.MapPost("save", (viewmodel vm) => vm);
 
 app.MapGet("/logs/{search}/{page}/{pagesize}", async (
         IElasticSearchLoggingDomainService domainService, string search, int page, int pagesize) =>
     await domainService.SearchAsync("20241026", search, page, pagesize, origin: "/logs/"));
 
 app.Run();
+public class viewmodel
+{
+    public string name { get; set; }
+}

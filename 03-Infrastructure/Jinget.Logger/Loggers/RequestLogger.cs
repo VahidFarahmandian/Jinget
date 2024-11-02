@@ -3,38 +3,28 @@ using Jinget.Logger;
 
 namespace Jinget.Logger.Loggers;
 
-public class RequestLogger<TCategoryName> : Log<TCategoryName>, ILog
+public class RequestLogger<TCategoryName>(
+    RequestDelegate next,
+    ILogger<TCategoryName> logger,
+    IOptions<BlackListHeader> blackListHeaders,
+    IOptions<WhiteListHeader> whiteListHeaders) : Log<TCategoryName>(next, logger, blackListHeaders, whiteListHeaders), ILog
 {
-    public RequestLogger(RequestDelegate next, ILogger<TCategoryName> logger,
-        IOptions<BlackListHeader> blackListHeaders,
-        IOptions<WhiteListHeader> whiteListHeaders)
-        : base(next, logger, blackListHeaders, whiteListHeaders)
-    {
-    }
-
     public async Task LogAsync(HttpContext context)
     {
-        context.Request.EnableBuffering();
         string requestBodyText;
-        bool ismultiPart = false;
-        var originalRequestBody = context.Request?.Body;
         if (context.IsMultipartContentType())
         {
             requestBodyText = "--REQUEST BODY TRIMMED BY LOGGER-- multipart/form-data";
-            ismultiPart = true;
         }
         else
         {
-            var requestBodyStream = new MemoryStream();
-            await context.Request?.Body.CopyToAsync(requestBodyStream);
-            requestBodyStream.Seek(0, SeekOrigin.Begin);
-            requestBodyText = await new StreamReader(requestBodyStream, Encoding.UTF8).ReadToEndAsync();
+            context.Request.EnableBuffering();
+            using var reader = new StreamReader(context.Request.Body, Encoding.UTF8, leaveOpen: true);
+            requestBodyText = await reader.ReadToEndAsync();
+            context.Request.Body.Seek(0, SeekOrigin.Begin);
         }
 
         SetLog(context, requestBodyText);
-        if (!ismultiPart)
-            context.Request.Body = originalRequestBody;
-
         await Next(context);
     }
 
