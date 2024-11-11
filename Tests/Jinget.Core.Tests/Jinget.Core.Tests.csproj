@@ -22,10 +22,4 @@
 		<ProjectReference Include="..\..\01-Core\Jinget.Core\Jinget.Core.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<None Update="sample.txt">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-
 </Project>
