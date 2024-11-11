@@ -6,73 +6,166 @@ namespace Jinget.Core.Tests.Utilities.Compression;
 [TestClass]
 public class ZipUtilityTests
 {
-    ZipUtility zip;
-    [TestInitialize]
-    public void Initialize() => zip = new ZipUtility();
-
-    [TestMethod]
-    public async Task should_compress_and_chunkAsync()
+    private async Task<FileInfo> CompressAsync(string fileName, string password = "")
     {
-        FileInfo file = new("sample.txt");
-        int maxDOP = 5;
-        int eachFileMaxSize = 4;
-
-        List<FileInfo> files = [file];
-        await zip.CompressAsync([.. files], files[0].DirectoryName, maxDOP, eachFileMaxSize);
-
-        Assert.IsTrue(file.Directory.GetFiles("sample.txt.z??").Length != 0);
-    }
-
-    [TestMethod]
-    public async Task should_compress_using_password_and_chunkAsync()
-    {
-        FileInfo file = new("sample.txt");
-        string password = "123";
-        List<FileInfo> files = [file];
-        await zip.CompressAsync([.. files], files[0].DirectoryName, password: password);
-
-        Assert.IsTrue(file.Directory.GetFiles("sample.txt.z??").Length != 0);
-    }
-
-    [TestMethod]
-    public async Task should_decompressed_fileAsync()
-    {
-        string fileName = Guid.NewGuid() + ".txt";
         using (var tw = new StreamWriter(fileName, true))
         {
-            await tw.WriteLineAsync("sample text");
+            await tw.WriteAsync("sample text");
         }
-        string password = "123";
         var tobeCompressed = new FileInfo[] { new(fileName) };
-        await zip.CompressAsync(tobeCompressed, tobeCompressed[0].DirectoryName, password: password);
+        await ZipUtility.CompressAsync(tobeCompressed, tobeCompressed[0].DirectoryName, password: password);
         File.Delete(fileName);
+        return tobeCompressed[0];
+    }
 
-        FileInfo file = new($"{fileName}.zip");
+    private async Task<FileInfo> CompressLargeFileAsync(string fileName, string password = "", int eachFileMaxSize = 1)
+    {
+        new FileInfo("sample.txt").CopyTo(fileName);
+        FileInfo file = new(fileName);
         int maxDOP = 5;
 
         List<FileInfo> files = [file];
-        await zip.DecompressAsync([.. files], files[0].DirectoryName, maxDOP);
+        await ZipUtility.CompressAsync([.. files], files[0].DirectoryName, maxDOP, eachFileMaxSize, password);
+        return file;
+    }
 
-        Assert.IsTrue(file.Directory.GetFiles(fileName).Length != 0);
+    [TestCleanup]
+    public void Cleanup()
+    {
+        string[] zipFiles = Directory.GetFiles(".", "*.zip"); // Get all zip files in the root directory
+        foreach (string zipFile in zipFiles)
+        {
+            File.Delete(zipFile);
+        }
+        string[] txtFiles = Directory.GetFiles(".", "*.txt")
+            .Where(x => x != ".\\sample.txt").ToArray(); // Get all zip files in the root directory
+        foreach (string txtFile in txtFiles)
+        {
+            File.Delete(txtFile);
+        }
     }
 
     [TestMethod]
-    public async Task should_decompressed_using_passwordAsync()
+    public async Task should_throw_ArgumentException_when_files_nullAsync()
     {
-        string fileName = Guid.NewGuid() + ".txt";
-        using (var tw = new StreamWriter(fileName, true))
-        {
-            await tw.WriteLineAsync("sample text");
-        }
-        string password = "123";
-        var tobeCompressed = new FileInfo[] { new(fileName) };
-        await zip.CompressAsync(tobeCompressed, tobeCompressed[0].DirectoryName, password: password);
-        File.Delete(fileName);
+        await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () => await ZipUtility.CompressAsync(null, "path"));
+    }
 
-        FileInfo file = new($"{fileName}.zip");
+    [TestMethod]
+    public async Task should_compress_empty_fileAsync()
+    {
+        var file = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.txt");
+        File.Create(file).Close();
+
+        var compressedFile = await CompressAsync(file);
+        string compressedFileName = Path.GetFileNameWithoutExtension(compressedFile.Name);
+        Assert.IsTrue(compressedFile.Directory.GetFiles($"{compressedFileName}.zip").Length == 1);
+    }
+
+    [TestMethod]
+    public async Task should_compressAsync()
+    {
+        var compressedFile = await CompressAsync($"{Guid.NewGuid()}.txt");
+        string compressedFileName = Path.GetFileNameWithoutExtension(compressedFile.Name);
+        Assert.IsTrue(compressedFile.Directory.GetFiles($"{compressedFileName}.zip").Length == 1);
+    }
+
+    [TestMethod]
+    public async Task should_decompressAsync()
+    {
+        var compressedFile = await CompressAsync($"{Guid.NewGuid()}.txt");
+        string compressedFileName = Path.GetFileNameWithoutExtension(compressedFile.Name);
+
+        FileInfo file = new($"{compressedFileName}.zip");
         List<FileInfo> files = [file];
-        await zip.DecompressAsync([.. files], files[0].DirectoryName, password: password);
+        await ZipUtility.DecompressAsync([.. files], files[0].DirectoryName);
 
-        Assert.IsTrue(file.Directory.GetFiles(fileName).Length != 0);
+        Assert.IsTrue(file.Directory.GetFiles(compressedFile.Name).Length == 1);
+        string content = await File.ReadAllTextAsync($"{compressedFileName}.txt");
+        Assert.AreEqual("sample text", content);
+    }
+
+    [TestMethod]
+    public async Task should_compress_large_file_and_chunkAsync()
+    {
+        var compressedFile = await CompressLargeFileAsync($"{Guid.NewGuid()}.txt", eachFileMaxSize: 1);
+        string compressedFileName = $"{Path.GetFileNameWithoutExtension(compressedFile.Name)}";
+
+        Assert.IsTrue(compressedFile.Directory.GetFiles($"{compressedFileName}.zip").Length == 1);
+        Assert.IsTrue(compressedFile.Directory.GetFiles($"{compressedFileName}-part?.zip").Length > 0);
+    }
+
+    [TestMethod]
+    public async Task should_decompress_large_file_with_chunkAsync()
+    {
+        var compressedFile = await CompressLargeFileAsync($"{Guid.NewGuid()}.txt", eachFileMaxSize: 1);
+        string compressedFileName = $"{Path.GetFileNameWithoutExtension(compressedFile.Name)}";
+
+        FileInfo file = new($"{compressedFileName}.zip");
+        List<FileInfo> files = [file];
+        await ZipUtility.DecompressAsync([.. files], files[0].DirectoryName);
+
+        Assert.IsTrue(file.Directory.GetFiles($"{compressedFileName}.txt").Length == 1);
+    }
+
+    [TestMethod]
+    public async Task should_compress_using_passwordAsync()
+    {
+        var compressedFile = await CompressAsync($"{Guid.NewGuid()}.txt", password: "123");
+        string compressedFileName = $"{Path.GetFileNameWithoutExtension(compressedFile.Name)}";
+
+        Assert.IsTrue(compressedFile.Directory.GetFiles($"{compressedFileName}.zip").Length == 1);
+    }
+
+    [TestMethod]
+    public async Task should_decompress_using_passwordAsync()
+    {
+        var compressedFile = await CompressAsync($"{Guid.NewGuid()}.txt", password: "123");
+        string compressedFileName = $"{Path.GetFileNameWithoutExtension(compressedFile.Name)}";
+
+        FileInfo file = new($"{compressedFileName}.zip");
+        List<FileInfo> files = [file];
+        await ZipUtility.DecompressAsync([.. files], files[0].DirectoryName, password: "123");
+
+        Assert.IsTrue(file.Directory.GetFiles($"{compressedFileName}.txt").Length == 1);
+        string content = await File.ReadAllTextAsync($"{compressedFileName}.txt");
+        Assert.AreEqual("sample text", content);
+    }
+
+    [TestMethod]
+    public async Task should_throw_exception_for_invalid_password_in_decompressing_using_passwordAsync()
+    {
+        var compressedFile = await CompressAsync($"{Guid.NewGuid()}.txt", password: "123");
+        string compressedFileName = $"{Path.GetFileNameWithoutExtension(compressedFile.Name)}";
+
+        FileInfo file = new($"{compressedFileName}.zip");
+        List<FileInfo> files = [file];
+        await Assert.ThrowsExceptionAsync<Exception>(async () =>
+        {
+            await ZipUtility.DecompressAsync([.. files], files[0].DirectoryName, password: "456");
+        });
+    }
+
+    [TestMethod]
+    public async Task should_compress_large_file_using_password_and_chunkAsync()
+    {
+        var compressedFile = await CompressLargeFileAsync($"{Guid.NewGuid()}.txt", password: "123", eachFileMaxSize: 1);
+        string compressedFileName = $"{Path.GetFileNameWithoutExtension(compressedFile.Name)}";
+
+        Assert.IsTrue(compressedFile.Directory.GetFiles($"{compressedFileName}.zip").Length == 1);
+        Assert.IsTrue(compressedFile.Directory.GetFiles($"{compressedFileName}-part?.zip").Length > 0);
+    }
+
+    [TestMethod]
+    public async Task should_decompress_large_file_using_password_and_chunkAsync()
+    {
+        var compressedFile = await CompressLargeFileAsync($"{Guid.NewGuid()}.txt", password: "123", eachFileMaxSize: 1);
+        string compressedFileName = $"{Path.GetFileNameWithoutExtension(compressedFile.Name)}";
+
+        FileInfo file = new($"{compressedFileName}.zip");
+        List<FileInfo> files = [file];
+        await ZipUtility.DecompressAsync([.. files], files[0].DirectoryName, password: "123");
+
+        Assert.IsTrue(file.Directory.GetFiles($"{compressedFileName}.txt").Length == 1);
     }
 }
