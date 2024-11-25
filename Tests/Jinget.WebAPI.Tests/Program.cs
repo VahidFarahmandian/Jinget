@@ -73,8 +73,12 @@ app.MapGet("errorlog", (IHttpContextAccessor httpContextAccessor, ILogger<Sample
     logger.LogError(httpContextAccessor.HttpContext, "Sample Error message1!");
     logger.LogError(httpContextAccessor.HttpContext, "Sample Error message2!");
     logger.LogError(httpContextAccessor.HttpContext, "Sample Error message3!");
-
+    
     throw new Exception("Sample exception");
+});
+app.MapGet("unauthorized", (IHttpContextAccessor httpContextAccessor, ILogger<SampleModel> logger) =>
+{
+    return Results.Unauthorized();
 });
 app.MapGet("successlog", () => "Hello vahid");
 app.MapGet("detailedlog", () => "Sample Success");
