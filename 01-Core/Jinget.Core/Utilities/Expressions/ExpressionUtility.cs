@@ -46,7 +46,7 @@ public static class ExpressionUtility
     }
 
     /// <summary>
-    /// Try parse an expression and return a string representation of the expression in form of 'A.B.C.etc.'
+    /// Try to parse an expression and return a string representation of the expression in the form of 'A.B.C.etc.'
     /// </summary>
     /// <exception cref="JingetException"></exception>
     internal static bool TryParseExpression(Expression? expression, out string? path)
