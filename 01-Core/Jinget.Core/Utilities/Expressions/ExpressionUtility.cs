@@ -118,7 +118,7 @@ public static class ExpressionUtility
     }
 
     /// <summary>
-    /// Removes boxing
+    /// Remove boxing
     /// </summary>
     internal static Expression RemoveConvert(Expression expression)
     {
@@ -194,18 +194,18 @@ public static class ExpressionUtility
     }
 
     /// <summary>
-    /// Construct a boolean expression based on a json input
+    /// Construct a boolean expression based on a JSON input
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="json">a key/value structured json string/object, where keys are types property and values are their value</param>
+    /// <param name="json">a key/value structured JSON string/object, where keys are types property and values are their value</param>
     /// <param name="treatNullOrEmptyAsTrueCondition">When <paramref name="json"/> is null or empty, then a default condition will be returned.
-    /// if this parameter's value is set to true the a default true condition will be returned otherwise a defaule false condition will be returned</param>
+    /// if this parameter's value is set to true, the default true condition will be returned, otherwise a default false condition will be returned</param>
     /// <returns></returns>
 #nullable enable
     public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(object? json, bool treatNullOrEmptyAsTrueCondition = true)
 #nullable disable
     {
-        //if there is no json object specified, then return the default true/false condition
+        //if there is no JSON object specified, then return the default true/false condition
         if (json is null)
         {
             return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
@@ -219,17 +219,17 @@ public static class ExpressionUtility
     }
 
     /// <summary>
-    /// Construct a boolean expression based on a json input
+    /// Construct a boolean expression based on a JSON input
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="json">a key/value structured json string/object, where keys are types property and values are their value. 
+    /// <param name="json">a key/value structured JSON string/object, where keys are types property and values are their value. 
     /// for example:{'name':'vahid','age':'34'} which translates to a dictionary where 'name' and 'age' are keys and their values are 'vahid' and '34'</param>
     /// <param name="treatNullOrEmptyAsTrueCondition">When <paramref name="json"/> is null or empty, then a default condition will be returned.
-    /// if this parameters value is set to true the default true condition will be returned otherwise a default false condition will be returned</param>
+    /// if this parameter value is set to true, the default true condition will be returned, otherwise a default false condition will be returned</param>
     /// <returns></returns>
     public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(string json, bool treatNullOrEmptyAsTrueCondition = true)
     {
-        //if there empty json string specified, then return the default true/false condition
+        //if there empty JSON string specified, then return the default true/false condition
         if (string.IsNullOrWhiteSpace(json.ToString()))
         {
             return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
@@ -324,7 +324,7 @@ public static class ExpressionUtility
 
     private static MemberExpression GetMemberAccessExpression(Expression expression, string members, Type type)
     {
-        List<string> memberList = [.. members.Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries)];
+        List<string> memberList = [.. members.Split(["."], StringSplitOptions.RemoveEmptyEntries)];
         string firstMember = memberList.First();
         MemberExpression memberExpression = CreateMemberAccessExpression(type, expression, firstMember);
 
