@@ -38,6 +38,7 @@ public abstract class CoreExceptionHandler(ILogger<CoreExceptionHandler> logger,
             Status = statusCode,
             Title = reasonPhrase
         };
+        problemDetails.Extensions.Add("message", exception.Message);
 
         if (env.IsProduction())
         {
