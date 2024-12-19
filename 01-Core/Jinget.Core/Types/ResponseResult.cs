@@ -30,12 +30,30 @@ public class ResponseResult<TResponseModel>
     public ResponseResult(TResponseModel data) : this()
     {
         if (data == null)
+        {
             Data.AddRange([]);
+            EffectedRowsCount = 0;
+        }
         else
+        {
             Data.Add(data);
+            EffectedRowsCount = 1;
+        }
     }
 
-    public ResponseResult(IEnumerable<TResponseModel>? data) : this() => Data.AddRange(data ?? []);
+    public ResponseResult(IEnumerable<TResponseModel>? data) : this()
+    {
+        if (data == null)
+        {
+            Data.AddRange([]);
+            EffectedRowsCount = 0;
+        }
+        else
+        {
+            Data.AddRange(data);
+            EffectedRowsCount = data.Count();
+        }
+    }
 
     public ResponseResult(TResponseModel data, long effectedRowsCount) : this(data) =>
         EffectedRowsCount = effectedRowsCount;
@@ -68,31 +86,4 @@ public class ResponseResult<TResponseModel>
             throw new InvalidOperationException("An error occurred while mapping the data", ex);
         }
     }
-
-    ///// <summary>
-    ///// Creates a new <see cref="ResponseResult{TResponseModel}"/> object using <typeparamref name="TResponseModel"/>.
-    ///// </summary>
-    ///// <typeparam name="TResponseModel">The type of the response model.</typeparam>
-    ///// <param name="input">The input object to be converted into a <see cref="ResponseResult{TResponseModel}"/>.</param>
-    ///// <returns>A new <see cref="ResponseResult{TResponseModel}"/> object.</returns>
-    //public static ResponseResult<TResponseModel> New<TResponseModel>(object input, long? effectedRowsCount = null)
-    //{
-    //    if (input == null)
-    //    {
-    //        return new ResponseResult<TResponseModel>([], effectedRowsCount.HasValue == false ? 0 : effectedRowsCount.Value);
-    //    }
-
-    //    if (input is IEnumerable enumerable)
-    //    {
-    //        var list = enumerable.Cast<TResponseModel>().ToList();
-    //        return new ResponseResult<TResponseModel>(list, effectedRowsCount.HasValue == false ? list.Count : effectedRowsCount.Value);
-    //    }
-
-    //    if (input is TResponseModel responseModel)
-    //    {
-    //        return new ResponseResult<TResponseModel>([responseModel], effectedRowsCount.HasValue == false ? 1 : effectedRowsCount.Value);
-    //    }
-
-    //    throw new ArgumentException($"Input must be of type {typeof(TResponseModel)} or IEnumerable of {typeof(TResponseModel)}", nameof(input));
-    //}
 }

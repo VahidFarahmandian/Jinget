@@ -66,6 +66,20 @@ public class ResponseResultTests
     }
 
     [TestMethod()]
+    public void should_create_new_responseResultObject_using_T_auto_effectedCount()
+    {
+        SampleModel obj = new() { Id = 1, Name = "Vahid" };
+
+        var result = new ResponseResult<SampleModel>(obj);
+
+        Assert.AreEqual(result.Data.GetType(), typeof(List<SampleModel>));
+        Assert.IsTrue(result.EffectedRowsCount == 1);
+        Assert.IsTrue(result.Data.First().Name == "Vahid");
+        Assert.IsTrue(result.IsSuccess);
+        Assert.IsFalse(result.IsFailure);
+    }
+
+    [TestMethod()]
     public void should_create_new_responseResultObject_using_T()
     {
         SampleModel obj = new() { Id = 1, Name = "Vahid" };
@@ -85,6 +99,20 @@ public class ResponseResultTests
         List<SampleModel> obj = [new SampleModel { Id = 1, Name = "Vahid" }, new SampleModel { Id = 2, Name = "John" }];
 
         var result = new ResponseResult<SampleModel>(obj, 2);
+
+        Assert.AreEqual(result.Data.GetType(), typeof(List<SampleModel>));
+        Assert.IsTrue(result.EffectedRowsCount == 2);
+        Assert.IsTrue(result.Data.First().Name == "Vahid");
+        Assert.IsTrue(result.IsSuccess);
+        Assert.IsFalse(result.IsFailure);
+    }
+
+    [TestMethod()]
+    public void should_create_new_responseResultObject_using_IEnumerableT_auto_effectedCount()
+    {
+        List<SampleModel> obj = [new SampleModel { Id = 1, Name = "Vahid" }, new SampleModel { Id = 2, Name = "John" }];
+
+        var result = new ResponseResult<SampleModel>(obj);
 
         Assert.AreEqual(result.Data.GetType(), typeof(List<SampleModel>));
         Assert.IsTrue(result.EffectedRowsCount == 2);
