@@ -21,8 +21,6 @@ public static class AssemblyExtensions
     {
         methodSummaryAttribute ??= typeof(SummaryAttribute);
 
-#pragma warning disable CS8601 // Possible null reference assignment.
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         return assembly.GetTypes()
             .Where(resourceType.IsAssignableFrom)
             .Select(x => new AssemblyInfo
@@ -31,8 +29,6 @@ public static class AssemblyExtensions
                 TypeName = Regex.Replace(x.Name, normalizingPattern, string.Empty, RegexOptions.IgnoreCase), //x.Name.Replace("Controller", string.Empty).Trim(),
                 AssemblyName = assembly.GetName().Name
             }).ToList();
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning restore CS8601 // Possible null reference assignment.
     }
 
     public static List<Type> GetTypes(this Assembly assembly, Expression<Func<Type, bool>>? filter = null) => assembly.GetTypes()
@@ -53,15 +49,12 @@ public static class AssemblyExtensions
                 type.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public))
             .Where(m => !m.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Any());
 
-#pragma warning disable CS8604 // Possible null reference argument.
         var authorizedMethods = allMethods.Where(m => !onlyAuthorizedMethods ||
             (//methods marked as Authorize
             m.GetCustomAttributes().Any(x => x.GetType() == typeof(AuthorizeAttribute)) ||
             //class marked as Authorize
             m.DeclaringType.GetCustomAttributes().Any(x => x.GetType() == typeof(AuthorizeAttribute))));
-#pragma warning restore CS8604 // Possible null reference argument.
-#pragma warning disable CS8601 // Possible null reference assignment.
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+
         return
 
             [
@@ -79,7 +72,5 @@ public static class AssemblyExtensions
                 })
                     .OrderBy(x => x.Summary).ThenBy(x => x.MethodName).ThenBy(x => x.Claim),
             ];
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning restore CS8601 // Possible null reference assignment.
     }
 }
