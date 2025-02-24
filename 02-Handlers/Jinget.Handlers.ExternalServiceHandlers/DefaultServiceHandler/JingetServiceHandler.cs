@@ -69,3 +69,45 @@ public class JingetServiceHandler<TResponseModel> : ServiceHandler<JingetService
 
     public async Task<TResponseModel?> SendAsync(HttpRequestMessage message) => await ProcessTaskAsync(async () => await HttpClientFactory.SendAsync(message));
 }
+public class JingetServiceHandler : ServiceHandler<JingetServiceHandlerEvents>
+{
+    public JingetServiceHandler(string baseUri, bool ignoreSslErrors = false) : base(baseUri, ignoreSslErrors) { }
+    public JingetServiceHandler(string baseUri, TimeSpan timeout, bool ignoreSslErrors = false) : base(baseUri, timeout, ignoreSslErrors) { }
+
+    private async Task<string?> ProcessTaskAsync(Func<Task<HttpResponseMessage>> task)
+    {
+        try
+        {
+            var response = await task();
+            Events?.OnServiceCalled(response);
+
+            response.EnsureSuccessStatusCode();
+
+            string rawResponse = await response.Content.ReadAsStringAsync();
+            Events?.OnRawResponseReceived(rawResponse);
+            return rawResponse;
+        }
+        catch (Exception ex)
+        {
+            Events?.OnExceptionOccurred(ex); // Null check
+            return null; // or throw the exception.
+        }
+    }
+
+    public async Task<string?> GetAsync(string url, Dictionary<string, string>? headers = null)
+        => await ProcessTaskAsync(async () => await HttpClientFactory.GetAsync(url, headers));
+
+    public async Task<string?> PostAsync(object? content = null, Dictionary<string, string>? headers = null)
+        => await ProcessTaskAsync(async () => await HttpClientFactory.PostAsync("", content, headers));
+
+    public async Task<string?> PostAsync(string url, object? content = null, Dictionary<string, string>? headers = null)
+        => await ProcessTaskAsync(async () => await HttpClientFactory.PostAsync(url, content, headers));
+
+    public async Task<string?> UploadFileAsync(string url, List<FileInfo>? files = null, Dictionary<string, string>? headers = null)
+        => await ProcessTaskAsync(async () => await HttpClientFactory.UploadFileAsync(url, files, headers));
+
+    public async Task<string?> UploadFileAsync(string url, MultipartFormDataContent? multipartFormData = null, Dictionary<string, string>? headers = null)
+        => await ProcessTaskAsync(async () => await HttpClientFactory.UploadFileAsync(url, multipartFormData, headers));
+
+    public async Task<string?> SendAsync(HttpRequestMessage message) => await ProcessTaskAsync(async () => await HttpClientFactory.SendAsync(message));
+}

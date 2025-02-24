@@ -127,13 +127,25 @@ In line number 2, we have our envelop and all we need to do, is to pass our para
 ------------
 ### How to use custom Service Handler
 
-You can use your custom service handler instead of using `JingetServiceHandler`. To do this create your custom class and makes it to inherit from `ServiceHandler<>` class. Also create a custom class for your event management and pass it as generic argument to `ServiceHandler<>` class. 
+You can use your custom service handler instead of using `JingetServiceHandler`. To do this create your custom class and makes it to inherit from `ServiceHandler<>` class. 
+Also create a custom class for your event management and pass it as generic argument to `ServiceHandler<>` class. 
+You can also make use of `ServiceHandler`(non generic class) too. Different between these two class is that `ServiceHandler` does not provide any event for response deserialization.
+it returns the raw response and deserialization is up to you.
 For example suppose that we have a class called `CustomHandler` as below:
 ```csharp
- public class CustomServiceHandler : ServiceHandler<CustomEvents>
- {
-	...
- }
+    public class CustomServiceHandler : ServiceHandler<CustomEvents>
+    {
+        ...
+    }
+```
+
+or
+
+```csharp
+    public class CustomServiceHandler(string baseUri, bool ignoreSslErrors = false) : JingetServiceHandler(baseUri, ignoreSslErrors)
+    {
+        ...
+    }
 ```
 ------------
 # How to install
