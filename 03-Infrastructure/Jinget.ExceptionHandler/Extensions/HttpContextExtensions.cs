@@ -35,7 +35,7 @@ public static class HttpContextExtensions
     /// <summary>
     /// Get the partition key used for logging
     /// </summary>
-    public static string GetLoggerPartitionKey(this HttpContext context) =>
+    public static string? GetLoggerPartitionKey(this HttpContext context) =>
         context.Items["jinget.log.partitionkey"]?.ToString();
 
     /// <summary>
@@ -47,15 +47,26 @@ public static class HttpContextExtensions
     /// <summary>
     /// set additional data used for logging
     /// </summary>
-    public static string GetLoggerAdditionalData(this HttpContext context, bool isRequestData)
+    public static string? GetLoggerAdditionalData(this HttpContext context, bool isRequestData)
     {
         var rawHeaders = isRequestData ? context.Request.Headers : context.Response.Headers;
         var additionalData = new List<string>();
-        if (!string.IsNullOrWhiteSpace(rawHeaders["AdditionalData"].ToString()))
-            additionalData.Add(rawHeaders["AdditionalData"]);
 
-        if (!string.IsNullOrWhiteSpace(context.Items["AdditionalData"]?.ToString()))
-            additionalData.Add(context.Items["AdditionalData"]?.ToString());
+        if (rawHeaders != null && rawHeaders.TryGetValue("AdditionalData", out StringValues headerValues) && !StringValues.IsNullOrEmpty(headerValues))
+        {
+            foreach (var value in headerValues)
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    additionalData.Add(value);
+                }
+            }
+        }
+
+        if (context.Items["AdditionalData"] is string itemValue && !string.IsNullOrEmpty(itemValue))
+        {
+            additionalData.Add(itemValue);
+        }
 
         return additionalData.Any() ? JsonConvert.SerializeObject(additionalData) : null;
     }
@@ -63,15 +74,15 @@ public static class HttpContextExtensions
     /// <summary>
     /// get request/response headers used for logging
     /// </summary>
-    public static string GetLoggerHeaders(this HttpContext context, List<string> blackListHeaders, List<string> whiteListHeaders, bool isRequestHeader)
+    public static string GetLoggerHeaders(this HttpContext context, List<string>? blackListHeaders, List<string>? whiteListHeaders, bool isRequestHeader)
     {
         string headers;
         var rawHeaders = isRequestHeader ? context.Request.Headers : context.Response.Headers;
-        if (blackListHeaders.Any())
+        if (blackListHeaders != null && blackListHeaders.Any())
             headers = JsonConvert.SerializeObject(rawHeaders
                 .Where(x => !blackListHeaders.Contains(x.Key.ToLower()))
                 .Select(x => x.ToString()), Formatting.Indented);
-        else if (whiteListHeaders.Any())
+        else if (whiteListHeaders != null && whiteListHeaders.Any())
             headers = JsonConvert.SerializeObject(rawHeaders
                 .Where(x => whiteListHeaders.Contains(x.Key.ToLower()))
                 .Select(x => x.ToString()), Formatting.Indented);

@@ -14,8 +14,10 @@ public static class IApplicationBuilderExtensions
 
         if (settings != null && settings.UseGlobalExceptionHandler)
             app.UseJingetExceptionHandler();
-        app.UseMiddleware<LogRequestMiddleware>();
-        app.UseMiddleware<LogResponseMiddleware>();
+
+        app.UseMiddleware<RequestResponseLoggingMiddleware>();
+        //app.UseMiddleware<LogRequestMiddleware>();
+        //app.UseMiddleware<LogResponseMiddleware>();
 
         return app;
     }

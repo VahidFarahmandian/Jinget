@@ -55,7 +55,12 @@ public static class BooleanExpressionExtensions
         if (expr2 is null) return expr1;
         var parameter = Expression.Parameter(typeof(T), parameterName);
         (Expression? LeftExpression, Expression? RightExpression) = Visit(expr1, expr2, parameter);
+        if (LeftExpression == null || RightExpression == null)
+        {
+            throw new ArgumentNullException("Visit method returned null expression");
+        }
         BinaryExpression binaryExpr;
+
         if (expressionType == ExpressionType.AndAlso)
             binaryExpr = Expression.AndAlso(LeftExpression, RightExpression);
         else if (expressionType == ExpressionType.OrElse)

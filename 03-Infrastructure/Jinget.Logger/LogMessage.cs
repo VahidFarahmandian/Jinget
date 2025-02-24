@@ -3,9 +3,9 @@
 public class LogMessage
 {
     public DateTime Timestamp { get; set; } = DateTime.Now;
-    public string Description { get; set; }
+    public string? Description { get; set; }
     public Microsoft.Extensions.Logging.LogLevel Severity { get; set; }
-    public string Exception { get; set; }
+    public string? Exception { get; set; }
 
     public override string ToString()
     {

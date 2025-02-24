@@ -1,27 +1,22 @@
 ﻿namespace Jinget.Logger.Handlers;
 
-public class ElasticSearchLoggingRepository : IElasticSearchLoggingRepository
+public class ElasticSearchLoggingRepository(IElasticClient elasticClient, ElasticSearchSettingModel settings) : IElasticSearchLoggingRepository
 {
-    private readonly IElasticClient _elasticClient;
-    private readonly ElasticSearchSettingModel settings;
-
-    public ElasticSearchLoggingRepository(IElasticClient elasticClient, ElasticSearchSettingModel settings)
-    {
-        _elasticClient = elasticClient;
-        this.settings = settings;
-    }
-
     public async Task<bool> IndexAsync(LogModel param)
     {
-        if (settings.CreateIndexPerPartition)
-            await CreateIndexAsync(param.ParitionKey);
-        string indexName = GetIndexName(param.ParitionKey);
+        if (!string.IsNullOrWhiteSpace(param.ParitionKey))
+        {
+            if (settings.CreateIndexPerPartition)
+                await CreateIndexAsync(param.ParitionKey);
+            string indexName = GetIndexName(param.ParitionKey);
 
-        var result = await _elasticClient.IndexAsync(param, i => i.Index(indexName).Refresh(settings.RefreshType));
+            var result = await elasticClient.IndexAsync(param, i => i.Index(indexName).Refresh(settings.RefreshType));
 
-        if (result.IsValid)
-            return result.IsValid;
-        throw new JingetException("Jinget Says: " + result.OriginalException.ToString());
+            if (result.IsValid)
+                return result.IsValid;
+            throw new JingetException("Jinget Says: " + result.OriginalException.ToString());
+        }
+        throw new JingetException("Jinget Says: ParitionKey is null or empty");
     }
     string GetIndexName(string partitionKey)
     {
@@ -40,9 +35,9 @@ public class ElasticSearchLoggingRepository : IElasticSearchLoggingRepository
             return false;
 
         indexName = GetIndexName(indexName);
-        if (!_elasticClient.Indices.Exists(indexName.ToLower()).Exists)
+        if (!elasticClient.Indices.Exists(indexName.ToLower()).Exists)
         {
-            var indexCreationResult = await _elasticClient.Indices
+            var indexCreationResult = await elasticClient.Indices
                 .CreateAsync(indexName.ToLower(), index => index.Map(m => m.AutoMap(typeof(LogModel)).NumericDetection(true)));
             if (!indexCreationResult.IsValid)
                 throw new JingetException("Jinget Says: " + indexCreationResult.OriginalException);
@@ -54,22 +49,26 @@ public class ElasticSearchLoggingRepository : IElasticSearchLoggingRepository
     {
         foreach (var item in @params.GroupBy(g => g.ParitionKey))
         {
-            if (settings.CreateIndexPerPartition)
-                await CreateIndexAsync(item.Key.ToString());
-            string indexName = GetIndexName(item.Key.ToString());
+            if (!string.IsNullOrWhiteSpace(item.Key))
+            {
+                if (settings.CreateIndexPerPartition)
+                    await CreateIndexAsync(item.Key.ToString());
+                string indexName = GetIndexName(item.Key.ToString());
 
-            var result = await _elasticClient.BulkAsync(i => i.Index(indexName).CreateMany(item));
+                var result = await elasticClient.BulkAsync(i => i.Index(indexName).CreateMany(item));
 
-            if (!result.IsValid)
-                throw new JingetException("Jinget Says: " + result.OriginalException.ToString());
+                if (!result.IsValid)
+                    throw new JingetException("Jinget Says: " + result.OriginalException.ToString());
+            }
+            throw new JingetException("Jinget Says: ParitionKey is null or empty");
         }
         return true;
     }
 
-    public async Task<LogModel> GetLatestAsync(Func<SortDescriptor<LogModel>, IPromise<IList<ISort>>> orderBy = null, string partitionKey = "")
+    public async Task<LogModel?> GetLatestAsync(Func<SortDescriptor<LogModel>, IPromise<IList<ISort>>>? orderBy = null, string partitionKey = "")
     {
         string indexName = GetIndexName(partitionKey);
-        var lastRecord = await _elasticClient.SearchAsync<LogModel>(i =>
+        var lastRecord = await elasticClient.SearchAsync<LogModel>(i =>
         {
             var expr = i.Index(indexName).From(0).Take(1).MatchAll();
             return expr.Sort(orderBy ?? (s => s.Descending(d => d.TimeStamp)));
@@ -86,7 +85,7 @@ public class ElasticSearchLoggingRepository : IElasticSearchLoggingRepository
         string username = "",
         string origin = "")
     {
-        var searchResult = await _elasticClient
+        var searchResult = await elasticClient
                             .SearchAsync<LogModel>(i =>
                                     i.Index(GetIndexName(partitionKey))
                                     .Query(x =>

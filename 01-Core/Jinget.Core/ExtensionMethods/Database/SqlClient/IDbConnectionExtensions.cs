@@ -34,18 +34,27 @@ public static class IDbConnectionExtensions
                 countQueryText = queryText[queryText.IndexOf(" FROM ", StringComparison.CurrentCultureIgnoreCase)..];
                 countQueryText = "Select Count(*) " + countQueryText;
 
-                string pagingStatement = "";
+                string? pagingStatement = "";
                 if (orderBy == null)
                 {
                     var iOrderByInterface = param.GetType().GetInterface(typeof(IOrderBy<>).Name);
-                    var orderByProperty = iOrderByInterface.GetProperty("OrderBy");
-                    var orderByValue = orderByProperty.GetValue(param);
-                    pagingStatement = typeof(PagingExtensions).Call(
-                        "GetPaging",
-                        [typeof(Paging), orderByValue.GetType()],
-                        [paging, orderByValue],
-                        param.GetType()
-                        ).ToString();
+                    if (iOrderByInterface != null)
+                    {
+                        var orderByProperty = iOrderByInterface.GetProperty("OrderBy");
+                        if (orderByProperty != null)
+                        {
+                            var orderByValue = orderByProperty.GetValue(param);
+                            if (orderByValue != null)
+                            {
+                                pagingStatement = typeof(PagingExtensions).Call(
+                                    "GetPaging",
+                                    [typeof(Paging), orderByValue.GetType()],
+                                    [paging, orderByValue],
+                                    param.GetType()
+                                    )?.ToString();
+                            }
+                        }
+                    }
                 }
                 else
                 {

@@ -217,7 +217,7 @@ public static class ObjectExtensions
         if (Nullable.GetUnderlyingType(type) != null)
             return false;
 
-        object defaultValue = Activator.CreateInstance(type);
+        object? defaultValue = Activator.CreateInstance(type);
         return value.Equals(defaultValue);
     }
 }

@@ -16,7 +16,7 @@ public class JingetServiceHandlerTests
 
         var result = await jingetServiceHandler.GetAsync("users");
 
-        Assert.IsTrue(result is null);
+        Assert.IsNull(result);
     }
     [TestMethod()]
     public async Task Should_call_get_restapiAsync()
@@ -28,20 +28,20 @@ public class JingetServiceHandlerTests
         };
         jingetServiceHandler.Events.RawResponseReceived += (sender, e) =>
         {
-            Assert.IsFalse(e == "");
+            Assert.AreNotEqual("", e);
         };
         jingetServiceHandler.Events.ExceptionOccurred += (sender, e) =>
         {
-            Assert.IsTrue(e is null);
+            Assert.IsNull(e);
         };
         jingetServiceHandler.Events.ResponseDeserialized += (sender, e) =>
         {
-            Assert.IsFalse(e is null);
+            Assert.IsNotNull(e);
         };
 
         var result = await jingetServiceHandler.GetAsync("users");
 
-        Assert.IsFalse(result is null);
+        Assert.IsNotNull(result);
     }
 
     [TestMethod()]
@@ -54,15 +54,15 @@ public class JingetServiceHandlerTests
         };
         jingetServiceHandler.Events.RawResponseReceived += (sender, e) =>
         {
-            Assert.IsFalse(e == "");
+            Assert.AreNotEqual("", e);
         };
         jingetServiceHandler.Events.ExceptionOccurred += (sender, e) =>
         {
-            Assert.IsTrue(e is null);
+            Assert.IsNull(e);
         };
         jingetServiceHandler.Events.ResponseDeserialized += (sender, e) =>
         {
-            Assert.IsFalse(e is null);
+            Assert.IsNotNull(e);
         };
         var result = await jingetServiceHandler
             .PostAsync("posts",
@@ -77,7 +77,7 @@ public class JingetServiceHandlerTests
                 {"Content-type","application/json; charset=UTF-8" }
             });
 
-        Assert.IsFalse(result is null);
+        Assert.IsNotNull(result);
     }
 
     [TestMethod()]
@@ -90,15 +90,15 @@ public class JingetServiceHandlerTests
         };
         jingetServiceHandler.Events.RawResponseReceived += (sender, e) =>
         {
-            Assert.IsFalse(e == "");
+            Assert.AreNotEqual("", e);
         };
         jingetServiceHandler.Events.ExceptionOccurred += (sender, e) =>
         {
-            Assert.IsTrue(e is null);
+            Assert.IsNull(e);
         };
         jingetServiceHandler.Events.ResponseDeserialized += (sender, e) =>
         {
-            Assert.IsFalse(e is null);
+            Assert.IsNotNull(e);
         };
 
         var request = new HttpRequestMessage
@@ -117,7 +117,7 @@ public class JingetServiceHandlerTests
 
         var result = await jingetServiceHandler.SendAsync(request);
 
-        Assert.IsFalse(result is null);
+        Assert.IsNotNull(result);
     }
 
     [TestMethod()]
@@ -130,18 +130,20 @@ public class JingetServiceHandlerTests
         };
         jingetServiceHandler.Events.RawResponseReceived += (sender, e) =>
         {
-            Assert.IsFalse(e == "");
+            Assert.AreNotEqual("", e);
         };
         jingetServiceHandler.Events.ExceptionOccurred += (sender, e) =>
         {
-            Assert.IsTrue(e is null);
+            Assert.IsNull(e);
         };
         jingetServiceHandler.Events.ResponseDeserialized += (sender, e) =>
         {
-            Assert.IsFalse(e is null);
+            Assert.IsNotNull(e);
         };
 
         var (envelope, request) = new SampleSOAPRequest().CreateEnvelope();
+        Assert.IsNotNull(envelope);
+        Assert.IsNotNull(envelope.Body);
         envelope.Body.Add = new SampleSOAPRequest.SampleSOAPGet { intA = 1, intB = 2 };
 
         var result = await jingetServiceHandler.PostAsync(envelope.ToString(), new Dictionary<string, string>
@@ -164,7 +166,7 @@ public class JingetServiceHandlerTests
         };
         jingetServiceHandler.Events.ResponseDeserialized += (sender, e) =>
         {
-            Assert.IsFalse(e is null);
+            Assert.IsNotNull(e);
         };
 
         List<FileInfo> files = [
@@ -173,7 +175,7 @@ public class JingetServiceHandlerTests
         ];
 
         var response = await jingetServiceHandler.UploadFileAsync("something", files);
-
+        Assert.IsNotNull(response);
         Assert.IsFalse(string.IsNullOrWhiteSpace(response.Status));
     }
 }

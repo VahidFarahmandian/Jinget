@@ -1,18 +1,12 @@
 ﻿namespace Jinget.Logger.Providers;
 
-public class BatchingLogger : ILogger
+public class BatchingLogger(BatchingLoggerProvider loggerProvider) : ILogger
 {
-    private readonly BatchingLoggerProvider _provider;
+    public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
 
-    public BatchingLogger(BatchingLoggerProvider loggerProvider) => _provider = loggerProvider;
+    public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) => logLevel != Microsoft.Extensions.Logging.LogLevel.None;
 
-    public IDisposable BeginScope<TState>(TState state) => null;
-
-    public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) =>
-        logLevel != Microsoft.Extensions.Logging.LogLevel.None;
-
-    public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception exception,
-        Func<TState, Exception, string> formatter)
+    public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
         if (!IsEnabled(logLevel))
             return;
@@ -21,7 +15,7 @@ public class BatchingLogger : ILogger
     }
 
     public void Log<TState>(DateTime timestamp, Microsoft.Extensions.Logging.LogLevel logLevel, TState state,
-        Exception exception, Func<TState, Exception, string> formatter) => _provider.AddMessage(
+        Exception? exception, Func<TState, Exception?, string> formatter) => loggerProvider.AddMessage(
             new LogMessage
             {
                 Description = formatter(state, exception),

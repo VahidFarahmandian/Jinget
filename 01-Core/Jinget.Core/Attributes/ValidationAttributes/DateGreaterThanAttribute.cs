@@ -5,7 +5,7 @@ public class DateGreaterThanAttribute(string otherPropertyName) : ValidationAttr
     /// <summary>
     /// check whether <paramref name="value"/> is greater than <paramref name="otherPropertyName"/>
     /// </summary>
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         if (value == null) return ValidationResult.Success; // Allow nulls (optional, adjust as needed)
 

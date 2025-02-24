@@ -26,7 +26,7 @@ public static class PropertiesExtensions
         t.GetTypeInfo().DeclaredProperties;
 #endif
 
-    private static bool IsSimpleType(Type t)
+    private static bool IsSimpleType(Type? t)
     {
         while (true)
         {
@@ -50,7 +50,7 @@ public static class PropertiesExtensions
             {
                 return true;
             }
-            if (t.BaseType == typeof(Enum))
+            if (t != null && t.BaseType == typeof(Enum))
             {
                 return true;
             }
@@ -58,7 +58,10 @@ public static class PropertiesExtensions
             {
                 return true;
             }
-            t = Nullable.GetUnderlyingType(t);
+            if (t != null)
+            {
+                t = Nullable.GetUnderlyingType(t);
+            }
             if (t is null)
             {
                 break;
@@ -67,11 +70,14 @@ public static class PropertiesExtensions
         return false;
     }
 
-    private static bool IsPrimitive(Type t) =>
+    private static bool IsPrimitive(Type? t)
+    {
+        if (t == null) return false;
 #if NET45
         return t.IsPrimitive;
 #else
-        t.GetTypeInfo().IsPrimitive;
+        return t.GetTypeInfo().IsPrimitive;
 #endif
+    }
 
 }

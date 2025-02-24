@@ -2,7 +2,7 @@
 
 public interface IElasticSearchLoggingDomainService
 {
-    Task<LogModel> FetchLatestAsync();
+    Task<LogModel?> FetchLatestAsync();
 
     Task<bool> CreateAsync(LogModel param);
 

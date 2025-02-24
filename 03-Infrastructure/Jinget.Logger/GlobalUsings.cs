@@ -28,4 +28,3 @@ global using Jinget.Logger.Providers.FileProvider;
 global using Microsoft.Extensions.Hosting;
 global using Jinget.ExceptionHandler.Entities;
 global using Jinget.ExceptionHandler.Entities.Log;
-global using System.Collections.Generic;

@@ -9,7 +9,7 @@ public static class ExpressionUtility
     /// </summary>
     internal static Expression Transform(Expression source, Type type)
     {
-        if (source.Type != type && source is NewExpression newExpr && newExpr.Members.Count > 0)
+        if (source.Type != type && source is NewExpression newExpr && newExpr.Members?.Count > 0)
         {
 #pragma warning disable CS8604 // Possible null reference argument.
 #pragma warning disable CS8602 // Dereference of a possibly null reference.

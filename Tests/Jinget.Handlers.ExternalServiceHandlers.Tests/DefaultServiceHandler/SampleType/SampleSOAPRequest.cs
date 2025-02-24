@@ -5,7 +5,7 @@
 /// </summary>
 public class SampleSOAPRequest : SOAPRequestBase<SampleSOAPRequest.Envelope, SampleSOAPRequest.SampleSOAPGet>
 {
-    public override (Envelope envelope, SampleSOAPGet request) CreateEnvelope()
+    public override (Envelope? envelope, SampleSOAPGet? request) CreateEnvelope()
     {
         var envelope = new Envelope
         {
@@ -36,12 +36,12 @@ public class SampleSOAPRequest : SOAPRequestBase<SampleSOAPRequest.Envelope, Sam
         /// <summary>
         /// defines the Header node inside the envelop node
         /// </summary>
-        public EnvelopeHeader Header { get; set; }
+        public EnvelopeHeader? Header { get; set; }
 
         /// <summary>
         /// Defines the Body node inside the envelop node
         /// </summary>
-        public EnvelopeBody Body { get; set; }
+        public EnvelopeBody? Body { get; set; }
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public class SampleSOAPRequest : SOAPRequestBase<SampleSOAPRequest.Envelope, Sam
     public class EnvelopeBody
     {
         [XmlElement(Namespace = "http://tempuri.org/")]
-        public SampleSOAPGet Add { get; set; }
+        public SampleSOAPGet? Add { get; set; }
     }
 
     /// <summary>
@@ -69,7 +69,9 @@ public class SampleSOAPRequest : SOAPRequestBase<SampleSOAPRequest.Envelope, Sam
     [Serializable]
     public class SampleSOAPGet
     {
+#pragma warning disable IDE1006 // Naming Styles
         public int intA { get; set; }
         public int intB { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
     }
 }

@@ -5,13 +5,15 @@ namespace Jinget.Logger;
 public static class ILoggerExtensions
 {
     /// <summary>
-    /// generates a custom log. This log's severity is <seealso cref="Microsoft.Extensions.Logging.LogLevel.Debug"/>
+    /// generates a custom log. This log's severity is <seealso cref="LogLevel.Debug"/>
     /// </summary>
-    public static void LogCustom(this ILogger logger, HttpContext httpContext, string message,
+    public static void LogCustom(this ILogger logger, HttpContext? httpContext, string message,
         [CallerFilePath] string callerFilePath = "",
         [CallerLineNumber] long callerLineNumber = 0,
         [CallerMemberName] string callerMember = "")
     {
+        if (httpContext == null)
+            return;
         var log = LogModel.GetNewCustomObject(httpContext);
         log.Description = message;
         log.CallerFilePath = callerFilePath;
@@ -21,17 +23,20 @@ public static class ILoggerExtensions
         logger.Log(LogLevel.Information, JsonConvert.SerializeObject(log));
     }
 
-    public static void LogInformation(this ILogger logger, HttpContext httpContext, string message)
+    public static void LogInformation(this ILogger logger, HttpContext? httpContext, string message)
     {
+        if (httpContext == null)
+            return;
         var log = LogModel.GetNewCustomObject(httpContext);
         log.Description = message;
 
         logger.Log(LogLevel.Information, JsonConvert.SerializeObject(log));
     }
 
-    public static void LogError(this ILogger logger, HttpContext httpContext, string message,
-        Exception exception = null)
+    public static void LogError(this ILogger logger, HttpContext? httpContext, string message, Exception? exception = null)
     {
+        if (httpContext == null)
+            return;
         var log = LogModel.GetNewErrorObject(httpContext);
         log.AdditionalData = JsonConvert.SerializeObject(new
         {

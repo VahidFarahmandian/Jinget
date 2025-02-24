@@ -29,10 +29,12 @@ public class XmlUtility
     public static string SerializeToSoapXml(object input)
     {
         using MemoryStream memStream = new();
+#pragma warning disable SYSLIB0050 // Type or member is obsolete
         SoapFormatter formatter = new()
         {
             AssemblyFormat = FormatterAssemblyStyle.Simple
         };
+#pragma warning restore SYSLIB0050 // Type or member is obsolete
         formatter.Serialize(memStream, input);
         return Encoding.UTF8.GetString(memStream.GetBuffer());
     }

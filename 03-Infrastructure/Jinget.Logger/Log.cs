@@ -1,22 +1,28 @@
-﻿namespace Jinget.Logger;
+﻿//using Jinget.Logger.Providers;
 
-public class Log<TCategoryName>
-{
-    protected readonly ILogger<TCategoryName> Logger;
-    protected readonly RequestDelegate Next;
+//namespace Jinget.Logger;
 
-    protected List<string> BlackListHeaders;
-    protected List<string> WhiteListHeaders;
+//public class Log<TCategoryName>
+//{
+//    protected readonly ILogger<TCategoryName> Logger;
+//    protected readonly RequestDelegate Next;
+//    protected readonly IOptions<BatchingLoggerOptions> LoggingOptions;
 
-    protected Log(RequestDelegate next, ILogger<TCategoryName> logger, IOptions<BlackListHeader> blackListHeaders, IOptions<WhiteListHeader> whiteListHeaders)
-    {
-        Next = next;
-        Logger = logger;
+//    protected List<string>? BlackListHeaders;
+//    protected List<string>? WhiteListHeaders;
 
-        BlackListHeaders = blackListHeaders.Value.Headers?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToList();
-        BlackListHeaders ??= new List<string>();
+//    protected Log(RequestDelegate next, ILogger<TCategoryName> logger,
+//        IOptions<BatchingLoggerOptions> loggingOptions,
+//        IOptions<BlackListHeader> blackListHeaders, IOptions<WhiteListHeader> whiteListHeaders)
+//    {
+//        Next = next;
+//        Logger = logger;
+//        LoggingOptions = loggingOptions;
+        
+//        BlackListHeaders = blackListHeaders.Value.Headers?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToList();
+//        BlackListHeaders ??= [];
 
-        WhiteListHeaders = whiteListHeaders.Value.Headers?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToList();
-        WhiteListHeaders ??= new List<string>();
-    }
-}
+//        WhiteListHeaders = whiteListHeaders.Value.Headers?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToList();
+//        WhiteListHeaders ??= [];
+//    }
+//}

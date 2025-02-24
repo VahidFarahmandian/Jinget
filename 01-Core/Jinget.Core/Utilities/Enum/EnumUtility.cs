@@ -79,7 +79,14 @@ public static class EnumUtility
         if (enumValues.Any())
         {
             var minVal = enumValues.First();
-            return (TValue)Convert.ChangeType(minVal, typeof(TValue));
+            var convertedValue = Convert.ChangeType(minVal, typeof(TValue));
+
+            if (convertedValue is TValue result) // Null check and pattern match
+            {
+                return result;
+            }
+
+            throw new InvalidCastException($"Cannot convert '{minVal}' to type '{typeof(TValue)}'.");
         }
 
         throw new InvalidEnumArgumentException("Enum is empty and contains no value");
@@ -96,7 +103,14 @@ public static class EnumUtility
         if (enumValues.Any())
         {
             var maxVal = enumValues.Last();
-            return (TValue)Convert.ChangeType(maxVal, typeof(TValue));
+            var convertedValue = Convert.ChangeType(maxVal, typeof(TValue));
+
+            if (convertedValue is TValue result) // Null check and pattern match
+            {
+                return result;
+            }
+
+            throw new InvalidCastException($"Cannot convert '{maxVal}' to type '{typeof(TValue)}'.");
         }
 
         throw new InvalidEnumArgumentException("Enum is empty and contains no value");

@@ -4,22 +4,13 @@
 ///     An <see cref="ILoggerProvider" /> that writes logs
 /// </summary>
 [ProviderAlias("ElasticSearch")]
-public class ElasticSearchLoggerProvider : BatchingLoggerProvider
+public class ElasticSearchLoggerProvider(IServiceProvider serviceProvider, IOptions<ElasticSearchLoggerOptions> options) : BatchingLoggerProvider(options)
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public ElasticSearchLoggerProvider(
-        IOptions<ElasticSearchLoggerOptions> options,
-        IServiceProvider serviceProvider) : base(options)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
     protected override async Task WriteMessagesAsync(IEnumerable<LogMessage> messages,
         CancellationToken cancellationToken)
     {
-        var _logService = _serviceProvider.GetJingetService<IElasticSearchLoggingDomainService>();
-
+        var _logService = serviceProvider.GetJingetService<IElasticSearchLoggingDomainService>();
+        if (_logService == null) return;
         foreach (var group in messages.GroupBy(GetGrouping))
         {
             foreach (var item in group)
@@ -27,7 +18,10 @@ public class ElasticSearchLoggerProvider : BatchingLoggerProvider
                 var log = LogModel.GetNew();
                 try
                 {
-                    log = JsonConvert.DeserializeObject<LogModel>(item.Description);
+                    if (!string.IsNullOrWhiteSpace(item.Description))
+                    {
+                        log = JsonConvert.DeserializeObject<LogModel>(item.Description);
+                    }
                 }
                 catch (JsonReaderException) //it means that the message is an error message(not error log)
                 {
@@ -40,9 +34,12 @@ public class ElasticSearchLoggerProvider : BatchingLoggerProvider
                 }
                 finally
                 {
-                    log.TimeStamp = item.Timestamp;
-                    log.Severity = item.Severity.ToString();
-                    await _logService.CreateAsync(log);
+                    if (log != null)
+                    {
+                        log.TimeStamp = item.Timestamp;
+                        log.Severity = item.Severity.ToString();
+                        await _logService.CreateAsync(log);
+                    }
                 }
             }
         }

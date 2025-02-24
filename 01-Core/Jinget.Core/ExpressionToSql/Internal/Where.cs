@@ -59,7 +59,7 @@ public class Where<T, R> : Query
                         return WherePart.Concat(Where<T, R>.Recurse(ref i, member), "=", WherePart.IsParameter(i++, true));
                     }
 
-                    if (((MemberExpression)expression).Expression.NodeType == ExpressionType.Constant)
+                    if (((MemberExpression)expression).Expression?.NodeType == ExpressionType.Constant)
                     {
                         goto case_ConstantExpression;
                     }
@@ -260,6 +260,9 @@ public class WherePart
 
     public static WherePart Concat(WherePart left, string @operator, WherePart right)
     {
+        if (right.Sql == null)
+            throw new Exception("Jinget Says: Right-side expression can not be null here");
+
         //these operators does not need to append @
         List<string> excludedList = ["IN", "AND", "OR"];
         var rightExpr = !excludedList.Contains(@operator) && !right.Sql.StartsWith("@")

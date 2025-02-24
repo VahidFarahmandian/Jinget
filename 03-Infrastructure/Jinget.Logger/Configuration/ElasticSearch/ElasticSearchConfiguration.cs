@@ -5,7 +5,7 @@ namespace Jinget.Logger.Configuration.ElasticSearch;
 public static class ElasticSearchConfiguration
 {
     public static void ConfigureElasticSearchLogger(this IServiceCollection services,
-        ElasticSearchSettingModel elasticSearchSetting = null)
+        ElasticSearchSettingModel? elasticSearchSetting = null)
     {
         services.ConfigureJingetLoggerPrerequisites(elasticSearchSetting);
         services.TryAddScoped<IElasticSearchLoggingDomainService, ElasticSearchLoggingDomainService>();

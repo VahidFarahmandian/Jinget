@@ -34,7 +34,7 @@ public class LogModel : BaseEntity<long>
             log.Username = context.User.Identity?.Name;
             log.Method = context.Request.Method;
             log.Url = context.Request.GetDisplayUrl();
-            log.IP = context.GetIpAddress();
+            log.IP = context.GetClientIpAddress();
 
             var requestDateTime = context.GetRequestDateTime();
             log.ElapsedMilliseconds = requestDateTime == null ? 0 : (DateTime.Now - requestDateTime.Value).TotalMilliseconds;
@@ -83,9 +83,9 @@ public class LogModel : BaseEntity<long>
     }
 
     public DateTime TimeStamp { get; set; }
-    public string Url { get; set; }
-    public string Description { get; set; }
-    public string EnvironmentInfo { get; set; }
+    public string? Url { get; set; }
+    public string? Description { get; set; }
+    public string? EnvironmentInfo { get; set; }
 
     /// <summary>
     /// How many milliseconds have passed since the start of the request? 
@@ -95,51 +95,51 @@ public class LogModel : BaseEntity<long>
     /// <summary>
     /// <seealso cref="AppDomain.CurrentDomain.FriendlyName"/>
     /// </summary>
-    public string SubSystem { get; set; }
+    public string? SubSystem { get; set; }
 
     /// <summary>
     /// This is used when the CreateIndexPerPartition is set to true.
     /// This property is specific to Elasticsearch logging
     /// </summary>
-    public string ParitionKey { get; set; }
+    public string? ParitionKey { get; set; }
 
     /// <summary>
     /// unique identifier for a request and response. value is read from HttpContext.TraceIdentifier
     /// </summary>
-    public string TraceIdentifier { get; set; }
+    public string? TraceIdentifier { get; set; }
 
     /// <summary>
     /// Http Method
     /// </summary>
-    public string Method { get; set; }
+    public string? Method { get; set; }
 
     /// <summary>
     /// Request or response body
     /// </summary>
-    public string Body { get; set; }
+    public string? Body { get; set; }
 
     /// <summary>
     /// Request/Response headers. Blacklist headers will not be logged
     /// </summary>
-    public string Headers { get; set; }
+    public string? Headers { get; set; }
 
     /// <summary>
     /// Request ip
     /// </summary>
-    public string IP { get; set; }
+    public string? IP { get; set; }
 
     /// <summary>
     /// Is the record for request or response?
     /// </summary>
     public LogType Type { get; set; }
 
-    public string TypeDescription => Type.GetDescription();
+    public string? TypeDescription => Type.GetDescription();
 
     /// <summary>
     /// Page url initiating the request. 
     /// Read page url from 'Referer' header
     /// </summary>
-    public string PageUrl { get; set; }
+    public string? PageUrl { get; set; }
 
     /// <summary>
     /// total length of the request or response
@@ -149,22 +149,22 @@ public class LogModel : BaseEntity<long>
     /// <summary>
     /// Request or response 'AdditionalData' header data plus HttpContext.Items['AdditionalData'] value
     /// </summary>
-    public string AdditionalData { get; set; }
+    public string? AdditionalData { get; set; }
 
     /// <summary>
     /// Request username
     /// </summary>
-    public string Username { get; set; }
+    public string? Username { get; set; }
 
     /// <summary>
     /// <seealso cref="LogLevel"/>
     /// </summary>
-    public string Severity { get; set; } = LogLevel.Information.ToString();
+    public string? Severity { get; set; } = LogLevel.Information.ToString();
 
     /// <summary>
     /// This property only filled whenever calling <seealso cref="ILoggerExtensions.LogCustom"/> method.
     /// </summary>
-    public string CallerFilePath { get; set; } = null;
+    public string? CallerFilePath { get; set; } = null;
 
     /// <summary>
     /// This property only filled whenever calling <seealso cref="ILoggerExtensions.LogCustom"/> method.
@@ -174,5 +174,5 @@ public class LogModel : BaseEntity<long>
     /// <summary>
     /// This property only filled whenever calling <seealso cref="ILoggerExtensions.LogCustom"/> method.
     /// </summary>
-    public string CallerMember { get; set; } = null;
+    public string? CallerMember { get; set; } = null;
 }

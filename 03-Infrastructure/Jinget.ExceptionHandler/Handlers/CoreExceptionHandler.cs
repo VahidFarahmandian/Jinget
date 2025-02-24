@@ -4,7 +4,7 @@ namespace Jinget.ExceptionHandler.Handlers;
 
 public abstract class CoreExceptionHandler(ILogger<CoreExceptionHandler> logger, IHostEnvironment env, bool useGlobalExceptionHandler)
 {
-    protected async ValueTask<bool> HandleAsync(HttpContext httpContext, Exception exception, int statusCode, CancellationToken cancellationToken)
+    protected async ValueTask<bool> HandleAsync(HttpContext httpContext, Exception exception, int? statusCode, CancellationToken cancellationToken)
     {
         var logEntity = LogModel.GetNewErrorObject(httpContext);
         logEntity.Description = JsonConvert.SerializeObject(new
@@ -16,16 +16,20 @@ public abstract class CoreExceptionHandler(ILogger<CoreExceptionHandler> logger,
         logger.LogError(JsonConvert.SerializeObject(logEntity));
         if (useGlobalExceptionHandler)
         {
-            httpContext.Response.StatusCode = statusCode;
-            var problemDetails = new ResponseResult<ProblemDetails>(CreateProblemDetails(httpContext, exception, statusCode));
-            await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+            if (!httpContext.Response.HasStarted)
+            {
+                var httpStatusCode = statusCode ?? (exception == null ? 204 : 500);
+                httpContext.Response.StatusCode = httpStatusCode;
+                var problemDetails = new ResponseResult<ProblemDetails>(CreateProblemDetails(httpContext, exception, httpStatusCode));
+                await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+            }
             return true;
         }
         else
             return false;
     }
 
-    protected virtual ProblemDetails CreateProblemDetails(in HttpContext context, in Exception exception, int statusCode)
+    protected virtual ProblemDetails CreateProblemDetails(in HttpContext context, in Exception? exception, int statusCode)
     {
         var reasonPhrase = ReasonPhrases.GetReasonPhrase(statusCode);
         if (string.IsNullOrEmpty(reasonPhrase))
@@ -38,18 +42,19 @@ public abstract class CoreExceptionHandler(ILogger<CoreExceptionHandler> logger,
             Status = statusCode,
             Title = reasonPhrase
         };
-        problemDetails.Extensions.Add("message", exception.Message);
+        problemDetails.Extensions.Add("message", exception?.Message);
+        problemDetails.Extensions.Add("data", exception?.Data);
+        problemDetails.Extensions.Add("traceId", context.TraceIdentifier);
+        problemDetails.Extensions.Add("nodeId", Environment.MachineName);
 
         if (env.IsProduction())
         {
             return problemDetails;
         }
-
-        problemDetails.Detail = exception.ToString();
-        problemDetails.Extensions.Add("traceId", context.TraceIdentifier);
-        problemDetails.Extensions.Add("data", exception.Data);
-        problemDetails.Extensions.Add("nodeId", Environment.MachineName);
-
-        return problemDetails;
+        else
+        {
+            problemDetails.Detail = exception?.ToString();
+            return problemDetails;
+        }
     }
 }

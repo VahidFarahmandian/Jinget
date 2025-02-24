@@ -4,7 +4,7 @@ global using System;
 global using System.Collections.Generic;
 global using System.ComponentModel;
 global using System.Data;
-global using System.Data.SqlClient;
+global using Microsoft.Data.SqlClient;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Linq;
 global using System.Linq.Expressions;

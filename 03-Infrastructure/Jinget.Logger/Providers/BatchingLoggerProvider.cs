@@ -1,17 +1,19 @@
-﻿namespace Jinget.Logger.Providers;
+﻿using Microsoft.VisualStudio.Threading;
+
+namespace Jinget.Logger.Providers;
 
 public abstract class BatchingLoggerProvider : ILoggerProvider
 {
     private readonly Microsoft.Extensions.Logging.LogLevel _minAllowedLogLevel;
     private readonly int? _batchSize;
     private readonly string[] _blacklistStrings;
-    private readonly List<LogMessage> _currentBatch = new();
+    private readonly List<LogMessage> _currentBatch = [];
     private readonly TimeSpan _interval;
     private readonly int? _queueSize;
-    private CancellationTokenSource _cancellationTokenSource;
+    private CancellationTokenSource? _cancellationTokenSource;
 
-    private BlockingCollection<LogMessage> _messageQueue;
-    private Task _outputTask;
+    private BlockingCollection<LogMessage>? _messageQueue;
+    private Task? _outputTask;
 
     protected BatchingLoggerProvider(IOptions<BatchingLoggerOptions> options)
     {
@@ -34,7 +36,8 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
 
     public void Dispose()
     {
-        StopAsync().GetAwaiter().GetResult();
+        StopSynchronous();
+        //StopAsync().GetAwaiter().GetResult();
         GC.SuppressFinalize(this);
     }
 
@@ -44,31 +47,34 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
 
     private async Task ProcessLogQueueAsync()
     {
-        while (!_cancellationTokenSource.IsCancellationRequested)
+        if (_cancellationTokenSource != null && _messageQueue != null)
         {
-            var limit = _batchSize ?? int.MaxValue;
-
-            while (limit > 0 && _messageQueue.TryTake(out var message))
+            while (!_cancellationTokenSource.IsCancellationRequested)
             {
-                _currentBatch.Add(message);
-                limit--;
-            }
+                var limit = _batchSize ?? int.MaxValue;
 
-            if (_currentBatch.Count > 0)
-            {
-                try
+                while (limit > 0 && _messageQueue.TryTake(out var message))
                 {
-                    await WriteMessagesAsync(_currentBatch, _cancellationTokenSource.Token);
-                }
-                catch
-                {
-                    // ignored
+                    _currentBatch.Add(message);
+                    limit--;
                 }
 
-                _currentBatch.Clear();
-            }
+                if (_currentBatch.Count > 0)
+                {
+                    try
+                    {
+                        await WriteMessagesAsync(_currentBatch, _cancellationTokenSource.Token);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
 
-            await IntervalAsync(_interval, _cancellationTokenSource.Token);
+                    _currentBatch.Clear();
+                }
+
+                await IntervalAsync(_interval, _cancellationTokenSource.Token);
+            }
         }
     }
 
@@ -83,16 +89,18 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
         //if log contains blacklist string then ignore it
         if (_blacklistStrings.Any(message.ToString().Contains))
             return;
-
-        if (!_messageQueue.IsAddingCompleted)
-            try
-            {
-                _messageQueue.Add(message, _cancellationTokenSource.Token);
-            }
-            catch
-            {
-                //cancellation token canceled or CompleteAdding called
-            }
+        if (_cancellationTokenSource != null && _messageQueue != null)
+        {
+            if (!_messageQueue.IsAddingCompleted)
+                try
+                {
+                    _messageQueue.Add(message, _cancellationTokenSource.Token);
+                }
+                catch
+                {
+                    //cancellation token canceled or CompleteAdding called
+                }
+        }
     }
 
     private void Start()
@@ -109,21 +117,18 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
             TaskScheduler.Default);
     }
 
-    private async Task StopAsync()
+    private void StopSynchronous()
     {
-        _cancellationTokenSource.Cancel();
-        _messageQueue.CompleteAdding();
+        _cancellationTokenSource?.Cancel();
+        _messageQueue?.CompleteAdding();
 
-        try
+        using var taskContext = new JoinableTaskContext();
+        var joinableTaskFactory = new JoinableTaskFactory(taskContext);
+        joinableTaskFactory.Run(async () =>
         {
-            await _outputTask.WaitAsync(_interval);
-        }
-        catch (TaskCanceledException)
-        {
-        }
-        catch (AggregateException ex) when (ex.InnerExceptions.Count == 1 &&
-                                            ex.InnerExceptions[0] is TaskCanceledException)
-        {
-        }
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            await _outputTask?.WaitAsync(_interval);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+        });
     }
 }

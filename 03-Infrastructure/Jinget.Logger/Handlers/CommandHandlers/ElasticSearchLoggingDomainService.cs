@@ -1,14 +1,12 @@
 ﻿namespace Jinget.Logger.Handlers.CommandHandlers;
 
-public class ElasticSearchLoggingDomainService : IElasticSearchLoggingDomainService
+public class ElasticSearchLoggingDomainService(IElasticSearchLoggingRepository repository) : IElasticSearchLoggingDomainService
 {
-    protected readonly IElasticSearchLoggingRepository Repository;
-
-    public ElasticSearchLoggingDomainService(IElasticSearchLoggingRepository repository) => Repository = repository;
+    protected readonly IElasticSearchLoggingRepository Repository = repository;
 
     public virtual async Task<bool> CreateAsync(LogModel param) => await Repository.IndexAsync(param);
     public virtual async Task<bool> BulkCreateAsync(IList<LogModel> @params) => await Repository.BulkIndexAsync(@params);
-    public virtual async Task<LogModel> FetchLatestAsync() => await Repository.GetLatestAsync();
+    public virtual async Task<LogModel?> FetchLatestAsync() => await Repository.GetLatestAsync();
     public virtual async Task<List<LogSearchViewModel>> SearchAsync(
         string partitionKey,
         string searchString,

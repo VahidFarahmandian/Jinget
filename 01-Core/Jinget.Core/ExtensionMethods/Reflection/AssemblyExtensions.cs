@@ -4,12 +4,12 @@ public static class AssemblyExtensions
 {
     public class AssemblyInfo
     {
-        public string Summary { get; set; } = "";
-        public string TypeName { get; set; } = "";
-        public string AssemblyName { get; set; } = "";
-        public string MethodName { get; set; } = "";
-        public string Claim { get; set; } = "";
-        public string ParentTitle { get; set; } = "";
+        public string? Summary { get; set; } = "";
+        public string? TypeName { get; set; } = "";
+        public string? AssemblyName { get; set; } = "";
+        public string? MethodName { get; set; } = "";
+        public string? Claim { get; set; } = "";
+        public string? ParentTitle { get; set; } = "";
     }
 
     /// <summary>
@@ -25,7 +25,7 @@ public static class AssemblyExtensions
             .Where(resourceType.IsAssignableFrom)
             .Select(x => new AssemblyInfo
             {
-                Summary = ((SummaryAttribute)x.GetCustomAttributes().FirstOrDefault(a => a.GetType() == methodSummaryAttribute))?.Description.Trim(),
+                Summary = (x.GetCustomAttributes().FirstOrDefault(a => a.GetType() == methodSummaryAttribute) as SummaryAttribute)?.Description.Trim(),
                 TypeName = Regex.Replace(x.Name, normalizingPattern, string.Empty, RegexOptions.IgnoreCase), //x.Name.Replace("Controller", string.Empty).Trim(),
                 AssemblyName = assembly.GetName().Name
             }).ToList();
@@ -49,26 +49,28 @@ public static class AssemblyExtensions
                 type.GetMethods(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public))
             .Where(m => !m.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Any());
 
+#pragma warning disable CS8604 // Possible null reference argument.
         var authorizedMethods = allMethods.Where(m => !onlyAuthorizedMethods ||
             (//methods marked as Authorize
             m.GetCustomAttributes().Any(x => x.GetType() == typeof(AuthorizeAttribute)) ||
             //class marked as Authorize
             m.DeclaringType.GetCustomAttributes().Any(x => x.GetType() == typeof(AuthorizeAttribute))));
+#pragma warning restore CS8604 // Possible null reference argument.
 
         return
 
             [
                 .. authorizedMethods.Select(x => new AssemblyInfo
                 {
-                    Summary = ((SummaryAttribute)x.GetCustomAttributes()
-                            .FirstOrDefault(a => a.GetType() == methodSummaryAttribute))?.Description.Trim(),
+                    Summary = (x.GetCustomAttributes()
+                            .FirstOrDefault(a => a.GetType() == methodSummaryAttribute) as SummaryAttribute)?.Description.Trim(),
                     TypeName = x.DeclaringType?.Name.Replace("Controller", string.Empty).Trim(),
                     AssemblyName = executingAssembly.GetName().Name,
                     MethodName = x.Name.Trim(),
-                    Claim = ((ClaimAttribute)x.GetCustomAttributes()
-                            .FirstOrDefault(a => a.GetType() == typeof(ClaimAttribute)))?.Title,
-                    ParentTitle = ((SummaryAttribute)x.DeclaringType?.GetCustomAttributes()
-                        .FirstOrDefault(a => a.GetType() == methodSummaryAttribute))?.Description
+                    Claim = (x.GetCustomAttributes()
+                            .FirstOrDefault(a => a.GetType() == typeof(ClaimAttribute)) as ClaimAttribute)?.Title,
+                    ParentTitle = (x.DeclaringType?.GetCustomAttributes()
+                        .FirstOrDefault(a => a.GetType() == methodSummaryAttribute) as SummaryAttribute)?.Description
                 })
                     .OrderBy(x => x.Summary).ThenBy(x => x.MethodName).ThenBy(x => x.Claim),
             ];

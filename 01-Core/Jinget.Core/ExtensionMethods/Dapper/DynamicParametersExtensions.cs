@@ -14,23 +14,39 @@ public static class DynamicParametersExtensions
     /// <returns></returns>
     public static List<dynamic> GetSQLValues(this DynamicParameters parameters)
     {
-        List<object> lstValues = [];
-        var t = parameters.GetType().GetField("parameters", BindingFlags.NonPublic | BindingFlags.Instance);
+        List<dynamic> lstValues = []; 
+        var parametersField = parameters.GetType().GetField("parameters", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        if (t == null)
+        if (parametersField == null)
             return lstValues;
 
-        foreach (DictionaryEntry dictionaryEntry in (IDictionary)t.GetValue(parameters))
+        if (parametersField.GetValue(parameters) is IDictionary parameterDictionary) 
         {
-            var dbType = (DbType)dictionaryEntry.Value.GetValue("DbType");
-            if (dbType.IsBooleanDbType())
-                lstValues.Add(parameters.Get<dynamic>(dictionaryEntry.Key.ToString()) == true ? 1 : 0);
-            else if (dbType.IsNumericDbType())
-                lstValues.Add(parameters.Get<dynamic>(dictionaryEntry.Key.ToString()));
-            else if (dbType.IsUnicodeDbType())
-                lstValues.Add("N'" + parameters.Get<dynamic>(dictionaryEntry.Key.ToString()) + "'");
-            else
-                lstValues.Add("'" + parameters.Get<dynamic>(dictionaryEntry.Key.ToString()) + "'");
+            foreach (DictionaryEntry dictionaryEntry in parameterDictionary)
+            {
+                var parameterValue = dictionaryEntry.Value;
+                if (parameterValue != null)
+                {
+                    var dbTypeValue = parameterValue.GetType().GetProperty("DbType")?.GetValue(parameterValue);
+                    if (dbTypeValue is DbType dbType) 
+                    {
+                        var parameterKeyValue = dictionaryEntry.Key.ToString();
+                        if (parameterKeyValue != null)
+                        {
+                            var parameterValueFromParameters = parameters.Get<dynamic>(parameterKeyValue);
+
+                            if (dbType.IsBooleanDbType())
+                                lstValues.Add(parameterValueFromParameters == true ? 1 : 0);
+                            else if (dbType.IsNumericDbType())
+                                lstValues.Add(parameterValueFromParameters);
+                            else if (dbType.IsUnicodeDbType())
+                                lstValues.Add("N'" + parameterValueFromParameters + "'");
+                            else
+                                lstValues.Add("'" + parameterValueFromParameters + "'");
+                        }
+                    }
+                }
+            }
         }
         return lstValues;
     }

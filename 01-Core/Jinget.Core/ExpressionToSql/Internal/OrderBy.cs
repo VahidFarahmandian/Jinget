@@ -13,7 +13,7 @@ public class OrderBy<T>
     /// <summary>
     /// The order by expression
     /// </summary>
-    public virtual Expression<Func<T, object>> Name { get; set; }
+    public virtual Expression<Func<T, object>>? Name { get; set; }
 
     public OrderBy() { }
     public OrderBy(string name) => Name = ExpressionUtility.ToExpression<T, object>(name, "x");
@@ -29,12 +29,14 @@ public class OrderBy<T>
     /// </summary>
     public override string ToString()
     {
+        if (Name == null) 
+            return "";
         StringBuilder orderByClause = new();
         orderByClause.Append('[');
-        
+
         if (Name.Body is MemberExpression expression &&
-            expression.Expression.NodeType != ExpressionType.Convert &&
-            expression.Expression.NodeType != ExpressionType.Parameter)
+            expression.Expression?.NodeType != ExpressionType.Convert &&
+            expression.Expression?.NodeType != ExpressionType.Parameter)
             orderByClause.Append(Expression.Lambda(expression).Compile().DynamicInvoke());
         else
             orderByClause.Append(Name.Stringfy());

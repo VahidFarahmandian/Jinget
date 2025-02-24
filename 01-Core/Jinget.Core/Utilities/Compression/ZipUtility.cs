@@ -64,7 +64,7 @@ public class ZipUtility
                     }
 
                     // Split the encrypted file into chunks
-                    await SplitZipFileAsync(finalResultFile, chunkSize, file.Directory.FullName);
+                    await SplitZipFileAsync(finalResultFile, chunkSize, file.Directory?.FullName);
                 }
                 finally
                 {
@@ -112,8 +112,9 @@ public class ZipUtility
         }
         csEncrypt.FlushFinalBlock();
     }
-    static async Task SplitZipFileAsync(string zipFile, int chunkSize, string destinationDirectory)
+    static async Task SplitZipFileAsync(string zipFile, int chunkSize, string? destinationDirectory)
     {
+        if (destinationDirectory == null) destinationDirectory = "";
         FileInfo fileInfo = new(zipFile);
         string fileName = Path.GetFileNameWithoutExtension(zipFile);
 
@@ -258,7 +259,9 @@ public class ZipUtility
         foreach (ZipArchiveEntry entry in archive.Entries)
         {
             string filePath = Path.Combine(path, entry.FullName);
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            string? directoryPath = Path.GetDirectoryName(filePath);
+            if (directoryPath != null)
+                Directory.CreateDirectory(directoryPath);
 
             using FileStream fileStream = File.Create(filePath);
             using Stream entryStream = entry.Open();

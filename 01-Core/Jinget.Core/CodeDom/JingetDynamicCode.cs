@@ -179,7 +179,10 @@ public sealed class JingetDynamicCode
         /// What should be return type of the dynamically injected Invoke method?
         /// If not set, void will be used
         /// </summary>
-        public Type ReturnType { get; set; }
+        /// <remarks>
+        /// Default value: typeof(void)
+        /// </remarks>
+        public Type ReturnType { get; set; } = typeof(void);
 
         /// <summary>
         /// What are the input parameters for dynamically injected Invoke method?
@@ -188,9 +191,9 @@ public sealed class JingetDynamicCode
 
         public class ParameterOptions
         {
-            public Type Type { get; set; }
-            public string Name { get; set; }
-            public object Value { get; set; }
+            public Type? Type { get; set; }
+            public string? Name { get; set; }
+            public object? Value { get; set; }
         }
     }
 }

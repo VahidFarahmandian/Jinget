@@ -4,8 +4,22 @@ public class BatchingLoggerOptions
 {
     private int? _backgroundQueueSize;
     private int? _batchSize = 32;
-    private string[] _blacklistStrings = Array.Empty<string>();
+    private string[] _blacklistStrings = [];
     private TimeSpan _flushPeriod = TimeSpan.FromSeconds(1);
+
+    const long MB_10 = 1024 * 1024 * 10;
+
+    /// <summary>
+    /// maximum request body size to log. 
+    /// request body larger than this value will be logged as `--REQUEST BODY TOO LARGE--` string
+    /// </summary>
+    public long MaxRequestBodySize { get; set; } = MB_10;
+
+    /// <summary>
+    /// maximum response body size to log. 
+    /// response body larger than this value will be logged as `--REQUEST BODY TOO LARGE--` string
+    /// </summary>
+    public long MaxResponseBodySize { get; set; } = MB_10;
 
     /// <summary>
     /// Defines the min log level that should processed
@@ -34,7 +48,7 @@ public class BatchingLoggerOptions
     public string[] BlackListStrings
     {
         get => _blacklistStrings;
-        set => _blacklistStrings = value ?? Array.Empty<string>();
+        set => _blacklistStrings = value ?? [];
     }
 
     /// <summary>

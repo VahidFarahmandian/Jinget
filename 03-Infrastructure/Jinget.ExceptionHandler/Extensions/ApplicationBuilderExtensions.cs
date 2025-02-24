@@ -14,9 +14,9 @@ public static class ApplicationBuilderExtensions
         {
             var baseSetting = ctx.RequestServices.GetJingetService<BaseSettingModel>();
             await next();
-            if (baseSetting.Handle4xxResponses)
+            if (baseSetting != null && baseSetting.Handle4xxResponses)
             {
-                if (ctx.Response.StatusCode is >= 400 and < 500)
+                if (ctx.Response.StatusCode is >= 400 and < 500 && ctx.Response.StatusCode != 429)
                 {
                     throw new HttpRequestException(ReasonPhrases.GetReasonPhrase(ctx.Response.StatusCode), null, (System.Net.HttpStatusCode?)ctx.Response.StatusCode);
                 }

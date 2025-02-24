@@ -33,7 +33,7 @@ public static class IPUtility
                 return false; //Unknown IP format
             }
 
-            if (!IPAddress.TryParse(ipAddress, out IPAddress targetAddress)) return false;
+            if (!IPAddress.TryParse(ipAddress, out IPAddress? targetAddress)) return false;
 
             if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) //IPv4
             {

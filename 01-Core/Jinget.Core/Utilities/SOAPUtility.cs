@@ -11,7 +11,7 @@ public abstract class SOAPRequestBase<TEnvelope, TRequest>
 {
     public SOAPRequestBase() { }
 
-    public abstract (TEnvelope envelope, TRequest request) CreateEnvelope();
+    public abstract (TEnvelope? envelope, TRequest? request) CreateEnvelope();
 }
 
 public abstract class SOAPEnvelopeBase

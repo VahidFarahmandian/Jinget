@@ -45,7 +45,7 @@ public static class TypeExtensions
     /// <returns>Invoke the method and return the method's return value</returns>
     public static object? Call(this Type type, object? caller, string name, BindingFlags bindingFlags, Type[]? parameterTypes, object?[] parameterValues, params Type[] generics)
     {
-        MethodInfo method;
+        MethodInfo? method;
         if (generics != null)
         {
             if (parameterTypes == null)

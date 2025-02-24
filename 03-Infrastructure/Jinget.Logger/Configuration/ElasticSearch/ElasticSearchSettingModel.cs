@@ -10,12 +10,12 @@ public class ElasticSearchSettingModel : BaseSettingModel
     /// <summary>
     /// username, if basic authentication enabled on Elasticsearch search service
     /// </summary>
-    public string UserName { get; set; }
+    public string? UserName { get; set; }
 
     /// <summary>
     /// password, if basic authentication enabled on Elasticsearch search service
     /// </summary>
-    public string Password { get; set; }
+    public string? Password { get; set; }
 
     /// <summary>
     /// Set whether to use SSL while connecting to Elasticsearch or not
