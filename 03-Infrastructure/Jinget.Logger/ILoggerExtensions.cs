@@ -20,7 +20,7 @@ public static class ILoggerExtensions
         log.CallerLineNumber = callerLineNumber;
         log.CallerMember = callerMember;
 
-        logger.Log(LogLevel.Information, JsonConvert.SerializeObject(log));
+        logger.Log(LogLevel.Information, log.Serialize());
     }
 
     public static void LogInformation(this ILogger logger, HttpContext? httpContext, string message)
@@ -30,7 +30,7 @@ public static class ILoggerExtensions
         var log = LogModel.GetNewCustomObject(httpContext);
         log.Description = message;
 
-        logger.Log(LogLevel.Information, JsonConvert.SerializeObject(log));
+        logger.Log(LogLevel.Information, log.Serialize());
     }
 
     public static void LogError(this ILogger logger, HttpContext? httpContext, string message, Exception? exception = null)
@@ -38,11 +38,11 @@ public static class ILoggerExtensions
         if (httpContext == null)
             return;
         var log = LogModel.GetNewErrorObject(httpContext);
-        log.AdditionalData = JsonConvert.SerializeObject(new
+        log.AdditionalData = new
         {
             description = message,
             exception
-        });
-        logger.Log(LogLevel.Error, JsonConvert.SerializeObject(log));
+        }.Serialize();
+        logger.Log(LogLevel.Error, log.Serialize());
     }
 }

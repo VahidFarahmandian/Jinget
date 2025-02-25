@@ -11,7 +11,6 @@ global using Jinget.Core.IOptionTypes.Log;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
-global using Newtonsoft.Json;
 global using Jinget.Core.Exceptions;
 global using Jinget.Logger.Configuration.ElasticSearch;
 global using Jinget.Logger.ViewModels;

@@ -213,7 +213,7 @@ public static class ExpressionUtility
         else
         {
             return json is IList<FilterCriteria>
-                ? ConstructBinaryExpression<T>(JsonConvert.DeserializeObject<IList<FilterCriteria>>(JsonConvert.SerializeObject(json)), treatNullOrEmptyAsTrueCondition)
+                ? ConstructBinaryExpression<T>(json.Serialize().Deserialize<IList<FilterCriteria>>(), treatNullOrEmptyAsTrueCondition)
                 : ConstructBinaryExpression<T>(json.ToString(), treatNullOrEmptyAsTrueCondition);
         }
     }
@@ -235,7 +235,8 @@ public static class ExpressionUtility
             return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
         }
 
-        var filters = JsonConvert.DeserializeObject<IDictionary<string, string>>(json).ToFilterCriteria();
+        //var filters = JsonConvert.DeserializeObject<IDictionary<string, string>>(json).ToFilterCriteria();
+        var filters = json.Deserialize<IDictionary<string, string>>().ToFilterCriteria();
         return ConstructBinaryExpression<T>(filters, treatNullOrEmptyAsTrueCondition);
 
     }

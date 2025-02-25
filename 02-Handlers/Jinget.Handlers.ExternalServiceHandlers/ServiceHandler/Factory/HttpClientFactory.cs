@@ -1,4 +1,6 @@
-﻿namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory;
+﻿using Jinget.Core.ExtensionMethods;
+
+namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory;
 
 public class HttpClientFactory
 {
@@ -82,7 +84,7 @@ public class HttpClientFactory
             }
             else if (IsJsonContentType(headers))
             {
-                bodyContent = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, MediaTypeNames.Application.Json);
+                bodyContent = new StringContent(content.Serialize(), Encoding.UTF8, MediaTypeNames.Application.Json);
             }
             else
             {

@@ -1,4 +1,8 @@
-﻿namespace Jinget.Logger.Providers.ElasticSearchProvider;
+﻿using Jinget.Core.Utilities.Json;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+
+namespace Jinget.Logger.Providers.ElasticSearchProvider;
 
 /// <summary>
 ///     An <see cref="ILoggerProvider" /> that writes logs
@@ -20,17 +24,36 @@ public class ElasticSearchLoggerProvider(IServiceProvider serviceProvider, IOpti
                 {
                     if (!string.IsNullOrWhiteSpace(item.Description))
                     {
-                        log = JsonConvert.DeserializeObject<LogModel>(item.Description);
+                        log = item.Description.Deserialize<LogModel>(strictPropertyMatching: true);
+
+                        if (log != null && !string.IsNullOrWhiteSpace(log.Body) && JsonUtility.IsValid(log.Body))
+                        {
+                            // Parse the JSON string
+                            JsonNode? rootNode = JsonNode.Parse(log.Body);
+
+                            // Check if the parsed node is a JSON object
+                            if (rootNode != null && rootNode is JsonObject rootObject)
+                            {
+                                // Check if the "isSuccess" property exists and is a boolean
+                                if (rootObject.TryGetPropertyValue("isSuccess", out JsonNode? isSuccessNode) &&
+                                    isSuccessNode != null && isSuccessNode is JsonValue isSuccessValue &&
+                                    isSuccessValue.TryGetValue(out bool isSuccess))
+                                {
+                                    if (!isSuccess)
+                                        item.Severity = Microsoft.Extensions.Logging.LogLevel.Error;
+                                }
+                            }
+                        }
                     }
                 }
-                catch (JsonReaderException) //it means that the message is an error message(not error log)
+                catch (JsonException) //it means that the message is an error message(not error log)
                 {
                     log = LogModel.GetNewErrorObject();
-                    log.AdditionalData = JsonConvert.SerializeObject(new
+                    log.AdditionalData = new
                     {
                         item.Description,
                         item.Exception
-                    });
+                    }.Serialize();
                 }
                 finally
                 {

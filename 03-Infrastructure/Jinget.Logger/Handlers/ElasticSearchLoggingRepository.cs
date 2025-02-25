@@ -4,11 +4,11 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
 {
     public async Task<bool> IndexAsync(LogModel param)
     {
-        if (!string.IsNullOrWhiteSpace(param.ParitionKey))
+        if (!string.IsNullOrWhiteSpace(param.PartitionKey))
         {
             if (settings.CreateIndexPerPartition)
-                await CreateIndexAsync(param.ParitionKey);
-            string indexName = GetIndexName(param.ParitionKey);
+                await CreateIndexAsync(param.PartitionKey);
+            string indexName = GetIndexName(param.PartitionKey);
 
             var result = await elasticClient.IndexAsync(param, i => i.Index(indexName).Refresh(settings.RefreshType));
 
@@ -16,7 +16,7 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
                 return result.IsValid;
             throw new JingetException("Jinget Says: " + result.OriginalException.ToString());
         }
-        throw new JingetException("Jinget Says: ParitionKey is null or empty");
+        throw new JingetException("Jinget Says: PartitionKey is null or empty");
     }
     string GetIndexName(string partitionKey)
     {
@@ -47,7 +47,7 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
 
     public async Task<bool> BulkIndexAsync(IList<LogModel> @params)
     {
-        foreach (var item in @params.GroupBy(g => g.ParitionKey))
+        foreach (var item in @params.GroupBy(g => g.PartitionKey))
         {
             if (!string.IsNullOrWhiteSpace(item.Key))
             {
@@ -103,7 +103,7 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
                                                         f => f.IP,
                                                         f => f.Method,
                                                         f => f.PageUrl,
-                                                        f => f.ParitionKey,
+                                                        f => f.PartitionKey,
                                                         f => f.TraceIdentifier,
                                                         f => f.SubSystem,
                                                         f => f.Url,

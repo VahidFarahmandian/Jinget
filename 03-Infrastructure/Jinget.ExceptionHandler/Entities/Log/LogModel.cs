@@ -4,7 +4,9 @@ namespace Jinget.ExceptionHandler.Entities.Log;
 [Entity(ElasticSearchEnabled = true)]
 public class LogModel : BaseEntity<long>
 {
-    private LogModel()
+    private string? partitionKey;
+
+    public LogModel()
     {
     }
 
@@ -14,15 +16,15 @@ public class LogModel : BaseEntity<long>
         {
             SubSystem = AppDomain.CurrentDomain.FriendlyName,
             TimeStamp = DateTime.Now,
-            EnvironmentInfo = JsonConvert.SerializeObject(new
+            EnvironmentInfo = new
             {
                 Environment.MachineName,
                 CLRVersion = Environment.Version,
-                OSVersion = JsonConvert.SerializeObject(Environment.OSVersion.VersionString),
+                OSVersion = Environment.OSVersion.VersionString.Serialize(),
                 Environment.ProcessId,
                 WorkingThreadUsername = Environment.UserName,
                 WorkingThreadUserDomain = Environment.UserDomainName
-            })
+            }.Serialize()
         };
 
         if (context != null)
@@ -30,7 +32,7 @@ public class LogModel : BaseEntity<long>
             context.Request.Headers.TryGetValue("Referer", out StringValues pageUrl);
             log.PageUrl = pageUrl.FirstOrDefault();
             log.TraceIdentifier = context.TraceIdentifier;
-            log.ParitionKey = context.GetLoggerPartitionKey();
+            log.PartitionKey = context.GetLoggerPartitionKey();
             log.Username = context.User.Identity?.Name;
             log.Method = context.Request.Method;
             log.Url = context.Request.GetDisplayUrl();
@@ -76,7 +78,7 @@ public class LogModel : BaseEntity<long>
         obj.Type = LogType.Response;
         obj.Body = body;
         obj.Headers = headers;
-        obj.Description = JsonConvert.SerializeObject(new { context.Response.StatusCode });
+        obj.StatusCode = context.Response.StatusCode;
         obj.AdditionalData = context.GetLoggerAdditionalData(isRequestData: false);
         obj.ContentLength = context.GetResponseContentLength(body);
         return obj;
@@ -85,6 +87,7 @@ public class LogModel : BaseEntity<long>
     public DateTime TimeStamp { get; set; }
     public string? Url { get; set; }
     public string? Description { get; set; }
+    public int? StatusCode { get; set; }
     public string? EnvironmentInfo { get; set; }
 
     /// <summary>
@@ -98,10 +101,11 @@ public class LogModel : BaseEntity<long>
     public string? SubSystem { get; set; }
 
     /// <summary>
-    /// This is used when the CreateIndexPerPartition is set to true.
+    /// if PartitionKey is not set the <see cref="SubSystem"/> value will be used as PartitionKey
+    /// this is crucial when CreateIndexPerPartition is set to true
     /// This property is specific to Elasticsearch logging
     /// </summary>
-    public string? ParitionKey { get; set; }
+    public string? PartitionKey { get => string.IsNullOrWhiteSpace(partitionKey) ? SubSystem : partitionKey; set => partitionKey = value; }
 
     /// <summary>
     /// unique identifier for a request and response. value is read from HttpContext.TraceIdentifier

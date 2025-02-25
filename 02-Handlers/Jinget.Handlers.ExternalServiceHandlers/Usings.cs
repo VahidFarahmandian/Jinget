@@ -6,8 +6,6 @@ global using System.Net.Http;
 global using System.Net.Mime;
 global using System.Net.Http.Headers;
 global using System.Threading.Tasks;
-
-global using Newtonsoft.Json;
 global using Jinget.Handlers.ExternalServiceHandlers.ServiceHandler;
 global using Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory;
 

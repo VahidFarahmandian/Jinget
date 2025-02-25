@@ -1,4 +1,7 @@
-﻿namespace Jinget.Core.ExtensionMethods;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace Jinget.Core.ExtensionMethods;
 
 public static class ObjectExtensions
 {
@@ -186,13 +189,13 @@ public static class ObjectExtensions
     /// </summary>
     public static bool HasSameValuesAs(this object source, object target)
     {
-        var settings = new JsonSerializerSettings
+        var settings = new JsonSerializerOptions
         {
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            NullValueHandling = NullValueHandling.Ignore
+            ReferenceHandler = ReferenceHandler.Preserve,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        return JsonConvert.SerializeObject(source, settings) == JsonConvert.SerializeObject(target, settings);
+        return source.Serialize(settings) == target.Serialize(settings);
     }
 
     /// <summary>

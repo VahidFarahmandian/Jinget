@@ -1,4 +1,6 @@
-﻿namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler;
+﻿using Jinget.Core.ExtensionMethods;
+
+namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler;
 
 public class JingetServiceHandler<TResponseModel> : ServiceHandler<JingetServiceHandlerEvents<TResponseModel>> where TResponseModel : class, new()
 {
@@ -24,7 +26,7 @@ public class JingetServiceHandler<TResponseModel> : ServiceHandler<JingetService
                 switch (response.Content.Headers.ContentType.MediaType)
                 {
                     case MediaTypeNames.Application.Json:
-                        responseModel = JsonConvert.DeserializeObject<TResponseModel>(rawResponse);
+                        responseModel = rawResponse.Deserialize<TResponseModel>();
                         break;
                     case MediaTypeNames.Application.Xml:
                     case MediaTypeNames.Text.Xml:

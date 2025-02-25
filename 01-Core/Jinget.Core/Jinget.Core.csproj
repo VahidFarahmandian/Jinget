@@ -20,7 +20,6 @@
 		<PackageReference Include="Mapster" Version="7.4.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.13.2" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		
 		<PackageReference Include="SoapFormatter" Version="1.1.9" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.2.0" />

@@ -7,18 +7,20 @@ public abstract class CoreExceptionHandler(ILogger<CoreExceptionHandler> logger,
     protected async ValueTask<bool> HandleAsync(HttpContext httpContext, Exception exception, int? statusCode, CancellationToken cancellationToken)
     {
         var logEntity = LogModel.GetNewErrorObject(httpContext);
-        logEntity.Description = JsonConvert.SerializeObject(new
+        logEntity.Description = new
         {
             exception.Message,
             exception.StackTrace,
             exception.Data
-        });
-        logger.LogError(JsonConvert.SerializeObject(logEntity));
+        }.Serialize();
+
+        var httpStatusCode = statusCode ?? (exception == null ? 204 : 500);
+        logEntity.StatusCode = httpStatusCode;
+        logger.LogError(logEntity.Serialize());
         if (useGlobalExceptionHandler)
         {
             if (!httpContext.Response.HasStarted)
             {
-                var httpStatusCode = statusCode ?? (exception == null ? 204 : 500);
                 httpContext.Response.StatusCode = httpStatusCode;
                 var problemDetails = new ResponseResult<ProblemDetails>(CreateProblemDetails(httpContext, exception, httpStatusCode));
                 await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);

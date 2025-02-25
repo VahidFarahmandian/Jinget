@@ -115,7 +115,7 @@ public class RequestResponseLoggingMiddleware
             context.GetLoggerHeaders(_blackListHeaders, _whiteListHeaders, isRequestHeader: false));
 
         if (context.Response.StatusCode < 400 || context.Response.StatusCode == 429)
-            _logger.LogInformation(JsonConvert.SerializeObject(model));
+            _logger.LogInformation(model.Serialize());
     }
 
     private void SetRequestLog(HttpContext context, string requestBodyText)
@@ -123,6 +123,6 @@ public class RequestResponseLoggingMiddleware
         var model = LogModel.GetNewRequestObject(context, requestBodyText,
             context.GetLoggerHeaders(_blackListHeaders, _whiteListHeaders, isRequestHeader: true));
 
-        _logger.LogInformation(JsonConvert.SerializeObject(model));
+        _logger.LogInformation(model.Serialize());
     }
 }

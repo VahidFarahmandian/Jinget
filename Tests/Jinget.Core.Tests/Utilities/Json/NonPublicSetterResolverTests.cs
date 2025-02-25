@@ -1,4 +1,6 @@
-﻿namespace Jinget.Core.Tests.Utilities.Json;
+﻿using System.Text.Json;
+
+namespace Jinget.Core.Tests.Utilities.Json;
 
 [TestClass]
 public class NonPublicSetterResolverTests
@@ -8,14 +10,13 @@ public class NonPublicSetterResolverTests
     {
         string expected = "{\"Id\":1,\"Name\":\"Vahid\"}";
 
-        var result = JsonConvert.SerializeObject(new _BaseData.ClassWithNonPublicSetterProps("Vahid")
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new NonPublicSetterConverter<TestClass>());
+
+        var result = new _BaseData.ClassWithNonPublicSetterProps("Vahid")
         {
             Id = 1
-        },
-        new JsonSerializerSettings()
-        {
-            ContractResolver = new NonPublicSetterResolver()
-        });
+        }.Serialize(options);
 
         Assert.AreEqual(expected, result);
     }

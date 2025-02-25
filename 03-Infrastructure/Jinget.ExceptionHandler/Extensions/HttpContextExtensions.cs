@@ -68,7 +68,7 @@ public static class HttpContextExtensions
             additionalData.Add(itemValue);
         }
 
-        return additionalData.Any() ? JsonConvert.SerializeObject(additionalData) : null;
+        return additionalData.Any() ? additionalData.Serialize() : null;
     }
 
     /// <summary>
@@ -79,15 +79,15 @@ public static class HttpContextExtensions
         string headers;
         var rawHeaders = isRequestHeader ? context.Request.Headers : context.Response.Headers;
         if (blackListHeaders != null && blackListHeaders.Any())
-            headers = JsonConvert.SerializeObject(rawHeaders
+            headers = rawHeaders
                 .Where(x => !blackListHeaders.Contains(x.Key.ToLower()))
-                .Select(x => x.ToString()), Formatting.Indented);
+                .Select(x => x.ToString()).Serialize(new System.Text.Json.JsonSerializerOptions() { WriteIndented = true });
         else if (whiteListHeaders != null && whiteListHeaders.Any())
-            headers = JsonConvert.SerializeObject(rawHeaders
+            headers = rawHeaders
                 .Where(x => whiteListHeaders.Contains(x.Key.ToLower()))
-                .Select(x => x.ToString()), Formatting.Indented);
+                .Select(x => x.ToString()).Serialize(new System.Text.Json.JsonSerializerOptions() { WriteIndented = true });
         else
-            headers = JsonConvert.SerializeObject(rawHeaders.Select(x => x.ToString()), Formatting.Indented);
+            headers = rawHeaders.Select(x => x.ToString()).Serialize(new System.Text.Json.JsonSerializerOptions() { WriteIndented = true });
 
         return headers;
     }

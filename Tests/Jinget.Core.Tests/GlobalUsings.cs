@@ -40,7 +40,6 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Moq;
-global using Newtonsoft.Json;
 global using static Jinget.Core.ExtensionMethods.ObjectExtensions;
 global using static Jinget.Core.Tests._BaseData.SampleEnum;
 global using static Jinget.Core.Tests._BaseData.TestClass;
