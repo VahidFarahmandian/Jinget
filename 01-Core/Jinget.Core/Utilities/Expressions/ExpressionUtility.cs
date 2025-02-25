@@ -235,8 +235,7 @@ public static class ExpressionUtility
             return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
         }
 
-        //var filters = JsonConvert.DeserializeObject<IDictionary<string, string>>(json).ToFilterCriteria();
-        var filters = json.Deserialize<IDictionary<string, string>>().ToFilterCriteria();
+        var filters = json.Deserialize<IDictionary<string, string>>(strictPropertyMatching: false).ToFilterCriteria();
         return ConstructBinaryExpression<T>(filters, treatNullOrEmptyAsTrueCondition);
 
     }

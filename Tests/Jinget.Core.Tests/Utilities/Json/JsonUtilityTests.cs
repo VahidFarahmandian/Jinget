@@ -8,7 +8,7 @@ public class JsonUtilityTests
     [TestMethod]
     public void should_return_true_for_valid_json_object_string()
     {
-        string sampleJson = "{ id: 1, name: \"Leanne Graham\", username: \"Bret\", address: { street: \"Kulas Light\", city: \"Gwenborough\", geo: { lat: \"-37.3159\", lng: \"81.1496\" } }}";
+        string sampleJson = "{ \"id\": 1, \"name\": \"Leanne Graham\", \"username\": \"Bret\", \"address\": { \"street\":\"Kulas Light\", \"city\": \"Gwenborough\", \"geo\": { \"lat\": \"-37.3159\", \"lng\": \"81.1496\" } } }";
         var result = JsonUtility.IsValid(sampleJson);
         Assert.IsTrue(result);
     }
@@ -16,7 +16,7 @@ public class JsonUtilityTests
     [TestMethod]
     public void should_return_true_for_valid_json_array_string()
     {
-        string sampleJson = "[ { id: 1, name: \"Leanne Graham\", address: { city: \"Gwenborough\" }},{ id: 2, name: \"Vahid Farahmandian\", address: { city: \"Urmia\" }} ]";
+        string sampleJson = "[ { \"id\": 1, \"name\": \"Leanne Graham\", \"address\": { \"city\": \"Gwenborough\" }},{ \"id\": 2, \"name\": \"Vahid Farahmandian\", \"address\": { \"city\": \"Urmia\" }} ]";
         var result = JsonUtility.IsValid(sampleJson);
         Assert.IsTrue(result);
     }

@@ -1,4 +1,5 @@
 ﻿using Jinget.Core.Utilities.Json;
+using System.Collections.Specialized;
 using System.Text.Json;
 
 namespace Jinget.Core.ExtensionMethods;
@@ -26,7 +27,44 @@ public static class JsonExtensions
 
         options = options ?? defaultOptions;
 
-        var deserializedValue = JsonSerializer.Deserialize<T>(serializedString, options);
+        T? deserializedValue = default;
+        try
+        {
+            deserializedValue = JsonSerializer.Deserialize<T>(serializedString, options);
+        }
+        catch (JsonException ex)
+        {
+            // Attempt to parse the JSON to inspect it
+            using JsonDocument doc = JsonDocument.Parse(serializedString);
+            if (doc.RootElement.ValueKind == JsonValueKind.Object)
+            {
+                bool needsReplacement = false;
+                foreach (var property in doc.RootElement.EnumerateObject())
+                {
+                    if (property.Value.ValueKind == JsonValueKind.True ||
+                        property.Value.ValueKind == JsonValueKind.False ||
+                        property.Value.ValueKind == JsonValueKind.Number)
+                    {
+                        needsReplacement = true;
+                        break;
+                    }
+                }
+
+                if (needsReplacement)
+                {
+                    string pattern = @":(true|false|\d+)";
+
+                    string replacedJson = Regex.Replace(serializedString, pattern, match =>
+                    {
+                        return $":\"{match.Groups[1].Value.ToLower()}\"";
+                    }, RegexOptions.IgnoreCase);
+
+
+                    deserializedValue = JsonSerializer.Deserialize<T>(replacedJson, options);
+
+                }
+            }
+        }
 
         if (strictPropertyMatching && deserializedValue != null)
         {

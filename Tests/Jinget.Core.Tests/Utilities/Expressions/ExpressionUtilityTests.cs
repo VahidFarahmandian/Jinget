@@ -144,8 +144,8 @@ public class ExpressionUtilityTests
     public void should_return_filtered_data_using_json_filter()
     {
         string json = @"{
-                                'Property3':'urmia',
-                                'Property4':true
+                                ""Property3"":""urmia"",
+                                ""Property4"":true
                             }";
         string expectedFilter = "x => ((x.Property3 == \"urmia\") AndAlso (x.Property4 == True))";
 

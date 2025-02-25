@@ -26,7 +26,7 @@ public class JingetServiceHandler<TResponseModel> : ServiceHandler<JingetService
                 switch (response.Content.Headers.ContentType.MediaType)
                 {
                     case MediaTypeNames.Application.Json:
-                        responseModel = rawResponse.Deserialize<TResponseModel>();
+                        responseModel = rawResponse.Deserialize<TResponseModel>(strictPropertyMatching: false);
                         break;
                     case MediaTypeNames.Application.Xml:
                     case MediaTypeNames.Text.Xml:
