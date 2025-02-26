@@ -13,7 +13,7 @@ public static class JsonExtensions
     /// <param name="serializedString">The JSON string to deserialize. Can be null or whitespace.</param>
     /// <param name="strictPropertyMatching">Properties in JSON string must exactly match the properties name in type. comparison is case sensitive</param>
     /// <returns>The deserialized object, or a new instance of T if the input is null or whitespace or deserialization fails.</returns>
-    public static T? Deserialize<T>(this string? serializedString, JsonSerializerOptions? options = null, bool strictPropertyMatching = true) where T : class
+    public static T? Deserialize<T>(this string? serializedString, JsonSerializerOptions? options = null, bool strictPropertyMatching = false) where T : class
     {
         if (JsonUtility.IsValid(serializedString) == false)
         {

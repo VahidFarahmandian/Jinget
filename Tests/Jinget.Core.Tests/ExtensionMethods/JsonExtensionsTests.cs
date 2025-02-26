@@ -28,7 +28,7 @@ public class JsonExtensionsTests
         string json = "{\"Name\":\"Test\",\"Value\":123}";
 
         // Act
-        json.Deserialize<InvalidType>();
+        json.Deserialize<InvalidType>(strictPropertyMatching: true);
     }
 
     [TestMethod]

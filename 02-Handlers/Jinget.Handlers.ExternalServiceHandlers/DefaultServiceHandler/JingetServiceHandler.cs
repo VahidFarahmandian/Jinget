@@ -55,19 +55,37 @@ public class JingetServiceHandler<TResponseModel> : ServiceHandler<JingetService
     }
 
     public async Task<TResponseModel?> GetAsync(string url, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () => await HttpClientFactory.GetAsync(url, headers));
+        => await ProcessTaskAsync(async () =>
+        {
+            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
+            return await HttpClientFactory.GetAsync(url, headers);
+        });
 
     public async Task<TResponseModel?> PostAsync(object? content = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () => await HttpClientFactory.PostAsync("", content, headers));
+        => await ProcessTaskAsync(async () => {
+            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
+            return await HttpClientFactory.PostAsync("", content, headers); });
 
     public async Task<TResponseModel?> PostAsync(string url, object? content = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () => await HttpClientFactory.PostAsync(url, content, headers));
+        => await ProcessTaskAsync(async () =>
+        {
+            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
+            return await HttpClientFactory.PostAsync(url, content, headers);
+        });
 
     public async Task<TResponseModel?> UploadFileAsync(string url, List<FileInfo>? files = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () => await HttpClientFactory.UploadFileAsync(url, files, headers));
+        => await ProcessTaskAsync(async () =>
+        {
+            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
+            return await HttpClientFactory.UploadFileAsync(url, files, headers);
+        });
 
     public async Task<TResponseModel?> UploadFileAsync(string url, MultipartFormDataContent? multipartFormData = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () => await HttpClientFactory.UploadFileAsync(url, multipartFormData, headers));
+        => await ProcessTaskAsync(async () =>
+        {
+            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
+            return await HttpClientFactory.UploadFileAsync(url, multipartFormData, headers);
+        });
 
     public async Task<TResponseModel?> SendAsync(HttpRequestMessage message) => await ProcessTaskAsync(async () => await HttpClientFactory.SendAsync(message));
 }
@@ -97,19 +115,39 @@ public class JingetServiceHandler : ServiceHandler<JingetServiceHandlerEvents>
     }
 
     public async Task<string?> GetAsync(string url, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () => await HttpClientFactory.GetAsync(url, headers));
+        => await ProcessTaskAsync(async () =>
+        {
+            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
+            return await HttpClientFactory.GetAsync(url, headers);
+        });
 
     public async Task<string?> PostAsync(object? content = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () => await HttpClientFactory.PostAsync("", content, headers));
+        => await ProcessTaskAsync(async () =>
+        {
+            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
+            return await HttpClientFactory.PostAsync("", content, headers);
+        });
 
     public async Task<string?> PostAsync(string url, object? content = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () => await HttpClientFactory.PostAsync(url, content, headers));
+        => await ProcessTaskAsync(async () =>
+        {
+            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
+            return await HttpClientFactory.PostAsync(url, content, headers);
+        });
 
     public async Task<string?> UploadFileAsync(string url, List<FileInfo>? files = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () => await HttpClientFactory.UploadFileAsync(url, files, headers));
+        => await ProcessTaskAsync(async () =>
+        {
+            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
+            return await HttpClientFactory.UploadFileAsync(url, files, headers);
+        });
 
     public async Task<string?> UploadFileAsync(string url, MultipartFormDataContent? multipartFormData = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () => await HttpClientFactory.UploadFileAsync(url, multipartFormData, headers));
+        => await ProcessTaskAsync(async () =>
+        {
+            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
+            return await HttpClientFactory.UploadFileAsync(url, multipartFormData, headers);
+        });
 
     public async Task<string?> SendAsync(HttpRequestMessage message) => await ProcessTaskAsync(async () => await HttpClientFactory.SendAsync(message));
 }

@@ -16,9 +16,7 @@ public static class IApplicationBuilderExtensions
             app.UseJingetExceptionHandler();
 
         app.UseMiddleware<RequestResponseLoggingMiddleware>();
-        //app.UseMiddleware<LogRequestMiddleware>();
-        //app.UseMiddleware<LogResponseMiddleware>();
-
+        
         return app;
     }
 }
