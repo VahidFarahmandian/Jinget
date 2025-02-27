@@ -4,15 +4,14 @@
 /// Service handler for processing HTTP responses with a specific response model.
 /// </summary>
 /// <typeparam name="TResponseModel">The type of the response model.</typeparam>
-public class JingetServiceHandler<TResponseModel> : JingetServiceHandlerBase<JingetServiceHandlerEvents<TResponseModel>> where TResponseModel : class, new()
+/// <remarks>
+/// Initializes a new instance of the <see cref="JingetServiceHandler{TResponseModel}"/> class with the specified base URI, timeout, and SSL error handling.
+/// </remarks>
+/// <param name="baseUrl">The base URI for the service.</param>
+/// <param name="timeout">The timeout for HTTP requests.</param>
+/// <param name="ignoreSslErrors">A value indicating whether to ignore SSL errors.</param>
+public class JingetServiceHandler<TResponseModel>(IServiceProvider serviceProvider, string baseUrl, string clientName = "jinget-client", TimeSpan? timeout = null) : JingetServiceHandlerBase<JingetServiceHandlerEvents<TResponseModel>>(serviceProvider, baseUrl, clientName, timeout) where TResponseModel : class, new()
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="JingetServiceHandler{TResponseModel}"/> class with the specified base URI, timeout, and SSL error handling.
-    /// </summary>
-    /// <param name="baseUrl">The base URI for the service.</param>
-    /// <param name="timeout">The timeout for HTTP requests.</param>
-    /// <param name="ignoreSslErrors">A value indicating whether to ignore SSL errors.</param>
-    public JingetServiceHandler(IServiceProvider serviceProvider, string baseUrl, string clientName = "jinget-client", TimeSpan? timeout = null) : base(serviceProvider, baseUrl, clientName, timeout) { }
 
     /// <summary>
     /// Processes the HTTP response, deserializes it into the specified response model, and invokes the ResponseDeserializedAsync event if successful.
@@ -91,13 +90,12 @@ public class JingetServiceHandler<TResponseModel> : JingetServiceHandlerBase<Jin
 /// <summary>
 /// Service handler for processing HTTP responses as raw strings.
 /// </summary>
-public class JingetServiceHandler : JingetServiceHandlerBase<JingetServiceHandlerEvents>
+/// <remarks>
+/// Initializes a new instance of the <see cref="JingetServiceHandler"/> class with the specified base URI, timeout, and SSL error handling.
+/// </remarks>
+/// <param name="baseUrl">The base URI for the service.</param>
+/// <param name="timeout">The timeout for HTTP requests.</param>
+/// <param name="ignoreSslErrors">A value indicating whether to ignore SSL errors.</param>
+public class JingetServiceHandler(IServiceProvider serviceProvider, string baseUrl, string clientName = "jinget-client", TimeSpan? timeout = null) : JingetServiceHandlerBase<JingetServiceHandlerEvents>(serviceProvider, baseUrl, clientName, timeout)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="JingetServiceHandler"/> class with the specified base URI, timeout, and SSL error handling.
-    /// </summary>
-    /// <param name="baseUrl">The base URI for the service.</param>
-    /// <param name="timeout">The timeout for HTTP requests.</param>
-    /// <param name="ignoreSslErrors">A value indicating whether to ignore SSL errors.</param>
-    public JingetServiceHandler(IServiceProvider serviceProvider, string baseUrl, string clientName = "jinget-client", TimeSpan? timeout = null) : base(serviceProvider, baseUrl, clientName, timeout) { }
 }

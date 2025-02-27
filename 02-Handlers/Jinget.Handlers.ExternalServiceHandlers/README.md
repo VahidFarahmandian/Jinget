@@ -13,8 +13,7 @@ You can also use other methods supported by NuGet. Check [Here](https://www.nuge
  Then register th DI configuration like this:
 
 ```csharp
-builder.Services.AddTransient<JingetHttpClientFactory>();
-builder.Services.AddHttpClient("jinget-client").ConfigurePrimaryHttpMessageHandler(() => JingetHttpClientHandlerFactory.Create(true));
+builder.Services.AddJingetExternalServiceHandler("jinget-client", true);
 ```
 
 You can replace `jinget-client` with your desired client name. if not specified then by default `jinget-client` will be used as client name.

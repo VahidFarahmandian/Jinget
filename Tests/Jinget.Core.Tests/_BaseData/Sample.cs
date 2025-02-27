@@ -16,6 +16,12 @@ public class Type2
     public string Name { get; set; }
     public string SurName { get; set; }
 }
+public class TypeParent
+{
+}
+public class TypeChild : TypeParent
+{
+}
 public static class TestClassExtensions
 {
     public static string[] Method1<T>(this TestClass testClass) => [typeof(T).Name];

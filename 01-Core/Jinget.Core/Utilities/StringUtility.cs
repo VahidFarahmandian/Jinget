@@ -1,10 +1,18 @@
 ﻿namespace Jinget.Core.Utilities;
 
+/// <summary>
+/// Provides utility methods for string manipulation and generation.
+/// </summary>
 public static class StringUtility
 {
     /// <summary>
-    /// Create a random string with given <see cref="length"/> using given <see cref="characterSet"/>
+    /// Generates a random string of a specified length using a given character set.
     /// </summary>
+    /// <param name="length">The length of the random string to generate.</param>
+    /// <param name="characterSet">The set of characters to use for generating the random string.</param>
+    /// <returns>The generated random string.</returns>
+    /// <exception cref="ArgumentException">Thrown when the length is negative or too large, or when the character set is empty.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when the character set is null.</exception>
     public static string GetRandomString(int length, IEnumerable<char> characterSet)
     {
         if (length < 0)
@@ -32,10 +40,17 @@ public static class StringUtility
     }
 
     /// <summary>
-    /// check if given string contains only numeric characters
+    /// Checks if a given string contains only numeric characters.
     /// </summary>
+    /// <param name="input">The string to check.</param>
+    /// <returns>True if the string contains only digits, otherwise false.</returns>
     public static bool IsDigitOnly(string input)
     {
+        if (string.IsNullOrEmpty(input))
+        {
+            return false;
+        }
+
         foreach (char c in input)
         {
             if (c < '0' || c > '9')
@@ -45,9 +60,22 @@ public static class StringUtility
         return true;
     }
 
+    /// <summary>
+    /// Gets a string containing English alphabet characters.
+    /// </summary>
+    /// <param name="lowerCase">Indicates whether to return lowercase or uppercase characters.</param>
+    /// <returns>A string containing English alphabet characters.</returns>
     public static string GetEnglishChars(bool lowerCase) => lowerCase ? "abcdefghijklmnopqrstuvwxyz" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    /// <summary>
+    /// Gets a string containing English digits.
+    /// </summary>
+    /// <returns>A string containing English digits.</returns>
     public static string GetEnglishDigits() => "1234567890";
 
+    /// <summary>
+    /// Gets a list of Farsi characters.
+    /// </summary>
+    /// <returns>A list of Farsi characters.</returns>
     public static List<char> GetFarsiChars() => ['ا', 'ب', 'پ', 'ت', 'ث', 'ج', 'چ', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'ژ', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ک', 'گ', 'ل', 'م', 'ن', 'و', 'ه', 'ی'];
 }

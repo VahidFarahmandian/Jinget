@@ -6,15 +6,14 @@ namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler;
 /// Abstract base class for Jinget service handlers. Provides common functionality for making HTTP requests and processing responses.
 /// </summary>
 /// <typeparam name="TEvents">The type of events associated with this service handler.</typeparam>
-public abstract class JingetServiceHandlerBase<TEvents> : ServiceHandler<TEvents> where TEvents : JingetServiceHandlerEvents, new()
+/// <remarks>
+/// Initializes a new instance of the <see cref="JingetServiceHandlerBase{TEvents}"/> class with the specified base URI, timeout, and SSL error handling.
+/// </remarks>
+/// <param name="baseUri">The base URI for the service.</param>
+/// <param name="timeout">The timeout for HTTP requests.</param>
+/// <param name="ignoreSslErrors">A value indicating whether to ignore SSL errors.</param>
+public abstract class JingetServiceHandlerBase<TEvents>(IServiceProvider serviceProvider, string baseUri, string clientName = "jinget-client", TimeSpan? timeout = null) : ServiceHandler<TEvents>(serviceProvider, baseUri, clientName, timeout) where TEvents : JingetServiceHandlerEvents, new()
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="JingetServiceHandlerBase{TEvents}"/> class with the specified base URI, timeout, and SSL error handling.
-    /// </summary>
-    /// <param name="baseUri">The base URI for the service.</param>
-    /// <param name="timeout">The timeout for HTTP requests.</param>
-    /// <param name="ignoreSslErrors">A value indicating whether to ignore SSL errors.</param>
-    public JingetServiceHandlerBase(IServiceProvider serviceProvider, string baseUri, string clientName = "jinget-client", TimeSpan? timeout = null) : base(serviceProvider, baseUri, clientName, timeout) { }
 
     /// <summary>
     /// Processes an asynchronous HTTP request task, handles the response, and returns the result.

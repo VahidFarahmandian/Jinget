@@ -46,7 +46,7 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
     /// <param name="requestHeaders">The request headers.</param>
     /// <param name="httpClient">The HttpClient instance.</param>
     /// <returns>The set request headers.</returns>
-    private Dictionary<string, string> SetRequestHeaders(Dictionary<string, string>? requestHeaders, HttpClient httpClient)
+    private static Dictionary<string, string> SetRequestHeaders(Dictionary<string, string>? requestHeaders, HttpClient httpClient)
     {
         httpClient.DefaultRequestHeaders.Clear();
         requestHeaders ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
