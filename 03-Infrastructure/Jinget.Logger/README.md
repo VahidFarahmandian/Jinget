@@ -17,6 +17,8 @@ builder.Host.LogToElasticSearch(blacklist);
 ```
 `blacklist`: Log messages contain the blacklist array items will not be logged.
 
+`blacklistUrls`: Urls/PageUrls contain the blacklistUrls array items will not be logged.
+
 `minAllowedLoglevel`: Defines the minimum allowed log level. If log's severity is equal or greater than this value, then it will be saved in elasticsearch otherwise it will be ignored. If this parameter not set, then default log level will be applied(LogLevel.Information).
 
 After setting the logging destination, you need to configure Elasticsearch:
@@ -200,6 +202,8 @@ builder.Host.LogToFile(blacklist, fileSetting);
 ```
 
 `blacklist`: Log messages contain the blacklist array items will not be logged.
+
+`blacklistUrls`: Urls/PageUrls contain the blacklistUrls array items will not be logged.
 
 `minAllowedLoglevel`: Defines the minimum allowed log level. Default log level is `LogLevel.Information`.
 
