@@ -8,7 +8,6 @@ global using System.Net.Http.Headers;
 global using System.Threading.Tasks;
 global using Jinget.Handlers.ExternalServiceHandlers.ServiceHandler;
 global using Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory;
-
 global using static Jinget.Core.Utilities.XmlUtility;
 global using static Jinget.Core.Utilities.HumanizerUtility;
 global using static Jinget.Core.Utilities.Http.HeaderUtility;

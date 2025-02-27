@@ -1,153 +1,103 @@
-﻿using Jinget.Core.ExtensionMethods;
+﻿namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler;
 
-namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler;
-
-public class JingetServiceHandler<TResponseModel> : ServiceHandler<JingetServiceHandlerEvents<TResponseModel>> where TResponseModel : class, new()
+/// <summary>
+/// Service handler for processing HTTP responses with a specific response model.
+/// </summary>
+/// <typeparam name="TResponseModel">The type of the response model.</typeparam>
+public class JingetServiceHandler<TResponseModel> : JingetServiceHandlerBase<JingetServiceHandlerEvents<TResponseModel>> where TResponseModel : class, new()
 {
-    public JingetServiceHandler(string baseUri, bool ignoreSslErrors = false) : base(baseUri, ignoreSslErrors) { }
-    public JingetServiceHandler(string baseUri, TimeSpan timeout, bool ignoreSslErrors = false) : base(baseUri, timeout, ignoreSslErrors) { }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JingetServiceHandler{TResponseModel}"/> class with the specified base URI, timeout, and SSL error handling.
+    /// </summary>
+    /// <param name="baseUrl">The base URI for the service.</param>
+    /// <param name="timeout">The timeout for HTTP requests.</param>
+    /// <param name="ignoreSslErrors">A value indicating whether to ignore SSL errors.</param>
+    public JingetServiceHandler(IServiceProvider serviceProvider, string baseUrl, string clientName = "jinget-client", TimeSpan? timeout = null) : base(serviceProvider, baseUrl, clientName, timeout) { }
 
-    private async Task<TResponseModel?> ProcessTaskAsync(Func<Task<HttpResponseMessage>> task)
+    /// <summary>
+    /// Processes the HTTP response, deserializes it into the specified response model, and invokes the ResponseDeserializedAsync event if successful.
+    /// </summary>
+    /// <param name="rawResponse">The raw response content as a string.</param>
+    /// <param name="httpResponse">The HTTP response message.</param>
+    /// <returns>The deserialized response model, or <c>null</c> if deserialization fails or an error occurs.</returns>
+    private async Task<TResponseModel?> ProcessResponseAsync(string rawResponse, HttpResponseMessage httpResponse)
     {
-        TResponseModel? responseModel = default;
+        var deserializedResponse = await base.ProcessResponseDefaultAsync<TResponseModel>(rawResponse, httpResponse);
 
-        try
+        if (deserializedResponse != null && !EqualityComparer<TResponseModel>.Default.Equals(deserializedResponse, default))
         {
-            var response = await task();
-            Events?.OnServiceCalled(response);
-
-            response.EnsureSuccessStatusCode();
-
-            string rawResponse = await response.Content.ReadAsStringAsync();
-            Events?.OnRawResponseReceived(rawResponse);
-
-            if (response.Content.Headers.ContentType != null)
-            {
-                switch (response.Content.Headers.ContentType.MediaType)
-                {
-                    case MediaTypeNames.Application.Json:
-                        responseModel = rawResponse.Deserialize<TResponseModel>(strictPropertyMatching: false);
-                        break;
-                    case MediaTypeNames.Application.Xml:
-                    case MediaTypeNames.Text.Xml:
-                        responseModel = DeserializeXmlDescendantsFirst<TResponseModel>(rawResponse);
-                        break;
-                    default:
-                        // Handle unknown media type.
-                        Events?.OnExceptionOccurred(new InvalidOperationException($"Unsupported media type: {response.Content.Headers.ContentType.MediaType}"));
-                        break;
-                }
-            }
-            else
-            {
-                Events?.OnExceptionOccurred(new InvalidOperationException("content type was null"));
-            }
-
-            Events?.OnResponseDeserialized(responseModel); // Null check
+            await Events.OnResponseDeserializedAsync(deserializedResponse);
         }
-        catch (Exception ex)
-        {
-            Events?.OnExceptionOccurred(ex); // Null check
-            return default; // or throw the exception.
-        }
-
-        return responseModel;
+        return deserializedResponse;
     }
 
-    public async Task<TResponseModel?> GetAsync(string url, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () =>
-        {
-            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
-            return await HttpClientFactory.GetAsync(url, headers);
-        });
+    /// <summary>
+    /// Makes an HTTP GET request to the specified URL and processes the response.
+    /// </summary>
+    /// <param name="requestUrl">The URL to make the GET request to.</param>
+    /// <param name="requestHeaders">Optional headers to include in the request.</param>
+    /// <returns>The deserialized response model, or <c>null</c> if an error occurs.</returns>
+    public async Task<TResponseModel?> GetAsync(string requestUrl, Dictionary<string, string>? requestHeaders = null)
+        => await base.GetAsync(requestUrl, requestHeaders, ProcessResponseAsync);
 
-    public async Task<TResponseModel?> PostAsync(object? content = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () => {
-            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
-            return await HttpClientFactory.PostAsync("", content, headers); });
+    /// <summary>
+    /// Makes an HTTP POST request with the specified content and processes the response.
+    /// </summary>
+    /// <param name="requestBody">The content to include in the POST request.</param>
+    /// <param name="requestHeaders">Optional headers to include in the request.</param>
+    /// <returns>The deserialized response model, or <c>null</c> if an error occurs.</returns>
+    public async Task<TResponseModel?> PostAsync(object? requestBody = null, Dictionary<string, string>? requestHeaders = null)
+        => await base.PostAsync(requestBody, requestHeaders, ProcessResponseAsync);
 
-    public async Task<TResponseModel?> PostAsync(string url, object? content = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () =>
-        {
-            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
-            return await HttpClientFactory.PostAsync(url, content, headers);
-        });
+    /// <summary>
+    /// Makes an HTTP POST request to the specified URL with the specified content and processes the response.
+    /// </summary>
+    /// <param name="requestUrl">The URL to make the POST request to.</param>
+    /// <param name="requestBody">The content to include in the POST request.</param>
+    /// <param name="requestHeaders">Optional headers to include in the request.</param>
+    /// <returns>The deserialized response model, or <c>null</c> if an error occurs.</returns>
+    public async Task<TResponseModel?> PostAsync(string requestUrl, object? requestBody = null, Dictionary<string, string>? requestHeaders = null)
+        => await base.PostAsync(requestUrl, requestBody, requestHeaders, ProcessResponseAsync);
 
-    public async Task<TResponseModel?> UploadFileAsync(string url, List<FileInfo>? files = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () =>
-        {
-            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
-            return await HttpClientFactory.UploadFileAsync(url, files, headers);
-        });
+    /// <summary>
+    /// Uploads files to the specified URL and processes the response.
+    /// </summary>
+    /// <param name="requestUrl">The URL to upload the files to.</param>
+    /// <param name="files">The list of files to upload.</param>
+    /// <param name="requestHeaders">Optional headers to include in the request.</param>
+    /// <returns>The deserialized response model, or <c>null</c> if an error occurs.</returns>
+    public async Task<TResponseModel?> UploadFilesAsync(string requestUrl, List<FileInfo>? files = null, Dictionary<string, string>? requestHeaders = null)
+        => await base.UploadFilesAsync(requestUrl, files, requestHeaders, ProcessResponseAsync);
 
-    public async Task<TResponseModel?> UploadFileAsync(string url, MultipartFormDataContent? multipartFormData = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () =>
-        {
-            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
-            return await HttpClientFactory.UploadFileAsync(url, multipartFormData, headers);
-        });
+    /// <summary>
+    /// Uploads files to the specified URL using a multipart form data content and processes the response.
+    /// </summary>
+    /// <param name="requestUrl">The URL to upload the files to.</param>
+    /// <param name="multipartFormData">The multipart form data content.</param>
+    /// <param name="requestHeaders">Optional headers to include in the request.</param>
+    /// <returns>The deserialized response model, or <c>null</c> if an error occurs.</returns>
+    public async Task<TResponseModel?> UploadFilesAsync(string requestUrl, MultipartFormDataContent? multipartFormData = null, Dictionary<string, string>? requestHeaders = null)
+        => await base.UploadFilesAsync(requestUrl, multipartFormData, requestHeaders, ProcessResponseAsync);
 
-    public async Task<TResponseModel?> SendAsync(HttpRequestMessage message) => await ProcessTaskAsync(async () => await HttpClientFactory.SendAsync(message));
+    /// <summary>
+    /// Sends an HTTP request message and processes the response.
+    /// </summary>
+    /// <param name="httpRequestMessage">The HTTP request message to send.</param>
+    /// <returns>The deserialized response model, or <c>null</c> if an error occurs.</returns>
+    public async Task<TResponseModel?> SendAsync(HttpRequestMessage httpRequestMessage)
+        => await base.SendAsync(httpRequestMessage, ProcessResponseAsync);
 }
-public class JingetServiceHandler : ServiceHandler<JingetServiceHandlerEvents>
+
+/// <summary>
+/// Service handler for processing HTTP responses as raw strings.
+/// </summary>
+public class JingetServiceHandler : JingetServiceHandlerBase<JingetServiceHandlerEvents>
 {
-    public JingetServiceHandler(string baseUri, bool ignoreSslErrors = false) : base(baseUri, ignoreSslErrors) { }
-    public JingetServiceHandler(string baseUri, TimeSpan timeout, bool ignoreSslErrors = false) : base(baseUri, timeout, ignoreSslErrors) { }
-
-    private async Task<string?> ProcessTaskAsync(Func<Task<HttpResponseMessage>> task)
-    {
-        try
-        {
-            var response = await task();
-            Events?.OnServiceCalled(response);
-
-            response.EnsureSuccessStatusCode();
-
-            string rawResponse = await response.Content.ReadAsStringAsync();
-            Events?.OnRawResponseReceived(rawResponse);
-            return rawResponse;
-        }
-        catch (Exception ex)
-        {
-            Events?.OnExceptionOccurred(ex); // Null check
-            return null; // or throw the exception.
-        }
-    }
-
-    public async Task<string?> GetAsync(string url, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () =>
-        {
-            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
-            return await HttpClientFactory.GetAsync(url, headers);
-        });
-
-    public async Task<string?> PostAsync(object? content = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () =>
-        {
-            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
-            return await HttpClientFactory.PostAsync("", content, headers);
-        });
-
-    public async Task<string?> PostAsync(string url, object? content = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () =>
-        {
-            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
-            return await HttpClientFactory.PostAsync(url, content, headers);
-        });
-
-    public async Task<string?> UploadFileAsync(string url, List<FileInfo>? files = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () =>
-        {
-            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
-            return await HttpClientFactory.UploadFileAsync(url, files, headers);
-        });
-
-    public async Task<string?> UploadFileAsync(string url, MultipartFormDataContent? multipartFormData = null, Dictionary<string, string>? headers = null)
-        => await ProcessTaskAsync(async () =>
-        {
-            headers ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
-            return await HttpClientFactory.UploadFileAsync(url, multipartFormData, headers);
-        });
-
-    public async Task<string?> SendAsync(HttpRequestMessage message) => await ProcessTaskAsync(async () => await HttpClientFactory.SendAsync(message));
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JingetServiceHandler"/> class with the specified base URI, timeout, and SSL error handling.
+    /// </summary>
+    /// <param name="baseUrl">The base URI for the service.</param>
+    /// <param name="timeout">The timeout for HTTP requests.</param>
+    /// <param name="ignoreSslErrors">A value indicating whether to ignore SSL errors.</param>
+    public JingetServiceHandler(IServiceProvider serviceProvider, string baseUrl, string clientName = "jinget-client", TimeSpan? timeout = null) : base(serviceProvider, baseUrl, clientName, timeout) { }
 }

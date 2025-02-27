@@ -5,6 +5,7 @@ public class BatchingLoggerOptions
     private int? _backgroundQueueSize;
     private int? _batchSize = 32;
     private string[] _blacklistStrings = [];
+    private string[]? _blacklistUrls = [];
     private TimeSpan _flushPeriod = TimeSpan.FromSeconds(1);
 
     const long MB_10 = 1024 * 1024 * 10;
@@ -49,6 +50,16 @@ public class BatchingLoggerOptions
     {
         get => _blacklistStrings;
         set => _blacklistStrings = value ?? [];
+    }
+
+    /// <summary>
+    ///     Gets or sets the blacklist string. reuqest/responses contain the blacklist array items will not logged.
+    ///     Defaults to <c>empty</c>, so every thing will be logged
+    /// </summary>
+    public string[]? BlackListUrls
+    {
+        get => _blacklistUrls;
+        set => _blacklistUrls = value ?? [];
     }
 
     /// <summary>

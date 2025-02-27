@@ -12,7 +12,7 @@ public class JsonExtensionsTests
         string json = "{\"Name\":\"Test\",\"Value\":123}";
 
         // Act
-        var result = json.Deserialize<TestObject>();
+        var result = json.Deserialize<TestType>();
 
         // Assert
         Assert.IsNotNull(result);
@@ -32,6 +32,25 @@ public class JsonExtensionsTests
     }
 
     [TestMethod]
+    public void Deserialize_ValidHierarchicalJson_To_InvalidType_ThrowsException()
+    {
+        // Arrange
+        string json = "{ \"name\": \"Test\", \"Value\": 123, \"Inner1\": { \"isActive\": true, \"Age\": 30, \"Inner2\": { \"IsAlive\": false, \"code\": 987 } } }";
+
+        // Act
+        var result = json.Deserialize<TestType>();
+
+        // Assert
+        Assert.IsNotNull(result);
+        Assert.AreEqual("Test", result.Name);
+        Assert.AreEqual(123, result.Value);
+        Assert.AreEqual(30, result.Inner1.Age);
+        Assert.IsTrue(result.Inner1.IsActive);
+        Assert.IsFalse(result.Inner1.Inner2.IsAlive);
+        Assert.AreEqual(987, result.Inner1.Inner2.Code);
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(JsonException))]
     public void Deserialize_InvalidJson_ThrowsException()
     {
@@ -39,7 +58,7 @@ public class JsonExtensionsTests
         string json = "invalid json";
 
         // Act
-        json.Deserialize<TestObject>();
+        json.Deserialize<TestType>();
     }
 
     [TestMethod]
@@ -50,7 +69,7 @@ public class JsonExtensionsTests
         string json = null;
 
         // Act
-        json.Deserialize<TestObject>();
+        json.Deserialize<TestType>();
     }
 
     [TestMethod]
@@ -61,17 +80,20 @@ public class JsonExtensionsTests
         string json = "";
 
         // Act
-        json.Deserialize<TestObject>();
+        json.Deserialize<TestType>();
     }
 
     [TestMethod]
     public void Serialize_ValidObject_ReturnsJson()
     {
         // Arrange
-        var obj = new TestObject { Name = "Test", Value = 123 };
+        var obj = new TestType { Name = "Test", Value = 123 };
 
         // Act
-        var result = obj.Serialize();
+        var result = obj.Serialize(options: new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        });
 
         // Assert
         Assert.IsFalse(string.IsNullOrWhiteSpace(result));
@@ -82,7 +104,7 @@ public class JsonExtensionsTests
     public void Serialize_NullObject_ReturnsEmptyString()
     {
         // Arrange
-        TestObject obj = null;
+        TestType obj = null;
 
         // Act
         var result = obj.Serialize();
@@ -99,7 +121,7 @@ public class JsonExtensionsTests
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
         // Act
-        var result = json.Deserialize<TestObject>(options, strictPropertyMatching: false);
+        var result = json.Deserialize<TestType>(options, strictPropertyMatching: false);
 
         // Assert
         Assert.IsNotNull(result);
@@ -111,14 +133,17 @@ public class JsonExtensionsTests
     public void Serialize_ObjectWithOptions_ReturnsJsonWithCustomOptions()
     {
         // Arrange
-        var obj = new TestObject { Name = "Test", Value = 123 };
-        var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+        var obj = new TestType { Name = "Test", Value = 123 };
+        var options = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
 
         // Act
         var result = obj.Serialize(options);
 
         // Assert
-        Assert.AreEqual("{\"name\":\"Test\",\"value\":123}", result);
+        Assert.AreEqual("{\"name\":\"Test\",\"value\":123,\"inner1\":null}", result);
     }
 
     [TestMethod]
@@ -129,28 +154,51 @@ public class JsonExtensionsTests
         string json = "{\"Name\":\"Test\",Value:123}";
 
         //act
-        json.Deserialize<TestObject>();
+        json.Deserialize<TestType>();
     }
 
     [TestMethod]
     public void Serialize_ObjectWithSpecialCharacters_ReturnsJson()
     {
         //arrange
-        var obj = new TestObject { Name = "Test\"Special", Value = 123 };
+        var obj = new TestType { Name = "Test\"Special", Value = 123 };
 
         //act
         var result = obj.Serialize();
 
         //assert
-        Assert.AreEqual("{\"Name\":\"Test\\u0022Special\",\"Value\":123}", result);
+        Assert.AreEqual("{\"Name\":\"Test\\u0022Special\",\"Value\":123,\"Inner1\":null}", result);
     }
 
 }
 
-public class TestObject
+public class MessageModel
+{
+    public MessageDetailModel Error { get; set; }
+    public class MessageDetailModel
+    {
+        public int Code { get; set; }
+        public string Message { get; set; }
+    }
+}
+public class TestType
 {
     public string Name { get; set; }
     public int Value { get; set; }
+
+    public InnerType1 Inner1 { get; set; }
+}
+public class InnerType1
+{
+    public bool IsActive { get; set; }
+    public int Age { get; set; }
+    public InnerType2 Inner2 { get; set; }
+}
+public class InnerType2
+{
+    public bool IsAlive { get; set; }
+    public int Code { get; set; }
+
 }
 public class InvalidType
 {

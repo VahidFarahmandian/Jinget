@@ -1,32 +1,48 @@
 ﻿#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
 
+using Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler;
 
 [TestClass()]
 public class CustomServiceHandlerTests
 {
-    public class CustomServiceHandler(string baseUri, bool ignoreSslErrors = false) : JingetServiceHandler(baseUri, ignoreSslErrors)
+    public class CustomServiceHandler(IServiceProvider serviceProvider, string baseUri) : JingetServiceHandler(serviceProvider, baseUri)
     {
+    }
+
+    IServiceProvider serviceProvider;
+    [TestInitialize]
+    public void Initialize()
+    {
+        var services = new ServiceCollection();
+        services.AddTransient<JingetHttpClientFactory>();
+        services.AddHttpClient("jinget-client").ConfigurePrimaryHttpMessageHandler(() => JingetHttpClientHandlerFactory.Create(true));
+        serviceProvider = services.BuildServiceProvider();
     }
 
     [TestMethod()]
     public async Task Should_call_get_restapiAsync()
     {
-        var customServiceHandler = new CustomServiceHandler("https://jsonplaceholder.typicode.com");
-        customServiceHandler.Events.ServiceCalled += (sender, e) =>
+        var customServiceHandler = new CustomServiceHandler(serviceProvider, "https://jsonplaceholder.typicode.com");
+        customServiceHandler.Events.ServiceCalledAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.IsTrue(e.IsSuccessStatusCode);
         };
-        customServiceHandler.Events.RawResponseReceived += (sender, e) =>
+        customServiceHandler.Events.RawResponseReceivedAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.AreNotEqual("", e);
         };
-        customServiceHandler.Events.ExceptionOccurred += (sender, e) =>
+        customServiceHandler.Events.ExceptionOccurredAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.IsNull(e);
         };
 
-        var result = await customServiceHandler.GetAsync("users");
+        var result = await customServiceHandler.GetAsync<List<SampleGetResponse>>("users");
 
         Assert.IsNotNull(result);
     }
@@ -34,22 +50,25 @@ public class CustomServiceHandlerTests
     [TestMethod()]
     public async Task Should_call_post_restapiAsync()
     {
-        var customServiceHandler = new CustomServiceHandler("https://jsonplaceholder.typicode.com");
-        customServiceHandler.Events.ServiceCalled += (sender, e) =>
+        var customServiceHandler = new CustomServiceHandler(serviceProvider, "https://jsonplaceholder.typicode.com");
+        customServiceHandler.Events.ServiceCalledAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.IsTrue(e.IsSuccessStatusCode);
         };
-        customServiceHandler.Events.RawResponseReceived += (sender, e) =>
+        customServiceHandler.Events.RawResponseReceivedAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.AreNotEqual("", e);
         };
-        customServiceHandler.Events.ExceptionOccurred += (sender, e) =>
+        customServiceHandler.Events.ExceptionOccurredAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.IsNull(e);
         };
 
         var result = await customServiceHandler
-            .PostAsync("posts",
+            .PostAsync<SamplePostResponse>("posts",
             new
             {
                 title = "foo",
@@ -67,17 +86,20 @@ public class CustomServiceHandlerTests
     [TestMethod()]
     public async Task Should_call_send_restapiAsync()
     {
-        var customServiceHandler = new CustomServiceHandler("https://jsonplaceholder.typicode.com");
-        customServiceHandler.Events.ServiceCalled += (sender, e) =>
+        var customServiceHandler = new CustomServiceHandler(serviceProvider, "https://jsonplaceholder.typicode.com");
+        customServiceHandler.Events.ServiceCalledAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.IsTrue(e.IsSuccessStatusCode);
         };
-        customServiceHandler.Events.RawResponseReceived += (sender, e) =>
+        customServiceHandler.Events.RawResponseReceivedAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.AreNotEqual("", e);
         };
-        customServiceHandler.Events.ExceptionOccurred += (sender, e) =>
+        customServiceHandler.Events.ExceptionOccurredAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.IsNull(e);
         };
 
@@ -95,7 +117,7 @@ public class CustomServiceHandlerTests
         };
         request.Headers.TryAddWithoutValidation("Content-type", "application/json; charset=UTF-8");
 
-        var result = await customServiceHandler.SendAsync(request);
+        var result = await customServiceHandler.SendAsync<SamplePutResponse>(request);
 
         Assert.IsNotNull(result);
     }
@@ -103,17 +125,20 @@ public class CustomServiceHandlerTests
     [TestMethod()]
     public async Task Should_call_get_soapAsync()
     {
-        var customServiceHandler = new CustomServiceHandler("http://www.dneonline.com/calculator.asmx");
-        customServiceHandler.Events.ServiceCalled += (sender, e) =>
+        var customServiceHandler = new CustomServiceHandler(serviceProvider, "http://www.dneonline.com/calculator.asmx");
+        customServiceHandler.Events.ServiceCalledAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.IsTrue(e.IsSuccessStatusCode);
         };
-        customServiceHandler.Events.RawResponseReceived += (sender, e) =>
+        customServiceHandler.Events.RawResponseReceivedAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.AreNotEqual("", e);
         };
-        customServiceHandler.Events.ExceptionOccurred += (sender, e) =>
+        customServiceHandler.Events.ExceptionOccurredAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.IsNull(e);
         };
 
@@ -122,22 +147,23 @@ public class CustomServiceHandlerTests
         Assert.IsNotNull(envelope.Body);
         envelope.Body.Add = new SampleSOAPRequest.SampleSOAPGet { intA = 1, intB = 2 };
 
-        var result = await customServiceHandler.PostAsync(envelope.ToString(), new Dictionary<string, string>
+        var result = await customServiceHandler.PostAsync<AddResponse>(content: envelope.ToString(), new Dictionary<string, string>
         {
             {"Content-Type","text/xml" },
             {"SOAPAction","http://tempuri.org/Add" }
         });
 
-        Assert.IsFalse(result is null);
-        Assert.AreEqual(3, XmlUtility.DeserializeXmlDescendantsFirst<AddResponse>(result).AddResult);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(3, result.AddResult);
     }
 
     //[TestMethod]
     public async Task Should_post_multipart_formdataAsync()
     {
-        var customServiceHandler = new CustomServiceHandler("https://localhost:7027/api/upload");
-        customServiceHandler.Events.ServiceCalled += (sender, e) =>
+        var customServiceHandler = new CustomServiceHandler(serviceProvider, "https://localhost:7027/api/upload");
+        customServiceHandler.Events.ServiceCalledAsync += async (sender, e) =>
         {
+            await Task.CompletedTask;
             Assert.IsTrue(e.IsSuccessStatusCode);
         };
 
@@ -146,9 +172,9 @@ public class CustomServiceHandlerTests
             new FileInfo("Sample Upload File2.txt")
         ];
 
-        var response = await customServiceHandler.UploadFileAsync("something", files);
+        var response = await customServiceHandler.UploadFilesAsync<SamplePostResponse>("something", files);
         Assert.IsNotNull(response);
-        Assert.IsFalse(string.IsNullOrWhiteSpace(System.Text.Json.JsonSerializer.Deserialize<SamplePostResponse>(response).Status));
+        Assert.IsFalse(string.IsNullOrWhiteSpace(response.Status));
     }
 }
 #pragma warning restore CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).

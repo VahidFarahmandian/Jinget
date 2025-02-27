@@ -8,37 +8,39 @@ var builder = WebApplication.CreateBuilder(args);
 
 var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true).Build();
 
-string[] blacklist = ["/logs/"];
+string[] blacklist = ["/something"];
+string[] blacklistUrl = ["/ratelimit"];
 
-//FileSettingModel fileSetting = new()
-//{
-//    FileNamePrefix = "Log",
-//    LogDirectory = "Logs",
-//    RetainFileCountLimit = 5,
-//    FileSizeLimitMB = 10,
-//    UseGlobalExceptionHandler = true,
-//    Handle4xxResponses = true,
-//    MaxRequestBodySize = 1024 * 1024 * 10,
-//    MaxResponseBodySize = 1024 * 1024 * 10
-//};
-//builder.Host.LogToFile(blacklist, fileSetting, LogLevel.Information);
-//builder.Services.ConfigureFileLogger(fileSetting);
-
-builder.Host.LogToElasticSearch(blacklist, LogLevel.Information);
-var elasticSearchSetting = new ElasticSearchSettingModel
+FileSettingModel fileSetting = new()
 {
-    CreateIndexPerPartition = false,
-    UserName = "elastic",
-    Password = "UbeHc_IxSpRgZrzqsY=S",
-    Url = "localhost:9200",
-    UseSsl = true,
-    BypassCertificateValidation = true,
+    FileNamePrefix = "Log",
+    LogDirectory = "Logs",
+    RetainFileCountLimit = 5,
+    FileSizeLimitMB = 10,
     UseGlobalExceptionHandler = true,
     Handle4xxResponses = true,
     MaxRequestBodySize = 1024 * 1024 * 10,
     MaxResponseBodySize = 1024 * 1024 * 10
 };
-builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
+builder.Host.LogToFile(blacklist, fileSetting, blacklistUrl, LogLevel.Information);
+builder.Services.ConfigureFileLogger(fileSetting);
+
+//builder.Host.LogToElasticSearch(blacklist, LogLevel.Information);
+//var elasticSearchSetting = new ElasticSearchSettingModel
+//{
+//    CreateIndexPerPartition = false,
+//    UserName = "elastic",
+//    Password = "UbeHc_IxSpRgZrzqsY=S",
+//    Url = "localhost:9200",
+//    UseSsl = true,
+//    BypassCertificateValidation = true,
+//    UseGlobalExceptionHandler = true,
+//    Handle4xxResponses = true,
+//    MaxRequestBodySize = 1024 * 1024 * 10,
+//    MaxResponseBodySize = 1024 * 1024 * 10
+//};
+//builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
+
 builder.Services.AddControllers();
 
 var app = builder.Build();

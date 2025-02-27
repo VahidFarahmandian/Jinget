@@ -10,6 +10,14 @@ The purpose of this package is to facilitate communication and use of various ty
 1.  Download the package from NuGet using Package Manager:
 `Install-Package Jinget.Handlers.ExternalServiceHandlers`
 You can also use other methods supported by NuGet. Check [Here](https://www.nuget.org/packages/Jinget.Handlers.ExternalServiceHandlers "Here") for more information.
+ Then register th DI configuration like this:
+
+```csharp
+builder.Services.AddTransient<JingetHttpClientFactory>();
+builder.Services.AddHttpClient("jinget-client").ConfigurePrimaryHttpMessageHandler(() => JingetHttpClientHandlerFactory.Create(true));
+```
+
+You can replace `jinget-client` with your desired client name. if not specified then by default `jinget-client` will be used as client name.
 
 2. Create a class which defines the response model. 
 ```csharp
@@ -21,9 +29,9 @@ You can also use other methods supported by NuGet. Check [Here](https://www.nuge
     }
 ```
 
-3. Create an object of type `JingetServiceHandler<>` class and pass the response model as its generic type:
+3. Create an object of type `JingetServiceHandler<>` class and pass the response model as its generic type, or Create an object of type `JingetServiceHandler` class:
 ```csharp
-var jingetServiceHandler = new JingetServiceHandler<SampleGetResponse>("https://jsonplaceholder.typicode.com");
+var jingetServiceHandler = new JingetServiceHandler<SampleGetResponse>(serviceProvider, "https://jsonplaceholder.typicode.com");
 ```
 
 4. Call your endpoint:
@@ -127,7 +135,7 @@ In line number 2, we have our envelop and all we need to do, is to pass our para
 ------------
 ### How to use custom Service Handler
 
-You can use your custom service handler instead of using `JingetServiceHandler`. To do this create your custom class and makes it to inherit from `ServiceHandler<>` class. 
+You can use your custom service handler instead of using `JingetServiceHandler`. To do this create your custom class and makes it to inherit from `ServiceHandler<>` or `ServiceHandler` class. 
 Also create a custom class for your event management and pass it as generic argument to `ServiceHandler<>` class. 
 You can also make use of `ServiceHandler`(non generic class) too. Different between these two class is that `ServiceHandler` does not provide any event for response deserialization.
 it returns the raw response and deserialization is up to you.

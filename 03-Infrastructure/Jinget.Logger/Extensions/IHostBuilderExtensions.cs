@@ -11,11 +11,13 @@ public static class IHostBuilderExtensions
     public static IHostBuilder LogToElasticSearch(
         this IHostBuilder webHostBuilder,
         string[] blackList,
+        string[]? blackListUrls = null,
         Microsoft.Extensions.Logging.LogLevel minAllowedLoglevels = Microsoft.Extensions.Logging.LogLevel.Information)
         =>
         webHostBuilder.ConfigureLogging(builder => builder.AddElasticSearch(f =>
         {
             f.BlackListStrings = blackList.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
+            f.BlackListUrls = blackListUrls?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
             f.MinAllowedLogLevel = minAllowedLoglevels;
         }));
 
@@ -23,6 +25,7 @@ public static class IHostBuilderExtensions
         this IHostBuilder webHostBuilder,
         string[] blackList,
         FileSettingModel fileSettingModel,
+        string[]? blackListUrls = null,
         Microsoft.Extensions.Logging.LogLevel minAllowedLoglevels = Microsoft.Extensions.Logging.LogLevel.Error) =>
         webHostBuilder.ConfigureLogging(builder => builder.AddFile(f =>
         {
@@ -30,6 +33,7 @@ public static class IHostBuilderExtensions
             f.LogDirectory = fileSettingModel.LogDirectory;
             f.RetainedFileCountLimit = fileSettingModel.RetainFileCountLimit;
             f.BlackListStrings = blackList.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
+            f.BlackListUrls = blackListUrls?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
             f.FileSizeLimit = fileSettingModel.FileSizeLimitMB;
             f.MinAllowedLogLevel = minAllowedLoglevels;
         }));

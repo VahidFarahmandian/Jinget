@@ -7,6 +7,7 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
     private readonly Microsoft.Extensions.Logging.LogLevel _minAllowedLogLevel;
     private readonly int? _batchSize;
     private readonly string[] _blacklistStrings;
+    private readonly string[] _blacklistUrls;
     private readonly List<LogMessage> _currentBatch = [];
     private readonly TimeSpan _interval;
     private readonly int? _queueSize;
@@ -28,7 +29,8 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
         _interval = loggerOptions.FlushPeriod;
         _batchSize = loggerOptions.BatchSize;
         _queueSize = loggerOptions.BackgroundQueueSize;
-        _blacklistStrings = loggerOptions.BlackListStrings.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray() ?? Array.Empty<string>();
+        _blacklistStrings = loggerOptions.BlackListStrings.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray() ?? [];
+        _blacklistUrls = loggerOptions.BlackListUrls?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray() ?? [];
         _minAllowedLogLevel = loggerOptions.MinAllowedLogLevel;
 
         Start();
@@ -37,7 +39,6 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
     public void Dispose()
     {
         StopSynchronous();
-        //StopAsync().GetAwaiter().GetResult();
         GC.SuppressFinalize(this);
     }
 
@@ -89,6 +90,25 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
         //if log contains blacklist string then ignore it
         if (_blacklistStrings.Any(message.ToString().Contains))
             return;
+
+        try
+        {
+            var jsonMessage = message.ToString()[message.ToString().IndexOf("{")..];
+            var jsonUrl = System.Text.Json.JsonDocument.Parse(jsonMessage)
+                .RootElement
+                .EnumerateObject()
+                .FirstOrDefault(x => string.Equals(x.Name, "Url", StringComparison.OrdinalIgnoreCase));
+
+            var jsonPageUrl = System.Text.Json.JsonDocument.Parse(jsonMessage)
+                .RootElement
+                .EnumerateObject()
+                .FirstOrDefault(x => string.Equals(x.Name, "PageUrl", StringComparison.OrdinalIgnoreCase));
+
+            if (_blacklistUrls.Any(jsonUrl.ToString().Contains) || _blacklistUrls.Any(jsonPageUrl.ToString().Contains))
+                return;
+        }
+        catch { }
+
         if (_cancellationTokenSource != null && _messageQueue != null)
         {
             if (!_messageQueue.IsAddingCompleted)
