@@ -55,9 +55,7 @@ public abstract class JingetServiceHandlerBase<TEvents>(IServiceProvider service
         {
             // Notify listeners that an exception occurred during the process.
             await Events.OnExceptionOccurredAsync(ex);
-
-            // Return the default value for the result type to indicate failure.
-            return default;
+            throw;
         }
     }
     /// <summary>
