@@ -19,7 +19,7 @@ public class ResponseResult<TResponseModel>
     /// </summary>
     public bool IsFailure => !IsSuccess;
 
-    public long EffectedRowsCount { get; }
+    public long EffectedRowsCount { get; private set; }
     public List<TResponseModel> Data { get; }
 
     public ResponseResult()
