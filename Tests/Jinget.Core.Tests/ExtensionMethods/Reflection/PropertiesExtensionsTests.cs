@@ -10,41 +10,41 @@ public class PropertiesExtensionsTests
     [TestMethod]
     public void IsSimpleType_PrimitiveTypes_ReturnsTrue()
     {
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(int)));
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(bool)));
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(char)));
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(double)));
+        Assert.IsTrue(typeof(int).IsSimpleType());
+        Assert.IsTrue(typeof(bool).IsSimpleType());
+        Assert.IsTrue(typeof(char).IsSimpleType());
+        Assert.IsTrue(typeof(double).IsSimpleType());
     }
 
     [TestMethod]
     public void IsSimpleType_DecimalStringGuidDateTimeByteArrayEnum_ReturnsTrue()
     {
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(decimal)));
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(string)));
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(Guid)));
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(DateTime)));
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(byte[])));
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(MyEnum)));
+        Assert.IsTrue(typeof(decimal).IsSimpleType());
+        Assert.IsTrue(typeof(string).IsSimpleType());
+        Assert.IsTrue(typeof(Guid).IsSimpleType());
+        Assert.IsTrue(typeof(DateTime).IsSimpleType());
+        Assert.IsTrue(typeof(byte[]).IsSimpleType());
+        Assert.IsTrue(typeof(MyEnum).IsSimpleType());
     }
 
     [TestMethod]
     public void IsSimpleType_NullableTypes_ReturnsTrue()
     {
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(int?)));
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(decimal?)));
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(Guid?)));
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(DateTime?)));
-        Assert.IsTrue(PropertiesExtensions.IsSimpleType(typeof(MyEnum?)));
+        Assert.IsTrue(typeof(int?).IsSimpleType());
+        Assert.IsTrue(typeof(decimal?).IsSimpleType());
+        Assert.IsTrue(typeof(Guid?).IsSimpleType());
+        Assert.IsTrue(typeof(DateTime?).IsSimpleType());
+        Assert.IsTrue(typeof(MyEnum?).IsSimpleType());
     }
 
     [TestMethod]
     public void IsSimpleType_NonSimpleTypes_ReturnsFalse()
     {
-        Assert.IsFalse(PropertiesExtensions.IsSimpleType(typeof(object)));
-        Assert.IsFalse(PropertiesExtensions.IsSimpleType(typeof(MyClass)));
-        Assert.IsFalse(PropertiesExtensions.IsSimpleType(typeof(MyStruct)));
-        Assert.IsFalse(PropertiesExtensions.IsSimpleType(typeof(int[,]))); // multidimensional array
-        Assert.IsFalse(PropertiesExtensions.IsSimpleType(typeof(int[]))); // one dimensional array that is not byte[]
+        Assert.IsFalse(typeof(object).IsSimpleType());
+        Assert.IsFalse(typeof(MyClass).IsSimpleType());
+        Assert.IsFalse(typeof(MyStruct).IsSimpleType());
+        Assert.IsFalse(typeof(int[,]).IsSimpleType()); // multidimensional array
+        Assert.IsFalse(typeof(int[]).IsSimpleType()); // one dimensional array that is not byte[]
     }
 
     [TestMethod]
@@ -76,7 +76,7 @@ public class PropertiesExtensionsTests
         var result = typeof(TestClass).GetWritableProperties();
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Any());
+        Assert.IsTrue(result.Count != 0);
         Assert.AreEqual(expectedResult.First(), result.First());
     }
 }

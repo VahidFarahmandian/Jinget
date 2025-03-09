@@ -32,7 +32,7 @@ public static class PropertiesExtensions
     /// </summary>
     /// <param name="type">The type to check.</param>
     /// <returns>True if the type is a simple type; otherwise, false.</returns>
-    public static bool IsSimpleType(Type? t)
+    public static bool IsSimpleType(this Type? t)
     {
         while (true)
         {
