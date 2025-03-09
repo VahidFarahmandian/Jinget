@@ -40,6 +40,10 @@ public static class PropertiesExtensions
             {
                 return true;
             }
+            if (t != null && t.Name == "HierarchyId")
+            {
+                return true;
+            }
             if (t == typeof(decimal))
             {
                 return true;
