@@ -1,4 +1,7 @@
-﻿namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
+﻿#nullable enable
+using Castle.Core.Logging;
+
+namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
 
 [TestClass]
 public class PropertiesExtensionsTests
@@ -7,9 +10,24 @@ public class PropertiesExtensionsTests
     class MyClass { }
     struct MyStruct { public int Value; }
 
+    static string? NullStr() => null;
+    static string NonNullStr() => null;
+
     [TestMethod]
     public void IsSimpleType_PrimitiveTypes_ReturnsTrue()
     {
+        int x;
+        
+        int? c = null;
+
+        Assert u = null;
+        Assert? i = null;
+
+        string s1 = NullStr();
+        string s2 = NonNullStr();
+        Assert.AreEqual(s1, s2);
+        Assert.IsTrue(s1 == s2);
+
         Assert.IsTrue(typeof(int).IsSimpleType());
         Assert.IsTrue(typeof(bool).IsSimpleType());
         Assert.IsTrue(typeof(char).IsSimpleType());

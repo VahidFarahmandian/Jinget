@@ -11,13 +11,9 @@ public static class ExpressionUtility
     {
         if (source.Type != type && source is NewExpression newExpr && newExpr.Members?.Count > 0)
         {
-#pragma warning disable CS8604 // Possible null reference argument.
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
             return Expression.MemberInit(Expression.New(type), newExpr.Members
                 .Select(m => type.GetProperty(m.Name))
                 .Zip(newExpr.Arguments, (m, e) => Expression.Bind(m, Transform(e, m.PropertyType))));
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-#pragma warning restore CS8604 // Possible null reference argument.
         }
         else if (source.Type != type && source is MethodCallExpression listCall && listCall.Method.IsStatic
             && listCall.Method.DeclaringType == typeof(Enumerable) &&
@@ -265,6 +261,111 @@ public static class ExpressionUtility
         }
 
         return Expression.Lambda<Func<T, bool>>(MergeFilterExpressions(filterExpressions), exprVariable);
+    }
+
+    /// <summary>
+    /// create expression to search among all string properties
+    /// </summary>
+    /// <param name="preserveCase">if set to false then call to ToLower method will be attached to all properties </param>
+    /// <param name="conditionJoinType">defines whether to join conditions using OrElse or AndAlso</param>
+    public static Expression<Func<TModelType, bool>> CreateSearchAllColumnsExpression<TModelType>(
+        string searchTerm,
+        string paramName = "x",
+        bool preserveCase = false,
+        ConditionJoinType conditionJoinType = ConditionJoinType.OrElse)
+    {
+        if (string.IsNullOrEmpty(searchTerm))
+        {
+            // Return an expression that always evaluates to true
+            return BooleanUtility.TrueCondition<TModelType>();
+        }
+
+        if (!preserveCase)
+            searchTerm = searchTerm.ToLowerInvariant();
+
+        // Get all string properties of the entity
+        var stringProperties = typeof(TModelType).GetProperties()
+            .Where(p => p.PropertyType == typeof(string));
+
+        // Create a predicate for each string property
+        var predicates = stringProperties.Select(p =>
+        {
+            // Create an expression for accessing the property value
+            var parameter = Expression.Parameter(typeof(TModelType), paramName);
+            var propertyAccess = Expression.Property(parameter, p);
+            var methodCall = Expression.Call(propertyAccess, "ToLowerInvariant", null);
+            var constant = Expression.Constant(searchTerm);
+            var containsMethod = typeof(string).GetMethod("Contains", [typeof(string)]);
+            var body = Expression.Call(preserveCase ? propertyAccess : methodCall, containsMethod, constant);
+            return Expression.Lambda<Func<TModelType, bool>>(body, parameter);
+        }).ToList();
+
+        // Combine all predicates using OR logic
+        Expression<Func<TModelType, bool>> combinedPredicate = null;
+        foreach (var predicate in predicates)
+        {
+            if (combinedPredicate == null)
+            {
+                combinedPredicate = predicate;
+            }
+            else
+            {
+                if (conditionJoinType == ConditionJoinType.OrElse)
+                    combinedPredicate = combinedPredicate.OrElse(predicate, paramName);
+                else
+                    combinedPredicate = combinedPredicate.AndAlso(predicate, paramName);
+            }
+        }
+
+        return combinedPredicate;
+    }
+
+    /// <summary>
+    /// convert list of BindingHierarchy to expression
+    /// </summary>
+    public static Expression<Func<TRootType, TRootType>> CreateBindingExpression<TRootType>(List<BindingHierarchy> bindingHierarchies, string paramName = "x")
+    {
+        var rootType = typeof(TRootType);
+
+        // Parameter expression for the input object 'x'
+        var xParam = Expression.Parameter(rootType, paramName);
+
+        // New expression for creating a TModel instance
+        var newModel = Expression.New(rootType);
+
+        // Member bindings for initializing TModel properties
+        List<MemberBinding> bindings = [];
+
+        foreach (var item in bindingHierarchies)
+        {
+            if (item.ParentProperty == null)
+            {
+                bindings.Add(
+                    Expression.Bind(
+                            item.InitiatorPropertyType.GetProperty(item.PropertyName),
+                            Expression.PropertyOrField(xParam, item.PropertyName))
+                    );
+            }
+            else
+            {
+                bindings.Add(
+                    Expression.Bind(
+                        item.ParentProperty.InitiatorPropertyType.GetProperty(item.ParentProperty.PropertyName),
+                        Expression.MemberInit(
+                            Expression.New(item.InitiatorPropertyType),
+                            Expression.Bind(item.InitiatorPropertyType.GetProperty(item.PropertyName),
+                            Expression.PropertyOrField(
+                                Expression.PropertyOrField(xParam, item.ParentProperty.PropertyName),
+                                item.PropertyName))))
+                );
+            }
+        }
+
+        // MemberInitExpression to initialize the new TModel instance
+        MemberInitExpression memberInit = Expression.MemberInit(newModel, bindings);
+
+        // Lambda expression combining the parameter and the MemberInitExpression
+        return Expression.Lambda<Func<TRootType, TRootType>>(memberInit, xParam);
     }
 
     private static Expression MergeFilterExpressions(IDictionary<Expression, ConditionJoinType> filterExpressions)
