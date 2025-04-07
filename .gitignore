@@ -7,3 +7,4 @@
 /*.lutconfig
 /**/.idea
 /**/node_modules
+/Tests/Jinget.WebAPI.Tests/Logs

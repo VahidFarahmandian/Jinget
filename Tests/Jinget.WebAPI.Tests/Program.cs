@@ -25,14 +25,14 @@ FileSettingModel fileSetting = new()
 builder.Host.LogToFile(blacklist, fileSetting, blacklistUrl, LogLevel.Information);
 builder.Services.ConfigureFileLogger(fileSetting);
 
-//builder.Host.LogToElasticSearch(blacklist, LogLevel.Information);
+//builder.Host.LogToElasticSearch(blacklist, blacklistUrl, LogLevel.Information);
 //var elasticSearchSetting = new ElasticSearchSettingModel
 //{
 //    CreateIndexPerPartition = false,
 //    UserName = "elastic",
 //    Password = "UbeHc_IxSpRgZrzqsY=S",
 //    Url = "localhost:9200",
-//    UseSsl = true,
+//    UseSsl = false,
 //    BypassCertificateValidation = true,
 //    UseGlobalExceptionHandler = true,
 //    Handle4xxResponses = true,
@@ -63,6 +63,19 @@ app.UseWhen(p => p.Request.Path == "/detailedlog", appBuilder =>
     });
 });
 app.UseJingetLogging();
+app.UseRouting();
+app.UseCors(options =>
+{
+    options
+    .WithOrigins("*")
+    .WithMethods(["GET", "POST", "PUT", "DELETE"])
+    .WithHeaders("*")
+    .WithExposedHeaders("Authorization", "Content-Disposition", "Content-Type", "Content-Encoding");
+    //if (middlewareConfiguration.CORSSettings.AllowedOrigins.All(x => x != "*"))
+    //{
+    //    options.AllowCredentials();
+    //}
+});
 app.UseWhen(p => p.Request.Path == "/detailedlog", appBuilder =>
 {
     appBuilder.Use(async (context, next) =>
@@ -84,6 +97,12 @@ app.Use(async (context, next) =>
         await next.Invoke();
 });
 
+app.MapPost("/login", (LoginViewModel vm) =>
+{
+    if (vm.Username == "vahid")
+        return new ResponseResult<string>(vm.Username, 1);
+    throw new UnauthorizedAccessException();
+});
 app.MapGet("exception", (IHttpContextAccessor httpContextAccessor, ILogger<SampleModel> logger) =>
 {
     throw new HttpRequestException("New HttpRequestException");
@@ -115,3 +134,4 @@ app.MapPost("save", (object vm) => vm);
 //    await domainService.SearchAsync("20241026", search, page, pagesize, origin: "/logs/"));
 
 app.Run();
+public record LoginViewModel(string Username, string Password);

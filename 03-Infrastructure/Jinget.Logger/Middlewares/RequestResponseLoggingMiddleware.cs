@@ -52,36 +52,38 @@ public class RequestResponseLoggingMiddleware
     {
         // Skip logging for OPTIONS requests.
         if (context.Request.Method == "OPTIONS")
-            return;
-
-        // Log the request.
-        await LogRequestAsync(context);
-
-        // Store the original response body stream.
-        var originalBodyStream = context.Response.Body;
-
-        // Use a MemoryStream to capture the response body.
-        using (var responseBody = new MemoryStream())
+            await _next(context);
+        else
         {
-            // Replace the response body with the MemoryStream.
-            context.Response.Body = responseBody;
+            // Log the request.
+            await LogRequestAsync(context);
 
-            try
+            // Store the original response body stream.
+            var originalBodyStream = context.Response.Body;
+
+            // Use a MemoryStream to capture the response body.
+            using (var responseBody = new MemoryStream())
             {
-                // Invoke the next middleware.
-                await _next(context);
+                // Replace the response body with the MemoryStream.
+                context.Response.Body = responseBody;
 
-                // Log the response.
-                await LogResponseAsync(context);
+                try
+                {
+                    // Invoke the next middleware.
+                    await _next(context);
 
-                // Restore the original response body.
-                responseBody.Seek(0, SeekOrigin.Begin);
-                await responseBody.CopyToAsync(originalBodyStream);
-            }
-            finally
-            {
-                // Ensure the original body is restored, even if an exception occurs.
-                context.Response.Body = originalBodyStream;
+                    // Log the response.
+                    await LogResponseAsync(context);
+
+                    // Restore the original response body.
+                    responseBody.Seek(0, SeekOrigin.Begin);
+                    await responseBody.CopyToAsync(originalBodyStream);
+                }
+                finally
+                {
+                    // Ensure the original body is restored, even if an exception occurs.
+                    context.Response.Body = originalBodyStream;
+                }
             }
         }
     }
