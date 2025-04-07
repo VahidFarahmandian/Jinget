@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Jinget.Core.ExtensionMethods;
+namespace Jinget.Core.ExtensionMethods.HttpContext;
 
 public static class HttpContextExtensions
 {
@@ -13,7 +13,7 @@ public static class HttpContextExtensions
     /// This method checks the Content-Type header of the request to determine if it starts with "multipart/form-data".
     /// It uses the GetTypedHeaders() extension method for robust header parsing and performs a case-insensitive comparison.
     /// </remarks>
-    public static bool IsMultipartContentType(this HttpContext context)
+    public static bool IsMultipartContentType(this Microsoft.AspNetCore.Http.HttpContext context)
     {
         // Retrieve the parsed Content-Type header from the request.
         var contentTypeHeader = context.Request.GetTypedHeaders().ContentType;
@@ -54,7 +54,7 @@ public static class HttpContextExtensions
     ///     the actual client's IP address.
     ///     The method also validates the IP address retrieved from the custom header using IPAddress.TryParse.
     /// </remarks>
-    public static string GetClientIpAddress(this HttpContext context, string customClientIpHeader = "X-Forwarded-For")
+    public static string GetClientIpAddress(this Microsoft.AspNetCore.Http.HttpContext context, string customClientIpHeader = "X-Forwarded-For")
     {
         // Get the IP address of the immediate connection to the server.
         // This may be the proxy or load balancer's IP, not the client's.
@@ -88,7 +88,7 @@ public static class HttpContextExtensions
     /// It returns true if the attribute is found; otherwise, it returns false.
     /// This method does not evaluate authorization policies. It only checks for the existence of the attribute.
     /// </remarks>
-    public static bool EndpointIsDecoratedWithAuthorizeAttribute(this HttpContext httpContext)
+    public static bool EndpointIsDecoratedWithAuthorizeAttribute(this Microsoft.AspNetCore.Http.HttpContext httpContext)
         => httpContext.GetEndpoint()?.Metadata.GetMetadata<AuthorizeAttribute>() != null;
 
 }

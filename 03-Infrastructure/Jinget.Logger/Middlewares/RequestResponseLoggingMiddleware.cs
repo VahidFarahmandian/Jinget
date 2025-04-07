@@ -1,4 +1,5 @@
-﻿using Jinget.ExceptionHandler.Extensions;
+﻿using Jinget.Core.ExtensionMethods.HttpContext;
+using Jinget.ExceptionHandler.Extensions;
 using Jinget.Logger.Providers;
 
 namespace Jinget.Logger.Middlewares;
@@ -50,8 +51,8 @@ public class RequestResponseLoggingMiddleware
     /// <param name="context">The HTTP context.</param>
     public async Task InvokeAsync(HttpContext context)
     {
-        // Skip logging for OPTIONS requests.
-        if (context.Request.Method == "OPTIONS")
+        // Skip logging for preflight requests.
+        if (context.Request.IsPreflight())
             await _next(context);
         else
         {

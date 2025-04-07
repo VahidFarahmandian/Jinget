@@ -1,4 +1,6 @@
-﻿[assembly: InternalsVisibleTo("Jinget.Logger")]
+﻿using Jinget.Core.ExtensionMethods.HttpContext;
+
+[assembly: InternalsVisibleTo("Jinget.Logger")]
 namespace Jinget.ExceptionHandler.Entities.Log;
 
 [Entity(ElasticSearchEnabled = true)]
