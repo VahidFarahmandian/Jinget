@@ -258,8 +258,8 @@ public class ExpressionUtilityTests
     public void should_return_searchallexpression_combined_with_orelse()
     {
         Expression<Func<TestClass, bool>> expectedResult =
-            x => x.Property2.ToLowerInvariant().Contains("test string") ||
-            x.Property3.ToLowerInvariant().Contains("test string");
+            x => x.Property2.ToLower().Contains("test string") ||
+            x.Property3.ToLower().Contains("test string");
 
         var result = ExpressionUtility.CreateSearchAllColumnsExpression<TestClass>("test string");
 
@@ -280,8 +280,8 @@ public class ExpressionUtilityTests
     public void should_return_searchallexpression_combined_with_andalso()
     {
         Expression<Func<TestClass, bool>> expectedResult =
-            x => x.Property2.ToLowerInvariant().Contains("test string") &&
-            x.Property3.ToLowerInvariant().Contains("test string");
+            x => x.Property2.ToLower().Contains("test string") &&
+            x.Property3.ToLower().Contains("test string");
 
         var result = ExpressionUtility.CreateSearchAllColumnsExpression<TestClass>("test string", conditionJoinType: ConditionJoinType.AndAlso);
 

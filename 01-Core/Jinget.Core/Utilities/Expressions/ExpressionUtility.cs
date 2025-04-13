@@ -293,7 +293,7 @@ public static class ExpressionUtility
             // Create an expression for accessing the property value
             var parameter = Expression.Parameter(typeof(TModelType), paramName);
             var propertyAccess = Expression.Property(parameter, p);
-            var methodCall = Expression.Call(propertyAccess, "ToLowerInvariant", null);
+            var methodCall = Expression.Call(propertyAccess, "ToLower", null);
             var constant = Expression.Constant(searchTerm);
             var containsMethod = typeof(string).GetMethod("Contains", [typeof(string)]);
             var body = Expression.Call(preserveCase ? propertyAccess : methodCall, containsMethod, constant);
