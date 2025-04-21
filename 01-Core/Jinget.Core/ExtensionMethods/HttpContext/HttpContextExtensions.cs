@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using System.Net;
 
 namespace Jinget.Core.ExtensionMethods.HttpContext;
 
@@ -91,4 +92,24 @@ public static class HttpContextExtensions
     public static bool EndpointIsDecoratedWithAuthorizeAttribute(this Microsoft.AspNetCore.Http.HttpContext httpContext)
         => httpContext.GetEndpoint()?.Metadata.GetMetadata<AuthorizeAttribute>() != null;
 
+    /// <summary>
+    /// Retrieves all unique claim titles from API endpoint metadata decorated with the specified claim attribute type
+    /// </summary>
+    /// <typeparam name="TClaimAttribute">The type of claim attribute to search for (must inherit from <seealso cref="ClaimAttribute"/>)</typeparam>
+    /// <param name="httpContext">The current HTTP context</param>
+    /// <returns>Distinct collection of claim titles found in API endpoints</returns>
+    public static IEnumerable<string> GetClaimTitlesFromEndpoints<TClaimAttribute>(this Microsoft.AspNetCore.Http.HttpContext httpContext)
+        where TClaimAttribute : ClaimAttribute
+    {
+        ArgumentNullException.ThrowIfNull(httpContext);
+
+        var apiDescriptionProvider = httpContext.RequestServices.GetRequiredService<IApiDescriptionGroupCollectionProvider>();
+
+        return apiDescriptionProvider.ApiDescriptionGroups.Items
+            .SelectMany(group => group.Items)
+            .SelectMany(description => description.ActionDescriptor.EndpointMetadata)
+            .OfType<TClaimAttribute>()
+            .Select(attribute => attribute.Title)
+            .Distinct();
+    }
 }
