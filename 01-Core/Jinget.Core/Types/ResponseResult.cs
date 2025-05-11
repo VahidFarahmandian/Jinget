@@ -24,15 +24,14 @@ public class ResponseResult<TResponseModel>
     public long EffectedRowsCount { get; private set; }
 
     [JsonInclude]
-    public List<TResponseModel> Data { get; }
+    public List<TResponseModel> Data { get; private set; } = [];
 
-    [JsonConstructor] 
     public ResponseResult()
     {
-        Data = [];
+
     }
 
-    public ResponseResult(TResponseModel data) : this()
+    public ResponseResult(TResponseModel data)
     {
         if (data == null)
         {
@@ -46,7 +45,7 @@ public class ResponseResult<TResponseModel>
         }
     }
 
-    public ResponseResult(IEnumerable<TResponseModel>? data) : this()
+    public ResponseResult(IEnumerable<TResponseModel>? data)
     {
         if (data == null)
         {
