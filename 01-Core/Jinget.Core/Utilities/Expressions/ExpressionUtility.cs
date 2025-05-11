@@ -9,11 +9,27 @@ public static class ExpressionUtility
     /// </summary>
     internal static Expression Transform(Expression source, Type type)
     {
+        //if (source.Type != type && source is NewExpression newExpr && newExpr.Members?.Count > 0)
+        //{
+        //    return Expression.MemberInit(Expression.New(type), newExpr.Members
+        //        .Select(m => type.GetProperty(m.Name))
+        //        .Zip(newExpr.Arguments, (m, e) => Expression.Bind(m, Transform(e, m.PropertyType))));
+        //}
         if (source.Type != type && source is NewExpression newExpr && newExpr.Members?.Count > 0)
         {
-            return Expression.MemberInit(Expression.New(type), newExpr.Members
-                .Select(m => type.GetProperty(m.Name))
-                .Zip(newExpr.Arguments, (m, e) => Expression.Bind(m, Transform(e, m.PropertyType))));
+            var bindings = new List<MemberBinding>();
+            foreach (var member in newExpr.Members)
+            {
+                var targetProperty = type.GetProperty(member.Name);
+                if (targetProperty != null) // Skip if property doesn't exist in target type
+                {
+                    var argument = newExpr.Arguments[newExpr.Members.IndexOf(member)];
+                    bindings.Add(Expression.Bind(targetProperty, Transform(argument, targetProperty.PropertyType)));
+                }
+                else
+                    throw new Exception($"Jinget Says: Property {member.Name} does not exists in {type.Name}");
+            }
+            return Expression.MemberInit(Expression.New(type), bindings);
         }
         else if (source.Type != type && source is MethodCallExpression listCall && listCall.Method.IsStatic
             && listCall.Method.DeclaringType == typeof(Enumerable) &&

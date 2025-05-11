@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using System.Text.Json.Serialization;
 
 namespace Jinget.Core.Types;
 
@@ -19,9 +20,13 @@ public class ResponseResult<TResponseModel>
     /// </summary>
     public bool IsFailure => !IsSuccess;
 
+    [JsonInclude]
     public long EffectedRowsCount { get; private set; }
+
+    [JsonInclude]
     public List<TResponseModel> Data { get; }
 
+    [JsonConstructor] 
     public ResponseResult()
     {
         Data = [];
