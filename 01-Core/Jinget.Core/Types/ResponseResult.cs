@@ -51,7 +51,7 @@ public class ResponseResult<TResponseModel>
         else
         {
             Data.AddRange(data);
-            EffectedRowsCount = data.Count();
+            EffectedRowsCount = Data.Count;
         }
     }
 
