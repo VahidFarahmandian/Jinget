@@ -312,4 +312,25 @@ public class ExpressionUtilityTests
 
         Assert.AreEqual(expectedResult.ToString(), result.ToString());
     }
+
+    [TestMethod()]
+    public void should_create_bindingexpression_using_bindinghierarchy_one_many_relation()
+    {
+        var prop1 = new BindingHierarchy("Property2", typeof(TestClass));
+        List<BindingHierarchy> bindings = [
+            new BindingHierarchy("InnerProperty2", typeof(InnerClass),new BindingHierarchy("InnerProperty", typeof(TestClass))),
+            ];
+
+        Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
+        {
+            InnerProperty = x.InnerProperty.Select(i => new InnerClass()
+            {
+                InnerProperty2 = i.InnerProperty2
+            }).ToList()
+        };
+
+        var result = ExpressionUtility.CreateBindingExpression<TestClass>(bindings);
+
+        Assert.AreEqual(expectedResult.ToString(), result.ToString());
+    }
 }

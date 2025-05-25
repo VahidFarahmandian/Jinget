@@ -9,12 +9,6 @@ public static class ExpressionUtility
     /// </summary>
     internal static Expression Transform(Expression source, Type type)
     {
-        //if (source.Type != type && source is NewExpression newExpr && newExpr.Members?.Count > 0)
-        //{
-        //    return Expression.MemberInit(Expression.New(type), newExpr.Members
-        //        .Select(m => type.GetProperty(m.Name))
-        //        .Zip(newExpr.Arguments, (m, e) => Expression.Bind(m, Transform(e, m.PropertyType))));
-        //}
         if (source.Type != type && source is NewExpression newExpr && newExpr.Members?.Count > 0)
         {
             var bindings = new List<MemberBinding>();
@@ -339,18 +333,14 @@ public static class ExpressionUtility
     /// <summary>
     /// convert list of BindingHierarchy to expression
     /// </summary>
-    public static Expression<Func<TRootType, TRootType>> CreateBindingExpression<TRootType>(List<BindingHierarchy> bindingHierarchies, string paramName = "x")
+    public static Expression<Func<TRootType, TRootType>> CreateBindingExpression<TRootType>(
+     List<BindingHierarchy> bindingHierarchies,
+     string paramName = "x")
     {
         var rootType = typeof(TRootType);
-
-        // Parameter expression for the input object 'x'
         var xParam = Expression.Parameter(rootType, paramName);
-
-        // New expression for creating a TModel instance
         var newModel = Expression.New(rootType);
-
-        // Member bindings for initializing TModel properties
-        List<MemberBinding> bindings = [];
+        List<MemberBinding> bindings = new();
 
         foreach (var item in bindingHierarchies)
         {
@@ -358,29 +348,89 @@ public static class ExpressionUtility
             {
                 bindings.Add(
                     Expression.Bind(
-                            item.InitiatorPropertyType.GetProperty(item.PropertyName),
-                            Expression.PropertyOrField(xParam, item.PropertyName))
-                    );
+                        rootType.GetProperty(item.PropertyName),
+                        Expression.PropertyOrField(xParam, item.PropertyName))
+                );
             }
             else
             {
-                bindings.Add(
-                    Expression.Bind(
-                        item.ParentProperty.InitiatorPropertyType.GetProperty(item.ParentProperty.PropertyName),
-                        Expression.MemberInit(
-                            Expression.New(item.InitiatorPropertyType),
-                            Expression.Bind(item.InitiatorPropertyType.GetProperty(item.PropertyName),
-                            Expression.PropertyOrField(
-                                Expression.PropertyOrField(xParam, item.ParentProperty.PropertyName),
-                                item.PropertyName))))
-                );
+                var parentProperty = rootType.GetProperty(item.ParentProperty.PropertyName);
+                var parentType = parentProperty.PropertyType;
+
+                if (parentType.IsGenericType &&
+                    (parentType.GetGenericTypeDefinition() == typeof(ICollection<>) ||
+                     parentType.GetGenericTypeDefinition() == typeof(IList<>)))
+                {
+                    // Handle collection properties
+                    var elementType = parentType.GetGenericArguments()[0];
+                    var propertyInfo = elementType.GetProperty(item.PropertyName);
+
+                    // Create expression to transform each item in the collection
+                    var collectionParam = Expression.Parameter(elementType, "i");
+                    var itemBinding = Expression.Bind(
+                        propertyInfo,
+                        Expression.PropertyOrField(collectionParam, item.PropertyName)
+                    );
+
+                    var newItem = Expression.MemberInit(
+                        Expression.New(elementType),
+                        itemBinding
+                    );
+
+                    // Create Select expression
+                    var selectMethod = typeof(Enumerable).GetMethods()
+                        .First(m => m.Name == "Select" && m.GetParameters().Length == 2)
+                        .MakeGenericMethod(elementType, elementType);
+
+                    var lambdaType = typeof(Func<,>).MakeGenericType(elementType, elementType);
+                    var lambda = Expression.Lambda(
+                        lambdaType,
+                        newItem,
+                        collectionParam
+                    );
+
+                    var originalCollection = Expression.PropertyOrField(xParam, item.ParentProperty.PropertyName);
+                    var selectedItems = Expression.Call(
+                        selectMethod,
+                        originalCollection,
+                        lambda
+                    );
+
+                    // Convert to List<T> or appropriate collection type
+                    var toListMethod = typeof(Enumerable).GetMethod("ToList")
+                        .MakeGenericMethod(elementType);
+                    var transformedCollection = Expression.Call(toListMethod, selectedItems);
+
+                    bindings.Add(
+                        Expression.Bind(
+                            parentProperty,
+                            transformedCollection
+                        )
+                    );
+                }
+                else
+                {
+                    // Handle regular nested properties (one-to-one)
+                    bindings.Add(
+                        Expression.Bind(
+                            parentProperty,
+                            Expression.MemberInit(
+                                Expression.New(item.InitiatorPropertyType),
+                                Expression.Bind(
+                                    item.InitiatorPropertyType.GetProperty(item.PropertyName),
+                                    Expression.PropertyOrField(
+                                        Expression.PropertyOrField(xParam, item.ParentProperty.PropertyName),
+                                        item.PropertyName
+                                    )
+                                )
+                            )
+                        )
+                    );
+                }
             }
         }
 
-        // MemberInitExpression to initialize the new TModel instance
         MemberInitExpression memberInit = Expression.MemberInit(newModel, bindings);
-
-        // Lambda expression combining the parameter and the MemberInitExpression
         return Expression.Lambda<Func<TRootType, TRootType>>(memberInit, xParam);
     }
 
