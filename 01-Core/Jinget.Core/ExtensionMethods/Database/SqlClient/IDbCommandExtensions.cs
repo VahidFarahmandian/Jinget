@@ -8,22 +8,24 @@ public static class IDbCommandExtensions
     public static void ApplyCorrectYeKe(this IDbCommand command)
     {
         command.CommandText = command.CommandText.ApplyCorrectYeKe();
-
-        foreach (IDataParameter parameter in command.Parameters)
+        if (command.Parameters != null)
         {
-            if (parameter.Value is DBNull)
-                continue;
-
-            switch (parameter.DbType)
+            foreach (IDataParameter parameter in command.Parameters)
             {
-                case DbType.AnsiString:
-                case DbType.AnsiStringFixedLength:
-                case DbType.String:
-                case DbType.StringFixedLength:
-                case DbType.Xml:
-                    if (parameter.Value != null)
-                        parameter.Value = parameter.Value.ToString().ApplyCorrectYeKe();
-                    break;
+                if (parameter.Value is DBNull)
+                    continue;
+
+                switch (parameter.DbType)
+                {
+                    case DbType.AnsiString:
+                    case DbType.AnsiStringFixedLength:
+                    case DbType.String:
+                    case DbType.StringFixedLength:
+                    case DbType.Xml:
+                        if (parameter.Value != null)
+                            parameter.Value = parameter.Value.ToString().ApplyCorrectYeKe();
+                        break;
+                }
             }
         }
     }
