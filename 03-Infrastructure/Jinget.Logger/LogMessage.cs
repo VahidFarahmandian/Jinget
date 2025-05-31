@@ -2,7 +2,7 @@
 
 public class LogMessage
 {
-    public DateTime Timestamp { get; set; } = DateTime.Now;
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     public string? Description { get; set; }
     public Microsoft.Extensions.Logging.LogLevel Severity { get; set; }
     public string? Exception { get; set; }

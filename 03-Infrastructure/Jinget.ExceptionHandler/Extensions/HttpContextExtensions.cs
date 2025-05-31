@@ -23,15 +23,18 @@ public static class HttpContextExtensions
     /// <summary>
     /// set current datetime to HttpContext.Items. <seealso cref="GetRequestDateTime(HttpContext)"/>
     /// </summary>
-    public static void SetRequestDateTime(this HttpContext context, DateTime dateTime) =>
-        context.Items.Add("jinget.log.request.datetime", dateTime);
+    public static void SetRequestDateTime(this HttpContext context, DateTime dateTime)
+        => context.Items["jinget.log.request.datetime"] = dateTime.Kind == DateTimeKind.Utc
+            ? dateTime
+            : dateTime.ToUniversalTime();
 
     /// <summary>
     /// get saved datetime from HttpContext.Items. <seealso cref="SetRequestDateTime(HttpContext, DateTime)"/>
     /// </summary>
     public static DateTime? GetRequestDateTime(this HttpContext context) =>
-        context.Items.ContainsKey("jinget.log.request.datetime") ? Convert.ToDateTime(context.Items["jinget.log.request.datetime"]) : null;
-
+        context.Items.TryGetValue("jinget.log.request.datetime", out var value)
+            ? DateTime.SpecifyKind(Convert.ToDateTime(value), DateTimeKind.Utc)
+            : null;
     /// <summary>
     /// Get the partition key used for logging
     /// </summary>

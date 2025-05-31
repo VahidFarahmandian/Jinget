@@ -36,7 +36,7 @@ public class DateTimeExtensionsTest
     public void HasStarted_Started_ReturnsTrue()
     {
         DateTime? restriction = new DateTime(2024, 1, 1);
-        DateTime dt = new DateTime(2024, 1, 1);
+        DateTime dt = new(2024, 1, 1);
         Assert.IsTrue(restriction.HasStarted(dt));
     }
 
@@ -99,22 +99,22 @@ public class DateTimeExtensionsTest
     [TestMethod]
     public void IsWithinSpecificDayTimeRanges_WithinRange_ReturnsTrue()
     {
-        List<DayTimeRange> ranges = new List<DayTimeRange>
-            {
+        List<DayTimeRange> ranges =
+            [
                 new DayTimeRange { DayOfWeek = DayOfWeek.Monday, StartTime = new TimeOnly(8, 0), EndTime = new TimeOnly(17, 0) }
-            };
-        DateTime dt = new DateTime(2024, 7, 29, 12, 0, 0); // Monday
+            ];
+        DateTime dt = new(2024, 7, 29, 12, 0, 0, DateTimeKind.Utc); // Monday
         Assert.IsTrue(ranges.IsWithinSpecificDayTimeRanges(dt));
     }
 
     [TestMethod]
     public void IsWithinSpecificDayTimeRanges_OutsideRange_ReturnsFalse()
     {
-        List<DayTimeRange> ranges = new List<DayTimeRange>
-            {
+        List<DayTimeRange> ranges =
+            [
                 new DayTimeRange { DayOfWeek = DayOfWeek.Monday, StartTime = new TimeOnly(8, 0), EndTime = new TimeOnly(17, 0) }
-            };
-        DateTime dt = new DateTime(2024, 7, 29, 18, 0, 0); // Monday, outside time range
+            ];
+        DateTime dt = new(2024, 7, 29, 18, 0, 0); // Monday, outside time range
         Assert.IsFalse(ranges.IsWithinSpecificDayTimeRanges(dt));
 
         dt = new DateTime(2024, 7, 30, 12, 0, 0); // Tuesday, different day
@@ -124,8 +124,8 @@ public class DateTimeExtensionsTest
     [TestMethod]
     public void IsWithinSpecificDayTimeRanges_EmptyList_ReturnsFalse()
     {
-        List<DayTimeRange> ranges = new List<DayTimeRange>(); // Empty list
-        DateTime dt = DateTime.Now;
+        List<DayTimeRange> ranges = []; // Empty list
+        DateTime dt = DateTime.UtcNow;
         Assert.IsFalse(ranges.IsWithinSpecificDayTimeRanges(dt));
     }
 }

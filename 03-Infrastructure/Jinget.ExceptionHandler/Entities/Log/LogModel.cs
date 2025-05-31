@@ -17,7 +17,7 @@ public class LogModel : BaseEntity<long>
         var log = new LogModel
         {
             SubSystem = AppDomain.CurrentDomain.FriendlyName,
-            TimeStamp = DateTime.Now,
+            TimeStamp = DateTime.UtcNow,
             EnvironmentInfo = new
             {
                 Environment.MachineName,
@@ -41,7 +41,7 @@ public class LogModel : BaseEntity<long>
             log.IP = context.GetClientIpAddress();
 
             var requestDateTime = context.GetRequestDateTime();
-            log.ElapsedMilliseconds = requestDateTime == null ? 0 : (DateTime.Now - requestDateTime.Value).TotalMilliseconds;
+            log.ElapsedMilliseconds = requestDateTime == null ? 0 : (DateTime.UtcNow - requestDateTime.Value).TotalMilliseconds;
         }
 
         return log;

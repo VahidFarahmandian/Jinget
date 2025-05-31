@@ -132,7 +132,7 @@ public class JwtUtility
             options.Audience,
             claims,
             options.NotBefore,
-            DateTime.Now.AddMinutes(expirationInMinute),
+            DateTime.UtcNow.AddMinutes(expirationInMinute),
             new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.SecretKey)),
                 SecurityAlgorithms.HmacSha256));

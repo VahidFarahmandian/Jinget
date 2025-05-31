@@ -23,36 +23,58 @@ public static class DateTimeExtensions
 
     public static bool HasStarted(this DateTime? restriction, DateTime dt)
     {
-        return dt >= restriction;
+        if (restriction == null)
+            return false;
+        return dt >= DateTime.SpecifyKind(restriction.Value, dt.Kind);
     }
+
 
     public static bool HasEnded(this DateTime? restriction, DateTime dt)
     {
-        return dt <= restriction;
+        if (restriction == null)
+            return false;
+        return dt <= DateTime.SpecifyKind(restriction.Value, dt.Kind);
     }
 
-
+    /// <summary>
+    /// Date range check with UTC support
+    /// </summary>
     public static bool IsWithinDateRange(this DateRange range, DateTime dt)
     {
-        return dt >= range.Start && dt <= range.End;
+        if (range.Start == null || range.End == null) return false;
+
+        var utcDt = dt.Kind == DateTimeKind.Utc ? dt : dt.ToUniversalTime();
+        var startUtc = range.Start.Value.Kind == DateTimeKind.Utc
+            ? range.Start.Value
+            : range.Start.Value.ToUniversalTime();
+        var endUtc = range.End.Value.Kind == DateTimeKind.Utc
+            ? range.End.Value
+            : range.End.Value.ToUniversalTime();
+
+        return utcDt >= startUtc && utcDt <= endUtc;
     }
 
+    /// <summary>
+    /// Time-of-day handling (local time expected)
+    /// </summary>
     public static bool IsWithinTimeOfDayRange(this TimeRange range, TimeOnly time)
     {
+        if (range.Start == null || range.End == null) return false;
         return time >= range.Start && time <= range.End;
     }
 
+    /// <summary>
+    /// Day/time ranges (local time expected)
+    /// </summary>
     public static bool IsWithinSpecificDayTimeRanges(this List<DayTimeRange> ranges, DateTime dt)
     {
-        return ranges.Any(restriction =>
-        {
-            var dayOfWeek = dt.DayOfWeek;
-            if ((int)dayOfWeek == (int)restriction.DayOfWeek)
-            {
-                var currentTime = TimeOnly.FromDateTime(dt);
-                return currentTime >= restriction.StartTime && currentTime <= restriction.EndTime;
-            }
-            return false;
-        });
+        // Convert to local time if input is UTC
+        var localDt = dt.Kind == DateTimeKind.Utc ? dt.ToLocalTime() : dt;
+        var timeOnly = TimeOnly.FromDateTime(localDt);
+
+        return ranges.Any(r =>
+            localDt.DayOfWeek == r.DayOfWeek &&
+            timeOnly >= r.StartTime &&
+            timeOnly <= r.EndTime);
     }
 }

@@ -36,7 +36,7 @@ public class BatchingLogger(BatchingLoggerProvider loggerProvider) : ILogger
             return;
         }
 
-        Log(DateTime.Now, logLevel, state, exception, formatter);
+        Log(DateTime.UtcNow, logLevel, state, exception, formatter);
     }
 
     /// <summary>

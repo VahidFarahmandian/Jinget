@@ -49,7 +49,7 @@ var app = builder.Build();
 //{
 //    appBuilder.Use(async (context, next) =>
 //    {
-//        context.SetLoggerPartitionKey($"{DateTime.Now:yyyyMMdd}");
+//        context.SetLoggerPartitionKey($"{DateTime.UtcNow:yyyyMMdd}");
 //        await next.Invoke();
 //    });
 //});
@@ -57,8 +57,8 @@ app.UseWhen(p => p.Request.Path == "/detailedlog", appBuilder =>
 {
     appBuilder.Use(async (context, next) =>
     {
-        context.Request.Headers.TryAdd("req-header", $"{DateTime.Now:yyyyMMdd}");
-        context.Request.Headers.TryAdd("AdditionalData", $"{DateTime.Now:yyyyMMdd}");
+        context.Request.Headers.TryAdd("req-header", $"{DateTime.UtcNow:yyyyMMdd}");
+        context.Request.Headers.TryAdd("AdditionalData", $"{DateTime.UtcNow:yyyyMMdd}");
         await next.Invoke();
     });
 });
@@ -81,8 +81,8 @@ app.UseWhen(p => p.Request.Path == "/detailedlog", appBuilder =>
     appBuilder.Use(async (context, next) =>
     {
         await next.Invoke();
-        context.Response.Headers.TryAdd("res-header", $"{DateTime.Now:yyyyMMdd}");
-        context.Items.Add("AdditionalData", $"{DateTime.Now:yyyyMMdd}");
+        context.Response.Headers.TryAdd("res-header", $"{DateTime.UtcNow:yyyyMMdd}");
+        context.Items.Add("AdditionalData", $"{DateTime.UtcNow:yyyyMMdd}");
     });
 });
 
