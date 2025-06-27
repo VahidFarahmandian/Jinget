@@ -32,6 +32,28 @@ public class BindingHierarchyUtilityTests
     }
 
     [TestMethod()]
+    public void should_create_bindingexpression_using_bindinghierarchy_and_type()
+    {
+        var bindings = Define<TestClass>(
+            Property("Property2", typeof(TestClass)),
+            Property<InnerClass>("InnerProperty1").WithParent(Property("InnerSingularProperty", typeof(TestClass)))
+            );
+
+        Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
+        {
+            Property2 = x.Property2,
+            InnerSingularProperty = new InnerClass()
+            {
+                InnerProperty1 = x.InnerSingularProperty.InnerProperty1
+            }
+        };
+
+        var result = bindings.Compile();
+
+        Assert.AreEqual(expectedResult.ToString(), result.ToString());
+    }
+
+    [TestMethod()]
     public void should_create_bindingexpression_using_bindinghierarchy_one_many_relation()
     {
         var bindings = Define<TestClass>(
