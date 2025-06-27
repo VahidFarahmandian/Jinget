@@ -1,4 +1,4 @@
-﻿namespace Jinget.Core.Utilities.Expressions.BindingHierarchyExtensions;
+﻿namespace Jinget.Core.Utilities.Expressions.BindingHierarchyUtility;
 
 internal static class BindingHierarchyUtility
 {

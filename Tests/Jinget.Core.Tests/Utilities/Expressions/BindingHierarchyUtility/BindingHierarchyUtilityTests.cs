@@ -1,5 +1,5 @@
-﻿using static Jinget.Core.Utilities.Expressions.BindingHierarchyExtensions.BindingHierarchyApi;
-namespace Jinget.Core.Tests.Utilities.Expressions;
+﻿using static Jinget.Core.Utilities.Expressions.BindingHierarchyUtility.BindingHierarchyApi;
+namespace Jinget.Core.Tests.Utilities.Expressions.BindingHierarchyUtility;
 
 [TestClass]
 public class BindingHierarchyUtilityTests
@@ -7,20 +7,23 @@ public class BindingHierarchyUtilityTests
     [TestMethod()]
     public void should_create_bindingexpression_using_bindinghierarchy()
     {
-        var bindings = Define<TestClass>(
+        List<BindingDefinition> list = [
             Property<TestClass>("Property2"),
-            Property<TestClass>("Property3"),
             Property<InnerClass>("InnerProperty1").WithParent(Property<TestClass>("InnerSingularProperty"))
+            ];
+        list.Add(Property<TestClass>("Property3"));
+        var bindings = Define<TestClass>(
+            [.. list]
             );
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
             Property2 = x.Property2,
-            Property3 = x.Property3,
             InnerSingularProperty = new InnerClass()
             {
                 InnerProperty1 = x.InnerSingularProperty.InnerProperty1
-            }
+            },
+            Property3 = x.Property3
         };
 
         var result = bindings.Compile();
@@ -64,7 +67,7 @@ public class BindingHierarchyUtilityTests
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
-            InnerProperty = x.InnerProperty.Select(x => new TestClass.InnerClass()
+            InnerProperty = x.InnerProperty.Select(x => new InnerClass()
             {
                 Parents_1 = x.Parents_1.Select(y => new PublicParentType()
                 {
@@ -89,7 +92,7 @@ public class BindingHierarchyUtilityTests
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
-            InnerListProperty = x.InnerListProperty.Select(x => new TestClass.InnerClass()
+            InnerListProperty = x.InnerListProperty.Select(x => new InnerClass()
             {
                 Parents_1 = x.Parents_1.Select(y => new PublicParentType()
                 {
@@ -115,7 +118,7 @@ public class BindingHierarchyUtilityTests
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
-            InnerSingularProperty = new TestClass.InnerClass()
+            InnerSingularProperty = new InnerClass()
             {
                 Parent_1 = new PublicParentType()
                 {
@@ -143,7 +146,7 @@ public class BindingHierarchyUtilityTests
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
             Property2 = x.Property2,
-            InnerSingularProperty = new TestClass.InnerClass()
+            InnerSingularProperty = new InnerClass()
             {
                 Parents_1 = x.InnerSingularProperty.Parents_1.Select(x => new PublicParentType()
                 {
@@ -171,7 +174,7 @@ public class BindingHierarchyUtilityTests
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
             Property3 = x.Property3,
-            InnerListProperty = x.InnerListProperty.Select(x => new TestClass.InnerClass()
+            InnerListProperty = x.InnerListProperty.Select(x => new InnerClass()
             {
                 Parent_1 = new PublicParentType()
                 {
