@@ -1,5 +1,4 @@
-﻿using Jinget.Core.Utilities.Expressions.BindingHierarchyExtensions;
-
+﻿using static Jinget.Core.Utilities.Expressions.BindingHierarchyExtensions.BindingHierarchyApi;
 namespace Jinget.Core.Tests.Utilities.Expressions;
 
 [TestClass]
@@ -8,11 +7,10 @@ public class BindingHierarchyUtilityTests
     [TestMethod()]
     public void should_create_bindingexpression_using_bindinghierarchy()
     {
-        var bindings = BindingHierarchyApi.Define<TestClass>(
-            BindingHierarchyApi.Property<TestClass>("Property2"),
-            BindingHierarchyApi.Property<TestClass>("Property3"),
-            BindingHierarchyApi.Property<InnerClass>("InnerProperty1")
-            .WithParent(BindingHierarchyApi.Property<TestClass>("InnerSingularProperty"))
+        var bindings = Define<TestClass>(
+            Property<TestClass>("Property2"),
+            Property<TestClass>("Property3"),
+            Property<InnerClass>("InnerProperty1").WithParent(Property<TestClass>("InnerSingularProperty"))
             );
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
@@ -33,10 +31,10 @@ public class BindingHierarchyUtilityTests
     [TestMethod()]
     public void should_create_bindingexpression_using_bindinghierarchy_one_many_relation()
     {
-        var bindings = BindingHierarchyApi.Define<TestClass>(
-            BindingHierarchyApi.Property<TestClass>("Property2"),
-            BindingHierarchyApi.Property<InnerClass>("InnerProperty2")
-                .WithParent(BindingHierarchyApi.Property<TestClass>("InnerProperty"))
+        var bindings = Define<TestClass>(
+            Property<TestClass>("Property2"),
+            Property<InnerClass>("InnerProperty2")
+                .WithParent(Property<TestClass>("InnerProperty"))
             );
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
@@ -56,11 +54,11 @@ public class BindingHierarchyUtilityTests
     [TestMethod]
     public void Should_Create_Binding_For_TwoLevel_Collection_Hierarchy()
     {
-        var bindings = BindingHierarchyApi.Define<TestClass>(
-            BindingHierarchyApi.Property<PublicParentType>("Id")
+        var bindings = Define<TestClass>(
+            Property<PublicParentType>("Id")
             .WithParent(
-                BindingHierarchyApi.Property<InnerClass>("Parents_1")
-                    .WithParent(BindingHierarchyApi.Property<TestClass>("InnerProperty"))
+                Property<InnerClass>("Parents_1")
+                    .WithParent(Property<TestClass>("InnerProperty"))
                    )
             );
 
@@ -81,11 +79,11 @@ public class BindingHierarchyUtilityTests
     [TestMethod]
     public void Should_Create_Binding_For_Nested_Collection_In_Collection()
     {
-        var bindings = BindingHierarchyApi.Define<TestClass>(
-            BindingHierarchyApi.Property<PublicParentType>("Id")
+        var bindings = Define<TestClass>(
+            Property<PublicParentType>("Id")
             .WithParent(
-                BindingHierarchyApi.Property<InnerClass>("Parents_1")
-                .WithParent(BindingHierarchyApi.Property<TestClass>("InnerListProperty"))
+                Property<InnerClass>("Parents_1")
+                .WithParent(Property<TestClass>("InnerListProperty"))
                 )
             );
 
@@ -107,11 +105,11 @@ public class BindingHierarchyUtilityTests
     [TestMethod]
     public void Should_Create_Binding_For_TwoLevel_Object_Hierarchy()
     {
-        var bindings = BindingHierarchyApi.Define<TestClass>(
-            BindingHierarchyApi.Property<PublicParentType>("Sub")
+        var bindings = Define<TestClass>(
+            Property<PublicParentType>("Sub")
             .WithParent(
-                BindingHierarchyApi.Property<InnerClass>("Parent_1")
-                .WithParent(BindingHierarchyApi.Property<TestClass>("InnerSingularProperty"))
+                Property<InnerClass>("Parent_1")
+                .WithParent(Property<TestClass>("InnerSingularProperty"))
                 )
             );
 
@@ -133,12 +131,12 @@ public class BindingHierarchyUtilityTests
     [TestMethod]
     public void Should_Create_Binding_For_Mixed_Object_And_Collection_Hierarchy()
     {
-        var bindings = BindingHierarchyApi.Define<TestClass>(
-            BindingHierarchyApi.Property<TestClass>("Property2"),
-            BindingHierarchyApi.Property<PublicParentType>("Id")
+        var bindings = Define<TestClass>(
+            Property<TestClass>("Property2"),
+            Property<PublicParentType>("Id")
             .WithParent(
-                BindingHierarchyApi.Property<InnerClass>("Parents_1")
-                .WithParent(BindingHierarchyApi.Property<TestClass>("InnerSingularProperty"))
+                Property<InnerClass>("Parents_1")
+                .WithParent(Property<TestClass>("InnerSingularProperty"))
                 )
             );
 
@@ -161,12 +159,12 @@ public class BindingHierarchyUtilityTests
     [TestMethod]
     public void Should_Create_Binding_For_ThreeLevel_Deep_Hierarchy()
     {
-        var bindings = BindingHierarchyApi.Define<TestClass>(
-            BindingHierarchyApi.Property<TestClass>("Property3"),
-            BindingHierarchyApi.Property<PublicParentType>("Sub")
+        var bindings = Define<TestClass>(
+            Property<TestClass>("Property3"),
+            Property<PublicParentType>("Sub")
             .WithParent(
-                BindingHierarchyApi.Property<InnerClass>("Parent_1")
-                .WithParent(BindingHierarchyApi.Property<TestClass>("InnerListProperty"))
+                Property<InnerClass>("Parent_1")
+                .WithParent(Property<TestClass>("InnerListProperty"))
                 )
             );
 
