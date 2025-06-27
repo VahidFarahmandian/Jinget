@@ -38,6 +38,9 @@ public class TestClass
         public int InnerProperty1 { get; set; }
         public string InnerProperty2 { get; set; }
 
+        public PublicParentType Parent_1 { get; set; }
+        public ICollection<PublicParentType> Parents_1 { get; set; }
+
     }
 
     public int Property1 { get; set; }
@@ -49,6 +52,12 @@ public class TestClass
 
     public ICollection<InnerClass> InnerProperty { get; set; }
     public List<InnerClass> InnerListProperty { get; set; }
+}
+
+public class PublicParentType
+{
+    public int Id { get; set; }
+    public SubType Sub { get; set; }
 }
 
 public class ParentType

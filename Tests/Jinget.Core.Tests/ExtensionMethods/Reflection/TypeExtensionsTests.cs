@@ -91,4 +91,48 @@ public class TypeExtensionsTests
         result = typeof(TestClass).GetDefaultValue();
         Assert.IsNull(result);
     }
+
+    [TestMethod]
+    public void IsCollectionType_ShouldReturnTrue_ForGenericList()
+    {
+        var type = typeof(List<int>);
+        Assert.IsTrue(type.IsCollectionType());
+    }
+
+    [TestMethod]
+    public void IsCollectionType_ShouldReturnTrue_ForGenericIEnumerable()
+    {
+        var type = typeof(IEnumerable<string>);
+        Assert.IsTrue(type.IsCollectionType());
+    }
+
+    [TestMethod]
+    public void IsCollectionType_ShouldReturnFalse_ForString()
+    {
+        var type = typeof(string);
+        Assert.IsFalse(type.IsCollectionType());
+    }
+
+    [TestMethod]
+    public void IsCollectionType_ShouldReturnFalse_ForInt()
+    {
+        var type = typeof(int);
+        Assert.IsFalse(type.IsCollectionType());
+    }
+
+    [TestMethod]
+    public void IsCollectionType_ShouldReturnFalse_ForNonGenericCollection()
+    {
+        var type = typeof(System.Collections.ArrayList);
+        Assert.IsFalse(type.IsCollectionType());
+    }
+
+    [TestMethod]
+    public void IsCollectionType_ShouldReturnTrue_ForCustomGenericCollection()
+    {
+        var type = typeof(MyCustomList<double>);
+        Assert.IsTrue(type.IsCollectionType());
+    }
+
+    class MyCustomList<T> : List<T> { }
 }

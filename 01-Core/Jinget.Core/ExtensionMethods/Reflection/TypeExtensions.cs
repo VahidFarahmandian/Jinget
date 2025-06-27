@@ -152,4 +152,20 @@ public static class TypeExtensions
         // Compile and return the value.
         return e.Compile()();
     }
+
+    public static bool IsCollectionType(this Type type)
+    {
+        if (type == typeof(string))
+            return false;
+
+        if (!type.IsGenericType)
+            return false;
+
+        var enumerableType = typeof(IEnumerable<>);
+
+        return enumerableType.IsAssignableFrom(type.GetGenericTypeDefinition())
+            || type.GetInterfaces().Any(i =>
+                i.IsGenericType && i.GetGenericTypeDefinition() == enumerableType);
+    }
+
 }
