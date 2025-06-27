@@ -1,8 +1,8 @@
-﻿namespace Jinget.Core.Utilities.Expressions;
+﻿namespace Jinget.Core.Utilities.Expressions.BindingHierarchyExtensions;
 
-public static class BindingHierarchyUtility
+internal static class BindingHierarchyUtility
 {
-    public static Expression<Func<TSource, TSource>> CreateBindingExpression<TSource>(List<BindingHierarchy> bindings)
+    internal static Expression<Func<TSource, TSource>> CreateBindingExpression<TSource>(List<BindingHierarchy> bindings)
     {
         var parameter = Expression.Parameter(typeof(TSource), "x");
         var bindingsList = new List<MemberBinding>();

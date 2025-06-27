@@ -1,4 +1,6 @@
-﻿namespace Jinget.Core.Tests.Utilities.Expressions;
+﻿using Jinget.Core.Utilities.Expressions.BindingHierarchyExtensions;
+
+namespace Jinget.Core.Tests.Utilities.Expressions;
 
 [TestClass]
 public class BindingHierarchyUtilityTests
@@ -6,12 +8,12 @@ public class BindingHierarchyUtilityTests
     [TestMethod()]
     public void should_create_bindingexpression_using_bindinghierarchy()
     {
-        var prop1 = new BindingHierarchy("Property2", typeof(TestClass));
-        List<BindingHierarchy> bindings = [
-            prop1,
-            new BindingHierarchy("Property3", typeof(TestClass)),
-            new BindingHierarchy("InnerProperty1", typeof(InnerClass),new BindingHierarchy("InnerSingularProperty", typeof(TestClass))),
-            ];
+        var bindings = BindingHierarchyApi.Define<TestClass>(
+            BindingHierarchyApi.Property<TestClass>("Property2"),
+            BindingHierarchyApi.Property<TestClass>("Property3"),
+            BindingHierarchyApi.Property<InnerClass>("InnerProperty1")
+            .WithParent(BindingHierarchyApi.Property<TestClass>("InnerSingularProperty"))
+            );
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
@@ -23,7 +25,7 @@ public class BindingHierarchyUtilityTests
             }
         };
 
-        var result = BindingHierarchyUtility.CreateBindingExpression<TestClass>(bindings);
+        var result = bindings.Compile();
 
         Assert.AreEqual(expectedResult.ToString(), result.ToString());
     }
@@ -31,20 +33,22 @@ public class BindingHierarchyUtilityTests
     [TestMethod()]
     public void should_create_bindingexpression_using_bindinghierarchy_one_many_relation()
     {
-        var prop1 = new BindingHierarchy("Property2", typeof(TestClass));
-        List<BindingHierarchy> bindings = [
-            new BindingHierarchy("InnerProperty2", typeof(InnerClass),new BindingHierarchy("InnerProperty", typeof(TestClass))),
-            ];
+        var bindings = BindingHierarchyApi.Define<TestClass>(
+            BindingHierarchyApi.Property<TestClass>("Property2"),
+            BindingHierarchyApi.Property<InnerClass>("InnerProperty2")
+                .WithParent(BindingHierarchyApi.Property<TestClass>("InnerProperty"))
+            );
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
+            Property2 = x.Property2,
             InnerProperty = x.InnerProperty.Select(x => new InnerClass()
             {
                 InnerProperty2 = x.InnerProperty2
             }).ToList()
         };
 
-        var result = BindingHierarchyUtility.CreateBindingExpression<TestClass>(bindings);
+        var result = bindings.Compile();
 
         Assert.AreEqual(expectedResult.ToString(), result.ToString());
     }
@@ -52,13 +56,13 @@ public class BindingHierarchyUtilityTests
     [TestMethod]
     public void Should_Create_Binding_For_TwoLevel_Collection_Hierarchy()
     {
-        // Test binding Id through Parents_1 (collection) -> InnerProperty (collection)
-        var bindings = new List<BindingHierarchy>
-        {
-            new BindingHierarchy("Id", typeof(PublicParentType),
-                new BindingHierarchy("Parents_1", typeof(TestClass.InnerClass),
-                    new BindingHierarchy("InnerProperty", typeof(TestClass))))
-        };
+        var bindings = BindingHierarchyApi.Define<TestClass>(
+            BindingHierarchyApi.Property<PublicParentType>("Id")
+            .WithParent(
+                BindingHierarchyApi.Property<InnerClass>("Parents_1")
+                    .WithParent(BindingHierarchyApi.Property<TestClass>("InnerProperty"))
+                   )
+            );
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
@@ -70,20 +74,20 @@ public class BindingHierarchyUtilityTests
                 }).ToList()
             }).ToList()
         };
-        var result = BindingHierarchyUtility.CreateBindingExpression<TestClass>(bindings);
+        var result = bindings.Compile();
         Assert.AreEqual(expectedResult.ToString(), result.ToString());
     }
 
     [TestMethod]
     public void Should_Create_Binding_For_Nested_Collection_In_Collection()
     {
-        // Test nested collections: Parents_1 -> InnerListProperty -> Parents_1
-        var bindings = new List<BindingHierarchy>
-        {
-            new BindingHierarchy("Id", typeof(PublicParentType),
-                new BindingHierarchy("Parents_1", typeof(TestClass.InnerClass),
-                    new BindingHierarchy("InnerListProperty", typeof(TestClass))))
-        };
+        var bindings = BindingHierarchyApi.Define<TestClass>(
+            BindingHierarchyApi.Property<PublicParentType>("Id")
+            .WithParent(
+                BindingHierarchyApi.Property<InnerClass>("Parents_1")
+                .WithParent(BindingHierarchyApi.Property<TestClass>("InnerListProperty"))
+                )
+            );
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
@@ -96,20 +100,20 @@ public class BindingHierarchyUtilityTests
             }).ToList()
         };
 
-        var result = BindingHierarchyUtility.CreateBindingExpression<TestClass>(bindings);
+        var result = bindings.Compile();
         Assert.AreEqual(expectedResult.ToString(), result.ToString());
     }
 
     [TestMethod]
     public void Should_Create_Binding_For_TwoLevel_Object_Hierarchy()
     {
-        // Correct hierarchy: Sub -> Parent_1 (in InnerClass) -> InnerSingularProperty (in TestClass)
-        var bindings = new List<BindingHierarchy>
-        {
-            new BindingHierarchy("Sub",typeof(PublicParentType),
-                new BindingHierarchy("Parent_1",typeof(InnerClass),
-                    new BindingHierarchy("InnerSingularProperty",typeof(TestClass))))
-        };
+        var bindings = BindingHierarchyApi.Define<TestClass>(
+            BindingHierarchyApi.Property<PublicParentType>("Sub")
+            .WithParent(
+                BindingHierarchyApi.Property<InnerClass>("Parent_1")
+                .WithParent(BindingHierarchyApi.Property<TestClass>("InnerSingularProperty"))
+                )
+            );
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
@@ -122,21 +126,21 @@ public class BindingHierarchyUtilityTests
             }
         };
 
-        var result = BindingHierarchyUtility.CreateBindingExpression<TestClass>(bindings);
+        var result = bindings.Compile();
         Assert.AreEqual(expectedResult.ToString(), result.ToString());
     }
 
     [TestMethod]
     public void Should_Create_Binding_For_Mixed_Object_And_Collection_Hierarchy()
     {
-        // Test complex hierarchy: Property2 -> InnerSingularProperty (object) -> Parents_1 (collection)
-        var bindings = new List<BindingHierarchy>
-        {
-            new BindingHierarchy("Property2", typeof(TestClass)),
-            new BindingHierarchy("Id", typeof(PublicParentType),
-                new BindingHierarchy("Parents_1", typeof(TestClass.InnerClass),
-                    new BindingHierarchy("InnerSingularProperty", typeof(TestClass))))
-        };
+        var bindings = BindingHierarchyApi.Define<TestClass>(
+            BindingHierarchyApi.Property<TestClass>("Property2"),
+            BindingHierarchyApi.Property<PublicParentType>("Id")
+            .WithParent(
+                BindingHierarchyApi.Property<InnerClass>("Parents_1")
+                .WithParent(BindingHierarchyApi.Property<TestClass>("InnerSingularProperty"))
+                )
+            );
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
@@ -150,21 +154,21 @@ public class BindingHierarchyUtilityTests
             }
         };
 
-        var result = BindingHierarchyUtility.CreateBindingExpression<TestClass>(bindings);
+        var result = bindings.Compile();
         Assert.AreEqual(expectedResult.ToString(), result.ToString());
     }
 
     [TestMethod]
     public void Should_Create_Binding_For_ThreeLevel_Deep_Hierarchy()
     {
-        // Test three-level hierarchy: Property3 -> Parent_1 -> InnerListProperty -> Parents_1
-        var bindings = new List<BindingHierarchy>
-        {
-            new BindingHierarchy("Property3", typeof(TestClass)),
-            new BindingHierarchy("Sub", typeof(PublicParentType),
-                new BindingHierarchy("Parent_1", typeof(TestClass.InnerClass),
-                    new BindingHierarchy("InnerListProperty", typeof(TestClass))))
-        };
+        var bindings = BindingHierarchyApi.Define<TestClass>(
+            BindingHierarchyApi.Property<TestClass>("Property3"),
+            BindingHierarchyApi.Property<PublicParentType>("Sub")
+            .WithParent(
+                BindingHierarchyApi.Property<InnerClass>("Parent_1")
+                .WithParent(BindingHierarchyApi.Property<TestClass>("InnerListProperty"))
+                )
+            );
 
         Expression<Func<TestClass, TestClass>> expectedResult = x => new TestClass()
         {
@@ -178,7 +182,7 @@ public class BindingHierarchyUtilityTests
             }).ToList()
         };
 
-        var result = BindingHierarchyUtility.CreateBindingExpression<TestClass>(bindings);
+        var result = bindings.Compile();
         Assert.AreEqual(expectedResult.ToString(), result.ToString());
     }
 }
