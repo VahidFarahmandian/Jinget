@@ -1,5 +1,4 @@
 using Jinget.Core.Types;
-using Jinget.Logger.Configuration.ElasticSearch;
 using Jinget.Logger.Configuration.File;
 using Jinget.Logger.Extensions;
 using Microsoft.AspNetCore.Mvc;

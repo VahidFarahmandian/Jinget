@@ -1,6 +1,4 @@
 ﻿#nullable enable
-using Castle.Core.Logging;
-
 namespace Jinget.Core.Tests.ExtensionMethods.Reflection;
 
 [TestClass]

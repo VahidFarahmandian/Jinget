@@ -1,4 +1,5 @@
-﻿using static Jinget.Core.Utilities.Expressions.BindingHierarchyUtility.BindingHierarchyApi;
+﻿using Jinget.Core.Contracts;
+using static Jinget.Core.Utilities.Expressions.BindingHierarchyUtility.BindingHierarchyApi;
 namespace Jinget.Core.Tests.Utilities.Expressions.BindingHierarchyUtility;
 
 [TestClass]
@@ -208,4 +209,101 @@ public class BindingHierarchyUtilityTests
         var result = bindings.Compile();
         Assert.AreEqual(expectedResult.ToString(), result.ToString());
     }
+    [TestMethod]
+    public void Should_Create_Binding_For_Jinget_Model()
+    {
+        var result = new CustomerModel().GetConstantFields();
+
+        Expression<Func<CustomerModel, CustomerModel>> expectedResult = x => new CustomerModel()
+        {
+            Trace = new CustomTrace()
+            {
+                InsertDate = x.Trace.InsertDate,
+                CreatedBy = x.Trace.CreatedBy
+            },
+            Name = x.Name
+        };
+
+        Assert.AreEqual(expectedResult.ToString(), result.ToString());
+    }
+}
+
+public abstract class BaseTraceData<TUserContext>
+{
+    public virtual Expression<Func<TModelType, TModelType>> GetConstantFieldsExpression<TModelType>(
+        List<BindingDefinition>? customBindings = null,
+        string tracePropertyName = "Trace")
+    {
+        return Define<TModelType>(GetConstantFields<TModelType>(customBindings, tracePropertyName)).Compile();
+    }
+    public virtual BindingDefinition[] GetConstantFields<TModelType>(
+        List<BindingDefinition>? customBindings = null,
+        string tracePropertyName = "Trace")
+    {
+        List<BindingDefinition> bindingsList = [
+            Property(nameof(InsertDate), GetType()).WithParent(Property<TModelType>(tracePropertyName)),
+            Property(nameof(CreatedBy), GetType()).WithParent(Property<TModelType>(tracePropertyName))
+            ];
+        if (customBindings != null && customBindings.Count != 0)
+            bindingsList.AddRange(customBindings);
+
+        return bindingsList.ToArray();
+    }
+
+    public string? CreatedBy { get; set; }
+
+    public DateTime InsertDate { get; set; } = DateTime.UtcNow;
+}
+public abstract class TraceBaseEntity<TTraceDataType, TUserContext, TKeyType> : BaseEntity<TKeyType>
+    where TTraceDataType : BaseTraceData<TUserContext>
+    where TUserContext : BaseUserContext
+{
+    protected TraceBaseEntity() { }
+    protected TraceBaseEntity(TKeyType id) : base(id) { }
+
+    public abstract TTraceDataType Trace { get; set; }
+}
+public class CustomerModel : TraceBaseEntity<CustomTrace, CustomUserContext, int>, IAggregateRoot
+{
+    public string? Name { get; set; }
+
+    public override CustomTrace Trace { get; set; } = new();
+
+    public Expression<Func<CustomerModel, CustomerModel>> GetConstantFields()
+    {
+        var bindings = new CustomTrace().GetConstantFields<CustomerModel>([Property<CustomerModel>(nameof(Name))]);
+        var definition = Define<CustomerModel>(bindings);
+        return definition.Compile();
+    }
+}
+public class CustomTrace : BaseTraceData<CustomUserContext>
+{
+    public override Expression<Func<TModelType, TModelType>> GetConstantFieldsExpression<TModelType>(List<BindingDefinition>? customBindings = null, string tracePropertyName = "Trace")
+    {
+        return base.GetConstantFieldsExpression<TModelType>(customBindings, tracePropertyName);
+    }
+}
+
+public class CustomUserContext : BaseUserContext { }
+public abstract class BaseUserContext { }
+public abstract class BaseEntity<TKeyType> : IEntity
+{
+    protected BaseEntity() { }
+
+    protected BaseEntity(TKeyType id) : this() => this.SetId(id);
+
+    private TKeyType _id;
+
+    public virtual TKeyType Id
+    {
+        get => _id;
+        protected set
+        {
+            if (value != null)
+            {
+                _id = value;
+            }
+        }
+    }
+    public virtual void SetId(TKeyType id) => Id = id;
 }

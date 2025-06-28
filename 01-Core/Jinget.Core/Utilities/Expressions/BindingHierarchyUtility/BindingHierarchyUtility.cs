@@ -5,23 +5,58 @@ internal static class BindingHierarchyUtility
     internal static Expression<Func<TSource, TSource>> CreateBindingExpression<TSource>(List<BindingHierarchy> bindings)
     {
         var parameter = Expression.Parameter(typeof(TSource), "x");
-        var bindingsList = new List<MemberBinding>();
 
-        foreach (var binding in bindings)
-        {
-            var memberBinding = CreateMemberBinding<TSource>(parameter, binding);
-            if (memberBinding != null)
+        // First create all bindings normally
+        var allBindings = bindings
+            .Select(b => CreateMemberBinding<TSource>(parameter, b))
+            .Where(b => b != null)
+            .ToList();
+
+        // Group bindings by the member they're binding to
+        var groupedBindings = allBindings
+            .GroupBy(b => b.Member.Name)
+            .Select(g =>
             {
-                bindingsList.Add(memberBinding);
-            }
-        }
+                // If only one binding for this member, return it as-is
+                if (g.Count() == 1)
+                    return g.First();
+
+                // For multiple bindings to same member, we need to properly nest them
+                var firstBinding = g.First();
+                var memberType = ((PropertyInfo)firstBinding.Member).PropertyType;
+                var newExpr = Expression.New(memberType);
+
+                // Collect all the inner bindings
+                var innerBindings = new List<MemberBinding>();
+                foreach (var binding in g)
+                {
+                    var memberAssignment = (MemberAssignment)binding;
+
+                    // For nested properties, we need to extract the inner bindings
+                    if (memberAssignment.Expression is MemberInitExpression memberInitExpr)
+                    {
+                        innerBindings.AddRange(memberInitExpr.Bindings);
+                    }
+                    else
+                    {
+                        // For simple properties, create a new binding
+                        var propertyName = memberAssignment.Member.Name;
+                        var property = memberType.GetProperty(propertyName);
+                        innerBindings.Add(Expression.Bind(property, memberAssignment.Expression));
+                    }
+                }
+
+                // Create combined member initialization
+                var memberInit = Expression.MemberInit(newExpr, innerBindings);
+                return Expression.Bind(firstBinding.Member, memberInit);
+            })
+            .ToList();
 
         var newExpression = Expression.New(typeof(TSource));
-        var memberInitExpression = Expression.MemberInit(newExpression, bindingsList);
+        var memberInitExpression = Expression.MemberInit(newExpression, groupedBindings);
 
         return Expression.Lambda<Func<TSource, TSource>>(memberInitExpression, parameter);
     }
-
     private static MemberBinding CreateMemberBinding<TSource>(Expression parameter, BindingHierarchy binding)
     {
         // Get the target property on the root type (TestClass)
@@ -211,7 +246,7 @@ internal static class BindingHierarchyUtility
             if (memberInit == null)
             {
                 // Innermost level - create new object with the full property access
-                var newExpr = Expression.New(target.DeclaringType);
+                var newExpr = Expression.New(target.ReflectedType);
                 memberInit = Expression.MemberInit(newExpr,
                     Expression.Bind(target, currentExpression));
             }
