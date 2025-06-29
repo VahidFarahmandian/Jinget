@@ -292,6 +292,31 @@ public class BindingHierarchyUtilityTests
 
         Assert.AreEqual(expectedResult.ToString(), result.ToString());
     }
+    [TestMethod]
+    public void Should_Create_Binding_With_MethodCall()
+    {
+        var result = new CustomerModel().GetConstantFields();
+
+        Expression<Func<CustomerModel, CustomerModel>> expectedResult = x => new CustomerModel()
+        {
+            Trace = new CustomTrace()
+            {
+                InsertDate = x.Trace.InsertDate,
+                CreatedBy = x.Trace.CreatedBy
+            },
+            Name = x.Name,
+            Orders = x.Orders.Select(x => new OrderModel
+            {
+                Trace = new CustomTrace()
+                {
+                    InsertDate = x.Trace.InsertDate,
+                    CreatedBy = x.Trace.CreatedBy
+                }
+            }).ToList()
+        };
+
+        Assert.AreEqual(expectedResult.ToString(), result.ToString());
+    }
 }
 
 public abstract class BaseTraceData<TUserContext>
@@ -387,21 +412,32 @@ public class CustomerModel : TraceBaseEntity<CustomTrace, CustomUserContext, int
     public string? Name { get; set; }
 
     public override CustomTrace Trace { get; set; } = new();
+    public ICollection<OrderModel> Orders { get; set; }
 
     public Expression<Func<CustomerModel, CustomerModel>> GetConstantFields()
     {
-        var bindingExpr = new CustomTrace().GetConstantFieldsExpression<CustomerModel>([x => new { x.Name }]);
+        var bindingExpr = new CustomTrace().GetConstantFieldsExpression<CustomerModel>([
+            x => new {
+                x.Name,
+                Orders = x.Orders.Select(o => OrderModel.GetConstantFieldsExpression())
+            }]);
         return bindingExpr;
     }
 }
-public class CustomTrace : BaseTraceData<CustomUserContext>
+public class OrderModel : TraceBaseEntity<CustomTrace, CustomUserContext, int>
 {
-    public override Expression<Func<TModelType, TModelType>> GetConstantFieldsExpression<TModelType>(List<Expression<Func<TModelType, object>>> customBindings = null, string tracePropertyName = "Trace")
+    public string? Number { get; set; }
+    public string? Serial { get; set; }
+    public int CustomerId { get; set; }
+    public CustomerModel? Customer { get; set; }
+    public override CustomTrace Trace { get; set; } = new();
+
+    public static Expression<Func<OrderModel, OrderModel>> GetConstantFieldsExpression()
     {
-        return base.GetConstantFieldsExpression(customBindings, tracePropertyName);
+        return new CustomTrace().GetConstantFieldsExpression<OrderModel>([o => o.Serial]);
     }
 }
-
+public class CustomTrace : BaseTraceData<CustomUserContext> { }
 public class CustomUserContext : BaseUserContext { }
 public abstract class BaseUserContext { }
 public abstract class BaseEntity<TKeyType> : IEntity

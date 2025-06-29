@@ -1,4 +1,6 @@
-﻿namespace Jinget.Core.Utilities;
+﻿using System.Linq.Expressions;
+
+namespace Jinget.Core.Utilities;
 
 public class BindingBuilder<TSource>
 {
@@ -344,34 +346,78 @@ public class BindingBuilder<TSource>
             _ => throw new InvalidOperationException("Unexpected Select argument type")
         };
 
-        var elementType = collectionProp.PropertyType.GetGenericArguments()[0];
-        var elementParam = lambda.Parameters[0];
+        // Handle the case where the lambda body is a method call to GetConstantFieldsExpression()
+        if (lambda.Body is MethodCallExpression methodCall)
+        {
+            var projectionExpression = methodCall.Method.Invoke(methodCall.Object, null) as LambdaExpression;
 
-        var elementInit = BuildElementInitialization(lambda.Body, elementParam, elementType);
+            if (projectionExpression != null)
+            {
+                // Create a parameter for the inner expression
+                var elementParam = Expression.Parameter(projectionExpression.Parameters[0].Type, projectionExpression.Parameters[0].Name);
 
-        var selectMethod = typeof(Enumerable).GetMethods()
+                // Replace the parameter in the projection with our new parameter
+                var bodyReplacer = new ParameterReplacer(projectionExpression.Parameters[0], elementParam);
+                var newBody = bodyReplacer.Visit(projectionExpression.Body);
+
+                var elementType = collectionProp.PropertyType.GetGenericArguments()[0];
+                var selectMethod = typeof(Enumerable).GetMethods()
+                    .First(m => m.Name == "Select" && m.GetParameters().Length == 2)
+                    .MakeGenericMethod(elementType, newBody.Type);
+
+                var toListMethod = typeof(Enumerable).GetMethods()
+                    .First(m => m.Name == "ToList" && m.GetParameters().Length == 1)
+                    .MakeGenericMethod(newBody.Type);
+
+                var select = Expression.Call(
+                    selectMethod,
+                    Expression.Property(rootParameter, collectionProp),
+                    Expression.Lambda(newBody, elementParam));
+
+                var toList = Expression.Call(toListMethod, select);
+
+                _bindings[collectionProp.Name] = Expression.Bind(collectionProp, toList);
+                return;
+            }
+        }
+
+        // Original processing for non-method call cases
+        var elementTypeFallback = collectionProp.PropertyType.GetGenericArguments()[0];
+        var elementParamFallback = lambda.Parameters[0];
+        var elementInitFallback = BuildElementInitialization(lambda.Body, elementParamFallback, elementTypeFallback);
+
+        var selectMethodFallback = typeof(Enumerable).GetMethods()
             .First(m => m.Name == "Select" && m.GetParameters().Length == 2)
-            .MakeGenericMethod(elementType, elementInit.Type);
+            .MakeGenericMethod(elementTypeFallback, elementInitFallback.Type);
 
-        var toListMethod = typeof(Enumerable).GetMethods()
+        var toListMethodFallback = typeof(Enumerable).GetMethods()
             .First(m => m.Name == "ToList" && m.GetParameters().Length == 1)
-            .MakeGenericMethod(elementInit.Type);
+            .MakeGenericMethod(elementInitFallback.Type);
 
-        // Correct way to update the lambda
-        var newLambda = Expression.Lambda(
-            elementInit,
-            lambda.TailCall,
-            lambda.Parameters
-        );
-
-        var select = Expression.Call(
-            selectMethod,
+        var selectFallback = Expression.Call(
+            selectMethodFallback,
             Expression.Property(rootParameter, collectionProp),
-            newLambda);
+            Expression.Lambda(elementInitFallback, lambda.Parameters));
 
-        var toList = Expression.Call(toListMethod, select);
+        var toListFallback = Expression.Call(toListMethodFallback, selectFallback);
 
-        _bindings[collectionProp.Name] = Expression.Bind(collectionProp, toList);
+        _bindings[collectionProp.Name] = Expression.Bind(collectionProp, toListFallback);
+    }
+    private class ParameterReplacer : ExpressionVisitor
+    {
+        private readonly ParameterExpression _oldParam;
+        private readonly ParameterExpression _newParam;
+
+        public ParameterReplacer(ParameterExpression oldParam, ParameterExpression newParam)
+        {
+            _oldParam = oldParam;
+            _newParam = newParam;
+        }
+
+        protected override Expression VisitParameter(ParameterExpression node)
+        {
+            return node == _oldParam ? _newParam : base.VisitParameter(node);
+        }
     }
 
     private bool IsPropertyOfSource(Expression expr, ParameterExpression parameter)
