@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace Jinget.Core.Utilities;
+﻿namespace Jinget.Core.Utilities;
 
 public class BindingBuilder<TSource>
 {
@@ -79,7 +77,7 @@ public class BindingBuilder<TSource>
                 {
                     // Handle parameter match
                     case ParameterExpression currentParam
-                        when currentParam.Name == parameter.Name &&
+                        when //currentParam.Name == parameter.Name &&
                              currentParam.Type == parameter.Type:
                         return true;
 
@@ -284,35 +282,6 @@ public class BindingBuilder<TSource>
             return base.VisitMember(node);
         }
     }
-
-    private Expression RebuildPropertyAccess(MemberExpression member, ParameterExpression parameter)
-    {
-        var propertyChain = new List<PropertyInfo>();
-        Expression current = member;
-
-        // Walk up the property access chain
-        while (current is MemberExpression currentMember &&
-               currentMember.Member is PropertyInfo currentProp)
-        {
-            propertyChain.Insert(0, currentProp);
-            current = currentMember.Expression;
-        }
-
-        // Start from the parameter and rebuild the chain
-        Expression result = parameter;
-        foreach (var prop in propertyChain)
-        {
-            // Get the property with full access
-            var writableProp = result.Type.GetProperty(prop.Name,
-                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (writableProp == null) return null;
-
-            result = Expression.Property(result, writableProp);
-        }
-
-        return result;
-    }
-
     private void ProcessMemberExpression(MemberExpression memberExpr, ParameterExpression parameter)
     {
         if (IsPropertyOfParameter(memberExpr, parameter) && memberExpr.Member is PropertyInfo prop)

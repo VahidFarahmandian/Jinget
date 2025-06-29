@@ -287,23 +287,6 @@ public class BindingHierarchyUtilityTests
                 InsertDate = x.Trace.InsertDate,
                 CreatedBy = x.Trace.CreatedBy
             },
-            Name = x.Name
-        };
-
-        Assert.AreEqual(expectedResult.ToString(), result.ToString());
-    }
-    [TestMethod]
-    public void Should_Create_Binding_With_MethodCall()
-    {
-        var result = new CustomerModel().GetConstantFields();
-
-        Expression<Func<CustomerModel, CustomerModel>> expectedResult = x => new CustomerModel()
-        {
-            Trace = new CustomTrace()
-            {
-                InsertDate = x.Trace.InsertDate,
-                CreatedBy = x.Trace.CreatedBy
-            },
             Name = x.Name,
             Orders = x.Orders.Select(x => new OrderModel
             {
@@ -311,7 +294,8 @@ public class BindingHierarchyUtilityTests
                 {
                     InsertDate = x.Trace.InsertDate,
                     CreatedBy = x.Trace.CreatedBy
-                }
+                },
+                Name = x.Name
             }).ToList()
         };
 
@@ -426,6 +410,7 @@ public class CustomerModel : TraceBaseEntity<CustomTrace, CustomUserContext, int
 }
 public class OrderModel : TraceBaseEntity<CustomTrace, CustomUserContext, int>
 {
+    public string Name { get; set; }
     public string? Number { get; set; }
     public string? Serial { get; set; }
     public int CustomerId { get; set; }
@@ -434,7 +419,7 @@ public class OrderModel : TraceBaseEntity<CustomTrace, CustomUserContext, int>
 
     public static Expression<Func<OrderModel, OrderModel>> GetConstantFieldsExpression()
     {
-        return new CustomTrace().GetConstantFieldsExpression<OrderModel>([o => o.Serial]);
+        return new CustomTrace().GetConstantFieldsExpression<OrderModel>([x => x.Name]);
     }
 }
 public class CustomTrace : BaseTraceData<CustomUserContext> { }
