@@ -27,6 +27,14 @@ public static class TestClassExtensions
     public static string[] Method1<T>(this TestClass testClass) => [typeof(T).Name];
     public static string[] Method1<T, U>(this TestClass testClass) => [typeof(T).Name, typeof(U).Name];
 }
+public class PrivateClass
+{
+    private PrivateClass()
+    {
+        
+    }
+    public int Property1 { get; set; }
+}
 public class TestClass
 {
     public static int Method1(int a) => a;
