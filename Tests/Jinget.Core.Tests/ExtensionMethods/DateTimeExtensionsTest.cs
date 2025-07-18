@@ -67,7 +67,7 @@ public class DateTimeExtensionsTest
     [TestMethod]
     public void IsWithinDateRange_WithinRange_ReturnsTrue()
     {
-        DateRange range = new DateRange { Start = new DateTime(2024, 1, 1), End = new DateTime(2024, 1, 31) };
+        DateTimeRange range = new DateTimeRange { Start = new DateTime(2024, 1, 1), End = new DateTime(2024, 1, 31) };
         DateTime dt = new DateTime(2024, 1, 15);
         Assert.IsTrue(range.IsWithinDateRange(dt));
     }
@@ -75,7 +75,7 @@ public class DateTimeExtensionsTest
     [TestMethod]
     public void IsWithinDateRange_OutsideRange_ReturnsFalse()
     {
-        DateRange range = new DateRange { Start = new DateTime(2024, 1, 1), End = new DateTime(2024, 1, 31) };
+        DateTimeRange range = new DateTimeRange { Start = new DateTime(2024, 1, 1), End = new DateTime(2024, 1, 31) };
         DateTime dt = new DateTime(2024, 2, 1);
         Assert.IsFalse(range.IsWithinDateRange(dt));
     }

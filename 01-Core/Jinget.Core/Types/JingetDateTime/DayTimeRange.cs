@@ -2,7 +2,7 @@
 
 namespace Jinget.Core.Types.JingetDateTime;
 
-public struct DayTimeRange
+public class DayTimeRange
 {
     public DayOfWeek DayOfWeek { get; set; }
 

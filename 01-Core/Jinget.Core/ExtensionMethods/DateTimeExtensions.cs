@@ -39,17 +39,15 @@ public static class DateTimeExtensions
     /// <summary>
     /// Date range check with UTC support
     /// </summary>
-    public static bool IsWithinDateRange(this DateRange range, DateTime dt)
+    public static bool IsWithinDateRange(this DateTimeRange range, DateTime dt)
     {
-        if (range.Start == null || range.End == null) return false;
-
         var utcDt = dt.Kind == DateTimeKind.Utc ? dt : dt.ToUniversalTime();
-        var startUtc = range.Start.Value.Kind == DateTimeKind.Utc
-            ? range.Start.Value
-            : range.Start.Value.ToUniversalTime();
-        var endUtc = range.End.Value.Kind == DateTimeKind.Utc
-            ? range.End.Value
-            : range.End.Value.ToUniversalTime();
+        var startUtc = range.Start.Kind == DateTimeKind.Utc
+            ? range.Start
+            : range.Start.ToUniversalTime();
+        var endUtc = range.End.Kind == DateTimeKind.Utc
+            ? range.End
+            : range.End.ToUniversalTime();
 
         return utcDt >= startUtc && utcDt <= endUtc;
     }
@@ -59,7 +57,6 @@ public static class DateTimeExtensions
     /// </summary>
     public static bool IsWithinTimeOfDayRange(this TimeRange range, TimeOnly time)
     {
-        if (range.Start == null || range.End == null) return false;
         return time >= range.Start && time <= range.End;
     }
 
