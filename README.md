@@ -28,6 +28,8 @@ Jinget provides the following benefits:
 - Jinget.Handlers.ExternalServiceHandlers: Helps you to consume different types of Web APIs and SOAP web services with ease of use.
 - Jinget.Logger: Helps you to store your log messages into Elasticsearch or files
 - Jinget.ExceptionHandler: Helps you to handle exceptions globally.
+- Jinget.SourceGenerator: Helps you to generate CQRS+DDD codes automatically.
+- Jinget.SourceGenerator.Common: Provides base functionalities required by Jinget.SourceGenerator.
   
 # How to install
 In order to install Jinget please refer to [nuget.org](https://www.nuget.org/profiles/Jinget "nuget.org")

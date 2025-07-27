@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Jinget.Core.ExtensionMethods.HttpContext;
+using Microsoft.AspNetCore.Http;
 
-namespace Jinget.Core.ExtensionMethods.HttpContext.Tests
+namespace Jinget.Core.Tests.ExtensionMethods.HttpContext
 {
     [TestClass()]
     public class HttpRequestExtensionsTests

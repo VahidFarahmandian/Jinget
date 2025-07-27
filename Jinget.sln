@@ -29,6 +29,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jinget.Core.DiScanner.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jinget.ExceptionHandler", "03-Infrastructure\Jinget.ExceptionHandler\Jinget.ExceptionHandler.csproj", "{E526CDFD-DDAB-41FE-B8E4-3D3E7C17012F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-Miscellaneous", "01-Miscellaneous", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jinget.SourceGenerator", "01-Miscellaneous\SourceGenerator\Jinget.SourceGenerator\Jinget.SourceGenerator.csproj", "{49543BA0-1024-A7FA-6509-06B8FD959404}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jinget.SourceGenerator.Common", "01-Miscellaneous\SourceGenerator\Jinget.SourceGenerator.Common\Jinget.SourceGenerator.Common.csproj", "{A77B7765-F1D2-B7EB-630F-A78A7FC351DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jinget.SourceGenerator.Tests", "Tests\Jinget.SourceGenerator.Tests\Jinget.SourceGenerator.Tests.csproj", "{8C38F3CA-BBC5-8E6D-2D88-CC8C635F7614}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +79,18 @@ Global
 		{E526CDFD-DDAB-41FE-B8E4-3D3E7C17012F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E526CDFD-DDAB-41FE-B8E4-3D3E7C17012F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E526CDFD-DDAB-41FE-B8E4-3D3E7C17012F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49543BA0-1024-A7FA-6509-06B8FD959404}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49543BA0-1024-A7FA-6509-06B8FD959404}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49543BA0-1024-A7FA-6509-06B8FD959404}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49543BA0-1024-A7FA-6509-06B8FD959404}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A77B7765-F1D2-B7EB-630F-A78A7FC351DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A77B7765-F1D2-B7EB-630F-A78A7FC351DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A77B7765-F1D2-B7EB-630F-A78A7FC351DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A77B7765-F1D2-B7EB-630F-A78A7FC351DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C38F3CA-BBC5-8E6D-2D88-CC8C635F7614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C38F3CA-BBC5-8E6D-2D88-CC8C635F7614}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C38F3CA-BBC5-8E6D-2D88-CC8C635F7614}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C38F3CA-BBC5-8E6D-2D88-CC8C635F7614}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +105,9 @@ Global
 		{9411D2C7-AF8E-4C8A-A11E-DA52E3BEB6C9} = {115DD383-ACB4-48AA-A6C2-C6105314F051}
 		{F464F7DD-38F2-412C-9CD1-28D53853BFE8} = {F1B06C67-988D-4E24-8110-92C9B6D4CBC0}
 		{E526CDFD-DDAB-41FE-B8E4-3D3E7C17012F} = {CE9144E5-14B3-4408-AEC1-0BBA7AF5B672}
+		{49543BA0-1024-A7FA-6509-06B8FD959404} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{A77B7765-F1D2-B7EB-630F-A78A7FC351DA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{8C38F3CA-BBC5-8E6D-2D88-CC8C635F7614} = {F1B06C67-988D-4E24-8110-92C9B6D4CBC0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8690B4B4-1E8A-4C1D-9A63-123EAD0492EE}
