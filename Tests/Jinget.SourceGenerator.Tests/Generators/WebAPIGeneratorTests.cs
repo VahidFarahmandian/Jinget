@@ -68,7 +68,7 @@ namespace Jinget.SourceGenerator.Tests.Generators
                 Directory.GetCurrentDirectory(),
                 "..", "..", "..")); // Goes up from bin/Debug/netX.Y to project root
 
-            var modelsPath = Path.Combine(sourceRoot, "_BaseTypes\\Models\\StudentModel.cs");
+            var modelsPath = Path.Combine(sourceRoot, "_BaseTypes/Models/StudentModel.cs");
 
             var syntaxTree = CSharpSyntaxTree.ParseText(File.ReadAllText(modelsPath));
             var references = AppDomain.CurrentDomain.GetAssemblies()
