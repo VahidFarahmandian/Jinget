@@ -19,6 +19,7 @@
 		<Title>Jinget Source Generator</Title>
 		<PackageProjectUrl>https://github.com/VahidFarahmandian/Jinget</PackageProjectUrl>
 		<PackageTags>jinget, source generator, cqrs, ddd</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<!-- Standard source generator references -->

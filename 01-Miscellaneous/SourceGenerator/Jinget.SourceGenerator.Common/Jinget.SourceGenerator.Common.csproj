@@ -15,6 +15,7 @@
 		<Title>Jinget Source Generator Common</Title>
 		<PackageProjectUrl>https://github.com/VahidFarahmandian/Jinget</PackageProjectUrl>
 		<PackageTags>jinget, source generator, cqrs, ddd</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -22,10 +23,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="assets\icon.png" />
+		<None Include="assets\icon.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="README.md" />
+		<None Include="README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 </Project>
