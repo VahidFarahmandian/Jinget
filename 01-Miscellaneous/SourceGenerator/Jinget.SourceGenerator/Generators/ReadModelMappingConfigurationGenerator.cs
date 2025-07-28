@@ -127,12 +127,14 @@ public class ReadModelMappingConfigurationGenerator : IIncrementalGenerator
                         usings = string.Join(";\r\n", mappingClass.GetUsings().Select(x=>$"using {x}"))+ ";";
                 }
 
+                string overrideString = mappingClass?.GetMembers().OfType<IMethodSymbol>().Where(x=>x.Name=="Configure" && x.IsOverride).FirstOrDefault()!=null?" override ":" ";
+
                 var classContent =
 $@"{usings}
 namespace {type.ContainingNamespace};
 public class {newClassName}: {baseTypeName}
 {{
-    public override void Configure(EntityTypeBuilder<{fullyQualifiedNewModelName}> builder)
+    public{overrideString}void Configure(EntityTypeBuilder<{fullyQualifiedNewModelName}> builder)
     {{
         {newMappingConfigureMethodBodyString}
     }}
