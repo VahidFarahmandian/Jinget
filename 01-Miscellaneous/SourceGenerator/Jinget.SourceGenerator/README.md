@@ -68,7 +68,6 @@ public class StudentModel : BaseEntity<int>, IAggregateRoot
 Finally above mentioned code will produced the following readonly model:
 
 ```csharp
-using Jinget.Domain.Core.Entities;
 using Jinget.Core.Attributes.AggregationAttributes;
 namespace Models;
 

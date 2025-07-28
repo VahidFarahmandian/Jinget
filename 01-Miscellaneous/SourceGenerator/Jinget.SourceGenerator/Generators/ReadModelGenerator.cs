@@ -65,13 +65,11 @@ public class ReadModelGenerator : IIncrementalGenerator
         INamedTypeSymbol type)
     {
         var className = $"ReadOnly{type.Name}";
-        var (InheritedTypes, IsJinget) = GetInheritanceString(type, compilation);
+        var InheritedTypes = GetInheritanceString(type, compilation);
         var properties = GeneratePropertiesForType(type);
         var newProperties = GetAppendedPropertiesFromAttributes(type);
-        var jingetNamespace = IsJinget ? "using Jinget.Domain.Core.Entities;" : "";
 
         var classContent = $$"""
-            {{jingetNamespace}}
             using Jinget.Core.Attributes.AggregationAttributes;
             namespace {{type.ContainingNamespace}};
             
@@ -84,7 +82,7 @@ public class ReadModelGenerator : IIncrementalGenerator
         return (className, classContent);
     }
 
-    private static (string InheritedTypes, bool IsJinget) GetInheritanceString(INamedTypeSymbol type, Compilation compilation)
+    private static string GetInheritanceString(INamedTypeSymbol type, Compilation compilation)
     {
         var preserveBaseTypes = type.GetAttributeNamedArgument<bool>(
             compilation, "GenerateReadModel", "PreserveBaseTypes", false);
@@ -115,10 +113,7 @@ public class ReadModelGenerator : IIncrementalGenerator
                 .Select(i => i.ToDisplayString());
         }
 
-        return (
-            InheritedTypes: string.Join(", ", new[] { baseType }.Concat(interfaces).Where(s => !string.IsNullOrEmpty(s)).Distinct()),
-            IsJinget: interfaces.Any() || (type.BaseType != null && type.BaseType.ContainingNamespace.Name.Contains(".Jinget."))
-            );
+        return string.Join(", ", new[] { baseType }.Concat(interfaces).Where(s => !string.IsNullOrEmpty(s)).Distinct());
     }
 
     private static IEnumerable<string> GeneratePropertiesForType(INamedTypeSymbol type)
