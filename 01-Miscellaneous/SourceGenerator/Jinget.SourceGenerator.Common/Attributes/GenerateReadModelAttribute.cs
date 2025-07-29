@@ -10,4 +10,5 @@ public sealed class GenerateReadModelAttribute : Attribute
 {
     public string BaseType { get; set; } = "Object";
     public bool PreserveBaseTypes { get; set; } = false;
+    public bool PreserveBaseInterfaces { get; set; } = false;
 }

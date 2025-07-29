@@ -53,7 +53,9 @@ public class StudentModel : BaseEntity<int>, IAggregateRoot
 
 ```
 
-`GenerateReadModel`: This is the main attribute should be added to model, which cause the readonly model generation. Important note here is that, models should have `Model` suffix. The `PreserveBaseTypes` argument states that if the base type should be ignored for transformation or not.
+`GenerateReadModel`: This is the main attribute should be added to model, which cause the readonly model generation. Important note here is that, models should have `Model` suffix. 
+The `PreserveBaseTypes` argument states that if the base type should be ignored for transformation or not.
+The `PreserveBaseInterface` argument states that if the base interfaces should be ignored for transformation or not.
 
 `AppendPropertyToReadModel`: This is an optional attribute which is used to add new custom property to readonly model. First argument is property type and second argument is it's name.
 
@@ -68,12 +70,11 @@ public class StudentModel : BaseEntity<int>, IAggregateRoot
 Finally above mentioned code will produced the following readonly model:
 
 ```csharp
-using Jinget.Core.Attributes.AggregationAttributes;
 namespace Models;
 
 public class ReadOnlyStudentModel : BaseEntity<int>, Jinget.Core.Contracts.IAggregateRoot
 {
-    public string Name { public get; private set }
+    public string Name { get; private set }
 	public Address HomeAddress { get; set; }
 	public ICollection<ReadOnlyCourseModel> Courses { get; set; }
 	public int CoursesCount { get; set; }

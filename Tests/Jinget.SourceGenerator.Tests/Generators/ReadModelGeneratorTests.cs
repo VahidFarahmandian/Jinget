@@ -40,6 +40,8 @@ namespace Jinget.SourceGenerator.Tests.Generators
             Assert.AreEqual(1, tree.GetClassNames().Count());
             Assert.AreEqual($"ReadOnlyStudentModel", tree.GetClassNames().FirstOrDefault());
 
+            Assert.IsNotNull(tree.GetCompilationUnitRoot().Usings.FirstOrDefault(x => x.ToString() == "using Jinget.Core.Contracts;"));
+
             var classDeclaration = tree.GetClasses().First();
             if (classDeclaration.BaseList != null && classDeclaration.BaseList.Types.Any())
             {
@@ -48,11 +50,13 @@ namespace Jinget.SourceGenerator.Tests.Generators
             else
                 Assert.Fail();
 
-            Assert.IsTrue(classDeclaration.BaseList.Types.Where(x => x.ToString() == "Jinget.Core.Contracts.IAggregateRoot").Any());
+            Assert.IsNotNull(classDeclaration.BaseList.Types.FirstOrDefault(x => x.ToString() == "Jinget.Core.Contracts.IAggregateRoot"));
+
+            Assert.IsNotNull(classDeclaration.BaseList.Types.Where(x => x.ToString() == "Jinget.Core.Contracts.BaseEntity").Any());
 
             Assert.AreEqual("private", ((PropertyDeclarationSyntax)classDeclaration.Members.First()).AccessorList?.Accessors.Where(x => x.Keyword.ToString() == "set").First().Modifiers.First().Value);
 
-            Assert.AreEqual(8, tree.GetPropertyNames().Count());
+            Assert.AreEqual(9, tree.GetPropertyNames().Count());
         }
 
         private CSharpCompilation CreateCompilation()

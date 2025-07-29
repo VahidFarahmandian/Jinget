@@ -157,7 +157,7 @@ public static class {outputClassName}
         if (!isTenantAware)
             return "";
 
-        return "[Jinget.Domain.Core.Attributes.TenantAware]";
+        return "[Jinget.Core.Attributes.TenantAware]";
     }
 
 

@@ -5,9 +5,9 @@ using Jinget.SourceGenerator.Common.Attributes;
 namespace Jinget.SourceGenerator.Tests._BaseTypes.Models;
 
 [GenerateWebAPI]
-[GenerateReadModel(PreserveBaseTypes = true)]
+[GenerateReadModel(PreserveBaseTypes = true, PreserveBaseInterfaces = true)]
 [AppendPropertyToReadModel("bool", "IsSuspended")]
-public class StudentModel : BaseEntity<int>, IAggregateRoot
+public class StudentModel : BaseEntity<int>, IAggregateRoot, ITenantAware
 {
     [PreserveOriginalGetterSetter]
     public string Name { get; private set; }
@@ -24,4 +24,5 @@ public class StudentModel : BaseEntity<int>, IAggregateRoot
     [Sum(generatedPropertyName: "SumOfScores")]
     [Average(generatedPropertyName: "AverageScores")]
     public ICollection<StudentScoreModel> Scores { get; set; }
+    public string TenantId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }

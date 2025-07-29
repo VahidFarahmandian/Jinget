@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Microsoft.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Jinget.SourceGenerator.Tests")]
 namespace Jinget.SourceGenerator.Generators;
@@ -65,33 +66,51 @@ public class ReadModelGenerator : IIncrementalGenerator
         INamedTypeSymbol type)
     {
         var className = $"ReadOnly{type.Name}";
-        var InheritedTypes = GetInheritanceString(type, compilation);
+        var inheritedTypes = GetInheritanceString(type, compilation);
         var properties = GeneratePropertiesForType(type);
         var newProperties = GetAppendedPropertiesFromAttributes(type);
+        var usingNamespaces = GetBaseNamespaces(type, compilation);
 
         var classContent = $$"""
-            using Jinget.Core.Attributes.AggregationAttributes;
+            {{usingNamespaces}}
             namespace {{type.ContainingNamespace}};
-            
-            public class {{className}} : {{InheritedTypes}}
+            public class {{className}} : {{inheritedTypes}}
             {
-                {{string.Join("\n\t", properties.Concat(newProperties))}}
+                {{string.Join("\r\n\t", properties.Concat(newProperties))}}
             }
             """;
 
         return (className, classContent);
+    }
+    private static string GetBaseNamespaces(INamedTypeSymbol type, Compilation compilation)
+    {
+        List<string> namespaces = [];
+        if (type.BaseType != null && type.BaseType.ContainingNamespace.ToDisplayString() != type.ContainingNamespace.ToDisplayString())
+            namespaces.Add($"using {type.BaseType.ContainingNamespace.ToDisplayString()};");
+
+        var preserveBaseInterfaces = type.GetAttributeNamedArgument<bool>(
+            compilation, "GenerateReadModel", "PreserveBaseInterfaces", false);
+        if (preserveBaseInterfaces)
+        {
+            foreach (var i in type.Interfaces)
+            {
+                if (i.ContainingNamespace.ToDisplayString() != type.ContainingNamespace.ToDisplayString())
+                    namespaces.Add($"using {i.ContainingNamespace.ToDisplayString()};");
+            }
+        }
+
+        return string.Join("\r\n", namespaces.Distinct());
     }
 
     private static string GetInheritanceString(INamedTypeSymbol type, Compilation compilation)
     {
         var preserveBaseTypes = type.GetAttributeNamedArgument<bool>(
             compilation, "GenerateReadModel", "PreserveBaseTypes", false);
+
         string baseType = "";
-        IEnumerable<string> interfaces = [];
         if (preserveBaseTypes)
         {
             baseType = type.BaseType == null ? "Object" : type.BaseType.ToDisplayString();
-            interfaces = type.AllInterfaces.Select(i => i.ToDisplayString());
         }
         else
         {
@@ -108,6 +127,17 @@ public class ReadModelGenerator : IIncrementalGenerator
                     $"{type.BaseType.TypeArguments[2].ToDisplayString()}>",
                 _ => baseType
             };
+        }
+
+        IEnumerable<string> interfaces = [];
+        var preserveBaseInterfaces = type.GetAttributeNamedArgument<bool>(
+            compilation, "GenerateReadModel", "PreserveBaseInterfaces", false);
+        if (preserveBaseInterfaces)
+        {
+            interfaces = type.AllInterfaces.Select(i => i.ToDisplayString());
+        }
+        else
+        {
             interfaces = type.AllInterfaces
                 .Where(x => x.Name == "ITenantAware")
                 .Select(i => i.ToDisplayString());
@@ -210,8 +240,16 @@ public class ReadModelGenerator : IIncrementalGenerator
         if (!property.PreserveOriginalGetterSetter())
             return "get; set;";
 
-        var getter = $"{property.GetMethod!.DeclaredAccessibility.StringfyAccessibility()} get";
-        var setter = $"{property.SetMethod!.DeclaredAccessibility.StringfyAccessibility()} set";
+        var getter = "get";
+        var getterAccessibility = property.GetMethod!.DeclaredAccessibility.StringfyAccessibility();
+        if (getterAccessibility != "public")
+            getter = $"{getterAccessibility} get";
+
+        var setter = "set";
+        var setterAccessibility = property.SetMethod!.DeclaredAccessibility.StringfyAccessibility();
+        if (setterAccessibility != "public")
+            getter = $"{setterAccessibility} set";
+
         return $"{getter}; {setter}";
     }
 

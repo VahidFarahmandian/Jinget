@@ -3,44 +3,87 @@
 [![release-preview-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-preview-ci.yml/badge.svg)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-preview-ci.yml)
 [![release-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-ci.yml/badge.svg)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-ci.yml)
 
-**We are currently in the way to make Jinget an open source project, during this journey we will publish different parts of Jinget**
+# Jinget
+ [![build-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/build-ci.yml/badge.svg?branch=main)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/build-ci.yml)
+[![release-preview-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-preview-ci.yml/badge.svg)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-preview-ci.yml)
+[![release-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-ci.yml/badge.svg)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-ci.yml)
 
-**NOTE** `Jinget.Blazor` has been moved to : https://github.com/VahidFarahmandian/jinget.blazor
+# 🚀 Jinget: The .NET Powerhouse for Rapid, Robust Development  
 
-Jinget is a framework written using .NET, and built using DDD+CQRS. Jinget boosts your productivity by providing robust infrastructure for source codes.
+**🚧 Heads up!** We're on a mission to open-source Jinget piece by piece. Stay tuned as we unveil more!  
 
-Jinget provides the following benefits:
+**📢 NOTE:** `Jinget.Blazor` has moved to its own home: [github.com/VahidFarahmandian/jinget.blazor](https://github.com/VahidFarahmandian/jinget.blazor)  
 
-- Easy to config data access layer using Entity Framework Core and Dapper
-- Communicating with external services and web APIs(SOAP, RestFul and gRPC services)
-- Logging requests and responses into variouse destinations such as File or Elasticsearch
-- easy to use exception handler
-- Robust infrastructure for authentication and authorization mechanisms
-- Extensive collection of functionalities useful for different projects such as numerous  extension methods, helpers, converters and dynamic code providers
-- Easy to run health check infrastructure for different types of resources such as server availability, database health, web service/API's health etc.
-- Auto injected security considerations based on OWASP Top 10
-- Supports Read & Write pipelines separations
+---
 
-# Which parts are available now:
+## ⚡ Why Jinget?
 
-- Jinget.Core: Contains some very useful extension methods and helper classes.
-- Jinget.Core.DiScanner: Helps you to automatically register your source code dependencies without the need to write repetitive and annoying codes
-- Jinget.Handlers.ExternalServiceHandlers: Helps you to consume different types of Web APIs and SOAP web services with ease of use.
-- Jinget.Logger: Helps you to store your log messages into Elasticsearch or files
-- Jinget.ExceptionHandler: Helps you to handle exceptions globally.
-- Jinget.SourceGenerator: Helps you to generate CQRS+DDD codes automatically.
-- Jinget.SourceGenerator.Common: Provides base functionalities required by Jinget.SourceGenerator.
-  
-# How to install
-In order to install Jinget please refer to [nuget.org](https://www.nuget.org/profiles/Jinget "nuget.org")
+Jinget is a **high-performance .NET framework** built with **DDD + CQRS** at its core. It's your Swiss Army knife for cutting through boilerplate code and supercharging productivity.
 
-# How to use
-Sample codes are available via Test projects which are provided beside the main source codes
+### 🔋 Batteries included:
+- ✅ **Effortless Data Access** – EF Core + Dapper, optimized out of the box
+- ✅ **External Services Made Easy** – REST, SOAP? No sweat
+- ✅ **Logging Like a Pro** – Files, Elasticsearch, and more
+- ✅ **Bulletproof Exception Handling** – Global, smart, and customizable
+- ✅ **Auth Done Right** – OWASP Top 10 baked in
+- ✅ **Health Checks** – Monitor APIs, databases, servers—instantly
+- ✅ **CQRS & DDD Bliss** – Clean separation of reads and writes
+- ✅ **Auto-DI Magic** – Say goodbye to manual dependency registration
+- ✅ **Code Generation Superpowers** – Automatic CQRS patterns, models, and APIs
 
-# Contact Me
-👨‍💻 Twitter: https://twitter.com/_jinget
+---
 
-📧 Email: farahmandian2011@gmail.com
+## 📦 Available Packages
 
-📣 Instagram: https://www.instagram.com/vahidfarahmandian
+| Package | Description |
+|---------|------------|
+| `Jinget.Core` | Essential extensions & helpers toolbox |
+| `Jinget.Core.DiScanner` | Auto-DI—write less, do more |
+| `Jinget.Handlers.ExternalServiceHandlers` | Web API/SOAP calls without the hassle |
+| `Jinget.Logger` | Log to Elasticsearch or files effortlessly |
+| `Jinget.ExceptionHandler` | Global exceptions, handled elegantly |
+| `Jinget.SourceGenerator` | Automatic code generator |
+| `Jinget.SourceGenerator.Common` | The engine behind the magic |
 
+---
+
+## 🛠 Installation
+
+Grab the packages on NuGet:  
+[![NuGet](https://img.shields.io/nuget/v/Jinget.Core)](https://www.nuget.org/profiles/Jinget)
+
+```bash
+dotnet add package Jinget.Core
+# or your preferred package
+```
+## 🧑‍💻 How to Use  
+
+**💡 Dive right in with real-world examples!**  
+
+Explore our ready-to-run sample codes in the **Test projects**—your perfect playground to see Jinget in action.  
+
+🔍 *Look for the `Tests` folder alongside the main source code—it's packed with practical examples to kickstart your development!*  
+
+*(Pro Tip: Clone the repo and run the tests to see the magic unfold! ✨)*  
+
+## 🎬 Learn Visually
+
+| Video Title | Watch Link | Description |
+|------------|------------|-------------|
+| **Project Setup** | [![YT](https://img.shields.io/badge/▶-Watch-red)](https://www.youtube.com/live/UkFBwMOT5Ag?si=kTv6FVCjfBd1qrQJ) | End-to-end development guide |
+| **Jinget.SourceGenerators** | [![YT](https://img.shields.io/badge/▶-Watch-red)](https://www.youtube.com/live/24o_LuUEhhk?si=TQKcHYtiY8w_s9o7) | Source Generators in Jinget |
+| **C# to TSQL Transformation** | [![YT](https://img.shields.io/badge/▶-Watch-red)](https://www.youtube.com/live/uggOFB8g99U?si=xbvYKcRbCxwzL8e3) | Looking Dapper with Jinget |
+
+
+🌟 *Like and comment to support more content!*
+
+## 📞 Contact Me
+
+**Let's chat!** Reach out through any of these channels:
+
+- 🐦 **Twitter**: [@_jinget](https://twitter.com/_jinget)  
+- 📧 **Email**: [farahmandian2011@gmail.com](mailto:farahmandian2011@gmail.com) *(Fastest response!)*  
+- 📸 **Instagram**: [@vahidfarahmandian](https://www.instagram.com/vahidfarahmandian)  
+- 💼 **LinkedIn**: [Vahid Farahmandian](https://www.linkedin.com/in/vahidfarahmandian)  
+
+💡 *Pro Tip: Include "Jinget" in your subject/message so I can prioritize your request!*
