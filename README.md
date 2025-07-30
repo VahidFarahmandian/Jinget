@@ -1,9 +1,3 @@
-# Jinget
- [![build-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/build-ci.yml/badge.svg?branch=main)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/build-ci.yml)
-[![release-preview-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-preview-ci.yml/badge.svg)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-preview-ci.yml)
-[![release-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-ci.yml/badge.svg)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-ci.yml)
-
-# Jinget
  [![build-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/build-ci.yml/badge.svg?branch=main)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/build-ci.yml)
 [![release-preview-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-preview-ci.yml/badge.svg)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-preview-ci.yml)
 [![release-ci](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-ci.yml/badge.svg)](https://github.com/VahidFarahmandian/Jinget/actions/workflows/release-ci.yml)
