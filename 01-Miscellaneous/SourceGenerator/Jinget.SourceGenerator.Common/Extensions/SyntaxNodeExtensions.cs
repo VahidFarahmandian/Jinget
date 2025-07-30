@@ -17,6 +17,7 @@ internal static class SyntaxNodeExtensions
         {
             "bool" => "System.Boolean",
             "byte" => "System.Byte",
+            "guid" => "System.Guid",
             "sbyte" => "System.SByte",
             "char" => "System.Char",
             "decimal" => "System.Decimal",
