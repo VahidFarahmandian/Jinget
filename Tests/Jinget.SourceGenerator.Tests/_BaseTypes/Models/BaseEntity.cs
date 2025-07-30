@@ -10,3 +10,8 @@ public abstract class BaseEntity<T> : IEntity
 
     public void SetId(T id) => Id = id;
 }
+
+public abstract class TraceBaseEntity<TModel, TKey> : BaseEntity<TKey>
+{
+    public TModel Trace { get; set; }
+}

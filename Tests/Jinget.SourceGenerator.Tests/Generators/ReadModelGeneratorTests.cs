@@ -45,14 +45,12 @@ namespace Jinget.SourceGenerator.Tests.Generators
             var classDeclaration = tree.GetClasses().First();
             if (classDeclaration.BaseList != null && classDeclaration.BaseList.Types.Any())
             {
-                Assert.IsTrue(classDeclaration.BaseList.Types.Where(x => x.ToString() == "Jinget.SourceGenerator.Tests._BaseTypes.Models.BaseEntity<int>").Any());
+                Assert.IsTrue(classDeclaration.BaseList.Types.Where(x => x.ToString() == "Jinget.SourceGenerator.Tests._BaseTypes.Models.ReadOnlyTraceBaseEntity<Jinget.SourceGenerator.Tests._BaseTypes.Models.Trace, int>").Any());
             }
             else
                 Assert.Fail();
 
             Assert.IsNotNull(classDeclaration.BaseList.Types.FirstOrDefault(x => x.ToString() == "Jinget.Core.Contracts.IAggregateRoot"));
-
-            Assert.IsNotNull(classDeclaration.BaseList.Types.Where(x => x.ToString() == "Jinget.Core.Contracts.BaseEntity").Any());
 
             Assert.AreEqual("private", ((PropertyDeclarationSyntax)classDeclaration.Members.First()).AccessorList?.Accessors.Where(x => x.Keyword.ToString() == "set").First().Modifiers.First().Value);
 

@@ -104,29 +104,31 @@ public class ReadModelGenerator : IIncrementalGenerator
 
     private static string GetInheritanceString(INamedTypeSymbol type, Compilation compilation)
     {
-        var preserveBaseTypes = type.GetAttributeNamedArgument<bool>(
-            compilation, "GenerateReadModel", "PreserveBaseTypes", false);
+        var preserveBaseTypes = type.GetAttributeNamedArgument<bool>(compilation, "GenerateReadModel", "PreserveBaseTypes", false);
 
         string baseType = "";
-        if (preserveBaseTypes)
+        if (preserveBaseTypes || type.BaseType == null)
         {
             baseType = type.BaseType == null ? "Object" : type.BaseType.ToDisplayString();
         }
         else
         {
-            baseType = type.GetAttributeNamedArgument<string>(
-                compilation, "GenerateReadModel", "BaseType", "Object");
+            baseType = type.GetAttributeNamedArgument<string>(compilation, "GenerateReadModel", "BaseType", "Object");
 
-            baseType = type.BaseType switch
+            if (baseType == "Object" && baseType != type.BaseType.Name)
             {
-                { Name: "BaseEntity", TypeArguments.Length: 1 } =>
-                    $"BaseReadOnlyEntity<{type.BaseType.TypeArguments[0].ToDisplayString()}>",
-                { Name: "TraceBaseEntity", TypeArguments.Length: 3 } =>
-                    $"TraceBaseReadOnlyEntity<{type.BaseType.TypeArguments[0].ToDisplayString()}," +
-                    $"{type.BaseType.TypeArguments[1].ToDisplayString()}," +
-                    $"{type.BaseType.TypeArguments[2].ToDisplayString()}>",
-                _ => baseType
-            };
+                List<string> genericTypes = [];
+                foreach (var item in type.BaseType.TypeArguments)
+                {
+                    genericTypes.Add(item.ToDisplayString());
+                }
+                var typeFullName = $"{type.BaseType.ContainingNamespace}.ReadOnly{type.BaseType.Name}";
+                if (genericTypes.Any())
+                {
+                    typeFullName = $"{typeFullName}<{string.Join(", ", genericTypes)}>";
+                }
+                baseType = typeFullName;
+            }
         }
 
         IEnumerable<string> interfaces = [];

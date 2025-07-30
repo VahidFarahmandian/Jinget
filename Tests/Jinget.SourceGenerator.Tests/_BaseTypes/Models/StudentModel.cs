@@ -5,9 +5,9 @@ using Jinget.SourceGenerator.Common.Attributes;
 namespace Jinget.SourceGenerator.Tests._BaseTypes.Models;
 
 [GenerateWebAPI]
-[GenerateReadModel(PreserveBaseTypes = true, PreserveBaseInterfaces = true)]
+[GenerateReadModel(PreserveBaseTypes = false, PreserveBaseInterfaces = true)]
 [AppendPropertyToReadModel("bool", "IsSuspended")]
-public class StudentModel : BaseEntity<int>, IAggregateRoot, ITenantAware
+public class StudentModel : TraceBaseEntity<Trace, int>, IAggregateRoot, ITenantAware, IEntity
 {
     [PreserveOriginalGetterSetter]
     public string Name { get; private set; }
