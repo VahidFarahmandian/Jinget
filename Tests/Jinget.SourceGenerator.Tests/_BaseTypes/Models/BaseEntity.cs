@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Jinget.Core.Contracts;
+using System.ComponentModel.DataAnnotations;
 
 namespace Jinget.SourceGenerator.Tests._BaseTypes.Models;
 
-public abstract class BaseEntity<T>
+public abstract class BaseEntity<T> : IEntity
 {
     [Key]
     public T Id { get; protected set; }

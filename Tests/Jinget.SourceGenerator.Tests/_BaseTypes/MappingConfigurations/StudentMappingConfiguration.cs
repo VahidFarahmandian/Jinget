@@ -17,6 +17,8 @@ public class StudentMappingConfiguration : IEntityTypeConfiguration<StudentModel
             .WithOne(x => x.Student)
             .HasForeignKey(x => x.StudentId);
 
+        builder.Property(t => t.Gender).HasColumnName("Gender").HasConversion<byte>().IsRequired();
+
         //ReadModelMapping:IgnoreThisLine
         builder.Property(x => x.Name)
             .HasColumnType("nvarchar(50)")

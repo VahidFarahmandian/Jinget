@@ -81,11 +81,6 @@ public class ReadModelMappingConfigurationGenerator : IIncrementalGenerator
                 var baseType =mappingClass?.BaseType?.Name=="Object" ?mappingClass.Interfaces.First(): mappingClass?.BaseType;
 
                 // Get generic type arguments of the base type
-                //var baseTypeGenericArguments = baseType?.TypeArguments;
-                //if (!baseTypeGenericArguments.HasValue || baseTypeGenericArguments.Value.Length < 2)
-                //{
-                //    throw new InvalidOperationException($"Invalid base type. base type should have two generic types (first representing write model type, second representing Id property type)");
-                //}
                 var modelName = type.GetAttributeNamedArgument<string>(compilation, "GenerateReadModelMappingConfiguration", "Model", "");
                 modelName = string.IsNullOrWhiteSpace(modelName) ? baseType!.TypeArguments[0].Name : modelName;
                 var originalModelName = compilation.FindTypeInReferencedAssemblies(modelName);
@@ -103,9 +98,6 @@ public class ReadModelMappingConfigurationGenerator : IIncrementalGenerator
                 else if(baseType!=null){
                     baseTypeName = $"{baseType.Name}<{fullyQualifiedNewModelName}>";
                 }
-                //var keyProperty = baseType!.TypeArguments[1].ToDisplayString();
-
-                //baseTypeName = $"{baseType.Name}<{fullyQualifiedNewModelName},{keyProperty}>";
 
                 var newMappingConfigureMethodBody = originalMappingConfigureMethodBody!
                 .ReplaceIgnoredStatements()

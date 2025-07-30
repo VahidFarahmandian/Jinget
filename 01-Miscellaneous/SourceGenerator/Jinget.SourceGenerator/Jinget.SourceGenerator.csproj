@@ -11,7 +11,7 @@
 		<Authors>Vahid Farahmandian</Authors>
 		<RepositoryUrl>https://github.com/VahidFarahmandian/Jinget</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Description>Generate codes for suitable for CQRS+DDD architectures</Description>
+		<Description>Generate codes suitable for CQRS+DDD architectures</Description>
 		<Copyright>All Rights Reserved</Copyright>
 		<PackageIcon>icon.png</PackageIcon>
 		<Company>Jinget</Company>

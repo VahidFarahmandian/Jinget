@@ -12,6 +12,8 @@ public class StudentModel : BaseEntity<int>, IAggregateRoot, ITenantAware
     [PreserveOriginalGetterSetter]
     public string Name { get; private set; }
 
+    public Gender Gender { get; private set; }
+
     [IgnoreReadModelConversion]
     public DateTime EnrollDate { get; set; }
 

@@ -11,6 +11,30 @@ namespace Jinget.SourceGenerator.Common.Extensions;
 
 internal static class SyntaxNodeExtensions
 {
+    private static string GetFullTypeNameFromKeyword(string keyword)
+    {
+        return keyword.ToLower() switch
+        {
+            "bool" => "System.Boolean",
+            "byte" => "System.Byte",
+            "sbyte" => "System.SByte",
+            "char" => "System.Char",
+            "decimal" => "System.Decimal",
+            "double" => "System.Double",
+            "float" => "System.Single",
+            "int" => "System.Int32",
+            "uint" => "System.UInt32",
+            "long" => "System.Int64",
+            "ulong" => "System.UInt64",
+            "short" => "System.Int16",
+            "ushort" => "System.UInt16",
+            "object" => "System.Object",
+            "string" => "System.String",
+            "dynamic" => "System.Object",
+            _ => keyword,// fallback
+        };
+    }
+
     //builder.MapColumnsByName<SampleModel, Guid>();
     internal static SyntaxNode ReplaceGenericArgumentsInMethodBody(this SyntaxNode node, Compilation compilation) => node.ReplaceNodes(
             nodes: node.DescendantNodes().OfType<GenericNameSyntax>(),
@@ -23,7 +47,16 @@ internal static class SyntaxNodeExtensions
 
                 var newTypeArguments = typeArguments.Select(t =>
                 {
-                    string text = t.GetText().ToString().ToLower() == "string" ? $"System.String" : ((IdentifierNameSyntax)t).Identifier.Text;
+                    string text;
+                    if (t is PredefinedTypeSyntax syntax)
+                    {
+                        text = GetFullTypeNameFromKeyword(syntax.ToString());
+                    }
+                    else
+                    {
+                        text = ((IdentifierNameSyntax)t).Identifier.Text;
+                    }
+
                     var type = compilation.FindTypeInReferencedAssemblies(text);
                     if (type.IsSimpleType())
                     {
