@@ -14,6 +14,7 @@ public class StudentModel : TraceBaseEntity<Trace, int>, IAggregateRoot, ITenant
 
     public Gender Gender { get; private set; }
 
+    [IgnoreMapping]
     public Guid UniqueId { get; set; }
 
     [IgnoreReadModelConversion]
@@ -23,13 +24,16 @@ public class StudentModel : TraceBaseEntity<Trace, int>, IAggregateRoot, ITenant
     public Address HomeAddress { get; set; }
 
     [Count("CoursesCount", ignoreMapping: true)]
+    [Count("CoursesCount2", ignoreMapping: false)]
     public ICollection<CourseModel> Courses { get; set; }
 
     [Sum(generatedPropertyName: "SumOfScores")]
     [Average(generatedPropertyName: "AverageScores")]
-    [Min(aggregatePropertyName: "Scores")]
-    [Max(aggregatePropertyName: "Scores")]
+    [IgnoreMapping]
+    [Min("MinScores")]
+    [Max("MaxScores")]
     public ICollection<StudentScoreModel> Scores { get; set; }
+    
     public string TenantId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }
 

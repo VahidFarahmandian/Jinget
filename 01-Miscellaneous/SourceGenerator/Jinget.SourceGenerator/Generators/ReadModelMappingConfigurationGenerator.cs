@@ -87,7 +87,6 @@ public class ReadModelMappingConfigurationGenerator : IIncrementalGenerator
 
                 var newModelName = $"ReadOnly{originalModelName!.Name}";
                 var fullyQualifiedNewModelName = $"{originalModelName.ContainingNamespace}.{newModelName}";
-                var newModelNameType= compilation.FindTypeInReferencedAssemblies(fullyQualifiedNewModelName);
 
                 string baseTypeName="";
 
@@ -101,7 +100,7 @@ public class ReadModelMappingConfigurationGenerator : IIncrementalGenerator
                     baseTypeName = $"{baseType.Name}<{fullyQualifiedNewModelName}>";
                 }
 
-                var ignoredProperties = GenerateIgnoredProperties(newModelNameType).ToList();
+                var ignoredProperties = GenerateIgnoredProperties(compilation, originalModelName).ToList();
 
                 var newMappingConfigureMethodBody = originalMappingConfigureMethodBody!
                 //add builder.Ignore() for properties which are appended to readonly model(and does not exists in model)
@@ -171,11 +170,42 @@ public class {newClassName}: {baseTypeName}
         return input;
     }
 
-    private static IEnumerable<IPropertySymbol> GenerateIgnoredProperties(INamedTypeSymbol type)
+    private static List<string> GenerateIgnoredProperties(Compilation compilation, INamedTypeSymbol type)
     {
-        return type.GetMembers()
-            .Where(m => m.Kind == SymbolKind.Property)
-            .OfType<IPropertySymbol>()
-            .Where(p => p.IsIgnoreMapping()).ToList();
+        List<string> ignoreMappingProperties = [];
+
+        //class level custom properties
+        foreach (var attr in type.GetAttributes().Where(a => a.AttributeClass?.Name == "AppendPropertyToReadModelAttribute"))
+        {
+            var generatePropertyName = attr.ConstructorArguments[1].Value;
+            var isIgnoreMapping = Convert.ToBoolean(attr.ConstructorArguments[2].Value);
+            if (isIgnoreMapping && generatePropertyName != null)
+            {
+                ignoreMappingProperties.Add(generatePropertyName.ToString());
+            }
+        }
+
+
+        foreach (var prop in type.GetMembers().Where(m => m.Kind == SymbolKind.Property).OfType<IPropertySymbol>())
+        {
+            //property level custom properties via attributes(count, sum, min, max, average)
+            foreach (var attr in prop.GetAttributes().Where(a => a.AttributeClass?.BaseType != null && a.AttributeClass.BaseType.Name == "BaseAggregationAttribute"))
+            {
+                var generatePropertyName = attr.ConstructorArguments[0].Value;
+                var isIgnoreMapping = Convert.ToBoolean(attr.ConstructorArguments[1].Value);
+                if (isIgnoreMapping && generatePropertyName != null)
+                {
+                    ignoreMappingProperties.Add(generatePropertyName.ToString());
+                }
+            }
+
+            //properties marked with [IgnoreMapping] attribute
+            foreach (var attr in prop.GetAttributes().Where(a => a.AttributeClass?.Name == "IgnoreMappingAttribute"))
+            {
+                ignoreMappingProperties.Add(prop.Name);
+            }
+        }
+
+        return ignoreMappingProperties;
     }
 }

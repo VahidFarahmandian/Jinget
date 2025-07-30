@@ -41,13 +41,14 @@ public class StudentModel : BaseEntity<int>, IAggregateRoot
     public DateTime EnrollDate { get; set; }
 
     [PreserveOriginalType]
+    [IgnoreMapping]
     public Address HomeAddress { get; set; }
 
     [Count("CoursesCount")]
     public ICollection<CourseModel> Courses { get; set; }
 
-    [Sum(generatedPropertyName: "SumOfScores")]
-    [Average(generatedPropertyName: "AverageScores")]
+    [Sum("SumOfScores")]
+    [Average("AverageScores")]
     public ICollection<StudentScoreModel> Scores { get; set; }
 }
 
@@ -58,7 +59,7 @@ The `PreserveBaseTypes` argument states that if the base type should be ignored 
 The `PreserveBaseInterface` argument states that if the base interfaces should be ignored for transformation or not.
 
 `AppendPropertyToReadModel`: This is an optional attribute which is used to add new custom property to readonly model. First argument is property type and second argument is it's name. 
-For this attribute, there is a parameter called `ignoredMappping` that when is set to `true` cause the property to be ignored while generating the ReadOnly model mapping configuration.
+For these aggregation attributes, there is an argument called `ignoreMappping` that has same effect as `IgnoreMapping` attribute. Default value for this argument is `true`.
 
 `PreserveOriginalGetterSetter`: This is an optional attribute which is used to preserve property's getter/setter access modifier. Properties without this attribute will be transformed as public get/set properties.
 
@@ -66,8 +67,10 @@ For this attribute, there is a parameter called `ignoredMappping` that when is s
 
 `PreserveOriginalType`: This is an optional attribute which is used to preserve property's original type while transformation. By default all reference types are included in transformation.
 
+`IgnoreMapping`: This is an optional attribute which is used to ignore a property in efcore mapping configuration.
+
 `Count`: Just same as `AppendPropertyToReadModel` this attribute is used to add new custom property to readonly model. Other aggregation such as `Sum`, `Average`, `Max` and `Min` are also supported. 
-For these aggregation attributes, there is a parameter called `ignoredMappping` that when is set to `true` cause the property to be ignored while generating the ReadOnly model mapping configuration.
+For these aggregation attributes, there is an argument called `ignoreMappping` that has same effect as `IgnoreMapping` attribute. Default value for this argument is `true`.
 
 Finally above mentioned code will produced the following readonly model:
 
@@ -79,19 +82,10 @@ public class ReadOnlyStudentModel : BaseEntity<int>, Jinget.Core.Contracts.IAggr
     public string Name { get; private set; }
 	public Address HomeAddress { get; set; }
 	public ICollection<ReadOnlyCourseModel> Courses { get; set; }
-	
-    [Jinget.SourceGenerator.Common.Attributes.IgnoreMapping]
     public int CoursesCount { get; set; }
-
 	public ICollection<ReadOnlyStudentScoreModel> Scores { get; set; }
-	
-    [Jinget.SourceGenerator.Common.Attributes.IgnoreMapping]
     public decimal SumOfScores { get; set; }
-	
-    [Jinget.SourceGenerator.Common.Attributes.IgnoreMapping]
     public decimal AverageScores { get; set; }
-	
-    [Jinget.SourceGenerator.Common.Attributes.IgnoreMapping]
     public bool IsSuspended { get; set; }
 }
 ```
@@ -151,10 +145,11 @@ public class ReadOnlyStudentMappingConfiguration: IEntityTypeConfiguration<Model
         builder.ToTable("tblStudent", "demo");
         builder.HasMany(x => x.Scores).WithOne(x => x.Student).HasForeignKey(x => x.StudentId);
         builder.HasMany(x => x.Courses).WithMany(x => x.Students).UsingEntity("tblStudentCourses", l => l.HasOne(typeof(Models.ReadOnlyStudentModel)).WithMany().HasForeignKey("StudentId"), r => r.HasOne(typeof(Models.ReadOnlyCourseModel)).WithMany().HasForeignKey("CourseId")).ToTable("tblStudentCourses", "demo");
+        builder.Ignore("IsSuspended");
+        builder.Ignore("HomeAddress");
         builder.Ignore("CoursesCount");
         builder.Ignore("SumOfScores");
         builder.Ignore("AverageScores");
-        builder.Ignore("IsSuspended");
     }
 }
 ```
@@ -181,8 +176,8 @@ public class StudentModel : BaseEntity<int>, IAggregateRoot
     [Count("CoursesCount")]
     public ICollection<CourseModel> Courses { get; set; }
 
-    [Sum(generatedPropertyName: "SumOfScores")]
-    [Average(generatedPropertyName: "AverageScores")]
+    [Sum("SumOfScores")]
+    [Average("AverageScores")]
     public ICollection<StudentScoreModel> Scores { get; set; }
 }
 ```

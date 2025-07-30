@@ -187,14 +187,14 @@ internal static class SyntaxNodeExtensions
             (originalTrivia, _) => SyntaxFactory.Space);
     }
 
-    internal static SyntaxNode AddIgnoreMappingStatements(this BlockSyntax node, List<IPropertySymbol> ignoredProperties)
+    internal static SyntaxNode AddIgnoreMappingStatements(this BlockSyntax node, List<string> ignoredProperties)
     {
         if (ignoredProperties == null || ignoredProperties.Any() == false)
             return node;
 
         var newBody = node.AddStatements(
             [.. ignoredProperties.Select(prop =>
-                SyntaxFactory.ParseStatement($"\t\tbuilder.Ignore(\"{prop.Name}\");\r\n")
+                SyntaxFactory.ParseStatement($"\t\tbuilder.Ignore(\"{prop}\");\r\n")
             )]
         );
         return newBody;

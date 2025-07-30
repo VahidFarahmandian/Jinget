@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Jinget.SourceGenerator.Tests")]
 namespace Jinget.SourceGenerator.Generators;
@@ -300,59 +299,27 @@ public class ReadModelGenerator : IIncrementalGenerator
         IPropertySymbol property,
         string? suffix = null)
     {
-        var customName = GetAttributeArgumentValue(attr, "generatedPropertyName");
-        var targetPropertyName = GetAttributeArgumentValue(attr, "aggregatePropertyName");
-        var propertyName = customName ?? $"{attributeType}_{suffix ?? property.Name}";
+        var propName = GetAttributeArgumentValue(attr, "generatedPropertyName");
 
-        var isignoreMapping = Convert.ToBoolean(GetAttributeArgumentValue(attr, "ignoreMapping"));
+        var propertyType = GetAggregationPropertyType(attributeType);
+        var propDefinition = $"public {propertyType} {propName} {{ get; set; }}";
 
-        if (targetPropertyName != null && string.IsNullOrWhiteSpace(customName))
-        {
-            propertyName += $"_{targetPropertyName}";
-        }
-
-        var propertyType = GetAggregationPropertyType(attributeType, property, targetPropertyName);
-        var propDefinition = $"public {propertyType} {propertyName} {{ get; set; }}";
-        if (isignoreMapping)
-        {
-            propDefinition = "[Jinget.SourceGenerator.Common.Attributes.IgnoreMapping]" + "\r\n\t" + propDefinition;
-        }
         return propDefinition;
     }
 
-    private static string GetAggregationPropertyType(
-        string attributeType,
-        IPropertySymbol property,
-        string? targetPropertyName)
+    private static string GetAggregationPropertyType(string attributeType)
     {
-        if (attributeType == "Count") return "int";
-        if (attributeType is "Min" or "Max") return GetTargetPropertyType(property, targetPropertyName) ?? "decimal";
-
-        var baseType = GetTargetPropertyType(property, targetPropertyName) ?? "decimal";
+        if (attributeType == "Count")
+            return "int";
+        if (attributeType is "Min" or "Max")
+            return "double";
 
         return attributeType switch
         {
-            "Sum" when baseType is "int" or "short" or "byte" => "long",
-            "Sum" when baseType == "long" => "decimal",
-            "Average" when baseType == "float" => "double",
-            "Average" when baseType is "int" or "short" or "byte" or "long" => "decimal",
-            _ => baseType
+            "Sum" => "double",
+            "Average" => "double",
+            _ => "int"
         };
-    }
-
-    private static string? GetTargetPropertyType(IPropertySymbol property, string? targetPropertyName)
-    {
-        if (targetPropertyName == null ||
-            property.Type is not INamedTypeSymbol { TypeArguments.Length: > 0 } namedType ||
-            namedType.TypeArguments[0] is not INamedTypeSymbol itemType)
-        {
-            return null;
-        }
-
-        return itemType.GetMembers(targetPropertyName)
-            .OfType<IPropertySymbol>()
-            .FirstOrDefault()?
-            .Type.ToDisplayString();
     }
 
     private static string? GetAttributeArgumentValue(AttributeData attr, string argumentName)
@@ -386,19 +353,14 @@ public class ReadModelGenerator : IIncrementalGenerator
 
             var typeString = attribute.ConstructorArguments[0].Value?.ToString();
             var propertyName = attribute.ConstructorArguments[1].Value?.ToString();
-            var isignoreMapping = Convert.ToBoolean(attribute.ConstructorArguments[2].Value);
 
             if (string.IsNullOrWhiteSpace(typeString) || string.IsNullOrWhiteSpace(propertyName))
                 continue;
 
             if (!IsValidType(typeString, ValidPrimitiveTypes))
                 continue;
-            var propDefinition = $"public {typeString} {propertyName} {{ get; set; }}";
-            if (isignoreMapping)
-            {
-                propDefinition = "[Jinget.SourceGenerator.Common.Attributes.IgnoreMapping]" + "\r\n\t" + propDefinition;
-            }
-            yield return propDefinition;
+
+            yield return $"public {typeString} {propertyName} {{ get; set; }}";
         }
     }
 
