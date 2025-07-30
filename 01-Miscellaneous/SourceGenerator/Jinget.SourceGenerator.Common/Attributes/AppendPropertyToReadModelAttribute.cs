@@ -10,8 +10,9 @@ public sealed class AppendPropertyToReadModelAttribute : Attribute
 {
     public string TypeString { get; }
     public string PropertyName { get; }
+    public bool ignoreMapping { get; }
 
-    public AppendPropertyToReadModelAttribute(string typeString, string propertyName)
+    public AppendPropertyToReadModelAttribute(string typeString, string propertyName, bool ignoreMapping = true)
     {
         if (string.IsNullOrWhiteSpace(typeString))
         {
@@ -25,5 +26,6 @@ public sealed class AppendPropertyToReadModelAttribute : Attribute
 
         TypeString = typeString;
         PropertyName = propertyName;
+        ignoreMapping = ignoreMapping;
     }
 }

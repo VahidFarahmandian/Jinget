@@ -54,7 +54,7 @@ namespace Jinget.SourceGenerator.Tests.Generators
 
             Assert.AreEqual("private", ((PropertyDeclarationSyntax)classDeclaration.Members.First()).AccessorList?.Accessors.Where(x => x.Keyword.ToString() == "set").First().Modifiers.First().Value);
 
-            Assert.AreEqual(11, tree.GetPropertyNames().Count());
+            Assert.AreEqual(13, tree.GetPropertyNames().Count());
         }
 
         private CSharpCompilation CreateCompilation()

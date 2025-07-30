@@ -9,3 +9,10 @@ public class StudentScoreModel
 
     public StudentModel Student { get; set; }
 }
+
+public class ReadOnlyStudentScoreModel
+{
+    public int StudentId { get; set; }
+
+    public ReadOnlyStudentModel Student { get; set; }
+}

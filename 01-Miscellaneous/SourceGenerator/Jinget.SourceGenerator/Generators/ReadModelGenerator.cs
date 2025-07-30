@@ -250,9 +250,9 @@ public class ReadModelGenerator : IIncrementalGenerator
         var setter = "set";
         var setterAccessibility = property.SetMethod!.DeclaredAccessibility.StringfyAccessibility();
         if (setterAccessibility != "public")
-            getter = $"{setterAccessibility} set";
+            setter = $"{setterAccessibility} set";
 
-        return $"{getter}; {setter}";
+        return $"{getter}; {setter};";
     }
 
     private static IEnumerable<string> GenerateAggregationProperties(IPropertySymbol property)
@@ -304,13 +304,20 @@ public class ReadModelGenerator : IIncrementalGenerator
         var targetPropertyName = GetAttributeArgumentValue(attr, "aggregatePropertyName");
         var propertyName = customName ?? $"{attributeType}_{suffix ?? property.Name}";
 
+        var isignoreMapping = Convert.ToBoolean(GetAttributeArgumentValue(attr, "ignoreMapping"));
+
         if (targetPropertyName != null && string.IsNullOrWhiteSpace(customName))
         {
             propertyName += $"_{targetPropertyName}";
         }
 
         var propertyType = GetAggregationPropertyType(attributeType, property, targetPropertyName);
-        return $"public {propertyType} {propertyName} {{ get; set; }}";
+        var propDefinition = $"public {propertyType} {propertyName} {{ get; set; }}";
+        if (isignoreMapping)
+        {
+            propDefinition = "[Jinget.SourceGenerator.Common.Attributes.IgnoreMapping]" + "\r\n\t" + propDefinition;
+        }
+        return propDefinition;
     }
 
     private static string GetAggregationPropertyType(
@@ -379,14 +386,19 @@ public class ReadModelGenerator : IIncrementalGenerator
 
             var typeString = attribute.ConstructorArguments[0].Value?.ToString();
             var propertyName = attribute.ConstructorArguments[1].Value?.ToString();
+            var isignoreMapping = Convert.ToBoolean(attribute.ConstructorArguments[2].Value);
 
             if (string.IsNullOrWhiteSpace(typeString) || string.IsNullOrWhiteSpace(propertyName))
                 continue;
 
             if (!IsValidType(typeString, ValidPrimitiveTypes))
                 continue;
-
-            yield return $"public {typeString} {propertyName} {{ get; set; }}";
+            var propDefinition = $"public {typeString} {propertyName} {{ get; set; }}";
+            if (isignoreMapping)
+            {
+                propDefinition = "[Jinget.SourceGenerator.Common.Attributes.IgnoreMapping]" + "\r\n\t" + propDefinition;
+            }
+            yield return propDefinition;
         }
     }
 

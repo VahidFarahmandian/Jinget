@@ -16,6 +16,13 @@ internal static class ISymbolExtensions
             attr.AttributeClass?.Name == "IgnoreReadModelConversionAttribute");
     }
 
+    internal static bool IsIgnoreMapping(this ISymbol symbol)
+    {
+        return symbol.GetAttributes().Any(attr =>
+            attr.AttributeClass?.Name == "IgnoreMapping" ||
+            attr.AttributeClass?.Name == "IgnoreMappingAttribute");
+    }
+
     internal static bool PreserveOriginalType(this ISymbol symbol)
     {
         return symbol.GetAttributes().Any(attr =>

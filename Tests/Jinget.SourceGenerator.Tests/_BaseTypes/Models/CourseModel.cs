@@ -15,3 +15,13 @@ public class CourseModel : IAggregateRoot
     [AppendAttributeToReadModel(typeof(JsonIgnoreAttribute))]
     public ICollection<StudentModel> Students { get; set; }
 }
+
+public class ReadOnlyCourseModel : IAggregateRoot
+{
+    public string Title { get; set; }
+
+    [IgnoreMapping]
+    public int StudentsCount { get; set; }
+    [JsonIgnore]
+    public ICollection<ReadOnlyStudentModel> Students { get; set; }
+}

@@ -15,3 +15,8 @@ public abstract class TraceBaseEntity<TModel, TKey> : BaseEntity<TKey>
 {
     public TModel Trace { get; set; }
 }
+
+public abstract class ReadOnlyTraceBaseEntity<TModel, TKey> : BaseEntity<TKey>
+{
+    public TModel Trace { get; set; }
+}

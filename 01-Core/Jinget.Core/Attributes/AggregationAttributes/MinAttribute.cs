@@ -1,8 +1,8 @@
 ﻿namespace Jinget.Core.Attributes.AggregationAttributes;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-public class MinAttribute(string aggregatePropertyName, string? generatedPropertyName = null) : Attribute
+public class MinAttribute(string aggregatePropertyName, string? generatedPropertyName = null, bool ignoreMapping = true) :
+    BaseAggregationAttribute(generatedPropertyName, ignoreMapping)
 {
     public string AggregatePropertyName { get; } = aggregatePropertyName;
-    public string? GeneratedPropertyName { get; } = generatedPropertyName;
 }

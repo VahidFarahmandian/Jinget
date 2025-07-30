@@ -84,8 +84,10 @@ public class ReadModelMappingConfigurationGenerator : IIncrementalGenerator
                 var modelName = type.GetAttributeNamedArgument<string>(compilation, "GenerateReadModelMappingConfiguration", "Model", "");
                 modelName = string.IsNullOrWhiteSpace(modelName) ? baseType!.TypeArguments[0].Name : modelName;
                 var originalModelName = compilation.FindTypeInReferencedAssemblies(modelName);
+
                 var newModelName = $"ReadOnly{originalModelName!.Name}";
                 var fullyQualifiedNewModelName = $"{originalModelName.ContainingNamespace}.{newModelName}";
+                var newModelNameType= compilation.FindTypeInReferencedAssemblies(fullyQualifiedNewModelName);
 
                 string baseTypeName="";
 
@@ -99,12 +101,28 @@ public class ReadModelMappingConfigurationGenerator : IIncrementalGenerator
                     baseTypeName = $"{baseType.Name}<{fullyQualifiedNewModelName}>";
                 }
 
+                var ignoredProperties = GenerateIgnoredProperties(newModelNameType).ToList();
+
                 var newMappingConfigureMethodBody = originalMappingConfigureMethodBody!
+                //add builder.Ignore() for properties which are appended to readonly model(and does not exists in model)
+                .AddIgnoreMappingStatements(ignoredProperties)
+
+                //replace //ignorethisline comment's statements
                 .ReplaceIgnoredStatements()
+                
+                //remove all comments from method body
                 .RemoveAllComments()
+
+                //replace generic types in method bodies like: builder.MapColumnsByName<SampleModel, Guid>();
                 .ReplaceGenericArgumentsInMethodBody(compilation)
+
+                //replace model names in method body like nameod(SampleModel)
                 .ReplaceModelNamesInMethodBody(compilation)
+
+                //replace model names in lambda expressions like HasForeignKey((SampleModel x) => x.Id)
                 .ReplaceModelNamesInLambda(compilation)
+
+                //remove extra whitespaces from method body
                 .RemoveExtraWhitespace();
 
                 // Extract the method body as a string and remove the outer braces
@@ -151,5 +169,13 @@ public class {newClassName}: {baseTypeName}
             input = input.Substring(0, input.Length - 1).Trim();
         }
         return input;
+    }
+
+    private static IEnumerable<IPropertySymbol> GenerateIgnoredProperties(INamedTypeSymbol type)
+    {
+        return type.GetMembers()
+            .Where(m => m.Kind == SymbolKind.Property)
+            .OfType<IPropertySymbol>()
+            .Where(p => p.IsIgnoreMapping()).ToList();
     }
 }

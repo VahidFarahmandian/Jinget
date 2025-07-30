@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -184,5 +185,18 @@ internal static class SyntaxNodeExtensions
         return node.ReplaceTrivia(
             node.DescendantTrivia().Where(t => t.IsKind(SyntaxKind.EndOfLineTrivia)),
             (originalTrivia, _) => SyntaxFactory.Space);
+    }
+
+    internal static SyntaxNode AddIgnoreMappingStatements(this BlockSyntax node, List<IPropertySymbol> ignoredProperties)
+    {
+        if (ignoredProperties == null || ignoredProperties.Any() == false)
+            return node;
+
+        var newBody = node.AddStatements(
+            [.. ignoredProperties.Select(prop =>
+                SyntaxFactory.ParseStatement($"\t\tbuilder.Ignore(\"{prop.Name}\");\r\n")
+            )]
+        );
+        return newBody;
     }
 }
