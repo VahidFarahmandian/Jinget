@@ -109,10 +109,24 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
         StringContent? bodyContent = null;
         if (requestBody is not null)
         {
-            if (IsXmlContentType(requestHeaders)) bodyContent = new StringContent(requestBody is string ? requestBody.ToString() : SerializeToXml(requestBody), Encoding.UTF8, requestHeaders["Content-Type"]);
-            else if (IsJsonContentType(requestHeaders)) bodyContent = new StringContent(requestBody.Serialize(), Encoding.UTF8, MediaTypeNames.Application.Json);
-            else bodyContent = new StringContent(requestBody.ToString(), Encoding.UTF8, GetContentTypeValue(requestHeaders));
+            if (IsXmlContentType(requestHeaders))
+            {
+                bodyContent = new StringContent(requestBody is string ? requestBody.ToString() : SerializeToXml(requestBody), Encoding.UTF8, requestHeaders["Content-Type"]);
+            }
+            else if (IsJsonContentType(requestHeaders))
+            {
+                bodyContent = new StringContent(requestBody.Serialize(), Encoding.UTF8, MediaTypeNames.Application.Json);
+            }
+            else if (IsJsonPatchContentType(requestHeaders))
+            {
+                bodyContent = new StringContent(requestBody.Serialize(), Encoding.UTF8, MediaTypeNames.Application.JsonPatch);
+            }
+            else
+            {
+                bodyContent = new StringContent(requestBody.ToString(), Encoding.UTF8, GetContentTypeValue(requestHeaders));
+            }
             requestHeaders?.Remove(GetContentTypeHeaderName(requestHeaders));
+
         }
 
         return await httpClient.PostAsync(GetRequestUri(requestUrl), bodyContent);

@@ -1,5 +1,7 @@
-﻿using Jinget.Handlers.ExternalServiceHandlers.Extensions;
+﻿using Jinget.Core.Utilities.Json;
+using Jinget.Handlers.ExternalServiceHandlers.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Mime;
 
 namespace Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler;
 
@@ -198,7 +200,44 @@ public class JingetServiceHandlerTests
         Assert.IsTrue(exceptionNotOccurred);
         Assert.IsTrue(responseDeserialized);
     }
-
+    //[TestMethod]
+    //public async Task should_call_json_path()
+    //{
+    //    var jingetServiceHandler = new JingetServiceHandler<AddResponse>(serviceProvider, "https://dev.azure.com/farahmandian/MSFarsi/_apis/wit/workitems/$Task?api-version=7.1");
+    //    List<NewWorkItemModel> properties =
+    //    [
+    //        new NewWorkItemModel()
+    //        {
+    //            path="/fields/System.Title",
+    //            value="Sample WorkItem"
+    //        },
+    //        new NewWorkItemModel()
+    //        {
+    //            path="/fields/System.Description",
+    //            value="Sample description"
+    //        },
+    //        new NewWorkItemModel()
+    //        {
+    //            path="/fields/System.History",
+    //            value="Sample comment"
+    //        },
+    //        new NewWorkItemModel()
+    //        {
+    //            path="/fields/System.AssignedTo",
+    //            value="farahmandian2011@gmail.com"
+    //        },
+    //        new NewWorkItemModel()
+    //        {
+    //            path="/fields/System.AreaPath",
+    //            value="MSFarsi"
+    //        }
+    //    ];
+    //    var result = await jingetServiceHandler.PostAsync("",properties, new Dictionary<string, string>
+    //        {
+    //            {"Authorization","Basic ..." },
+    //            {"Content-Type","application/json-patch+json" }
+    //        });
+    //}
     [TestMethod]
     public async Task PostAsync_ShouldDeserializeSoapResponse_AndTriggerEvents_WhenSoapCallIsSuccessful()
     {
@@ -284,4 +323,12 @@ public class JingetServiceHandlerTests
         Assert.IsTrue(serviceCalled);
         Assert.IsTrue(rawResponseReceived);
     }
+}
+public class NewWorkItemModel
+{
+
+    public string op { get; } = "add";
+    public string path { get; set; }
+    public string value { get; set; }
+    public string? from { get; set; } = null;
 }
