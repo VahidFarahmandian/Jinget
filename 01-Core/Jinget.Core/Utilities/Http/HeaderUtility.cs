@@ -18,7 +18,8 @@ public class HeaderUtility
     {
         if (HasContentType(headers))
         {
-            return headers.FirstOrDefault(x => string.Equals(x.Key, "Content-Type", StringComparison.OrdinalIgnoreCase)).Value;
+            var headerValue = headers.FirstOrDefault(x => string.Equals(x.Key, "Content-Type", StringComparison.OrdinalIgnoreCase)).Value;
+            return headerValue.Split(';', StringSplitOptions.RemoveEmptyEntries)[0].Trim();
         }
         return "";
     }
@@ -50,13 +51,13 @@ public class HeaderUtility
     public static bool IsJsonContentType(Dictionary<string, string> headers)
         =>
         HasContentType(headers) &&
-        GetContentTypeValue(headers).StartsWith(MediaTypeNames.Application.Json, StringComparison.OrdinalIgnoreCase);
+        GetContentTypeValue(headers).Equals(MediaTypeNames.Application.Json, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
-    /// check if <seealso cref="MediaTypeNames.Application.mu"/> exists in the given header collection
+    /// check if <seealso cref="MediaTypeNames.Multipart.FormData"/> exists in the given header collection
     /// </summary>
     public static bool IsMultiPartFormDataContentType(Dictionary<string, string> headers)
         =>
         HasContentType(headers) &&
-        GetContentTypeValue(headers).StartsWith(MediaTypeNames.Application.Json, StringComparison.OrdinalIgnoreCase);
+        GetContentTypeValue(headers).Equals(MediaTypeNames.Multipart.FormData, StringComparison.OrdinalIgnoreCase);
 }
