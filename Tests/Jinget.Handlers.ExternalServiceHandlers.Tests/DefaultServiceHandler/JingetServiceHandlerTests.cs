@@ -201,46 +201,46 @@ public class JingetServiceHandlerTests
         Assert.IsTrue(exceptionNotOccurred);
         Assert.IsTrue(responseDeserialized);
     }
-    [TestMethod]
-    public async Task should_call_json_path()
-    {
-        var jingetServiceHandler = new JingetServiceHandler<AddResponse>(serviceProvider, "https://dev.azure.com/farahmandian/MSFarsi/");
-        List<NewWorkItemModel> properties =
-        [
-            new NewWorkItemModel()
-            {
-                path="/fields/System.Title",
-                value="Sample WorkItem"
-            },
-            new NewWorkItemModel()
-            {
-                path="/fields/System.Description",
-                value="Sample description"
-            },
-            new NewWorkItemModel()
-            {
-                path="/fields/System.History",
-                value="Sample comment"
-            },
-            new NewWorkItemModel()
-            {
-                path="/fields/System.AssignedTo",
-                value="farahmandian2011@gmail.com"
-            },
-            new NewWorkItemModel()
-            {
-                path="/fields/System.AreaPath",
-                value="MSFarsi"
-            }
-        ];
-        var result = await jingetServiceHandler.PostAsync<NewWorkItemViewModel>("_apis/wit/workitems/$Task?api-version=7.1", 
-            properties, 
-            new Dictionary<string, string>
-            {
-                {"Content-Type","application/json-patch+json" },
-                {"Authorization","Basic OjFueTZmTWZ4bVIwODZjVHBHeDc3NERxTnpEa3AzWlNLRU1IOHBsaXQ4RHJKTGR2VXp0TVJKUVFKOTlCR0FDQUFBQUFBQUFBQUFBQUdBWkRPM0pTSg==" },
-            });
-    }
+    //[TestMethod]
+    //public async Task should_call_json_path()
+    //{
+    //    var jingetServiceHandler = new JingetServiceHandler<AddResponse>(serviceProvider, "https://dev.azure.com/farahmandian/MSFarsi/");
+    //    List<NewWorkItemModel> properties =
+    //    [
+    //        new NewWorkItemModel()
+    //        {
+    //            path="/fields/System.Title",
+    //            value="Sample WorkItem"
+    //        },
+    //        new NewWorkItemModel()
+    //        {
+    //            path="/fields/System.Description",
+    //            value="Sample description"
+    //        },
+    //        new NewWorkItemModel()
+    //        {
+    //            path="/fields/System.History",
+    //            value="Sample comment"
+    //        },
+    //        new NewWorkItemModel()
+    //        {
+    //            path="/fields/System.AssignedTo",
+    //            value="farahmandian2011@gmail.com"
+    //        },
+    //        new NewWorkItemModel()
+    //        {
+    //            path="/fields/System.AreaPath",
+    //            value="MSFarsi"
+    //        }
+    //    ];
+    //    var result = await jingetServiceHandler.PostAsync<NewWorkItemViewModel>("_apis/wit/workitems/$Task?api-version=7.1", 
+    //        properties, 
+    //        new Dictionary<string, string>
+    //        {
+    //            {"Content-Type","application/json-patch+json" },
+    //            {"Authorization","Basic OjFueTZmTWZ4bVIwODZjVHBHeDc3NERxTnpEa3AzWlNLRU1IOHBsaXQ4RHJKTGR2VXp0TVJKUVFKOTlCR0FDQUFBQUFBQUFBQUFBQUdBWkRPM0pTSg==" },
+    //        });
+    //}
     [TestMethod]
     public async Task PostAsync_ShouldDeserializeSoapResponse_AndTriggerEvents_WhenSoapCallIsSuccessful()
     {
