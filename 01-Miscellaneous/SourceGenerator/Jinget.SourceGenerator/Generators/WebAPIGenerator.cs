@@ -80,7 +80,6 @@ using System.Linq;
 using System.Threading;
 using Jinget.Core.Types;
 using Jinget.Core.Utilities.Expressions;
-using Jinget.Core.Types;
 namespace Jinget.SourceGenerator.WebApis;
 
 public static class {outputClassName} 

@@ -1,6 +1,6 @@
 ﻿using Jinget.SourceGenerator.Common.Extensions;
 using Jinget.SourceGenerator.Generators;
-using Microsoft.AspNetCore.Routing;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
