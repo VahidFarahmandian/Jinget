@@ -4,6 +4,7 @@
 #nullable enable
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -22,6 +23,10 @@ internal static class INamedTypeSymbolExtensions
         while (true)
         {
             if (IsPrimitive(type))
+            {
+                return true;
+            }
+            if (type.IsJingetValueObject())
             {
                 return true;
             }
@@ -69,6 +74,12 @@ internal static class INamedTypeSymbolExtensions
     {
         if (t == null) return false;
         return t.SpecialType >= SpecialType.System_Boolean && t.SpecialType <= SpecialType.System_Double;
+    }
+
+    private static bool IsJingetValueObject(this INamedTypeSymbol? t)
+    {
+        if (t == null || t.BaseType == null) return false;
+        return t.BaseType.ToDisplayString() == "Jinget.Core.Types.ValueObject.JingetValueObject";
     }
 
     /// <summary>

@@ -1,7 +1,10 @@
 ﻿using Jinget.SourceGenerator.Common.Attributes;
 using Jinget.SourceGenerator.Tests._BaseTypes.Models;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+using System.Text.Json;
 
 namespace Jinget.SourceGenerator.Tests._BaseTypes.MappingConfigurations;
 
@@ -19,6 +22,13 @@ public class StudentMappingConfiguration : IEntityTypeConfiguration<StudentModel
 
         builder.Property(t => t.Gender).HasColumnName("Gender").HasConversion<byte>().IsRequired();
         builder.Property<Guid>(x => x.UniqueId).IsRequired();
+
+        builder.Property(x => x.OtherAttibutes)
+        .HasColumnType("nvarchar(max)")
+        .HasConversion(
+            v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
+            v => JsonSerializer.Deserialize<ICollection<string>>(v, new JsonSerializerOptions()) ?? new List<string>()
+        );
 
         //ReadModelMapping:IgnoreThisLine
         builder.Property(x => x.Name)

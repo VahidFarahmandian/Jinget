@@ -33,7 +33,9 @@ public class StudentModel : TraceBaseEntity<Trace, int>, IAggregateRoot, ITenant
     [Min("MinScores")]
     [Max("MaxScores")]
     public ICollection<StudentScoreModel> Scores { get; set; }
-    
+
+    public ICollection<string> OtherAttibutes { get; set; }
+
     public string TenantId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }
 
@@ -47,6 +49,7 @@ public class ReadOnlyStudentModel : Jinget.SourceGenerator.Tests._BaseTypes.Mode
     [Jinget.SourceGenerator.Common.Attributes.IgnoreMapping]
     public int CoursesCount { get; set; }
     public ICollection<Jinget.SourceGenerator.Tests._BaseTypes.Models.ReadOnlyStudentScoreModel> Scores { get; set; }
+    public ICollection<string> OtherAttibutes { get; set; }
     [Jinget.SourceGenerator.Common.Attributes.IgnoreMapping]
     public decimal SumOfScores { get; set; }
     [Jinget.SourceGenerator.Common.Attributes.IgnoreMapping]
