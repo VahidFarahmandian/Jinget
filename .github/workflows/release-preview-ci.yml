@@ -23,6 +23,6 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release /p:Version=${VERSION} --no-build
     - name: Pack
-      run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output ./artifacts
+      run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output ./artifacts --include-symbols
     - name: Publish the package
       run: dotnet nuget push ./artifacts/**.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_GITHUB_API_KEY}} --skip-duplicate
