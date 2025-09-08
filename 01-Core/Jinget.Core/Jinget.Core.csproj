@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>CS1591;CS1734;CS1573</NoWarn>
 		<LangVersion>latestmajor</LangVersion>
 		<Nullable>enable</Nullable>
 		<Authors>Vahid Farahmandian</Authors>
@@ -20,7 +22,7 @@
 		<PackageReference Include="Mapster" Version="7.4.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.14.15" />
-		
+
 		<PackageReference Include="SoapFormatter" Version="1.1.9" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.1" />
 		<PackageReference Include="System.CodeDom" Version="9.0.6" />

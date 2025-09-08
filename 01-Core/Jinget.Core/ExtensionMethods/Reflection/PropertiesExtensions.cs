@@ -30,7 +30,7 @@ public static class PropertiesExtensions
     /// Determines whether a given type is considered a simple type.
     /// Simple types include primitive types, decimal, string, Guid, DateTime, enums, byte arrays, and their nullable counterparts.
     /// </summary>
-    /// <param name="type">The type to check.</param>
+    /// <param name="t">The type to check.</param>
     /// <returns>True if the type is a simple type; otherwise, false.</returns>
     public static bool IsSimpleType(this Type? t)
     {

@@ -5,13 +5,6 @@ public abstract class JingetValueObject : IEquatable<JingetValueObject>
     /// <summary>
     /// Gets the properties values of the object for equality comparison.
     /// </summary>
-    /// <example>
-    ///protected override IEnumerable<object> GetAtomicValues()
-    ///{
-    ///    yield return Property1;
-    ///    yield return Propert2;
-    ///}
-    /// </example>
     /// <returns>An enumerable of objects that represent the value object's values.</returns>
     protected virtual IEnumerable<object> YieldProperties()
     {

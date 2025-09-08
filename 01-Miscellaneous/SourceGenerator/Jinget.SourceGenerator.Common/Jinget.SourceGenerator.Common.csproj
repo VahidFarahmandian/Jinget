@@ -2,6 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>CS1591;CS1734;CS1573</NoWarn>
 		<LangVersion>Latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<Authors>Vahid Farahmandian</Authors>

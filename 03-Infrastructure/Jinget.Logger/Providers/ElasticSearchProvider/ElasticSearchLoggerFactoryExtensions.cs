@@ -8,8 +8,6 @@ public static class ElasticSearchLoggerFactoryExtensions
     /// <summary>
     ///     Adds a elastic search logger to the factory.
     /// </summary>
-    /// <param name="builder">The <see cref="ILoggingBuilder" /> to use.</param>
-    /// <param name="configure">Configure an instance of the <see cref="DbLoggerOptions" /> to set logging options</param>
     public static ILoggingBuilder AddElasticSearch(this ILoggingBuilder builder, Action<ElasticSearchLoggerOptions> configure)
     {
         ArgumentNullException.ThrowIfNull(nameof(configure));

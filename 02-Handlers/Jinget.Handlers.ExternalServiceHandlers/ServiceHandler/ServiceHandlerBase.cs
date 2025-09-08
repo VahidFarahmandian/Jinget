@@ -17,7 +17,6 @@ public abstract class ServiceHandlerBase
     /// </summary>
     /// <param name="baseUri">The base URI for the HttpClient.</param>
     /// <param name="timeout">The timeout for HTTP requests.</param>
-    /// <param name="ignoreSslErrors">A value indicating whether to ignore SSL errors.</param>
     protected ServiceHandlerBase(IServiceProvider serviceProvider, string baseUri, string clientName = "jinget-client", TimeSpan? timeout = null)
     {
         HttpClientFactory = serviceProvider.GetRequiredService<JingetHttpClientFactory>();
@@ -36,7 +35,6 @@ public abstract class ServiceHandlerBase
 /// </remarks>
 /// <param name="baseUri">The base URI for the HttpClient.</param>
 /// <param name="timeout">The timeout for HTTP requests.</param>
-/// <param name="ignoreSslErrors">A value indicating whether to ignore SSL errors.</param>
 public abstract class ServiceHandler<T>(IServiceProvider serviceProvider, string baseUri, string clientName = "jinget-client", TimeSpan? timeout = null) : ServiceHandlerBase(serviceProvider, baseUri, clientName, timeout) where T : new()
 {
     /// <summary>

@@ -11,7 +11,6 @@ public class ZipUtility
     /// <param name="path">location to store compressed files</param>
     /// <param name="password">compressed files can also become password protected</param>
     /// <param name="compressionLevel">It is up to you to choose between best speed to high compression</param>
-    /// <param name="encryption">compressed files can also become encrypted too!</param>
     public static async Task CompressAsync(
         FileInfo[] files,
         string path,

@@ -9,8 +9,6 @@ public class JsonUtility
     /// <summary>
     /// check if given string is a valid json string or not.
     /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
     public static bool IsValid(string? jsonString)
     {
         if (string.IsNullOrWhiteSpace(jsonString))
@@ -67,7 +65,6 @@ public class JsonUtility
     /// <summary>
     /// merge <paramref name="json1"/> with <paramref name="json2"/> using <paramref name="propertyName"/> value
     /// </summary>
-    /// <returns></returns>
     public static string Merge(string json1, string json2, string propertyName, bool unescapeResult = true)
     {
         try

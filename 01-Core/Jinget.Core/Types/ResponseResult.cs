@@ -66,9 +66,8 @@ public class ResponseResult<TResponseModel>
         EffectedRowsCount = effectedRowsCount;
 
     /// <summary>
-    /// Maps a <see cref="ResponseResult`TSource`"/> to a <see cref="ResponseResult`TDestination`"/>.
+    /// Maps to a <see cref="ResponseResult_TDestination"/>.
     /// </summary>
-    /// <typeparam name="TSource">The type of the source data.</typeparam>
     /// <typeparam name="TDestination">The type of the destination data.</typeparam>
     /// <param name="input">The input <see cref="ResponseResult{TSource}"/> to be mapped.</param>
     /// <returns>A new <see cref="ResponseResult{TDestination}"/> with the mapped data.</returns>

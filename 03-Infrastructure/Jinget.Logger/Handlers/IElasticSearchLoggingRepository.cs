@@ -20,8 +20,6 @@ public interface IElasticSearchLoggingRepository
     /// <summary>
     /// Get latest log
     /// </summary>
-    /// <param name="orderBy"></param>
-    /// <param name="indexName"></param>
     /// <returns></returns>
     Task<LogModel?> GetLatestAsync(Func<SortDescriptor<LogModel>, IPromise<IList<ISort>>>? orderBy = null, string partitionKey = "");
 

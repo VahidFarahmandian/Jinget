@@ -1,7 +1,7 @@
 ﻿namespace Jinget.Core.Security.AES;
 
 /// <summary>
-/// Encrypt & Decrypt string using System.Security.Cryptography.RijndaelManaged algorithm
+/// Encrypt and Decrypt string using System.Security.Cryptography.RijndaelManaged algorithm
 /// </summary>
 public static class AESManager
 {
