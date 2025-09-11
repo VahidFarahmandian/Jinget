@@ -5,8 +5,8 @@ namespace Jinget.SourceGenerator.Common.Attributes;
 /// <summary>
 /// Specifies attributes that should be applied to the generated read model property
 /// </summary>
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-public sealed class AppendAttributeToReadModelAttribute : Attribute
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
+public sealed class AppendAttributeToPropertyAttribute : Attribute
 {
     /// <summary>
     /// The attribute to apply to the read model property
@@ -16,7 +16,7 @@ public sealed class AppendAttributeToReadModelAttribute : Attribute
     /// </summary>
     public string AttributeText { get; }
 
-    public AppendAttributeToReadModelAttribute(string attributeText)
+    public AppendAttributeToPropertyAttribute(string attributeText)
     {
         if (string.IsNullOrWhiteSpace(attributeText))
         {
@@ -26,7 +26,7 @@ public sealed class AppendAttributeToReadModelAttribute : Attribute
     }
 
     // Alternative constructor that takes a Type
-    public AppendAttributeToReadModelAttribute(Type attributeType)
+    public AppendAttributeToPropertyAttribute(Type attributeType)
     {
         if (attributeType == null)
             throw new ArgumentNullException(nameof(attributeType));

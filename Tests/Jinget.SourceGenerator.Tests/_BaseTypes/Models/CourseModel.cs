@@ -12,7 +12,7 @@ public class CourseModel : IAggregateRoot
     public string Title { get; set; }
 
     [Count("StudentsCount")]
-    [AppendAttributeToReadModel(typeof(JsonIgnoreAttribute))]
+    [AppendAttributeToProperty(typeof(JsonIgnoreAttribute))]
     public ICollection<StudentModel> Students { get; set; }
 }
 

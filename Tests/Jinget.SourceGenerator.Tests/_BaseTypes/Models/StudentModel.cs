@@ -2,11 +2,14 @@
 using Jinget.Core.Contracts;
 using Jinget.SourceGenerator.Common.Attributes;
 
+using System.Text.Json.Serialization;
+
 namespace Jinget.SourceGenerator.Tests._BaseTypes.Models;
 
 [GenerateWebAPI]
 [GenerateReadModel(PreserveBaseTypes = false, PreserveBaseInterfaces = true)]
 [AppendPropertyToReadModel("bool", "IsSuspended", true)]
+[AppendAttributeToReadModel("CacheTypeIdentifier(\"sample\")")]
 public class StudentModel : TraceBaseEntity<Trace, int>, IAggregateRoot, ITenantAware, IEntity
 {
     [PreserveOriginalGetterSetter]
@@ -38,7 +41,16 @@ public class StudentModel : TraceBaseEntity<Trace, int>, IAggregateRoot, ITenant
 
     public string TenantId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 }
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+public class CacheTypeIdentifier : Attribute
+{
+    public string Identifier { get; set; }
 
+    public CacheTypeIdentifier(string identifier)
+    {
+        Identifier = identifier;
+    }
+}
 public class ReadOnlyStudentModel : Jinget.SourceGenerator.Tests._BaseTypes.Models.ReadOnlyTraceBaseEntity<Jinget.SourceGenerator.Tests._BaseTypes.Models.Trace, int>, Jinget.Core.Contracts.IAggregateRoot, Jinget.Core.Contracts.ITenantAware, Jinget.Core.Contracts.IEntity
 {
     public string Name { get; private set; }

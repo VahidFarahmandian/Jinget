@@ -66,13 +66,15 @@ public class ReadModelGenerator : IIncrementalGenerator
     {
         var className = $"ReadOnly{type.Name}";
         var inheritedTypes = GetInheritanceString(type, compilation);
-        var properties = GeneratePropertiesForType(type);
+        var classLevelAttributes = ProcessAppendAttributeToReadModelAttributes(compilation, type);
+        var properties = GeneratePropertiesForType(compilation, type);
         var newProperties = GetAppendedPropertiesFromAttributes(type);
         var usingNamespaces = GetBaseNamespaces(type, compilation);
 
         var classContent = $$"""
             {{usingNamespaces}}
             namespace {{type.ContainingNamespace}};
+            {{classLevelAttributes}}
             public class {{className}} : {{inheritedTypes}}
             {
                 {{string.Join("\r\n\t", properties.Concat(newProperties))}}
@@ -147,21 +149,21 @@ public class ReadModelGenerator : IIncrementalGenerator
         return string.Join(", ", new[] { baseType }.Concat(interfaces).Where(s => !string.IsNullOrEmpty(s)).Distinct());
     }
 
-    private static IEnumerable<string> GeneratePropertiesForType(INamedTypeSymbol type)
+    private static IEnumerable<string> GeneratePropertiesForType(Compilation compilation, INamedTypeSymbol type)
     {
         return type.GetMembers()
             .Where(m => m.Kind == SymbolKind.Property)
             .OfType<IPropertySymbol>()
             .Where(p => !p.IsIgnored())
-            .SelectMany(GeneratePropertyDefinitions);
+            .SelectMany(x => GeneratePropertyDefinitions(compilation, x));
     }
 
-    private static IEnumerable<string> GeneratePropertyDefinitions(IPropertySymbol property)
+    private static IEnumerable<string> GeneratePropertyDefinitions(Compilation compilation, IPropertySymbol property)
     {
         var propertyDefinitions = new List<string>();
 
         // Add attributes
-        var attributes = ProcessReadModelAttributes(property);
+        var attributes = ProcessAppendAttributeToPropertyAttributes(compilation, property);
         if (!string.IsNullOrEmpty(attributes))
         {
             propertyDefinitions.Add(attributes.Trim());
@@ -396,17 +398,27 @@ public class ReadModelGenerator : IIncrementalGenerator
         }
     }
 
-    private static string ProcessReadModelAttributes(IPropertySymbol property)
+    private static string ProcessAppendAttributeToPropertyAttributes(Compilation compilation, IPropertySymbol property)
     {
         var attributes = property.GetAttributes()
-            .Where(a => a.AttributeClass?.Name == "AppendAttributeToReadModelAttribute")
-            .Select(ProcessSingleReadModelAttribute)
+            .Where(a => a.AttributeClass?.Name == "AppendAttributeToPropertyAttribute")
+            .Select(x => ProcessSingleReadModelAttribute(compilation, x))
             .Where(a => !string.IsNullOrEmpty(a));
 
         return string.Join("\r\n", attributes);
     }
 
-    private static string ProcessSingleReadModelAttribute(AttributeData attribute)
+    private static string ProcessAppendAttributeToReadModelAttributes(Compilation compilation, INamedTypeSymbol symbol)
+    {
+        var attributes = symbol.GetAttributes()
+            .Where(a => a.AttributeClass?.Name == "AppendAttributeToReadModelAttribute")
+            .Select(x => ProcessSingleReadModelAttribute(compilation, x))
+            .Where(a => !string.IsNullOrEmpty(a));
+
+        return string.Join("\r\n", attributes);
+    }
+
+    private static string ProcessSingleReadModelAttribute(Compilation compilation, AttributeData attribute)
     {
         // Early return if no constructor arguments
         if (attribute.ConstructorArguments.IsEmpty)
@@ -420,7 +432,10 @@ public class ReadModelGenerator : IIncrementalGenerator
         // Handle simple attribute case (no parameters)
         if (!attrText.Contains('('))
         {
-            return $"[{attrText}]";
+            var attributeSymbol = compilation.FindTypeInReferencedAssemblies(attrText);
+            if (attributeSymbol == null)
+                throw new Exception($"attribute {attrText} not found in any direct/referenced assemblies");
+            return $"[{attributeSymbol.ToDisplayString()}]";
         }
 
         // Parse complex attribute with parameters
@@ -437,6 +452,9 @@ public class ReadModelGenerator : IIncrementalGenerator
 
             // Extract components
             var attributeName = attrText.Substring(0, openParenIndex);
+            var attributeSymbol = compilation.FindTypeInReferencedAssemblies(attributeName);
+            if (attributeSymbol == null)
+                throw new Exception($"attribute {attributeName} not found in any direct/referenced assemblies");
             var parameters = attrText.Substring(
                 startIndex: openParenIndex + 1,
                 length: closeParenIndex - openParenIndex - 1);
@@ -444,7 +462,7 @@ public class ReadModelGenerator : IIncrementalGenerator
             // Normalize parameter quotes
             parameters = parameters.Replace("\"\"", "\"");
 
-            return $"[{attributeName}({parameters})]";
+            return $"[{attributeSymbol.ToDisplayString()}({parameters})]";
         }
         catch
         {

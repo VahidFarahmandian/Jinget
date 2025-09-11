@@ -36,7 +36,7 @@ namespace Jinget.SourceGenerator.Tests.Generators
             {
                 Assert.Fail();
             }
-
+            
             Assert.AreEqual(1, tree.GetClassNames().Count());
             Assert.AreEqual($"ReadOnlyStudentModel", tree.GetClassNames().FirstOrDefault());
 
@@ -49,6 +49,8 @@ namespace Jinget.SourceGenerator.Tests.Generators
             }
             else
                 Assert.Fail();
+
+            Assert.IsNotNull(classDeclaration.AttributeLists.FirstOrDefault(x => x.ToString() == "[Jinget.SourceGenerator.Tests._BaseTypes.Models.CacheTypeIdentifier(\"sample\")]"));
 
             Assert.IsNotNull(classDeclaration.BaseList.Types.FirstOrDefault(x => x.ToString() == "Jinget.Core.Contracts.IAggregateRoot"));
 
