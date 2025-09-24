@@ -5,6 +5,7 @@
 /// </summary>
 public static class StringUtility
 {
+    private const string DefaultCharSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     /// <summary>
     /// Generates a random string of a specified length using a given character set.
     /// </summary>
@@ -13,17 +14,17 @@ public static class StringUtility
     /// <returns>The generated random string.</returns>
     /// <exception cref="ArgumentException">Thrown when the length is negative or too large, or when the character set is empty.</exception>
     /// <exception cref="ArgumentNullException">Thrown when the character set is null.</exception>
-    public static string GetRandomString(int length, IEnumerable<char> characterSet)
+    public static string GetRandomString(int length, IEnumerable<char>? characterSet = null)
     {
         if (length < 0)
             throw new ArgumentException("Jinget Says: length must not be negative", nameof(length));
         if (length > int.MaxValue / 8) // 250 million chars ought to be enough for anybody
             throw new ArgumentException("Jinget Says: length is too big", nameof(length));
-        if (characterSet is null)
-            throw new ArgumentNullException(nameof(characterSet));
+
+        if (characterSet == null || characterSet.ToArray().Length == 0)
+            characterSet = [.. DefaultCharSet];
+
         var characterArray = characterSet.Distinct().ToArray();
-        if (characterArray.Length == 0)
-            throw new ArgumentException("Jinget Says: characterSet must not be empty", nameof(characterSet));
 
         var bytes = new byte[length * 8];
         var result = new char[length];
@@ -78,4 +79,14 @@ public static class StringUtility
     /// </summary>
     /// <returns>A list of Farsi characters.</returns>
     public static List<char> GetFarsiChars() => ['ا', 'ب', 'پ', 'ت', 'ث', 'ج', 'چ', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'ژ', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ک', 'گ', 'ل', 'م', 'ن', 'و', 'ه', 'ی'];
+
+    public static string Normalize(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+            return string.Empty;
+
+        // Split on any whitespace, remove empties, then rejoin with a single space
+        return string.Join(" ", input.Split((char[])null, StringSplitOptions.RemoveEmptyEntries));
+    }
+
 }
