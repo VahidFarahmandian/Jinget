@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -29,7 +30,10 @@ public class JwtUtility
     public static async Task<bool> IsValidAsync(string token,
         IEnumerable<string>? validAudiences = null,
         string? validissuer = null,
-        int minuteOffset = 5)
+        int minuteOffset = 5,
+        bool validateAudience = true,
+        bool validateIssuer = true,
+        bool validateIssuerSigningKey = false)
     {
         var result = await new JwtSecurityTokenHandler().ValidateTokenAsync(token, new TokenValidationParameters()
         {
@@ -45,7 +49,7 @@ public class JwtUtility
                 return true;
             },
 
-            ValidateAudience = true,
+            ValidateAudience = validateAudience,
             ValidAudiences = validAudiences,
             AudienceValidator = (IEnumerable<string>? audiences, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
             {
@@ -58,7 +62,7 @@ public class JwtUtility
                 return true;
             },
 
-            ValidateIssuer = true,
+            ValidateIssuer = validateIssuer,
             ValidIssuer = validissuer,
             IssuerValidator = (string issuer, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
             {
@@ -72,7 +76,7 @@ public class JwtUtility
                 return resultIssuer;
             },
 
-            ValidateIssuerSigningKey = false,
+            ValidateIssuerSigningKey = validateIssuerSigningKey,
             SignatureValidator = (string token, TokenValidationParameters parameters) => new JwtSecurityToken(token)
         });
         if (result.Exception != null)

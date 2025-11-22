@@ -37,8 +37,8 @@ public static class IPUtility
 
             if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) //IPv4
             {
-                uint baseAddressInt = BitConverter.ToUInt32(ip.GetAddressBytes().Reverse().ToArray(), 0);
-                uint targetAddressInt = BitConverter.ToUInt32(targetAddress.GetAddressBytes().Reverse().ToArray(), 0);
+                uint baseAddressInt = BitConverter.ToUInt32(System.Linq.Enumerable.Reverse(ip.GetAddressBytes()).ToArray(), 0);
+                uint targetAddressInt = BitConverter.ToUInt32(System.Linq.Enumerable.Reverse(targetAddress.GetAddressBytes()).ToArray(), 0);
                 uint mask = ~(uint.MaxValue >> prefixLength);
                 return (baseAddressInt & mask) == (targetAddressInt & mask);
             }

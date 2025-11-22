@@ -2,8 +2,6 @@
 using Jinget.Core.Contracts;
 using Jinget.SourceGenerator.Common.Attributes;
 
-using System.Text.Json.Serialization;
-
 namespace Jinget.SourceGenerator.Tests._BaseTypes.Models;
 
 [GenerateWebAPI]
