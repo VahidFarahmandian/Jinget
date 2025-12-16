@@ -24,6 +24,12 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="bin\**" />
+	  <EmbeddedResource Remove="bin\**" />
+	  <None Remove="bin\**" />
+	</ItemGroup>
+
 	<!-- Standard source generator references -->
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all" />
@@ -46,7 +52,6 @@
 
 		<!-- Pack the attributes dll in the analyzers/dotnet/cs path -->
 		<None Include="$(OutputPath)\Jinget.SourceGenerator.Common.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-		<None Remove="bin\Debug\netstandard2.0\\Jinget.SourceGenerator.Common.dll" />
 		<None Remove="bin\Debug\netstandard2.0\\Jinget.SourceGenerator.Common.dll" />
 
 		<!-- Pack the attributes dll in the lib\netstandard2.0 path -->

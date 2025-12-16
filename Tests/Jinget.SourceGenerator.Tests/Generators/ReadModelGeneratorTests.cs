@@ -23,7 +23,7 @@ namespace Jinget.SourceGenerator.Tests.Generators
         public void should_generate_non_jinget_readonly_models()
         {
             var classes = _compilation?.GetTypeByMetadataName("Jinget.SourceGenerator.Tests._BaseTypes.Models.StudentModel");
-
+            
             var result = ReadModelGenerator.GenerateReadModelSources(_compilation!, [classes!]);
 
             Assert.AreEqual(1, result.Length);
@@ -56,7 +56,7 @@ namespace Jinget.SourceGenerator.Tests.Generators
 
             Assert.AreEqual("private", ((PropertyDeclarationSyntax)classDeclaration.Members.First()).AccessorList?.Accessors.Where(x => x.Keyword.ToString() == "set").First().Modifiers.First().Value);
 
-            Assert.AreEqual(15, tree.GetPropertyNames().Count());
+            Assert.AreEqual(11, tree.GetPropertyNames().Count());
         }
 
         private CSharpCompilation CreateCompilation()

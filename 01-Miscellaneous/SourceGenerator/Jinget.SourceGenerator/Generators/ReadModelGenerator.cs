@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Microsoft.CodeAnalysis;
+
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Jinget.SourceGenerator.Tests")]
 namespace Jinget.SourceGenerator.Generators;
@@ -6,18 +8,19 @@ namespace Jinget.SourceGenerator.Generators;
 [GeneratorOrder(Order = 1)]
 public class ReadModelGenerator : IIncrementalGenerator
 {
-    private static readonly HashSet<string> ValidPrimitiveTypes = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly HashSet<string> PrimitiveTypes = new(StringComparer.OrdinalIgnoreCase)
     {
         "bool", "byte", "sbyte", "char", "decimal", "double", "float",
         "int", "uint", "long", "ulong", "short", "ushort", "object",
         "string", "dynamic", "DateTime", "DateTimeOffset", "TimeSpan", "Guid"
     };
 
-    private static readonly string[] AggregationAttributes =
-        ["CountAttribute", "SumAttribute", "AverageAttribute", "MinAttribute", "MaxAttribute"];
+    //private static readonly string[] AggregationAttributes =
+    //    ["CountAttribute", "SumAttribute", "AverageAttribute", "MinAttribute", "MaxAttribute"];
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+
         var entityDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (s, _) => IsSyntaxTargetForGeneration(s),
@@ -68,7 +71,7 @@ public class ReadModelGenerator : IIncrementalGenerator
         var inheritedTypes = GetInheritanceString(type, compilation);
         var classLevelAttributes = ProcessAppendAttributeToReadModelAttributes(compilation, type);
         var properties = GeneratePropertiesForType(compilation, type);
-        var newProperties = GetAppendedPropertiesFromAttributes(type);
+        var newProperties = GetAppendedPropertiesFromAttributes(compilation, type);
         var usingNamespaces = GetBaseNamespaces(type, compilation);
 
         var classContent = $$"""
@@ -172,8 +175,8 @@ public class ReadModelGenerator : IIncrementalGenerator
         // Generate property declaration
         propertyDefinitions.Add(GeneratePropertyDeclaration(property));
 
-        // Add aggregation properties
-        propertyDefinitions.AddRange(GenerateAggregationProperties(property));
+        //// Add aggregation properties
+        //propertyDefinitions.AddRange(GenerateAggregationProperties(property));
 
         return propertyDefinitions;
     }
@@ -256,94 +259,94 @@ public class ReadModelGenerator : IIncrementalGenerator
         return $"{getter}; {setter};";
     }
 
-    private static IEnumerable<string> GenerateAggregationProperties(IPropertySymbol property)
-    {
-        var aggregationAttributes = property.GetAttributes()
-            .Where(a => a.AttributeClass != null && AggregationAttributes.Contains(a.AttributeClass.Name))
-            .ToList();
+    //private static IEnumerable<string> GenerateAggregationProperties(IPropertySymbol property)
+    //{
+    //    var aggregationAttributes = property.GetAttributes()
+    //        .Where(a => a.AttributeClass != null && AggregationAttributes.Contains(a.AttributeClass.Name))
+    //        .ToList();
 
-        if (!aggregationAttributes.Any())
-            return [];
+    //    if (!aggregationAttributes.Any())
+    //        return [];
 
-        return aggregationAttributes
-            .GroupBy(a => a.AttributeClass!.Name)
-            .SelectMany(g => ProcessAttributeGroup(g, property));
-    }
+    //    return aggregationAttributes
+    //        .GroupBy(a => a.AttributeClass!.Name)
+    //        .SelectMany(g => ProcessAttributeGroup(g, property));
+    //}
 
-    private static IEnumerable<string> ProcessAttributeGroup(
-        IGrouping<string, AttributeData> group,
-        IPropertySymbol property)
-    {
-        var results = new List<string>();
-        var attributeType = group.Key.Replace("Attribute", "");
-        var autoNamedAttributes = group.Where(a =>
-            string.IsNullOrEmpty(GetAttributeArgumentValue(a, "generatedPropertyName"))).ToList();
+    //private static IEnumerable<string> ProcessAttributeGroup(
+    //    IGrouping<string, AttributeData> group,
+    //    IPropertySymbol property)
+    //{
+    //    var results = new List<string>();
+    //    var attributeType = group.Key.Replace("Attribute", "");
+    //    var autoNamedAttributes = group.Where(a =>
+    //        string.IsNullOrEmpty(GetAttributeArgumentValue(a, "generatedPropertyName"))).ToList();
 
-        for (int i = 0; i < autoNamedAttributes.Count; i++)
-        {
-            var attr = autoNamedAttributes[i];
-            var suffix = property.Name + (autoNamedAttributes.Count > 1 ? $"_{i + 1}" : "");
-            results.Add(CreateAggregationProperty(attr, attributeType, property, suffix));
-        }
+    //    for (int i = 0; i < autoNamedAttributes.Count; i++)
+    //    {
+    //        var attr = autoNamedAttributes[i];
+    //        var suffix = property.Name + (autoNamedAttributes.Count > 1 ? $"_{i + 1}" : "");
+    //        results.Add(CreateAggregationProperty(attr, attributeType, property, suffix));
+    //    }
 
-        foreach (var attr in group.Where(a =>
-            !string.IsNullOrEmpty(GetAttributeArgumentValue(a, "generatedPropertyName"))))
-        {
-            results.Add(CreateAggregationProperty(attr, attributeType, property));
-        }
+    //    foreach (var attr in group.Where(a =>
+    //        !string.IsNullOrEmpty(GetAttributeArgumentValue(a, "generatedPropertyName"))))
+    //    {
+    //        results.Add(CreateAggregationProperty(attr, attributeType, property));
+    //    }
 
-        return results;
-    }
+    //    return results;
+    //}
 
-    private static string CreateAggregationProperty(
-        AttributeData attr,
-        string attributeType,
-        IPropertySymbol property,
-        string? suffix = null)
-    {
-        var propName = GetAttributeArgumentValue(attr, "generatedPropertyName");
+    //private static string CreateAggregationProperty(
+    //    AttributeData attr,
+    //    string attributeType,
+    //    IPropertySymbol property,
+    //    string? suffix = null)
+    //{
+    //    var propName = GetAttributeArgumentValue(attr, "generatedPropertyName");
 
-        var propertyType = GetAggregationPropertyType(attributeType);
-        var propDefinition = $"public {propertyType} {propName} {{ get; set; }}";
+    //    var propertyType = GetAggregationPropertyType(attributeType);
+    //    var propDefinition = $"public {propertyType} {propName} {{ get; set; }}";
 
-        return propDefinition;
-    }
+    //    return propDefinition;
+    //}
 
-    private static string GetAggregationPropertyType(string attributeType)
-    {
-        if (attributeType == "Count")
-            return "int";
-        if (attributeType is "Min" or "Max")
-            return "double";
+    //private static string GetAggregationPropertyType(string attributeType)
+    //{
+    //    if (attributeType == "Count")
+    //        return "int";
+    //    if (attributeType is "Min" or "Max")
+    //        return "double";
 
-        return attributeType switch
-        {
-            "Sum" => "double",
-            "Average" => "double",
-            _ => "int"
-        };
-    }
+    //    return attributeType switch
+    //    {
+    //        "Sum" => "double",
+    //        "Average" => "double",
+    //        _ => "int"
+    //    };
+    //}
 
-    private static string? GetAttributeArgumentValue(AttributeData attr, string argumentName)
-    {
-        var namedArg = attr.NamedArguments.FirstOrDefault(a => a.Key == argumentName);
-        if (namedArg.Value.Value != null) return namedArg.Value.Value.ToString();
+    //private static string? GetAttributeArgumentValue(AttributeData attr, string argumentName)
+    //{
+    //    var namedArg = attr.NamedArguments.FirstOrDefault(a => a.Key == argumentName);
+    //    if (namedArg.Value.Value != null) return namedArg.Value.Value.ToString();
 
-        if (attr.AttributeConstructor == null) return null;
+    //    if (attr.AttributeConstructor == null) return null;
 
-        var parameters = attr.AttributeConstructor.Parameters;
-        for (int i = 0; i < parameters.Length; i++)
-        {
-            if (parameters[i].Name == argumentName && i < attr.ConstructorArguments.Length)
-            {
-                return attr.ConstructorArguments[i].Value?.ToString();
-            }
-        }
+    //    var parameters = attr.AttributeConstructor.Parameters;
+    //    for (int i = 0; i < parameters.Length; i++)
+    //    {
+    //        if (parameters[i].Name == argumentName && i < attr.ConstructorArguments.Length)
+    //        {
+    //            return attr.ConstructorArguments[i].Value?.ToString();
+    //        }
+    //    }
 
-        return null;
-    }
+    //    return null;
+    //}
 
-    private static IEnumerable<string> GetAppendedPropertiesFromAttributes(INamedTypeSymbol type)
+    private static IEnumerable<string> GetAppendedPropertiesFromAttributes(Compilation compilation, INamedTypeSymbol type)
     {
         var appendAttributes = type.GetAttributes()
             .Where(a => a.AttributeClass?.Name == "AppendPropertyToReadModelAttribute")
@@ -355,48 +358,61 @@ public class ReadModelGenerator : IIncrementalGenerator
 
             var typeString = attribute.ConstructorArguments[0].Value?.ToString();
             var propertyName = attribute.ConstructorArguments[1].Value?.ToString();
+            var ignoreMapping = attribute.ConstructorArguments[2].Value?.ToString();
+            var getterString = attribute.ConstructorArguments[3].Value?.ToString() ?? "get;";
+            var setterString = attribute.ConstructorArguments[4].Value?.ToString() ?? "set;";
 
             if (string.IsNullOrWhiteSpace(typeString) || string.IsNullOrWhiteSpace(propertyName))
                 continue;
 
-            if (!IsValidType(typeString, ValidPrimitiveTypes))
-                continue;
+            if (!PrimitiveTypes.Contains(typeString))
+            {
+                try
+                {
+                    var typeInAssembly = compilation.FindTypeInReferencedAssemblies(typeString) ?? throw new Exception("Not a valid type");
+                    typeString = typeInAssembly.ToDisplayString();
+                }
+                catch { }
+            }
 
-            yield return $"public {typeString} {propertyName} {{ get; set; }}";
+            //if (!IsValidType(typeString, ValidPrimitiveTypes))
+            //    continue;
+
+            yield return $"public {typeString} {propertyName} {{ {getterString} {setterString} }}";
         }
     }
 
-    private static bool IsValidType(string type, HashSet<string> validTypes)
-    {
-        if (validTypes.Contains(type))
-            return true;
+    //private static bool IsValidType(string type, HashSet<string> validTypes)
+    //{
+    //    if (validTypes.Contains(type))
+    //        return true;
 
-        // Handle nullable types (int?, string?)
-        if (type.EndsWith("?") && validTypes.Contains(type.Substring(0, type.Length - 1)))
-            return true;
+    //    // Handle nullable types (int?, string?)
+    //    if (type.EndsWith("?") && validTypes.Contains(type.Substring(0, type.Length - 1)))
+    //        return true;
 
-        // Handle array types (int[], string[][])
-        if (type.EndsWith("[]"))
-            return IsValidType(type.Substring(0, type.Length - 2), validTypes) ||
-                   IsValidGenericType(type.Substring(0, type.Length - 2));
+    //    // Handle array types (int[], string[][])
+    //    if (type.EndsWith("[]"))
+    //        return IsValidType(type.Substring(0, type.Length - 2), validTypes) ||
+    //               IsValidGenericType(type.Substring(0, type.Length - 2));
 
-        return IsValidGenericType(type);
-    }
+    //    return IsValidGenericType(type);
+    //}
 
-    private static bool IsValidGenericType(string type)
-    {
-        try
-        {
-            if (!type.Contains('<') || !type.EndsWith(">")) return false;
-            return type.Split('<', '>', ',')
-                .Select(p => p.Trim())
-                .All(p => string.IsNullOrEmpty(p) || SyntaxFacts.IsValidIdentifier(p));
-        }
-        catch
-        {
-            return false;
-        }
-    }
+    //private static bool IsValidGenericType(string type)
+    //{
+    //    try
+    //    {
+    //        if (!type.Contains('<') || !type.EndsWith(">")) return false;
+    //        return type.Split('<', '>', ',')
+    //            .Select(p => p.Trim())
+    //            .All(p => string.IsNullOrEmpty(p) || SyntaxFacts.IsValidIdentifier(p));
+    //    }
+    //    catch
+    //    {
+    //        return false;
+    //    }
+    //}
 
     private static string ProcessAppendAttributeToPropertyAttributes(Compilation compilation, IPropertySymbol property)
     {
@@ -432,8 +448,7 @@ public class ReadModelGenerator : IIncrementalGenerator
         // Handle simple attribute case (no parameters)
         if (!attrText.Contains('('))
         {
-            var attributeSymbol = compilation.FindTypeInReferencedAssemblies(attrText);
-            if (attributeSymbol == null)
+            var attributeSymbol = compilation.FindTypeInReferencedAssemblies(attrText) ??
                 throw new Exception($"attribute {attrText} not found in any direct/referenced assemblies");
             return $"[{attributeSymbol.ToDisplayString()}]";
         }

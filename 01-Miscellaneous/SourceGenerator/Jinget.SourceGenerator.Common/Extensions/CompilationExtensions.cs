@@ -11,7 +11,7 @@ namespace Jinget.SourceGenerator.Common.Extensions;
 
 internal static class CompilationExtensions
 {
-    internal static INamedTypeSymbol? FindTypeInReferencedAssemblies(this Compilation compilation, string typeName)
+    internal static INamedTypeSymbol? FindTypeInReferencedAssemblies(this Compilation compilation, string? typeName)
     {
         if (string.IsNullOrWhiteSpace(typeName))
             return null;
