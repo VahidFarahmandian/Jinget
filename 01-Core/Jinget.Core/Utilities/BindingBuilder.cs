@@ -2,396 +2,492 @@
 
 public class BindingBuilder<TSource>
 {
-    private readonly List<Expression<Func<TSource, object>>> _projections = new();
-    private readonly Dictionary<string, MemberBinding> _bindings = new();
+    private readonly List<Expression<Func<TSource, object>>> _projections = [];
+    private readonly Dictionary<string, MemberBinding> _memberBindings = [];
 
+    #region Public API
+
+    /// <summary>
+    /// افزودن یک projection جدید به بیلدر
+    /// </summary>
     public BindingBuilder<TSource> Add(Expression<Func<TSource, object>> projection)
     {
         _projections.Add(projection);
         return this;
     }
 
+    /// <summary>
+    /// افزودن مجموعه‌ای از projections به بیلدر
+    /// </summary>
     public BindingBuilder<TSource> AddRange(IEnumerable<Expression<Func<TSource, object>>> projections)
     {
         _projections.AddRange(projections);
         return this;
     }
 
+    /// <summary>
+    /// ساخت expression نهایی بایندینگ
+    /// </summary>
     public Expression<Func<TSource, TSource>> Build()
     {
-        var parameter = Expression.Parameter(typeof(TSource), "x");
+        var sourceParameter = Expression.Parameter(typeof(TSource), "x");
+        _memberBindings.Clear();
 
         foreach (var projection in _projections)
         {
-            ProcessProjection(projection.Body, parameter);
+            ProcessProjection(projection.Body, sourceParameter);
         }
 
-        var newExpr = Expression.New(typeof(TSource));
-        var memberInit = Expression.MemberInit(newExpr, _bindings.Values);
-        return Expression.Lambda<Func<TSource, TSource>>(memberInit, parameter);
+        var newExpression = Expression.New(typeof(TSource));
+        var memberInit = Expression.MemberInit(newExpression, _memberBindings.Values);
+        return Expression.Lambda<Func<TSource, TSource>>(memberInit, sourceParameter);
     }
 
-    private void ProcessProjection(Expression expression, ParameterExpression parameter)
+    #endregion
+
+    #region Core Processing Pipeline
+
+    /// <summary>
+    /// پردازش اصلی projection بر اساس نوع expression
+    /// </summary>
+    private void ProcessProjection(Expression expression, ParameterExpression sourceParameter)
     {
         switch (expression)
         {
             case NewExpression newExpr:
-                ProcessNewExpression(newExpr, parameter);
+                ProcessAnonymousType(newExpr, sourceParameter);
                 break;
 
             case MemberInitExpression memberInit:
-                ProcessMemberInit(memberInit, parameter);
+                ProcessMemberInitialization(memberInit, sourceParameter);
                 break;
 
             case MethodCallExpression methodCall when methodCall.Method.Name == "Select":
-                ProcessSelectCall(methodCall, parameter);
+                ProcessSelectAtRootLevel(methodCall, sourceParameter);
                 break;
 
             case MemberExpression memberExpr:
-                ProcessMemberExpression(memberExpr, parameter);
+                ProcessSimpleMemberAccess(memberExpr, sourceParameter);
                 break;
         }
     }
 
-    private bool IsPropertyOfParameter(Expression expr, ParameterExpression parameter)
+    /// <summary>
+    /// پردازش anonymous type و استخراج اطلاعات بایندینگ از اون
+    /// </summary>
+    private void ProcessAnonymousType(NewExpression anonymousTypeExpr, ParameterExpression sourceParameter)
     {
-        // Unwrap any conversions
+        if (!anonymousTypeExpr.Type.IsAnonymousType())
+            return;
+
+        var anonymousProperties = anonymousTypeExpr.Type.GetProperties();
+
+        for (int i = 0; i < anonymousTypeExpr.Arguments.Count; i++)
+        {
+            var argument = anonymousTypeExpr.Arguments[i];
+            var propertyName = anonymousProperties[i].Name;
+            var targetProperty = typeof(TSource).GetProperty(propertyName);
+
+            if (targetProperty == null) continue;
+
+            ProcessAnonymousTypeArgument(argument, sourceParameter, targetProperty, propertyName);
+        }
+    }
+
+    /// <summary>
+    /// پردازش هر آرگومان داخل anonymous type
+    /// </summary>
+    private void ProcessAnonymousTypeArgument(Expression argument, ParameterExpression sourceParameter,
+        PropertyInfo targetProperty, string propertyName)
+    {
+        // حالت ۱: دسترسی مستقیم به پراپرتی (مثل x.Name)
+        if (IsPropertyAccessFromSource(argument, sourceParameter))
+        {
+            var propertyAccess = BuildPropertyAccessChain(argument, sourceParameter);
+            if (propertyAccess != null)
+            {
+                _memberBindings[propertyName] = Expression.Bind(targetProperty, propertyAccess);
+            }
+        }
+        // حالت ۲: anonymous type تودرتو (مثل Customer = new { ... })
+        else if (argument is NewExpression nestedAnonymous && nestedAnonymous.Type.IsAnonymousType())
+        {
+            ProcessNestedAnonymousType(nestedAnonymous, sourceParameter, targetProperty);
+        }
+        // حالت ۳: Select در سطح پراپرتی (مثل Files = x.Files.Select(...))
+        else if (argument is MethodCallExpression methodCall && methodCall.Method.Name == "Select")
+        {
+            ProcessSelectForProperty(methodCall, sourceParameter, targetProperty);
+        }
+    }
+
+    #endregion
+
+    #region Property Access Processing
+
+    /// <summary>
+    /// بررسی می‌کنه که expression به یک پراپرتی از پارامتر سورس دسترسی داره یا نه
+    /// </summary>
+    private bool IsPropertyAccessFromSource(Expression expr, ParameterExpression sourceParameter)
+    {
         if (expr is UnaryExpression unary && unary.NodeType == ExpressionType.Convert)
         {
             expr = unary.Operand;
         }
 
-        if (expr is MemberExpression member && member.Member is PropertyInfo)
-        {
-            // Handle the case where expression is a constant value (like in new { Trace = new { ... } })
-            if (member.Expression is ConstantExpression)
-            {
-                return false;
-            }
-
-            // Walk up the expression tree to find the root parameter
-            Expression current = member.Expression;
-            while (current != null)
-            {
-                switch (current)
-                {
-                    // Handle parameter match
-                    case ParameterExpression currentParam
-                        when //currentParam.Name == parameter.Name &&
-                             currentParam.Type == parameter.Type:
-                        return true;
-
-                    // Continue up member access chain
-                    case MemberExpression currentMember:
-                        current = currentMember.Expression;
-                        continue;
-
-                    // Handle other cases
-                    default:
-                        return false;
-                }
-            }
-        }
-
-        return false;
-    }
-    private Expression GetPropertyAccessExpression(Expression expr, ParameterExpression parameter)
-    {
-        // Handle direct property access
-        if (expr is MemberExpression member && member.Expression == parameter)
-        {
-            return member;
-        }
-
-        // Handle nested property access
-        if (expr is MemberExpression nestedMember)
-        {
-            var propertyChain = new List<PropertyInfo>();
-            Expression current = nestedMember;
-
-            while (current is MemberExpression currentMember &&
-                   currentMember.Member is PropertyInfo currentProp)
-            {
-                propertyChain.Insert(0, currentProp);
-                current = currentMember.Expression;
-            }
-
-            if (current == parameter && propertyChain.Count > 0)
-            {
-                Expression result = parameter;
-                foreach (var prop in propertyChain)
-                {
-                    result = Expression.Property(result, prop);
-                }
-                return result;
-            }
-        }
-
-        return expr;
+        return expr is MemberExpression memberExpr &&
+               ExtractPropertyChain(memberExpr, sourceParameter)?.Count > 0;
     }
 
-    private void ProcessNewExpression(NewExpression newExpr, ParameterExpression parameter)
+    /// <summary>
+    /// استخراج زنجیره پراپرتی‌ها از یک MemberExpression
+    /// </summary>
+    private List<PropertyInfo> ExtractPropertyChain(MemberExpression memberExpr, ParameterExpression expectedRoot)
     {
-        if (newExpr.Type.IsAnonymousType())
+        var chain = new List<PropertyInfo>();
+        Expression current = memberExpr;
+
+        // پیمایش به عقب در درخت expression برای یافتن زنجیره پراپرتی‌ها
+        while (current is MemberExpression currentMember && currentMember.Member is PropertyInfo prop)
         {
-            var properties = newExpr.Type.GetProperties();
-
-            for (int i = 0; i < newExpr.Arguments.Count; i++)
-            {
-                var arg = newExpr.Arguments[i];
-                var propName = properties[i].Name;
-                var propInfo = parameter.Type.GetProperty(propName);
-
-                if (propInfo == null) continue;
-
-                if (IsPropertyOfParameter(arg, parameter))
-                {
-                    var propertyAccess = GetPropertyAccessExpression(arg, parameter);
-                    _bindings[propName] = Expression.Bind(propInfo, propertyAccess);
-                }
-                else if (arg is MethodCallExpression methodCall && methodCall.Method.Name == "Select")
-                {
-                    ProcessSelectCall(methodCall, parameter);
-                }
-                else if (arg is NewExpression nestedNew && nestedNew.Type.IsAnonymousType())
-                {
-                    var nestedInit = BuildNestedInitialization(nestedNew, parameter);
-                    _bindings[propName] = Expression.Bind(propInfo, nestedInit);
-                }
-            }
+            chain.Insert(0, prop);
+            current = currentMember.Expression;
         }
+
+        // تأیید که زنجیره به پارامتر مورد انتظار ختم می‌شه
+        // باید با Type مقایسه کنیم نه reference equality
+        // چون پارامترها instance های مختلفی می‌توانند باشند
+        return current is ParameterExpression paramExpr &&
+               paramExpr.Type == expectedRoot.Type ? chain : null;
     }
 
-    private Expression BuildNestedInitialization(NewExpression newExpr, ParameterExpression parameter)
+    /// <summary>
+    /// ساخت expression دسترسی به پراپرتی از روی زنجیره
+    /// </summary>
+    private Expression BuildPropertyAccessChain(Expression expr, ParameterExpression sourceParameter)
     {
-        // Get the target property and type from the expression structure
-        var (targetProperty, targetType) = GetTargetPropertyAndType(newExpr, parameter);
-        if (targetProperty == null || targetType == null)
+        if (expr is not MemberExpression memberExpr)
             return null;
 
+        var propertyChain = ExtractPropertyChain(memberExpr, sourceParameter);
+        if (propertyChain == null)
+            return null;
+
+        Expression result = sourceParameter;
+        foreach (var prop in propertyChain)
+        {
+            var targetProp = result.Type.GetProperty(prop.Name);
+            if (targetProp == null) return null;
+            result = Expression.Property(result, targetProp);
+        }
+
+        return result;
+    }
+
+    #endregion
+
+    #region Nested Anonymous Type Processing
+
+    /// <summary>
+    /// پردازش anonymous type های تودرتو
+    /// </summary>
+    private void ProcessNestedAnonymousType(NewExpression nestedAnonymous, ParameterExpression sourceParameter,
+        PropertyInfo parentProperty)
+    {
+        var nestedType = parentProperty.PropertyType;
+        var nestedBindings = new List<MemberBinding>();
+
+        var anonymousProperties = nestedAnonymous.Type.GetProperties();
+
+        for (int i = 0; i < nestedAnonymous.Arguments.Count; i++)
+        {
+            var argument = nestedAnonymous.Arguments[i];
+            var propertyName = anonymousProperties[i].Name;
+
+            var nestedProperty = nestedType.GetProperty(propertyName);
+            if (nestedProperty == null) continue;
+
+            // پردازش سطوح عمیق‌تر anonymous type
+            if (argument is NewExpression deeperAnonymous && deeperAnonymous.Type.IsAnonymousType())
+            {
+                var deeperInit = BuildDeepAnonymousTypeInitialization(deeperAnonymous, sourceParameter, nestedProperty);
+                if (deeperInit != null)
+                {
+                    nestedBindings.Add(Expression.Bind(nestedProperty, deeperInit));
+                }
+            }
+            // پردازش دسترسی مستقیم به پراپرتی
+            else if (IsPropertyAccessFromSource(argument, sourceParameter))
+            {
+                var propertyAccess = BuildPropertyAccessChain(argument, sourceParameter);
+                if (propertyAccess != null)
+                {
+                    nestedBindings.Add(Expression.Bind(nestedProperty, propertyAccess));
+                }
+            }
+        }
+
+        if (nestedBindings.Count > 0)
+        {
+            var nestedInit = Expression.MemberInit(Expression.New(nestedType), nestedBindings);
+            _memberBindings[parentProperty.Name] = Expression.Bind(parentProperty, nestedInit);
+        }
+    }
+
+    /// <summary>
+    /// ساخت initialization برای anonymous type های عمیق
+    /// </summary>
+    private Expression BuildDeepAnonymousTypeInitialization(NewExpression anonymousExpr,
+        ParameterExpression sourceParameter, PropertyInfo targetProperty)
+    {
+        var targetType = targetProperty.PropertyType;
         var bindings = new List<MemberBinding>();
-        var visitor = new MemberBindingVisitor(parameter);
 
-        // Process each argument in the anonymous type constructor
-        for (int i = 0; i < newExpr.Arguments.Count; i++)
+        var anonymousProperties = anonymousExpr.Type.GetProperties();
+
+        for (int i = 0; i < anonymousExpr.Arguments.Count; i++)
         {
-            var arg = newExpr.Arguments[i];
-            var propName = newExpr.Type.GetProperties()[i].Name;
+            var argument = anonymousExpr.Arguments[i];
+            var propertyName = anonymousProperties[i].Name;
 
-            // Find the corresponding property in the target type
-            var targetProp = targetType.GetProperty(propName);
-            if (targetProp == null || !targetProp.CanWrite)
-                continue;
+            var nestedProp = targetType.GetProperty(propertyName);
+            if (nestedProp == null) continue;
 
-            // Process the argument expression
-            var processedArg = visitor.Visit(arg);
-            if (processedArg is MemberExpression memberExpr)
+            if (argument is MemberExpression memberExpr)
             {
-                bindings.Add(Expression.Bind(targetProp, memberExpr));
-            }
-        }
-
-        if (bindings.Count == 0)
-            return null;
-
-        // Create the member initialization expression
-        return Expression.MemberInit(Expression.New(targetType), bindings);
-    }
-
-    private (PropertyInfo, Type) GetTargetPropertyAndType(NewExpression newExpr, ParameterExpression parameter)
-    {
-        if (newExpr.Arguments.FirstOrDefault() is MemberExpression memberExpr)
-        {
-            var propertyChain = new List<PropertyInfo>();
-            var current = memberExpr;
-
-            // Build the property access chain
-            while (current != null)
-            {
-                if (current.Member is PropertyInfo prop)
-                    propertyChain.Insert(0, prop);
-
-                // Check if we've reached the parameter (compare by name and type)
-                if (current.Expression is ParameterExpression currentParam &&
-                    currentParam.Name == parameter.Name &&
-                    currentParam.Type == parameter.Type)
+                var propertyChain = ExtractPropertyChain(memberExpr, sourceParameter);
+                if (propertyChain != null)
                 {
-                    if (current.Member is PropertyInfo rootProp)
-                    {
-                        // The target type is the type of the last property in the chain
-                        Type reflectedType = parameter.Type;
-                        Type currentType = parameter.Type;
-                        PropertyInfo targetProp = null;
-
-                        foreach (var property in propertyChain)
-                        {
-                            targetProp = currentType.GetProperty(property.Name);
-                            if (targetProp == null) break;
-                            currentType = targetProp.PropertyType;
-                            reflectedType = targetProp.ReflectedType;
-                        }
-
-                        return (targetProp, reflectedType);
-                    }
-                    break;
+                    var propertyAccess = BuildPropertyAccessFromChain(sourceParameter, propertyChain);
+                    bindings.Add(Expression.Bind(nestedProp, propertyAccess));
                 }
-
-                current = current.Expression as MemberExpression;
             }
         }
 
-        return (null, null);
-    }
-    private class MemberBindingVisitor : ExpressionVisitor
-    {
-        private readonly ParameterExpression _parameter;
-
-        public MemberBindingVisitor(ParameterExpression parameter)
-        {
-            _parameter = parameter;
-        }
-
-        protected override Expression VisitMember(MemberExpression node)
-        {
-            if (node.Member is PropertyInfo prop)
-            {
-                var propertyChain = new List<PropertyInfo>();
-                Expression current = node;
-
-                // Walk up the property chain
-                while (current is MemberExpression currentMember &&
-                       currentMember.Member is PropertyInfo currentProp)
-                {
-                    propertyChain.Insert(0, currentProp);
-                    current = currentMember.Expression;
-                }
-
-                // Rebuild from our root parameter
-                Expression result = _parameter;
-                foreach (var property in propertyChain)
-                {
-                    var targetProp = result.Type.GetProperty(property.Name);
-                    if (targetProp == null) return node;
-
-                    result = Expression.Property(result, targetProp);
-                }
-
-                return result;
-            }
-
-            return base.VisitMember(node);
-        }
-    }
-    private void ProcessMemberExpression(MemberExpression memberExpr, ParameterExpression parameter)
-    {
-        if (IsPropertyOfParameter(memberExpr, parameter) && memberExpr.Member is PropertyInfo prop)
-        {
-            AddPropertyBinding(prop, memberExpr);
-        }
+        return bindings.Count > 0
+            ? Expression.MemberInit(Expression.New(targetType), bindings)
+            : null;
     }
 
-    private void ProcessMemberInit(MemberInitExpression memberInit, ParameterExpression parameter)
+    /// <summary>
+    /// ساخت دسترسی به پراپرتی از روی زنجیره (ورژن جایگزین)
+    /// </summary>
+    private Expression BuildPropertyAccessFromChain(ParameterExpression parameter, List<PropertyInfo> propertyChain)
     {
-        foreach (var binding in memberInit.Bindings)
+        Expression result = parameter;
+        foreach (var prop in propertyChain)
         {
-            if (binding is MemberAssignment assignment)
-            {
-                _bindings[assignment.Member.Name] = assignment;
-            }
+            var targetProp = result.Type.GetProperty(prop.Name);
+            if (targetProp == null) return null;
+            result = Expression.Property(result, targetProp);
         }
+        return result;
     }
 
-    private void ProcessSelectCall(MethodCallExpression selectCall, ParameterExpression rootParameter)
+    #endregion
+
+    #region Select Method Processing
+
+    /// <summary>
+    /// پردازش Select در سطح root (بدون association با پراپرتی خاص)
+    /// </summary>
+    private void ProcessSelectAtRootLevel(MethodCallExpression selectCall, ParameterExpression sourceParameter)
     {
-        if (!(selectCall.Arguments[0] is MemberExpression collectionAccess) ||
-            !(collectionAccess.Member is PropertyInfo collectionProp))
+        if (selectCall.Arguments[0] is not MemberExpression collectionAccess ||
+            collectionAccess.Member is not PropertyInfo collectionProperty)
             return;
 
-        // Get the lambda expression from the Select call
-        LambdaExpression lambda = selectCall.Arguments[1] switch
-        {
-            UnaryExpression unary when unary.Operand is LambdaExpression unaryLambda => unaryLambda,
-            LambdaExpression directLambda => directLambda,
-            _ => throw new InvalidOperationException("Unexpected Select argument type")
-        };
+        var lambda = ExtractLambdaFromSelect(selectCall.Arguments[1]);
+        if (lambda == null) return;
 
-        // Handle the case where the lambda body is a method call to GetConstantFieldsExpression()
+        // حالت خاص: اگر body خودش یک متد call باشه
         if (lambda.Body is MethodCallExpression methodCall)
         {
-            var projectionExpression = methodCall.Method.Invoke(methodCall.Object, null) as LambdaExpression;
+            HandleSpecialMethodCallCase(methodCall, sourceParameter, collectionProperty, lambda);
+            return;
+        }
 
-            if (projectionExpression != null)
+        // حالت عادی: پردازش projection داخل Select
+        ProcessStandardSelectProjection(selectCall, sourceParameter, collectionProperty, null);
+    }
+
+    /// <summary>
+    /// پردازش Select برای یک پراپرتی خاص
+    /// </summary>
+    private void ProcessSelectForProperty(MethodCallExpression selectCall, ParameterExpression sourceParameter,
+        PropertyInfo targetProperty)
+    {
+        if (selectCall.Arguments[0] is not MemberExpression collectionAccess ||
+            collectionAccess.Member is not PropertyInfo collectionProperty)
+            return;
+
+        var lambda = ExtractLambdaFromSelect(selectCall.Arguments[1]);
+        if (lambda == null) return;
+
+        // حالت خاص: اگر body خودش یک متد call باشه
+        if (lambda.Body is MethodCallExpression methodCall)
+        {
+            HandleSpecialMethodCallCase(methodCall, sourceParameter, collectionProperty, lambda, targetProperty);
+            return;
+        }
+
+        // حالت عادی
+        ProcessStandardSelectProjection(selectCall, sourceParameter, collectionProperty, targetProperty);
+    }
+
+    /// <summary>
+    /// استخراج lambda expression از آرگومان Select
+    /// </summary>
+    private LambdaExpression ExtractLambdaFromSelect(Expression selectArgument)
+    {
+        return selectArgument switch
+        {
+            UnaryExpression unary when unary.Operand is LambdaExpression lambda => lambda,
+            LambdaExpression lambda => lambda,
+            _ => null
+        };
+    }
+
+    /// <summary>
+    /// پردازش حالت خاص که body lambda خودش یک متد call باشه
+    /// </summary>
+    private void HandleSpecialMethodCallCase(MethodCallExpression methodCall, ParameterExpression sourceParameter,
+        PropertyInfo collectionProperty, LambdaExpression lambda, PropertyInfo targetProperty = null)
+    {
+        var projectionExpression = methodCall.Method.Invoke(methodCall.Object, null) as LambdaExpression;
+        if (projectionExpression == null) return;
+
+        // جایگزینی پارامتر lambda با پارامتر جدید
+        var elementParam = Expression.Parameter(
+            projectionExpression.Parameters[0].Type,
+            projectionExpression.Parameters[0].Name ?? "x");
+        var bodyReplacer = new ParameterReplacer(projectionExpression.Parameters[0], elementParam);
+        var newBody = bodyReplacer.Visit(projectionExpression.Body);
+
+        var elementType = collectionProperty.PropertyType.GetGenericArguments()[0];
+        var selectResult = BuildSelectExpression(
+            Expression.Property(sourceParameter, collectionProperty),
+            elementParam,
+            newBody,
+            elementType);
+
+        var propertyToBind = targetProperty ?? collectionProperty;
+        _memberBindings[propertyToBind.Name] = Expression.Bind(propertyToBind, selectResult);
+    }
+
+    /// <summary>
+    /// پردازش projection استاندارد داخل Select
+    /// </summary>
+    private void ProcessStandardSelectProjection(MethodCallExpression selectCall, ParameterExpression sourceParameter,
+        PropertyInfo collectionProperty, PropertyInfo targetProperty)
+    {
+        var lambda = ExtractLambdaFromSelect(selectCall.Arguments[1]);
+        if (lambda == null) return;
+
+        var sourceElementType = collectionProperty.PropertyType.GetGenericArguments()[0];
+        var targetElementType = targetProperty?.PropertyType.GetGenericArguments()[0] ?? sourceElementType;
+
+        var elementInitialization = BuildElementInitialization(
+            lambda.Body,
+            lambda.Parameters[0],
+            sourceElementType,
+            targetElementType);
+
+        var selectResult = BuildSelectExpression(
+            Expression.Property(sourceParameter, collectionProperty),
+            lambda.Parameters[0],
+            elementInitialization,
+            sourceElementType);
+
+        var propertyToBind = targetProperty ?? collectionProperty;
+        _memberBindings[propertyToBind.Name] = Expression.Bind(propertyToBind, selectResult);
+    }
+
+    /// <summary>
+    /// ساخت expression کامل Select().ToList()
+    /// </summary>
+    private Expression BuildSelectExpression(Expression collection, ParameterExpression elementParam,
+        Expression projectionBody, Type sourceElementType)
+    {
+        var selectMethod = typeof(Enumerable).GetMethods()
+            .First(m => m.Name == "Select" && m.GetParameters().Length == 2)
+            .MakeGenericMethod(sourceElementType, projectionBody.Type);
+
+        var toListMethod = typeof(Enumerable).GetMethods()
+            .First(m => m.Name == "ToList" && m.GetParameters().Length == 1)
+            .MakeGenericMethod(projectionBody.Type);
+
+        var select = Expression.Call(selectMethod, collection, Expression.Lambda(projectionBody, elementParam));
+        return Expression.Call(toListMethod, select);
+    }
+
+    #endregion
+
+    #region Element Initialization (برای Select های تودرتو)
+
+    /// <summary>
+    /// ساخت initialization برای المنت‌های داخل collection
+    /// </summary>
+    private Expression BuildElementInitialization(Expression expression, ParameterExpression elementParam,
+        Type sourceElementType, Type targetElementType)
+    {
+        // اگر expression یک anonymous type نباشه، همون رو برمی‌گردونیم
+        if (expression is not NewExpression newExpr || !newExpr.Type.IsAnonymousType())
+            return expression;
+
+        var bindings = new List<MemberBinding>();
+        var anonymousProperties = newExpr.Type.GetProperties();
+
+        for (int i = 0; i < newExpr.Arguments.Count; i++)
+        {
+            var argument = newExpr.Arguments[i];
+            var propertyName = anonymousProperties[i].Name;
+
+            var targetProperty = targetElementType.GetProperty(propertyName);
+            if (targetProperty == null) continue;
+
+            ProcessElementProperty(argument, elementParam, targetProperty, bindings);
+        }
+
+        return Expression.MemberInit(Expression.New(targetElementType), bindings);
+    }
+
+    /// <summary>
+    /// پردازش هر پراپرتی داخل المنت collection
+    /// </summary>
+    private void ProcessElementProperty(Expression argument, ParameterExpression elementParam,
+        PropertyInfo targetProperty, List<MemberBinding> bindings)
+    {
+        // حالت ۱: دسترسی مستقیم به پراپرتی المنت
+        if (argument is MemberExpression memberExpr && IsPropertyAccessFromElement(memberExpr, elementParam))
+        {
+            bindings.Add(Expression.Bind(targetProperty, memberExpr));
+        }
+        // حالت ۲: anonymous type تودرتو داخل المنت
+        else if (argument is NewExpression nestedAnonymous && nestedAnonymous.Type.IsAnonymousType())
+        {
+            var nestedInit = BuildNestedElementInitialization(nestedAnonymous, elementParam, targetProperty);
+            if (nestedInit != null)
             {
-                // Create a parameter for the inner expression
-                var elementParam = Expression.Parameter(projectionExpression.Parameters[0].Type, projectionExpression.Parameters[0].Name);
-
-                // Replace the parameter in the projection with our new parameter
-                var bodyReplacer = new ParameterReplacer(projectionExpression.Parameters[0], elementParam);
-                var newBody = bodyReplacer.Visit(projectionExpression.Body);
-
-                var elementType = collectionProp.PropertyType.GetGenericArguments()[0];
-                var selectMethod = typeof(Enumerable).GetMethods()
-                    .First(m => m.Name == "Select" && m.GetParameters().Length == 2)
-                    .MakeGenericMethod(elementType, newBody.Type);
-
-                var toListMethod = typeof(Enumerable).GetMethods()
-                    .First(m => m.Name == "ToList" && m.GetParameters().Length == 1)
-                    .MakeGenericMethod(newBody.Type);
-
-                var select = Expression.Call(
-                    selectMethod,
-                    Expression.Property(rootParameter, collectionProp),
-                    Expression.Lambda(newBody, elementParam));
-
-                var toList = Expression.Call(toListMethod, select);
-
-                _bindings[collectionProp.Name] = Expression.Bind(collectionProp, toList);
-                return;
+                bindings.Add(Expression.Bind(targetProperty, nestedInit));
             }
         }
-
-        // Original processing for non-method call cases
-        var elementTypeFallback = collectionProp.PropertyType.GetGenericArguments()[0];
-        var elementParamFallback = lambda.Parameters[0];
-        var elementInitFallback = BuildElementInitialization(lambda.Body, elementParamFallback, elementTypeFallback);
-
-        var selectMethodFallback = typeof(Enumerable).GetMethods()
-            .First(m => m.Name == "Select" && m.GetParameters().Length == 2)
-            .MakeGenericMethod(elementTypeFallback, elementInitFallback.Type);
-
-        var toListMethodFallback = typeof(Enumerable).GetMethods()
-            .First(m => m.Name == "ToList" && m.GetParameters().Length == 1)
-            .MakeGenericMethod(elementInitFallback.Type);
-
-        var selectFallback = Expression.Call(
-            selectMethodFallback,
-            Expression.Property(rootParameter, collectionProp),
-            Expression.Lambda(elementInitFallback, lambda.Parameters));
-
-        var toListFallback = Expression.Call(toListMethodFallback, selectFallback);
-
-        _bindings[collectionProp.Name] = Expression.Bind(collectionProp, toListFallback);
-    }
-    private class ParameterReplacer : ExpressionVisitor
-    {
-        private readonly ParameterExpression _oldParam;
-        private readonly ParameterExpression _newParam;
-
-        public ParameterReplacer(ParameterExpression oldParam, ParameterExpression newParam)
+        // حالت ۳: Select تودرتو داخل المنت
+        else if (argument is MethodCallExpression methodCall && methodCall.Method.Name == "Select")
         {
-            _oldParam = oldParam;
-            _newParam = newParam;
-        }
-
-        protected override Expression VisitParameter(ParameterExpression node)
-        {
-            return node == _oldParam ? _newParam : base.VisitParameter(node);
+            var selectInit = BuildNestedSelectExpression(methodCall, elementParam, targetProperty);
+            if (selectInit != null)
+            {
+                bindings.Add(Expression.Bind(targetProperty, selectInit));
+            }
         }
     }
 
-    private bool IsPropertyOfSource(Expression expr, ParameterExpression parameter)
+    /// <summary>
+    /// بررسی می‌کنه که expression به پراپرتی‌های المنت دسترسی داره
+    /// </summary>
+    private bool IsPropertyAccessFromElement(Expression expr, ParameterExpression elementParam)
     {
-        // Unwrap any type conversions
         while (expr is UnaryExpression unary &&
                (unary.NodeType == ExpressionType.Convert ||
                 unary.NodeType == ExpressionType.ConvertChecked))
@@ -399,136 +495,223 @@ public class BindingBuilder<TSource>
             expr = unary.Operand;
         }
 
-        // We're only interested in property access expressions
         if (expr is not MemberExpression memberExpr || memberExpr.Member is not PropertyInfo)
-        {
             return false;
-        }
 
-        // Walk up the expression tree to find the root
         Expression current = memberExpr.Expression;
         while (current != null)
         {
-            // Handle parameter match (compare by name and type, not reference equality)
-            if (current is ParameterExpression currentParam &&
-                currentParam.Name == parameter.Name &&
-                currentParam.Type == parameter.Type)
-            {
+            if (current == elementParam)
                 return true;
-            }
 
-            // Continue up member access chain
-            if (current is MemberExpression currentMember)
-            {
-                current = currentMember.Expression;
-                continue;
-            }
-
-            // Handle other cases (like constants or method calls)
-            break;
+            current = current is MemberExpression currentMember ? currentMember.Expression : null;
         }
 
         return false;
     }
-    private Expression BuildElementInitialization(Expression expression, ParameterExpression elementParam, Type elementType)
-    {
-        if (expression is not NewExpression newExpr)
-            return expression;
 
+    /// <summary>
+    /// ساخت initialization برای anonymous type های تودرتو داخل المنت
+    /// </summary>
+    private Expression BuildNestedElementInitialization(NewExpression anonymousExpr,
+        ParameterExpression elementParam, PropertyInfo targetProperty)
+    {
+        var nestedType = targetProperty.PropertyType;
         var bindings = new List<MemberBinding>();
 
-        foreach (var (arg, member) in newExpr.Arguments.Zip(newExpr.Members, (a, m) => (a, m)))
-        {
-            var propName = member.Name;
-            var targetProp = elementType.GetProperty(propName);
-            if (targetProp == null) continue;
+        var anonymousProperties = anonymousExpr.Type.GetProperties();
 
-            if (arg is MemberExpression memberExpr && IsPropertyOfSource(memberExpr, elementParam))
+        for (int i = 0; i < anonymousExpr.Arguments.Count; i++)
+        {
+            var argument = anonymousExpr.Arguments[i];
+            var propertyName = anonymousProperties[i].Name;
+
+            var nestedProp = nestedType.GetProperty(propertyName);
+            if (nestedProp == null) continue;
+
+            if (argument is MemberExpression memberExpr)
             {
-                // Simple property binding
-                bindings.Add(Expression.Bind(targetProp, memberExpr));
-            }
-            else if (arg is NewExpression nestedNew && nestedNew.Type.IsAnonymousType())
-            {
-                // Nested anonymous type
-                var nestedInit = BuildNestedInitialization(nestedNew, elementParam);
-                if (nestedInit != null)
+                var propertyChain = ExtractPropertyChainFromElement(memberExpr, elementParam);
+                if (propertyChain != null)
                 {
-                    bindings.Add(Expression.Bind(targetProp, nestedInit));
+                    Expression result = elementParam;
+                    foreach (var prop in propertyChain)
+                    {
+                        result = Expression.Property(result, prop);
+                    }
+                    bindings.Add(Expression.Bind(nestedProp, result));
                 }
             }
-            else if (arg is MethodCallExpression methodCall && methodCall.Method.Name == "Select")
+            // پشتیبانی از Select های تودرتو
+            else if (argument is MethodCallExpression methodCall && methodCall.Method.Name == "Select")
             {
-                // Nested collection projection
-                if (methodCall.Arguments[0] is MemberExpression collectionAccess &&
-                    collectionAccess.Member is PropertyInfo collectionProp)
+                var selectInit = BuildNestedSelectExpression(methodCall, elementParam, nestedProp);
+                if (selectInit != null)
                 {
-                    var lambda = methodCall.Arguments[1] switch
-                    {
-                        UnaryExpression unary when unary.Operand is LambdaExpression unaryLambda => unaryLambda,
-                        LambdaExpression directLambda => directLambda,
-                        _ => null
-                    };
-
-                    if (lambda != null)
-                    {
-                        var nestedElementType = collectionProp.PropertyType.GetGenericArguments()[0];
-                        var nestedElementParam = lambda.Parameters[0];
-                        var nestedElementInit = BuildElementInitialization(lambda.Body, nestedElementParam, nestedElementType);
-
-                        var selectMethod = typeof(Enumerable).GetMethods()
-                            .First(m => m.Name == "Select" &&
-                            m.GetParameters().Length == 2 &&
-                            m.GetParameters()[1].ParameterType.GetGenericArguments().Length == 2)
-                            .MakeGenericMethod(nestedElementType, nestedElementInit.Type);
-
-                        var toListMethod = typeof(Enumerable).GetMethod("ToList")?
-                            .MakeGenericMethod(nestedElementInit.Type);
-
-                        if (selectMethod != null && toListMethod != null)
-                        {
-                            var select = Expression.Call(
-                                selectMethod,
-                                Expression.Property(elementParam, collectionProp),
-                                Expression.Lambda(nestedElementInit, lambda.Parameters));
-
-                            var toList = Expression.Call(toListMethod, select);
-                            bindings.Add(Expression.Bind(targetProp, toList));
-                        }
-                    }
+                    bindings.Add(Expression.Bind(nestedProp, selectInit));
                 }
             }
         }
 
-        return Expression.MemberInit(Expression.New(elementType), bindings);
+        return bindings.Count > 0 ? Expression.MemberInit(Expression.New(nestedType), bindings) : null;
     }
+
+    /// <summary>
+    /// استخراج زنجیره پراپرتی‌ها از المنت
+    /// </summary>
+    private List<PropertyInfo> ExtractPropertyChainFromElement(MemberExpression memberExpr,
+        ParameterExpression elementParam)
+    {
+        var chain = new List<PropertyInfo>();
+        Expression current = memberExpr;
+
+        while (current is MemberExpression currentMember && currentMember.Member is PropertyInfo prop)
+        {
+            chain.Insert(0, prop);
+            current = currentMember.Expression;
+        }
+
+        return current == elementParam ? chain : null;
+    }
+
+    /// <summary>
+    /// ساخت expression برای Select های تودرتو
+    /// </summary>
+    private Expression BuildNestedSelectExpression(MethodCallExpression selectCall,
+        ParameterExpression elementParam, PropertyInfo targetProperty)
+    {
+        if (selectCall.Arguments[0] is not MemberExpression collectionAccess ||
+            collectionAccess.Member is not PropertyInfo collectionProp)
+            return null;
+
+        var lambda = ExtractLambdaFromSelect(selectCall.Arguments[1]);
+        if (lambda == null) return null;
+
+        var sourceElementType = collectionProp.PropertyType.GetGenericArguments()[0];
+        var targetElementType = targetProperty.PropertyType.GetGenericArguments()[0];
+
+        Expression innerProjection;
+
+        // اگر projection یک anonymous type باشه
+        if (lambda.Body is NewExpression newExpr && newExpr.Type.IsAnonymousType())
+        {
+            innerProjection = BuildElementInitialization(newExpr, lambda.Parameters[0],
+                sourceElementType, targetElementType);
+        }
+        else
+        {
+            innerProjection = lambda.Body;
+        }
+
+        return BuildSelectExpression(
+            Expression.Property(elementParam, collectionProp),
+            lambda.Parameters[0],
+            innerProjection,
+            sourceElementType);
+    }
+
+    #endregion
+
+    #region سایر متدهای کمکی
+
+    /// <summary>
+    /// پردازش member initialization expression
+    /// </summary>
+    private void ProcessMemberInitialization(MemberInitExpression memberInit, ParameterExpression sourceParameter)
+    {
+        foreach (var binding in memberInit.Bindings)
+        {
+            if (binding is MemberAssignment assignment)
+            {
+                _memberBindings[assignment.Member.Name] = assignment;
+            }
+        }
+    }
+
+    /// <summary>
+    /// پردازش دسترسی ساده به member
+    /// </summary>
+    private void ProcessSimpleMemberAccess(MemberExpression memberExpr, ParameterExpression sourceParameter)
+    {
+        if (IsPropertyAccessFromSource(memberExpr, sourceParameter) &&
+            memberExpr.Member is PropertyInfo property)
+        {
+            AddPropertyBinding(property, memberExpr);
+        }
+    }
+
+    /// <summary>
+    /// افزودن بایندینگ به دیکشنری (با جلوگیری از duplicate)
+    /// </summary>
     private void AddPropertyBinding(PropertyInfo property, MemberExpression memberExpr)
     {
-        if (!_bindings.ContainsKey(property.Name))
+        if (!_memberBindings.ContainsKey(property.Name))
         {
-            _bindings[property.Name] = Expression.Bind(property, memberExpr);
+            _memberBindings[property.Name] = Expression.Bind(property, memberExpr);
         }
     }
+
+    #endregion
+
+    #region Visitor Classes
+
+    /// <summary>
+    /// visitor برای جایگزینی پارامترها در expression
+    /// </summary>
+    private class ParameterReplacer(ParameterExpression oldParameter, ParameterExpression newParameter) : ExpressionVisitor
+    {
+        protected override Expression VisitParameter(ParameterExpression node)
+        {
+            // Compare by type, not by reference equality
+            // This handles cases where the same logical parameter has different instances
+            return node.Type == oldParameter.Type &&
+                   node.Name == oldParameter.Name ? newParameter : base.VisitParameter(node);
+        }
+    }
+
+    #endregion
 }
 
+/// <summary>
+/// کلاس کمکی برای ایجاد و کامپایل expression های بایندینگ
+/// </summary>
 public static class BindingDefinition
 {
+    /// <summary>
+    /// ایجاد یک builder جدید
+    /// </summary>
     public static BindingBuilder<TSource> CreateBuilder<TSource>()
     {
         return new BindingBuilder<TSource>();
     }
 
+    /// <summary>
+    /// کامپایل projection ها به expression نهایی
+    /// </summary>
     public static Expression<Func<TSource, TSource>> Compile<TSource>(
         params Expression<Func<TSource, TSource>>[] projections)
     {
         var builder = CreateBuilder<TSource>();
         foreach (var projection in projections)
         {
-            // Need to convert Expression<Func<TSource, TSource>> to Expression<Func<TSource, object>>
             var converted = Expression.Lambda<Func<TSource, object>>(
                 projection.Body,
                 projection.Parameters);
             builder.Add(converted);
+        }
+        return builder.Build();
+    }
+
+    /// <summary>
+    /// کامپایل projection ها به expression نهایی (ورژن مستقیم)
+    /// </summary>
+    public static Expression<Func<TSource, TSource>> Compile<TSource>(
+        params Expression<Func<TSource, object>>[] projections)
+    {
+        var builder = CreateBuilder<TSource>();
+        foreach (var projection in projections)
+        {
+            builder.Add(projection);
         }
         return builder.Build();
     }

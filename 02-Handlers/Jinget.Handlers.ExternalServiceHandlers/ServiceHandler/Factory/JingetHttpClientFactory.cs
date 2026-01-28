@@ -1,5 +1,7 @@
 ﻿using Jinget.Core.ExtensionMethods;
 
+using System.Threading;
+
 namespace Jinget.Handlers.ExternalServiceHandlers.ServiceHandler.Factory;
 
 /// <summary>
@@ -67,14 +69,18 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
     /// <param name="fileInfos">The list of file information.</param>
     /// <param name="requestHeaders">The request headers.</param>
     /// <returns>The HTTP response message.</returns>
-    public async Task<HttpResponseMessage> UploadFilesAsync(string requestUrl, List<FileInfo>? fileInfos = null, Dictionary<string, string>? requestHeaders = null)
+    public async Task<HttpResponseMessage> UploadFilesAsync(
+        string requestUrl,
+        List<FileInfo>? fileInfos = null,
+        Dictionary<string, string>? requestHeaders = null,
+        CancellationToken cancellationToken = default)
     {
         using var multipartFormContent = new MultipartFormDataContent();
         if (fileInfos is not null)
         {
             foreach (var item in fileInfos) multipartFormContent.Add(new ByteArrayContent(await File.ReadAllBytesAsync(item.FullName)), item.Name, item.Name);
         }
-        return await UploadFilesAsync(requestUrl, multipartFormContent, requestHeaders);
+        return await UploadFilesAsync(requestUrl, multipartFormContent, requestHeaders, cancellationToken);
     }
 
     /// <summary>
@@ -84,11 +90,15 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
     /// <param name="multipartFormDataContent">The multipart form data content.</param>
     /// <param name="requestHeaders">The request headers.</param>
     /// <returns>The HTTP response message.</returns>
-    public async Task<HttpResponseMessage> UploadFilesAsync(string requestUrl, MultipartFormDataContent? multipartFormDataContent, Dictionary<string, string>? requestHeaders)
+    public async Task<HttpResponseMessage> UploadFilesAsync(
+        string requestUrl,
+        MultipartFormDataContent? multipartFormDataContent,
+        Dictionary<string, string>? requestHeaders,
+        CancellationToken cancellationToken = default)
     {
         using var httpClient = CreateHttpClient();
         SetRequestHeaders(requestHeaders, httpClient);
-        return await httpClient.PostAsync(GetRequestUri(requestUrl), multipartFormDataContent);
+        return await httpClient.PostAsync(GetRequestUri(requestUrl), multipartFormDataContent, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -98,10 +108,11 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
     /// <param name="requestBody">The request body.</param>
     /// <param name="requestHeaders">The request headers.</param>
     /// <returns>The HTTP response message.</returns>
-    public async Task<HttpResponseMessage> PostAsync(string requestUrl, object? requestBody = null, Dictionary<string, string>? requestHeaders = null)
+    public async Task<HttpResponseMessage> PostAsync(string requestUrl, object? requestBody = null, Dictionary<string, string>? requestHeaders = null,
+         CancellationToken cancellationToken = default)
     {
         if (Not(string.IsNullOrWhiteSpace(requestUrl)) && requestUrl.StartsWith('/')) requestUrl = requestUrl.TrimStart('/');
-        if (requestBody is MultipartFormDataContent) return await UploadFilesAsync(requestUrl, requestBody as MultipartFormDataContent, requestHeaders);
+        if (requestBody is MultipartFormDataContent) return await UploadFilesAsync(requestUrl, requestBody as MultipartFormDataContent, requestHeaders, cancellationToken);
 
         using var httpClient = CreateHttpClient();
         requestHeaders = SetRequestHeaders(requestHeaders, httpClient);
@@ -129,7 +140,7 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
 
         }
 
-        return await httpClient.PostAsync(GetRequestUri(requestUrl), bodyContent);
+        return await httpClient.PostAsync(GetRequestUri(requestUrl), bodyContent, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -138,12 +149,12 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
     /// <param name="requestUrl">The request URL.</param>
     /// <param name="requestHeaders">The request headers.</param>
     /// <returns>The HTTP response message.</returns>
-    public async Task<HttpResponseMessage> GetAsync(string requestUrl, Dictionary<string, string>? requestHeaders = null)
+    public async Task<HttpResponseMessage> GetAsync(string requestUrl, Dictionary<string, string>? requestHeaders = null, CancellationToken cancellationToken = default)
     {
         if (requestUrl.StartsWith('/')) requestUrl = requestUrl.TrimStart('/');
         using var httpClient = CreateHttpClient();
         SetRequestHeaders(requestHeaders, httpClient);
-        return await httpClient.GetAsync(GetRequestUri(requestUrl));
+        return await httpClient.GetAsync(GetRequestUri(requestUrl), cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -151,9 +162,9 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
     /// </summary>
     /// <param name="httpRequestMessage">The HttpRequestMessage to send.</param>
     /// <returns>The HTTP response message.</returns>
-    public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage)
+    public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken = default)
     {
         using var httpClient = CreateHttpClient();
-        return await httpClient.SendAsync(httpRequestMessage);
+        return await httpClient.SendAsync(httpRequestMessage, cancellationToken: cancellationToken);
     }
 }

@@ -121,7 +121,7 @@ namespace JingetDynamic {
                           return ConvertDate(dt);
                           string ConvertDate(DateTime dt)
                           {
-                                return Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(dt);
+                                return Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(dt, false);
                           }";
         var result = JingetDynamicCode.Execute(
             code,
@@ -150,7 +150,7 @@ namespace JingetDynamic {
     {
         string expectedResult = "1399/07/21";
 
-        string code = @"using Jinget.Core;return ConvertDate(dt);string ConvertDate(DateTime dt){return Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(dt);}";
+        string code = @"using Jinget.Core;return ConvertDate(dt);string ConvertDate(DateTime dt){return Jinget.Core.Utilities.DateTimeUtility.ToSolarDate(dt, false);}";
 
         var result = JingetDynamicCode.Execute(
             code,

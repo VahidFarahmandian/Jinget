@@ -10,7 +10,31 @@ public class DateTimeUtilityTests
 
         DateTime input = new(2020, 10, 12);
 
+        var result = DateTimeUtility.ToSolarDate(input, includeTime: false);
+
+        Assert.AreEqual(expectedResult, result);
+    }
+
+    [TestMethod]
+    public void should_return_solar_datetime()
+    {
+        string expectedResult = "1399/07/21 18:19:20";
+
+        DateTime input = new(2020, 10, 12, 18, 19, 20);
+
         var result = DateTimeUtility.ToSolarDate(input);
+
+        Assert.AreEqual(expectedResult, result);
+    }
+
+    [TestMethod]
+    public void should_return_solar_date_for_edge_gregorian_date()
+    {
+        string expectedResult = "1404/10/10";
+
+        DateTime input = DateTime.Parse("2025-12-31 14:59:57.0466667");
+
+        var result = DateTimeUtility.ToSolarDate(input, includeTime: false);
 
         Assert.AreEqual(expectedResult, result);
     }
@@ -125,7 +149,6 @@ public class DateTimeUtilityTests
 
         Assert.AreEqual(expectedResult, result);
     }
-
 
     [TestMethod]
     public void Should_return_null_for_null_gregorian_date()

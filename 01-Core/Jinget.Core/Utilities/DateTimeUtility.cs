@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace Jinget.Core.Utilities;
 
 public static class DateTimeUtility
@@ -22,15 +24,32 @@ public static class DateTimeUtility
     /// Minimum supported Gregorian date is: year: 622,month: 3,day: 22. 
     /// See also: <seealso cref="PersianCalendar.MinSupportedDateTime"/>
     /// </summary>
-    public static string? ToSolarDate(DateTime? gregorianDate)
+    public static string? ToSolarDate(DateTime? gregorianDate, bool includeTime = true)
     {
         if (!gregorianDate.HasValue)
             return null;
+
         var calendar = new PersianCalendar();
-        if (gregorianDate < calendar.MinSupportedDateTime)
-            throw new ArgumentOutOfRangeException($"Date should be after {calendar.MinSupportedDateTime} ");
-        return
-            $"{calendar.GetYear(gregorianDate.Value)}/{calendar.GetMonth(gregorianDate.Value):D2}/{calendar.GetDayOfMonth(gregorianDate.Value):D2}";
+        var date = gregorianDate.Value;
+
+        if (date < calendar.MinSupportedDateTime)
+            throw new ArgumentOutOfRangeException(
+                nameof(gregorianDate),
+                $"Date should be after {calendar.MinSupportedDateTime}");
+
+        // Format the Persian date
+        var persianDate =
+            $"{calendar.GetYear(date)}/{calendar.GetMonth(date):D2}/{calendar.GetDayOfMonth(date):D2}";
+
+        // Append time if requested
+        if (includeTime)
+        {
+            // Format time with leading zeros
+            var timePart = $"{date.Hour:D2}:{date.Minute:D2}:{date.Second:D2}";
+            return $"{persianDate} {timePart}";
+        }
+
+        return persianDate;
     }
 
     /// <summary>

@@ -1,4 +1,6 @@
-﻿namespace Jinget.Core.Filters;
+﻿using Microsoft.OpenApi;
+
+namespace Jinget.Core.Filters;
 
 public class SwaggerExcludeTypeFilter : IDocumentFilter
 {

@@ -1,5 +1,7 @@
 ﻿using Jinget.Core.ExtensionMethods;
 
+using System.Threading;
+
 namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler;
 
 /// <summary>
@@ -116,10 +118,10 @@ public abstract class JingetServiceHandlerBase<TEvents>(IServiceProvider service
     /// <param name="processResponse">Optional function to process the raw HTTP response content and the <see cref="HttpResponseMessage"/>. If not provided, the default response processing logic will be used, which handles JSON and XML deserialization.</param>
     /// <returns>The deserialized result, or <c>null</c> if an error occurs or the response cannot be deserialized.</returns>
     /// <remarks>Calling this method directly will not raise <see cref="JingetServiceHandlerEvents{TResponseModel}.ResponseDeserializedAsync"/> event</remarks>
-    public virtual async Task<TResult?> GetAsync<TResult>(string url, Dictionary<string, string>? headers = null, Func<string, HttpResponseMessage, Task<TResult?>>? processResponse = null) where TResult : class
+    public virtual async Task<TResult?> GetAsync<TResult>(string url, Dictionary<string, string>? headers = null, Func<string, HttpResponseMessage, Task<TResult?>>? processResponse = null, CancellationToken cancellationToken = default) where TResult : class
         => await ProcessTaskAsync(async () =>
         {
-            return await HttpClientFactory.GetAsync(url, headers);
+            return await HttpClientFactory.GetAsync(url, headers, cancellationToken: cancellationToken);
         }, processResponse ?? ((rawResponse, response) => ProcessResponseDefaultAsync<TResult>(rawResponse, response)));
 
     /// <summary>
@@ -131,10 +133,10 @@ public abstract class JingetServiceHandlerBase<TEvents>(IServiceProvider service
     /// <param name="processResponse">Optional function to process the raw HTTP response content and the <see cref="HttpResponseMessage"/>. If not provided, the default response processing logic will be used, which handles JSON and XML deserialization.</param>
     /// <returns>The deserialized result, or <c>null</c> if an error occurs or the response cannot be deserialized.</returns>
     /// <remarks>Calling this method directly will not raise <see cref="JingetServiceHandlerEvents{TResponseModel}.ResponseDeserializedAsync"/> event</remarks>
-    public virtual async Task<TResult?> PostAsync<TResult>(object? content = null, Dictionary<string, string>? headers = null, Func<string, HttpResponseMessage, Task<TResult?>>? processResponse = null) where TResult : class
+    public virtual async Task<TResult?> PostAsync<TResult>(object? content = null, Dictionary<string, string>? headers = null, Func<string, HttpResponseMessage, Task<TResult?>>? processResponse = null, CancellationToken cancellationToken = default) where TResult : class
         => await ProcessTaskAsync(async () =>
         {
-            return await HttpClientFactory.PostAsync("", content, headers);
+            return await HttpClientFactory.PostAsync("", content, headers, cancellationToken: cancellationToken);
         }, processResponse ?? ((rawResponse, response) => ProcessResponseDefaultAsync<TResult>(rawResponse, response)));
 
     /// <summary>
@@ -147,10 +149,10 @@ public abstract class JingetServiceHandlerBase<TEvents>(IServiceProvider service
     /// <param name="processResponse">Optional function to process the raw HTTP response content and the <see cref="HttpResponseMessage"/>. If not provided, the default response processing logic will be used, which handles JSON and XML deserialization.</param>
     /// <returns>The deserialized result, or <c>null</c> if an error occurs or the response cannot be deserialized.</returns>
     /// <remarks>Calling this method directly will not raise <see cref="JingetServiceHandlerEvents{TResponseModel}.ResponseDeserializedAsync"/> event</remarks>
-    public virtual async Task<TResult?> PostAsync<TResult>(string url, object? content = null, Dictionary<string, string>? headers = null, Func<string, HttpResponseMessage, Task<TResult?>>? processResponse = null) where TResult : class
+    public virtual async Task<TResult?> PostAsync<TResult>(string url, object? content = null, Dictionary<string, string>? headers = null, Func<string, HttpResponseMessage, Task<TResult?>>? processResponse = null, CancellationToken cancellationToken = default) where TResult : class
         => await ProcessTaskAsync(async () =>
         {
-            return await HttpClientFactory.PostAsync(url, content, headers);
+            return await HttpClientFactory.PostAsync(url, content, headers, cancellationToken: cancellationToken);
         }, processResponse ?? ((rawResponse, response) => ProcessResponseDefaultAsync<TResult>(rawResponse, response)));
 
     /// <summary>
@@ -163,10 +165,10 @@ public abstract class JingetServiceHandlerBase<TEvents>(IServiceProvider service
     /// <param name="processResponse">Optional function to process the raw HTTP response content and the <see cref="HttpResponseMessage"/>. If not provided, the default response processing logic will be used, which handles JSON and XML deserialization.</param>
     /// <returns>The deserialized result, or <c>null</c> if an error occurs or the response cannot be deserialized.</returns>
     /// <remarks>Calling this method directly will not raise <see cref="JingetServiceHandlerEvents{TResponseModel}.ResponseDeserializedAsync"/> event</remarks>
-    public virtual async Task<TResult?> UploadFilesAsync<TResult>(string url, List<FileInfo>? files = null, Dictionary<string, string>? headers = null, Func<string, HttpResponseMessage, Task<TResult?>>? processResponse = null) where TResult : class
+    public virtual async Task<TResult?> UploadFilesAsync<TResult>(string url, List<FileInfo>? files = null, Dictionary<string, string>? headers = null, Func<string, HttpResponseMessage, Task<TResult?>>? processResponse = null, CancellationToken cancellationToken = default) where TResult : class
         => await ProcessTaskAsync(async () =>
         {
-            return await HttpClientFactory.UploadFilesAsync(url, files, headers);
+            return await HttpClientFactory.UploadFilesAsync(url, files, headers, cancellationToken: cancellationToken);
         }, processResponse ?? ((rawResponse, response) => ProcessResponseDefaultAsync<TResult>(rawResponse, response)));
 
     /// <summary>
@@ -179,10 +181,10 @@ public abstract class JingetServiceHandlerBase<TEvents>(IServiceProvider service
     /// <param name="processResponse">Optional function to process the raw HTTP response content and the <see cref="HttpResponseMessage"/>. If not provided, the default response processing logic will be used, which handles JSON and XML deserialization.</param>
     /// <returns>The deserialized result, or <c>null</c> if an error occurs or the response cannot be deserialized.</returns>
     /// <remarks>Calling this method directly will not raise <see cref="JingetServiceHandlerEvents{TResponseModel}.ResponseDeserializedAsync"/> event</remarks>
-    public virtual async Task<TResult?> UploadFilesAsync<TResult>(string url, MultipartFormDataContent? multipartFormData = null, Dictionary<string, string>? headers = null, Func<string, HttpResponseMessage, Task<TResult?>>? processResponse = null) where TResult : class
+    public virtual async Task<TResult?> UploadFilesAsync<TResult>(string url, MultipartFormDataContent? multipartFormData = null, Dictionary<string, string>? headers = null, Func<string, HttpResponseMessage, Task<TResult?>>? processResponse = null, CancellationToken cancellationToken = default) where TResult : class
         => await ProcessTaskAsync(async () =>
         {
-            return await HttpClientFactory.UploadFilesAsync(url, multipartFormData, headers);
+            return await HttpClientFactory.UploadFilesAsync(url, multipartFormData, headers, cancellationToken: cancellationToken);
         }, processResponse ?? ((rawResponse, response) => ProcessResponseDefaultAsync<TResult>(rawResponse, response)));
 
     /// <summary>
@@ -193,9 +195,9 @@ public abstract class JingetServiceHandlerBase<TEvents>(IServiceProvider service
     /// <param name="processResponse">Optional function to process the raw HTTP response content and the <see cref="HttpResponseMessage"/>. If not provided, the default response processing logic will be used, which handles JSON and XML deserialization.</param>
     /// <returns>The deserialized result, or <c>null</c> if an error occurs or the response cannot be deserialized.</returns>
     /// <remarks>Calling this method directly will not raise <see cref="JingetServiceHandlerEvents{TResponseModel}.ResponseDeserializedAsync"/> event</remarks>
-    public virtual async Task<TResult?> SendAsync<TResult>(HttpRequestMessage message, Func<string, HttpResponseMessage, Task<TResult?>>? processResponse = null) where TResult : class
+    public virtual async Task<TResult?> SendAsync<TResult>(HttpRequestMessage message, Func<string, HttpResponseMessage, Task<TResult?>>? processResponse = null, CancellationToken cancellationToken = default) where TResult : class
         => await ProcessTaskAsync(async () =>
         {
-            return await HttpClientFactory.SendAsync(message);
+            return await HttpClientFactory.SendAsync(message, cancellationToken: cancellationToken);
         }, processResponse ?? ((rawResponse, response) => ProcessResponseDefaultAsync<TResult>(rawResponse, response)));
 }

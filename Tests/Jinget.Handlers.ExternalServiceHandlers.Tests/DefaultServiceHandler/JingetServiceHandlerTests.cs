@@ -278,11 +278,13 @@ public class JingetServiceHandlerTests
         envelope.Body.Add = new SampleSOAPRequest.SampleSOAPGet { intA = 1, intB = 2 };
 
         // Act
-        var result = await jingetServiceHandler.PostAsync(envelope.ToString(), new Dictionary<string, string>
-    {
-        { "Content-Type", "text/xml" },
-        { "SOAPAction", "http://tempuri.org/Add" }
-    });
+        var result = await jingetServiceHandler.PostAsync(
+            requestBody: envelope.ToString(),
+            requestHeaders: new Dictionary<string, string>
+            {
+                { "Content-Type", "text/xml" },
+                { "SOAPAction", "http://tempuri.org/Add" }
+            });
 
         // Assert
         Assert.IsNotNull(result);

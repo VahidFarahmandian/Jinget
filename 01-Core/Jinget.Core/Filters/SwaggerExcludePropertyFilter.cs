@@ -1,4 +1,6 @@
-﻿namespace Jinget.Core.Filters;
+﻿using Microsoft.OpenApi;
+
+namespace Jinget.Core.Filters;
 
 public class SwaggerExcludePropertyFilter : ISchemaFilter
 {
@@ -6,7 +8,7 @@ public class SwaggerExcludePropertyFilter : ISchemaFilter
     /// When <seealso cref="SwaggerExcludePropertyFilter"/> applied on a proprty in model, 
     /// then that property will be ignored while working with swagger
     /// </summary>
-    public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+    public void Apply(IOpenApiSchema schema, SchemaFilterContext context)
     {
         if (schema.Properties.Count == 0)
             return;

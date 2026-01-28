@@ -45,6 +45,5 @@ global using Jinget.Core.Utilities;
 global using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.OpenApi.Models;
 global using Microsoft.VisualStudio.Threading;
 global using Swashbuckle.AspNetCore.SwaggerGen;

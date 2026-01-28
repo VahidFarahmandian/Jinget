@@ -29,7 +29,7 @@ public static class TestClassExtensions
 }
 public class PrivateClass
 {
-    private PrivateClass()
+    internal PrivateClass()
     {
         
     }

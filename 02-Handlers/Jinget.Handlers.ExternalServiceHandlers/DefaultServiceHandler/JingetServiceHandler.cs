@@ -1,4 +1,6 @@
-﻿namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler;
+﻿using System.Threading;
+
+namespace Jinget.Handlers.ExternalServiceHandlers.DefaultServiceHandler;
 
 /// <summary>
 /// Service handler for processing HTTP responses with a specific response model.
@@ -36,8 +38,8 @@ public class JingetServiceHandler<TResponseModel>(IServiceProvider serviceProvid
     /// <param name="requestUrl">The URL to make the GET request to.</param>
     /// <param name="requestHeaders">Optional headers to include in the request.</param>
     /// <returns>The deserialized response model, or <c>null</c> if an error occurs.</returns>
-    public async Task<TResponseModel?> GetAsync(string requestUrl, Dictionary<string, string>? requestHeaders = null)
-        => await base.GetAsync(requestUrl, requestHeaders, ProcessResponseAsync);
+    public async Task<TResponseModel?> GetAsync(string requestUrl, Dictionary<string, string>? requestHeaders = null, CancellationToken cancellationToken = default)
+        => await base.GetAsync(requestUrl, requestHeaders, ProcessResponseAsync, cancellationToken: cancellationToken);
 
     /// <summary>
     /// Makes an HTTP POST request with the specified content and processes the response.
@@ -45,8 +47,8 @@ public class JingetServiceHandler<TResponseModel>(IServiceProvider serviceProvid
     /// <param name="requestBody">The content to include in the POST request.</param>
     /// <param name="requestHeaders">Optional headers to include in the request.</param>
     /// <returns>The deserialized response model, or <c>null</c> if an error occurs.</returns>
-    public async Task<TResponseModel?> PostAsync(object? requestBody = null, Dictionary<string, string>? requestHeaders = null)
-        => await base.PostAsync(requestBody, requestHeaders, ProcessResponseAsync);
+    public async Task<TResponseModel?> PostAsync(object? requestBody = null, Dictionary<string, string>? requestHeaders = null, CancellationToken cancellationToken = default)
+        => await base.PostAsync(requestBody, requestHeaders, ProcessResponseAsync, cancellationToken: cancellationToken);
 
     /// <summary>
     /// Makes an HTTP POST request to the specified URL with the specified content and processes the response.
@@ -55,8 +57,8 @@ public class JingetServiceHandler<TResponseModel>(IServiceProvider serviceProvid
     /// <param name="requestBody">The content to include in the POST request.</param>
     /// <param name="requestHeaders">Optional headers to include in the request.</param>
     /// <returns>The deserialized response model, or <c>null</c> if an error occurs.</returns>
-    public async Task<TResponseModel?> PostAsync(string requestUrl, object? requestBody = null, Dictionary<string, string>? requestHeaders = null)
-        => await base.PostAsync(requestUrl, requestBody, requestHeaders, ProcessResponseAsync);
+    public async Task<TResponseModel?> PostAsync(string requestUrl, object? requestBody = null, Dictionary<string, string>? requestHeaders = null, CancellationToken cancellationToken = default)
+        => await base.PostAsync(requestUrl, requestBody, requestHeaders, ProcessResponseAsync, cancellationToken: cancellationToken);
 
     /// <summary>
     /// Uploads files to the specified URL and processes the response.
@@ -65,8 +67,8 @@ public class JingetServiceHandler<TResponseModel>(IServiceProvider serviceProvid
     /// <param name="files">The list of files to upload.</param>
     /// <param name="requestHeaders">Optional headers to include in the request.</param>
     /// <returns>The deserialized response model, or <c>null</c> if an error occurs.</returns>
-    public async Task<TResponseModel?> UploadFilesAsync(string requestUrl, List<FileInfo>? files = null, Dictionary<string, string>? requestHeaders = null)
-        => await base.UploadFilesAsync(requestUrl, files, requestHeaders, ProcessResponseAsync);
+    public async Task<TResponseModel?> UploadFilesAsync(string requestUrl, List<FileInfo>? files = null, Dictionary<string, string>? requestHeaders = null, CancellationToken cancellationToken = default)
+        => await base.UploadFilesAsync(requestUrl, files, requestHeaders, ProcessResponseAsync, cancellationToken: cancellationToken);
 
     /// <summary>
     /// Uploads files to the specified URL using a multipart form data content and processes the response.
@@ -75,16 +77,16 @@ public class JingetServiceHandler<TResponseModel>(IServiceProvider serviceProvid
     /// <param name="multipartFormData">The multipart form data content.</param>
     /// <param name="requestHeaders">Optional headers to include in the request.</param>
     /// <returns>The deserialized response model, or <c>null</c> if an error occurs.</returns>
-    public async Task<TResponseModel?> UploadFilesAsync(string requestUrl, MultipartFormDataContent? multipartFormData = null, Dictionary<string, string>? requestHeaders = null)
-        => await base.UploadFilesAsync(requestUrl, multipartFormData, requestHeaders, ProcessResponseAsync);
+    public async Task<TResponseModel?> UploadFilesAsync(string requestUrl, MultipartFormDataContent? multipartFormData = null, Dictionary<string, string>? requestHeaders = null, CancellationToken cancellationToken = default)
+        => await base.UploadFilesAsync(requestUrl, multipartFormData, requestHeaders, ProcessResponseAsync, cancellationToken: cancellationToken);
 
     /// <summary>
     /// Sends an HTTP request message and processes the response.
     /// </summary>
     /// <param name="httpRequestMessage">The HTTP request message to send.</param>
     /// <returns>The deserialized response model, or <c>null</c> if an error occurs.</returns>
-    public async Task<TResponseModel?> SendAsync(HttpRequestMessage httpRequestMessage)
-        => await base.SendAsync(httpRequestMessage, ProcessResponseAsync);
+    public async Task<TResponseModel?> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken = default)
+        => await base.SendAsync(httpRequestMessage, ProcessResponseAsync, cancellationToken: cancellationToken);
 }
 
 /// <summary>
