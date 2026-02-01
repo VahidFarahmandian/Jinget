@@ -10,7 +10,7 @@ public class SwaggerExcludePropertyFilter : ISchemaFilter
     /// </summary>
     public void Apply(IOpenApiSchema schema, SchemaFilterContext context)
     {
-        if (schema.Properties.Count == 0)
+        if (schema.Properties != null && schema.Properties.Count == 0)
             return;
 
         var excludedList = context.Type.GetProperties()

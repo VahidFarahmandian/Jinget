@@ -22,7 +22,7 @@ public class DateTimeUtilityTests
 
         DateTime input = new(2020, 10, 12, 18, 19, 20);
 
-        var result = DateTimeUtility.ToSolarDate(input);
+        var result = DateTimeUtility.ToSolarDate(input, true);
 
         Assert.AreEqual(expectedResult, result);
     }
@@ -44,7 +44,7 @@ public class DateTimeUtilityTests
     public void should_throw_exception_for_out_of_supported_range_date()
     {
         DateTime input = DateTime.MinValue;
-        DateTimeUtility.ToSolarDate(input);
+        DateTimeUtility.ToSolarDate(input, true);
     }
 
     [TestMethod]

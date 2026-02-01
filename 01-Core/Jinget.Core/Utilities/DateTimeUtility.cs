@@ -16,7 +16,7 @@ public static class DateTimeUtility
         if (!gregorianDate.HasValue)
             return null;
         var gregorianDateTime = gregorianDate.Value.ToDateTime(new TimeOnly());
-        return ToSolarDate(gregorianDateTime);
+        return ToSolarDate(gregorianDateTime, true);
     }
 
     /// <summary>
@@ -24,7 +24,7 @@ public static class DateTimeUtility
     /// Minimum supported Gregorian date is: year: 622,month: 3,day: 22. 
     /// See also: <seealso cref="PersianCalendar.MinSupportedDateTime"/>
     /// </summary>
-    public static string? ToSolarDate(DateTime? gregorianDate, bool includeTime = true)
+    public static string? ToSolarDate(DateTime? gregorianDate, bool includeTime)
     {
         if (!gregorianDate.HasValue)
             return null;
