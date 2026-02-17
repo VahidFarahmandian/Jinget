@@ -1,18 +1,20 @@
-﻿[assembly: InternalsVisibleTo("Jinget.Core.Tests")]
+﻿using System.Data.Common;
+
+[assembly: InternalsVisibleTo("Jinget.Core.Tests")]
 namespace Jinget.Core.ExtensionMethods.Database.SqlClient;
 
-public static class IDbConnectionExtensions
+public static class DbConnectionExtensions
 {
     /// <summary>
     /// Opens a connection to database safely
     /// </summary>
     /// <remarks>This method first check if the connection state is already equal to <seealso cref="ConnectionState.Closed"/> or not, if not, 
     /// first it tries to Close the connection and then reopen it</remarks>
-    public static void SafeOpen(this IDbConnection connection)
+    public static async Task SafeOpenAsync(this DbConnection connection)
     {
         if (connection.State != ConnectionState.Closed)
-            connection.Close();
-        connection.Open();
+            await connection.CloseAsync();
+        await connection.OpenAsync();
     }
 
     internal static (string queryText, Dictionary<string, object?>? queryParameters) PrepareQuery(Query sql, object? param)

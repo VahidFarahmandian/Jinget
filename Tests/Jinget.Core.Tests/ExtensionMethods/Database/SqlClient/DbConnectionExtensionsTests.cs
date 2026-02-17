@@ -1,26 +1,38 @@
-﻿namespace Jinget.Core.Tests.ExtensionMethods.Database.SqlClient;
+﻿using System.Data.Common;
+using System.Threading;
+
+namespace Jinget.Core.Tests.ExtensionMethods.Database.SqlClient;
 
 [TestClass]
-public class IDbConnectionExtensionsTests
+public class DbConnectionExtensionsTests
 {
-    Mock<IDbConnection> mockDbConnection;
+    Mock<DbConnection> mockDbConnection;
     [TestInitialize]
     public void Initialize()
     {
         ConnectionState state = ConnectionState.Closed;
 
-        mockDbConnection = new Mock<IDbConnection>();
-        mockDbConnection.Setup(x => x.Open()).Callback(() => { state = ConnectionState.Open; });
-        mockDbConnection.Setup(x => x.Close()).Callback(() => { state = ConnectionState.Closed; });
+        mockDbConnection = new Mock<DbConnection>();
+        // Setup OpenAsync to change state to Open
+        mockDbConnection.Setup(x => x.OpenAsync(It.IsAny<CancellationToken>()))
+            .Callback(() => state = ConnectionState.Open)
+            .Returns(Task.CompletedTask);
+
+        // Setup CloseAsync to change state to Closed
+        mockDbConnection.Setup(x => x.CloseAsync())
+            .Callback(() => state = ConnectionState.Closed)
+            .Returns(Task.CompletedTask);
+
+        // Setup State getter to return currentState
         mockDbConnection.Setup(x => x.State).Returns(() => state);
 
     }
     [TestMethod]
-    public void Should_return_open_connection_status()
+    public async Task Should_return_open_connection_statusAsync()
     {
         var cnn = mockDbConnection.Object;
-        cnn.SafeOpen();
-        cnn.SafeOpen();
+        await cnn.SafeOpenAsync();
+        await cnn.SafeOpenAsync();
         Assert.IsTrue(cnn.State == ConnectionState.Open);
     }
 
@@ -29,7 +41,7 @@ public class IDbConnectionExtensionsTests
     {
         var select = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest");
         var param = new GenericRequestSampleMessage();
-        var result = IDbConnectionExtensions.PrepareQuery(select, param);
+        var result = DbConnectionExtensions.PrepareQuery(select, param);
 
         Assert.IsFalse(string.IsNullOrWhiteSpace(result.queryText));
     }
@@ -39,7 +51,7 @@ public class IDbConnectionExtensionsTests
     {
         var select = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest");
         var param = new NonGenericRequestSampleMessage();
-        var result = IDbConnectionExtensions.PrepareQuery(select, param);
+        var result = DbConnectionExtensions.PrepareQuery(select, param);
 
         Assert.IsFalse(string.IsNullOrWhiteSpace(result.queryText));
     }
@@ -50,10 +62,10 @@ public class IDbConnectionExtensionsTests
         var select = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest");
 
         var param1 = new GenericRequestSampleMessage();
-        var result1 = IDbConnectionExtensions.PrepareQuery(select, param1);
+        var result1 = DbConnectionExtensions.PrepareQuery(select, param1);
 
         var param2 = new NonGenericRequestSampleMessage();
-        var result2 = IDbConnectionExtensions.PrepareQuery(select, param2);
+        var result2 = DbConnectionExtensions.PrepareQuery(select, param2);
 
         Assert.AreEqual(result1.queryText, result2.queryText);
     }
