@@ -71,4 +71,240 @@ public static class BooleanExpressionExtensions
         return Expression.Lambda<Func<T, bool>>(binaryExpr, parameter);
     }
 
+    /// <summary>
+    /// extract constant values from binary expression
+    /// conditions like 'a'='b' where both sides are constant will be ignored
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="expression"></param>
+    /// <returns></returns>
+    public static List<string> ExtractValues<T>(Expression<Func<T, bool>>? expression)
+    {
+        if (expression == null)
+            return [];
+
+        var extractor = new ValueExtractor<T>();
+        return extractor.Extract(expression);
+    }
+
+    public class ValueExtractor<T>
+    {
+        public List<string> FoundValues { get; } = new List<string>();
+
+        public List<string> Extract(Expression<Func<T, bool>> expression)
+        {
+            ExtractFromExpression(expression.Body);
+            return FoundValues;
+        }
+
+        private void ExtractFromExpression(Expression expr)
+        {
+            if (expr == null) return;
+
+            switch (expr)
+            {
+                case BinaryExpression binary:
+                    ExtractFromBinary(binary);
+                    break;
+                case MethodCallExpression method:
+                    ExtractFromMethodCall(method);
+                    break;
+                case UnaryExpression unary:
+                    ExtractFromExpression(unary.Operand);
+                    break;
+                case MemberExpression member:
+                    ExtractValueFromExpression(member);
+                    break;
+                case ConstantExpression constant:
+                    ExtractValueFromExpression(constant);
+                    break;
+            }
+        }
+
+        private void ExtractFromBinary(BinaryExpression binary)
+        {
+            if (binary.NodeType == ExpressionType.OrElse || binary.NodeType == ExpressionType.Or)
+            {
+                // Process OR in order: left then right
+                ExtractFromExpression(binary.Left);
+                ExtractFromExpression(binary.Right);
+            }
+            else if (binary.NodeType == ExpressionType.Equal || binary.NodeType == ExpressionType.NotEqual)
+            {
+                // Extract left side
+                var leftValue = ExtractDirectValue(binary.Left);
+                if (leftValue != null)
+                    AddIfNotDuplicate(leftValue);
+                else
+                    ExtractValueFromExpression(binary.Left); // Fallback
+
+                // Extract right side  
+                var rightValue = ExtractDirectValue(binary.Right);
+                if (rightValue != null)
+                    AddIfNotDuplicate(rightValue);
+                else
+                    ExtractValueFromExpression(binary.Right); // Fallback
+            }
+            else
+            {
+                // Other binary expressions
+                ExtractValueFromExpression(binary.Left);
+                ExtractValueFromExpression(binary.Right);
+            }
+        }
+
+        private void ExtractFromMethodCall(MethodCallExpression method)
+        {
+            // Handle Contains, StartsWith, EndsWith, Equals, ToString, Convert.ToString
+
+            // Extract from instance
+            if (method.Object != null)
+            {
+                ExtractValueFromExpression(method.Object);
+            }
+
+            // Extract from arguments in order
+            foreach (var arg in method.Arguments)
+            {
+                ExtractValueFromExpression(arg);
+            }
+        }
+
+        private string ExtractDirectValue(Expression expr)
+        {
+            // Try to get string value directly without recursion
+            try
+            {
+                switch (expr)
+                {
+                    case ConstantExpression constant when constant.Value is string str:
+                        return str; // Direct string constant like "peter" or "Joe"
+
+                    case ConstantExpression constant when constant.Value != null &&
+                                                           constant.Type != typeof(bool):
+                        return constant.Value.ToString(); // Other constants
+
+                    case MemberExpression member:
+                        var memberValue = GetMemberValue(member);
+                        if (memberValue != null && !IsCompilerGenerated(memberValue.GetType()))
+                            return memberValue.ToString();
+                        break;
+
+                    case MethodCallExpression method:
+                        var methodValue = ExecuteMethod(method);
+                        if (methodValue != null)
+                            return methodValue.ToString();
+                        break;
+
+                    case UnaryExpression unary when unary.NodeType == ExpressionType.Convert:
+                        return ExtractDirectValue(unary.Operand);
+                }
+            }
+            catch
+            {
+                // Ignore
+            }
+
+            return null;
+        }
+
+        private void ExtractValueFromExpression(Expression expr)
+        {
+            if (expr == null) return;
+
+            string value = ExtractDirectValue(expr);
+            if (value != null)
+            {
+                AddIfNotDuplicate(value);
+                return;
+            }
+
+            // If we couldn't get a direct value, recurse if needed
+            switch (expr)
+            {
+                case MemberExpression member:
+                    var memberValue = GetMemberValue(member);
+                    if (memberValue != null && !IsCompilerGenerated(memberValue.GetType()))
+                    {
+                        AddIfNotDuplicate(memberValue.ToString());
+                    }
+                    break;
+
+                case MethodCallExpression method:
+                    var methodValue = ExecuteMethod(method);
+                    if (methodValue != null)
+                    {
+                        AddIfNotDuplicate(methodValue.ToString());
+                    }
+                    break;
+
+                case UnaryExpression unary when unary.NodeType == ExpressionType.Convert:
+                    ExtractValueFromExpression(unary.Operand);
+                    break;
+            }
+        }
+
+        private object GetMemberValue(MemberExpression member)
+        {
+            try
+            {
+                object instance = null;
+                if (member.Expression != null)
+                {
+                    if (member.Expression is ConstantExpression constant)
+                    {
+                        instance = constant.Value;
+                    }
+                    else if (member.Expression is MemberExpression innerMember)
+                    {
+                        instance = GetMemberValue(innerMember);
+                    }
+                }
+
+                if (member.Member is FieldInfo field)
+                    return field.GetValue(instance);
+
+                if (member.Member is PropertyInfo prop)
+                    return prop.GetValue(instance);
+            }
+            catch { }
+
+            return null;
+        }
+
+        private object ExecuteMethod(MethodCallExpression method)
+        {
+            try
+            {
+                var lambda = Expression.Lambda<Func<object>>(
+                    Expression.Convert(method, typeof(object)));
+                var func = lambda.Compile();
+                return func();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private bool IsCompilerGenerated(Type type)
+        {
+            return type.Name.Contains("DisplayClass") ||
+                   type.Name.Contains("<>c__") ||
+                   type.Name.Contains("__DisplayClass") ||
+                   type.GetCustomAttributes(typeof(CompilerGeneratedAttribute), true).Any();
+        }
+
+        private void AddIfNotDuplicate(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return;
+            if (value == "True" || value == "False") return;
+
+            if (!FoundValues.Contains(value))
+            {
+                FoundValues.Add(value);
+            }
+        }
+    }
+
 }
