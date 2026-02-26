@@ -75,26 +75,23 @@ public static class BooleanExpressionExtensions
     /// extract constant values from binary expression
     /// conditions like 'a'='b' where both sides are constant will be ignored
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="expression"></param>
-    /// <returns></returns>
-    public static List<string> ExtractValues<T>(Expression<Func<T, bool>>? expression)
+    public static List<string> ExtractValues<T>(this Expression<Func<T, bool>>? expression, bool onlyDistincts = true)
     {
         if (expression == null)
             return [];
 
         var extractor = new ValueExtractor<T>();
-        return extractor.Extract(expression);
+        return extractor.Extract(expression, onlyDistincts);
     }
 
     public class ValueExtractor<T>
     {
         public List<string> FoundValues { get; } = new List<string>();
 
-        public List<string> Extract(Expression<Func<T, bool>> expression)
+        public List<string> Extract(Expression<Func<T, bool>> expression, bool onlyDistincts = true)
         {
             ExtractFromExpression(expression.Body);
-            return FoundValues;
+            return onlyDistincts ? [.. FoundValues.Distinct()] : FoundValues;
         }
 
         private void ExtractFromExpression(Expression expr)
