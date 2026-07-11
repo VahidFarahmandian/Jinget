@@ -1,4 +1,5 @@
 ﻿using Jinget.Core.Contracts;
+using Jinget.Core.Types.ValueObject;
 
 namespace Jinget.Core.Tests._BaseData;
 
@@ -216,58 +217,4 @@ public class FileContent : JingetValueObject
 public class Like
 {
     public int Count { get; set; }
-}
-
-public abstract class JingetValueObject : IEquatable<JingetValueObject>
-{
-    protected virtual IEnumerable<object> YieldProperties()
-    {
-        return ((from p in GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                 where p.CanRead
-                 select p)?.OrderBy((PropertyInfo p) => p.Name))?.Select((PropertyInfo p) => p.GetValue(this));
-    }
-
-    protected virtual void Validate()
-    {
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as JingetValueObject);
-    }
-
-    public bool Equals(JingetValueObject? other)
-    {
-        if ((object)other == null || other.GetType() != GetType())
-        {
-            return false;
-        }
-
-        return YieldProperties().SequenceEqual(other.YieldProperties());
-    }
-
-    public override int GetHashCode()
-    {
-        return YieldProperties().Aggregate(0, (int hashcode, object value) => HashCode.Combine(hashcode, value?.GetHashCode() ?? 0));
-    }
-
-    public static bool operator ==(JingetValueObject left, JingetValueObject right)
-    {
-        if ((object)left == null && (object)right == null)
-        {
-            return true;
-        }
-
-        if ((object)left == null || (object)right == null)
-        {
-            return false;
-        }
-
-        return left.Equals(right);
-    }
-
-    public static bool operator !=(JingetValueObject left, JingetValueObject right)
-    {
-        return !(left == right);
-    }
 }

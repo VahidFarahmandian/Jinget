@@ -1,60 +1,143 @@
-﻿namespace Jinget.Core.Types.ValueObject;
+﻿using System.Collections.Concurrent;
+
+namespace Jinget.Core.Types.ValueObject;
 
 public abstract class JingetValueObject : IEquatable<JingetValueObject>
 {
-    /// <summary>
-    /// Gets the properties values of the object for equality comparison.
-    /// </summary>
-    /// <returns>An enumerable of objects that represent the value object's values.</returns>
-    protected virtual IEnumerable<object> YieldProperties()
+    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> PropertyCache = new();
+
+    protected virtual IEnumerable<object?> YieldProperties()
     {
-        var properties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
-        var readableProperties = properties.Where(p => p.CanRead)?.OrderBy(p => p.Name);
-        return readableProperties?.Select(p => p.GetValue(this))!;
+        var properties = PropertyCache.GetOrAdd(
+            GetType(),
+            static t => t.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                         .Where(p => p.CanRead)
+                         .OrderBy(p => p.Name)
+                         .ToArray());
+
+        foreach (var property in properties)
+            yield return property.GetValue(this);
     }
 
-    /// <summary>
-    /// Validates the value object's state.
-    /// </summary>
-    protected virtual void Validate() { }
+    protected virtual void Validate()
+    {
+    }
 
     public override bool Equals(object? obj)
-    {
-        return Equals(obj as JingetValueObject);
-    }
+        => Equals(obj as JingetValueObject);
 
     public bool Equals(JingetValueObject? other)
     {
-        if (other is null || other.GetType() != GetType())
+        if (ReferenceEquals(this, other))
+            return true;
+
+        if (other is null)
             return false;
 
-        return YieldProperties().SequenceEqual(other.YieldProperties());
+        if (GetType() != other.GetType())
+            return false;
+
+        using var left = YieldProperties().GetEnumerator();
+        using var right = other.YieldProperties().GetEnumerator();
+
+        while (true)
+        {
+            var hasLeft = left.MoveNext();
+            var hasRight = right.MoveNext();
+
+            if (hasLeft != hasRight)
+                return false;
+
+            if (!hasLeft)
+                break;
+
+            if (!AreEqual(left.Current, right.Current))
+                return false;
+        }
+
+        return true;
     }
 
-    public override int GetHashCode()
+    private static bool AreEqual(object? left, object? right)
     {
-        return YieldProperties()
-            .Aggregate(
-                default(int),
-                (hashcode, value) =>
-                    HashCode.Combine(hashcode, value?.GetHashCode() ?? 0)
-            );
-    }
-
-    public static bool operator ==(JingetValueObject left, JingetValueObject right)
-    {
-        if (left is null && right is null)
+        if (ReferenceEquals(left, right))
             return true;
 
         if (left is null || right is null)
             return false;
 
-        return left.Equals(right);
+        if (left is string || right is string)
+            return Equals(left, right);
+
+        if (left is IEnumerable leftEnumerable &&
+            right is IEnumerable rightEnumerable)
+        {
+            var leftEnumerator = leftEnumerable.GetEnumerator();
+            var rightEnumerator = rightEnumerable.GetEnumerator();
+
+            while (true)
+            {
+                var hasLeft = leftEnumerator.MoveNext();
+                var hasRight = rightEnumerator.MoveNext();
+
+                if (hasLeft != hasRight)
+                    return false;
+
+                if (!hasLeft)
+                    break;
+
+                if (!AreEqual(leftEnumerator.Current, rightEnumerator.Current))
+                    return false;
+            }
+
+            return true;
+        }
+
+        return Equals(left, right);
     }
 
-    public static bool operator !=(JingetValueObject left, JingetValueObject right)
+    public override int GetHashCode()
     {
-        return !(left == right);
+        var hash = new HashCode();
+
+        foreach (var property in YieldProperties())
+        {
+            AddHash(ref hash, property);
+        }
+
+        return hash.ToHashCode();
     }
 
+    private static void AddHash(ref HashCode hash, object? value)
+    {
+        if (value is null)
+        {
+            hash.Add(0);
+            return;
+        }
+
+        if (value is string)
+        {
+            hash.Add(value);
+            return;
+        }
+
+        if (value is IEnumerable enumerable)
+        {
+            foreach (var item in enumerable)
+            {
+                AddHash(ref hash, item);
+            }
+
+            return;
+        }
+
+        hash.Add(value);
+    }
+
+    public static bool operator ==(JingetValueObject? left, JingetValueObject? right)
+        => Equals(left, right);
+
+    public static bool operator !=(JingetValueObject? left, JingetValueObject? right)
+        => !Equals(left, right);
 }
