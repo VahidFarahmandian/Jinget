@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Jinget.SourceGenerator.Tests")]
 namespace Jinget.SourceGenerator.Generators;
@@ -14,9 +12,6 @@ public class ReadModelGenerator : IIncrementalGenerator
         "int", "uint", "long", "ulong", "short", "ushort", "object",
         "string", "dynamic", "DateTime", "DateTimeOffset", "TimeSpan", "Guid"
     };
-
-    //private static readonly string[] AggregationAttributes =
-    //    ["CountAttribute", "SumAttribute", "AverageAttribute", "MinAttribute", "MaxAttribute"];
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -243,7 +238,37 @@ public class ReadModelGenerator : IIncrementalGenerator
 
     private static string GetPropertyAccessors(IPropertySymbol property)
     {
-        if (!property.PreserveOriginalGetterSetter())
+        var hasCustomGetterSetter = property.HasCustomGetterSetter();
+        if (hasCustomGetterSetter)
+        {
+            var customGetterSetterAttribute = property.GetAttributes()
+                .FirstOrDefault(a => a.AttributeClass?.Name == "CustomGetterSetterAttribute");
+
+            if (customGetterSetterAttribute == null)
+            {
+                return $"{property.GetMethod?.DeclaredAccessibility.StringfyAccessibility()} get; {property.SetMethod?.DeclaredAccessibility.StringfyAccessibility()} set;";
+            }
+
+            var getterExpression = "get;";
+            var setterExpression = "set;";
+
+            foreach (var arg in customGetterSetterAttribute.NamedArguments)
+            {
+                switch (arg.Key)
+                {
+                    case nameof(CustomGetterSetterAttribute.Getter):
+                        getterExpression = arg.Value.Value?.ToString() ?? "get;";
+                        break;
+
+                    case nameof(CustomGetterSetterAttribute.Setter):
+                        setterExpression = arg.Value.Value?.ToString() ?? "set;";
+                        break;
+                }
+            }
+
+            return $"{getterExpression} {setterExpression}";
+        }
+        else if (!property.PreserveOriginalGetterSetter())
             return "get; set;";
 
         var getter = "get";

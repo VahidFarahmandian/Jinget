@@ -3,13 +3,13 @@
 namespace Jinget.SourceGenerator.Common.Attributes;
 
 /// <summary>
-/// Specifies attributes that should be applied to the generated read model property
+/// Specifies attributes that should be applied to the generated read model class
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
 public sealed class AppendAttributeToReadModelAttribute : Attribute
 {
     /// <summary>
-    /// The attribute to apply to the read model property
+    /// The attribute to apply to the read model class
     /// Can be either:
     /// - Simple attribute name ("JsonIgnore")
     /// - Full attribute with parameters ("OtherAttribute(""someParam"")")

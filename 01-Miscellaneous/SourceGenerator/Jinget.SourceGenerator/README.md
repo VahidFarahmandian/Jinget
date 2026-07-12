@@ -44,11 +44,9 @@ public class StudentModel : BaseEntity<int>, IAggregateRoot
     [IgnoreMapping]
     public Address HomeAddress { get; set; }
 
-    [Count("CoursesCount")]
+    [CustomGetterSetter(Getter = "private get;", Setter = "protected set;")]
     public ICollection<CourseModel> Courses { get; set; }
 
-    [Sum("SumOfScores")]
-    [Average("AverageScores")]
     public ICollection<StudentScoreModel> Scores { get; set; }
 }
 
@@ -69,8 +67,11 @@ For these aggregation attributes, there is an argument called `ignoreMappping` t
 
 `IgnoreMapping`: This is an optional attribute which is used to ignore a property in efcore mapping configuration.
 
-`Count`: Just same as `AppendPropertyToReadModel` this attribute is used to add new custom property to readonly model. Other aggregation such as `Sum`, `Average`, `Max` and `Min` are also supported. 
-For these aggregation attributes, there is an argument called `ignoreMappping` that has same effect as `IgnoreMapping` attribute. Default value for this argument is `true`.
+`CustomGetterSetter`: This is an optional attriute which is used to override the property getter/setter in generated read model
+
+`AppendAttributeToProperty`: This is an optional attriute which is used to specify attributes that should be applied to the generated read model property
+
+`AppendAttributeToReadModel`: This is an optional attriute which is used to specify attributes that should be applied to the generated read model class
 
 Finally above mentioned code will produced the following readonly model:
 
@@ -81,11 +82,9 @@ public class ReadOnlyStudentModel : BaseEntity<int>, Jinget.Core.Contracts.IAggr
 {
     public string Name { get; private set; }
 	public Address HomeAddress { get; set; }
-	public ICollection<ReadOnlyCourseModel> Courses { get; set; }
+	public ICollection<ReadOnlyCourseModel> Courses { private get; protected set; }
     public int CoursesCount { get; set; }
 	public ICollection<ReadOnlyStudentScoreModel> Scores { get; set; }
-    public decimal SumOfScores { get; set; }
-    public decimal AverageScores { get; set; }
     public bool IsSuspended { get; set; }
 }
 ```
@@ -147,9 +146,6 @@ public class ReadOnlyStudentMappingConfiguration: IEntityTypeConfiguration<Model
         builder.HasMany(x => x.Courses).WithMany(x => x.Students).UsingEntity("tblStudentCourses", l => l.HasOne(typeof(Models.ReadOnlyStudentModel)).WithMany().HasForeignKey("StudentId"), r => r.HasOne(typeof(Models.ReadOnlyCourseModel)).WithMany().HasForeignKey("CourseId")).ToTable("tblStudentCourses", "demo");
         builder.Ignore("IsSuspended");
         builder.Ignore("HomeAddress");
-        builder.Ignore("CoursesCount");
-        builder.Ignore("SumOfScores");
-        builder.Ignore("AverageScores");
     }
 }
 ```
@@ -172,13 +168,6 @@ public class StudentModel : BaseEntity<int>, IAggregateRoot
 
     [PreserveOriginalType]
     public Address HomeAddress { get; set; }
-
-    [Count("CoursesCount")]
-    public ICollection<CourseModel> Courses { get; set; }
-
-    [Sum("SumOfScores")]
-    [Average("AverageScores")]
-    public ICollection<StudentScoreModel> Scores { get; set; }
 }
 ```
 

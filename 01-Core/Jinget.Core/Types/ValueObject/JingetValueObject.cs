@@ -10,10 +10,9 @@ public abstract class JingetValueObject : IEquatable<JingetValueObject>
     {
         var properties = PropertyCache.GetOrAdd(
             GetType(),
-            static t => t.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            static t => [.. t.GetProperties(BindingFlags.Instance | BindingFlags.Public)
                          .Where(p => p.CanRead)
-                         .OrderBy(p => p.Name)
-                         .ToArray());
+                         .OrderBy(p => p.Name)]);
 
         foreach (var property in properties)
             yield return property.GetValue(this);

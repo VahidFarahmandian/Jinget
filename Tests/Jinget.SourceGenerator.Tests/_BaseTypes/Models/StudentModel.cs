@@ -21,6 +21,9 @@ public class StudentModel : TraceBaseEntity<Trace, int>, IAggregateRoot, ITenant
     [IgnoreMapping]
     public Guid UniqueId { get; set; }
 
+    [CustomGetterSetter(Getter = "private get;", Setter = "protected set;")]
+    public Guid NartionalNumber { get; set; }
+
     [IgnoreReadModelConversion]
     public DateTime EnrollDate { get; set; }
 

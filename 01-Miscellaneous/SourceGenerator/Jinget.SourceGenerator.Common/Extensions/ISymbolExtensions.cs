@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -35,6 +36,13 @@ internal static class ISymbolExtensions
         return symbol.GetAttributes().Any(attr =>
             attr.AttributeClass?.Name == "PreserveOriginalGetterSetter" ||
             attr.AttributeClass?.Name == "PreserveOriginalGetterSetterAttribute");
+    }
+
+    internal static bool HasCustomGetterSetter(this ISymbol symbol)
+    {
+        return symbol.GetAttributes().Any(attr =>
+            attr.AttributeClass?.Name == "CustomGetterSetter" ||
+            attr.AttributeClass?.Name == "CustomGetterSetterAttribute");
     }
 
     internal static bool HasAttribute(this ISymbol type, string attribute)
