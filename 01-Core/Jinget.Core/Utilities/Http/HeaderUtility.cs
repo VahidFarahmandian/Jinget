@@ -58,6 +58,11 @@ public class HeaderUtility
         HasContentType(headers) &&
         GetContentTypeValue(headers).Equals(MediaTypeNames.Application.JsonPatch, StringComparison.OrdinalIgnoreCase);
 
+    public static bool IsFormUrlEncodedContentType(Dictionary<string, string> headers)
+        =>
+        HasContentType(headers) &&
+        GetContentTypeValue(headers).Equals(MediaTypeNames.Application.FormUrlEncoded, StringComparison.OrdinalIgnoreCase);
+
     /// <summary>
     /// check if <seealso cref="MediaTypeNames.Multipart.FormData"/> exists in the given header collection
     /// </summary>

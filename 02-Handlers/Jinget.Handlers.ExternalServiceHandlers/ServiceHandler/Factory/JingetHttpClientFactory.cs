@@ -117,7 +117,7 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
         using var httpClient = CreateHttpClient();
         requestHeaders = SetRequestHeaders(requestHeaders, httpClient);
 
-        StringContent? bodyContent = null;
+        HttpContent? bodyContent = null;
         if (requestBody is not null)
         {
             if (IsXmlContentType(requestHeaders))
@@ -132,12 +132,19 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
             {
                 bodyContent = new StringContent(requestBody.Serialize(), Encoding.UTF8, MediaTypeNames.Application.JsonPatch);
             }
+            else if (IsFormUrlEncodedContentType(requestHeaders))
+            {
+                if (requestBody is not IEnumerable<KeyValuePair<string, string>> formValues)
+                    throw new InvalidOperationException(
+                        "Form URL encoded content requires IEnumerable<KeyValuePair<string,string>>");
+
+                bodyContent = new FormUrlEncodedContent(formValues);
+            }
             else
             {
                 bodyContent = new StringContent(requestBody.ToString(), Encoding.UTF8, GetContentTypeValue(requestHeaders));
             }
             requestHeaders?.Remove(GetContentTypeHeaderName(requestHeaders));
-
         }
 
         return await httpClient.PostAsync(GetRequestUri(requestUrl), bodyContent, cancellationToken: cancellationToken);
