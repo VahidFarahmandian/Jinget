@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.Threading;
+
 using System.Text.Json;
 
 namespace Jinget.Logger.Providers;
@@ -41,8 +42,12 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
         _interval = loggerOptions.FlushPeriod;
         _batchSize = loggerOptions.BatchSize;
         _queueSize = loggerOptions.BackgroundQueueSize;
-        _blacklistStrings = loggerOptions.BlackListStrings.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray() ?? [];
-        _blacklistUrls = loggerOptions.BlackListUrls?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray() ?? [];
+        
+        _blacklistStrings = loggerOptions.BlackListStrings
+            .Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()).ToArray() ?? [];
+        _blacklistUrls = loggerOptions.BlackListUrls?
+            .Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()).ToArray() ?? [];
+
         _minAllowedLogLevel = loggerOptions.MinAllowedLogLevel;
 
         Start();
@@ -114,7 +119,7 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
             return;
         }
 
-        if (_blacklistStrings.Any(message.ToString().Contains))
+        if (_blacklistStrings.Any(message.ToString().ToLowerInvariant().Contains))
         {
             return;
         }
@@ -132,7 +137,9 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
                 .EnumerateObject()
                 .FirstOrDefault(x => string.Equals(x.Name, "PageUrl", StringComparison.OrdinalIgnoreCase));
 
-            if (_blacklistUrls.Any(jsonUrl.ToString().Contains) || _blacklistUrls.Any(jsonPageUrl.ToString().Contains))
+            if (_blacklistUrls.Any(
+                jsonUrl.ToString().ToLowerInvariant().ToLowerInvariant().Contains) || 
+                _blacklistUrls.Any(jsonPageUrl.ToString().ToLowerInvariant().Contains))
             {
                 return;
             }

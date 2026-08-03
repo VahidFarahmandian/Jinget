@@ -1,57 +1,63 @@
 using Jinget.Core.Types;
-using Jinget.Logger.Configuration.File;
+using Jinget.Logger.Configuration.ElasticSearch;
 using Jinget.Logger.Extensions;
+using Jinget.ExceptionHandler.Extensions;
+
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true).Build();
 
-string[] blacklist = ["/something"];
+string[] blacklist = [
+    "[Information] Now listening on:", 
+    "[Information] Application started. Press Ctrl+C to shut down", 
+    "[Information] Hosting environment:",
+"[Information] Content root path:"];
 string[] blacklistUrl = ["/ratelimit"];
 
-FileSettingModel fileSetting = new()
-{
-    FileNamePrefix = "Log",
-    LogDirectory = "Logs",
-    RetainFileCountLimit = 5,
-    FileSizeLimitMB = 10,
-    UseGlobalExceptionHandler = true,
-    Handle4xxResponses = true,
-    MaxRequestBodySize = 1024 * 1024 * 10,
-    MaxResponseBodySize = 1024 * 1024 * 10
-};
-builder.Host.LogToFile(blacklist, fileSetting, blacklistUrl, LogLevel.Information);
-builder.Services.ConfigureFileLogger(fileSetting);
-
-//builder.Host.LogToElasticSearch(blacklist, blacklistUrl, LogLevel.Information);
-//var elasticSearchSetting = new ElasticSearchSettingModel
+//FileSettingModel fileSetting = new()
 //{
-//    CreateIndexPerPartition = false,
-//    UserName = "elastic",
-//    Password = "UbeHc_IxSpRgZrzqsY=S",
-//    Url = "localhost:9200",
-//    UseSsl = false,
-//    BypassCertificateValidation = true,
+//    FileNamePrefix = "Log",
+//    LogDirectory = "Logs",
+//    RetainFileCountLimit = 5,
+//    FileSizeLimitMB = 10,
 //    UseGlobalExceptionHandler = true,
 //    Handle4xxResponses = true,
 //    MaxRequestBodySize = 1024 * 1024 * 10,
 //    MaxResponseBodySize = 1024 * 1024 * 10
 //};
-//builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
+//builder.Host.LogToFile(blacklist, fileSetting, blacklistUrl, LogLevel.Information);
+//builder.Services.ConfigureFileLogger(fileSetting);
+
+builder.Host.LogToElasticSearch(blacklist, blacklistUrl, LogLevel.Information);
+var elasticSearchSetting = new ElasticSearchSettingModel
+{
+    CreateIndexPerPartition = true,
+    UserName = "elastic",
+    Password = "yWfSQ4IOwo3jMl6Gtg6u",
+    Url = "localhost:9200",
+    UseSsl = true,
+    BypassCertificateValidation = true,
+    UseGlobalExceptionHandler = true,
+    Handle4xxResponses = true,
+    MaxRequestBodySize = 1024 * 1024 * 10,
+    MaxResponseBodySize = 1024 * 1024 * 10
+};
+builder.Services.ConfigureElasticSearchLogger(elasticSearchSetting);
 
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-//app.UseWhen(p => elasticSearchSetting.CreateIndexPerPartition, appBuilder =>
-//{
-//    appBuilder.Use(async (context, next) =>
-//    {
-//        context.SetLoggerPartitionKey($"{DateTime.UtcNow:yyyyMMdd}");
-//        await next.Invoke();
-//    });
-//});
+app.UseWhen(p => elasticSearchSetting.CreateIndexPerPartition, appBuilder =>
+{
+    appBuilder.Use(async (context, next) =>
+    {
+        context.SetLoggerPartitionKey($"{DateTime.UtcNow:yyyyMMdd}");
+        await next.Invoke();
+    });
+});
 app.UseWhen(p => p.Request.Path == "/detailedlog", appBuilder =>
 {
     appBuilder.Use(async (context, next) =>
