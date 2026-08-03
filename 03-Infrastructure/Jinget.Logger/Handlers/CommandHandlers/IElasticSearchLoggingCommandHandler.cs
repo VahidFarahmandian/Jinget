@@ -1,6 +1,6 @@
 ﻿namespace Jinget.Logger.Handlers.CommandHandlers;
 
-public interface IElasticSearchLoggingDomainService
+public interface IElasticSearchLoggingCommandHandler
 {
     Task<LogModel?> FetchLatestAsync();
 

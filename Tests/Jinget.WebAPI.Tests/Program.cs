@@ -136,7 +136,7 @@ app.MapGet("detailedlog", () => "Sample Success");
 app.MapPost("save", (object vm) => vm);
 
 app.MapGet("/logs", async (
-        IElasticSearchLoggingDomainService domainService, string? search, int page, int pagesize) =>
+        IElasticSearchLoggingCommandHandler domainService, string? search, int page, int pagesize) =>
     await domainService.SearchAsync("jinget", search, page, pagesize));
 
 app.Run();

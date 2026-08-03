@@ -1,4 +1,6 @@
 ﻿using Jinget.Core.Utilities.Json;
+using Jinget.Logger.Handlers.CommandHandlers;
+
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -13,7 +15,7 @@ public class ElasticSearchLoggerProvider(IServiceProvider serviceProvider, IOpti
     protected override async Task WriteMessagesAsync(IEnumerable<LogMessage> messages,
         CancellationToken cancellationToken)
     {
-        var _logService = serviceProvider.GetJingetService<IElasticSearchLoggingDomainService>();
+        var _logService = serviceProvider.GetJingetService<IElasticSearchLoggingCommandHandler>();
         if (_logService == null) return;
         foreach (var group in messages.GroupBy(GetGrouping))
         {

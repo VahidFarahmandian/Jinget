@@ -1,4 +1,5 @@
 ﻿using Jinget.Logger.Extensions;
+using Jinget.Logger.Handlers.CommandHandlers;
 
 namespace Jinget.Logger.Configuration.ElasticSearch;
 
@@ -19,7 +20,7 @@ public static class ElasticSearchConfiguration
         services.ConfigureJingetLoggerPrerequisites(elasticSearchSetting);
 
         // Adds Elasticsearch logging domain service and repository as scoped services.
-        services.TryAddScoped<IElasticSearchLoggingDomainService, ElasticSearchLoggingDomainService>();
+        services.TryAddScoped<IElasticSearchLoggingCommandHandler, ElasticSearchLoggingCommandHandler>();
         services.TryAddScoped<IElasticSearchLoggingRepository, ElasticSearchLoggingRepository>();
 
         // If Elasticsearch settings are provided, configure the client and index.

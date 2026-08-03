@@ -3,8 +3,8 @@
 /// <summary>
 /// Provides domain services for Elasticsearch logging operations.
 /// </summary>
-public class ElasticSearchLoggingDomainService(IElasticSearchLoggingRepository repository) : 
-    IElasticSearchLoggingDomainService
+public class ElasticSearchLoggingCommandHandler(IElasticSearchLoggingRepository repository) : 
+    IElasticSearchLoggingCommandHandler
 {
     // Repository for Elasticsearch logging operations.
     protected readonly IElasticSearchLoggingRepository Repository = repository;

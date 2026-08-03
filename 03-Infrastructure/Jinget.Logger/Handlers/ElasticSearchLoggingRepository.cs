@@ -3,7 +3,8 @@
 /// <summary>
 /// Repository for Elasticsearch logging operations.
 /// </summary>
-public class ElasticSearchLoggingRepository(IElasticClient elasticClient, ElasticSearchSettingModel settings) : IElasticSearchLoggingRepository
+public class ElasticSearchLoggingRepository(IElasticClient elasticClient, ElasticSearchSettingModel settings) : 
+    IElasticSearchLoggingRepository
 {
     /// <summary>
     /// Indexes a single log entry into Elasticsearch.
