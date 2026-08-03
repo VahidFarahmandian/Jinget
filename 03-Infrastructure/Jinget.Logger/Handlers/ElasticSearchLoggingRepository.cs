@@ -115,11 +115,15 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
     /// Retrieves the latest log entry from Elasticsearch.
     /// </summary>
     /// <param name="orderBy">Optional sorting criteria.</param>
-    /// <param name="partitionKey">Optional partition key for filtering.</param>
+    /// <param name="indexPattern">Optional index pattern for filtering.</param>
     /// <returns>The latest log model, or null if no log entries are found.</returns>
-    public async Task<LogModel?> GetLatestAsync(Func<SortDescriptor<LogModel>, IPromise<IList<ISort>>>? orderBy = null, string partitionKey = "")
+    public async Task<LogModel?> GetLatestAsync(
+        Func<SortDescriptor<LogModel>, IPromise<IList<ISort>>>? orderBy = null,
+        string indexPattern = "")
     {
-        string indexName = GetIndexName(partitionKey);
+        var indexName = indexPattern.EndsWith('*')
+            ? indexPattern
+            : $"{indexPattern}*";
         var lastRecord = await elasticClient.SearchAsync<LogModel>(i =>
         {
             var expr = i.Index(indexName).From(0).Take(1).MatchAll();
@@ -132,70 +136,176 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
     /// <summary>
     /// Searches for log entries in Elasticsearch based on specified criteria.
     /// </summary>
-    /// <param name="partitionKey">The partition key for the search.</param>
-    /// <param name="searchString">The search string.</param>
+    /// <param name="indexPattern">The index pattern used for searching.</param>
+    /// <param name="queryString">The search string.</param>
     /// <param name="pageNumber">The page number for pagination.</param>
     /// <param name="pageSize">The page size for pagination.</param>
     /// <param name="username">Optional username for filtering.</param>
     /// <param name="origin">Optional origin for filtering.</param>
     /// <returns>A list of log search view models matching the search criteria.</returns>
     public async Task<List<LogSearchViewModel>> SearchAsync(
-        string partitionKey,
-        string searchString,
-        int pageNumber,
-        int pageSize,
-        string username = "",
-        string origin = "")
+    string indexPattern,
+    string? queryString,
+    int pageNumber,
+    int pageSize,
+    string username = "",
+    string origin = "")
     {
-        var searchResult = await elasticClient
-            .SearchAsync<LogModel>(i =>
-                i.Index(GetIndexName(partitionKey))
-                    .Query(x =>
-                    {
-                        List<QueryContainer> queryContainer = new();
+        pageNumber = Math.Max(pageNumber, 1);
+        pageSize = Math.Clamp(pageSize, 1, 100);
 
-                        if (!string.IsNullOrWhiteSpace(searchString))
-                        {
-                            queryContainer.Add(
-                                x.QueryString(qs => qs.Fields(
-                                    fs => fs.Fields(
-                                        f => f.AdditionalData,
-                                        f => f.Body,
-                                        f => f.Description,
-                                        f => f.Headers,
-                                        f => f.IP,
-                                        f => f.Method,
-                                        f => f.PageUrl,
-                                        f => f.PartitionKey,
-                                        f => f.TraceIdentifier,
-                                        f => f.SubSystem,
-                                        f => f.Url,
-                                        f => f.Username))
-                                    .Query($"*{searchString}*")));
-                        }
+        var indexName = indexPattern.EndsWith('*')
+            ? indexPattern
+            : $"{indexPattern}*";
 
-                        if (!string.IsNullOrWhiteSpace(username))
-                        {
-                            queryContainer.Add(x.Match(f => f.Field(doc => doc.Username).Query(username)));
-                        }
+        var requiredBucketCount = checked(pageNumber * pageSize);
 
-                        return x.Bool(b =>
-                        {
-                            return !string.IsNullOrWhiteSpace(origin)
-                                ? b
-                                    .Must(queryContainer.ToArray())
-                                    .MustNot(x.Match(w => w.Field(f => f.Url).Query(origin)))
-                                : b.Must(queryContainer.ToArray());
-                        });
-                    })
-                    .Aggregations(a => a.Terms("req_id", x => x.Field(f => f.TraceIdentifier.Suffix("raw"))))
-                    .From((pageNumber - 1) * pageSize)
-                    .Take(pageSize * 2) // because each operation consists of 1 req + 1 response
-                    .Sort(s => s.Descending(d => d.TimeStamp))).ConfigureAwait(true);
+        Func<QueryContainerDescriptor<LogModel>, QueryContainer> buildFilter =
+            q =>
+            {
+                var queries = new List<QueryContainer>();
 
-        var logs = searchResult.Documents.GroupBy(x => x.TraceIdentifier);
-        var result = logs.Select(l => new LogSearchViewModel(l.Key, l.Select(o => o))).ToList();
+                // Full text search
+                if (!string.IsNullOrWhiteSpace(queryString))
+                {
+                    queries.Add(
+                        q.QueryString(qs => qs
+                            .Fields(fs => fs.Fields(
+                                f => f.AdditionalData,
+                                f => f.Body,
+                                f => f.Description,
+                                f => f.Headers,
+                                f => f.IP,
+                                f => f.Method,
+                                f => f.PageUrl,
+                                f => f.PartitionKey,
+                                f => f.TraceIdentifier,
+                                f => f.SubSystem,
+                                f => f.Url,
+                                f => f.Username))
+                            .Query($"*{queryString}*")));
+                }
 
-        return result.Take(pageSize).ToList();
+                // Exact username filtering
+                if (!string.IsNullOrWhiteSpace(username))
+                {
+                    queries.Add(
+                        q.Term(t => t
+                            .Field(f => f.Username.Suffix("keyword"))
+                            .Value(username)));
+                }
+
+                // URL contains origin/path
+                if (!string.IsNullOrWhiteSpace(origin))
+                {
+                    queries.Add(
+                        q.Wildcard(w => w
+                            .Field(f => f.Url.Suffix("keyword"))
+                            .Value($"*{origin}*")
+                            .CaseInsensitive()));
+                }
+
+                return q.Bool(b => b
+                    .Must(queries.ToArray()));
+            };
+
+
+        // -------------------------------------------------------------
+        // Query 1:
+        // Get page of TraceIdentifiers
+        // -------------------------------------------------------------
+
+        var traceSearchResult = await elasticClient
+            .SearchAsync<LogModel>(s => s
+                .Index(indexName)
+                .Size(0)
+                .Query(buildFilter)
+                .Aggregations(a => a
+                    .Terms("traces", t => t
+                        .Field(f => f.TraceIdentifier.Suffix("keyword"))
+                        .Size(requiredBucketCount)
+                        .Aggregations(aa => aa
+                            .Max(
+                                "latest_timestamp",
+                                m => m.Field(f => f.TimeStamp)))
+                        .Order(o => o
+                            .Descending("latest_timestamp")))));
+
+
+        if (!traceSearchResult.IsValid)
+        {
+            throw new JingetException(
+                "Jinget Says: " +
+                traceSearchResult.OriginalException);
+        }
+
+
+        var traceAggregation =
+            traceSearchResult.Aggregations
+                .Terms("traces");
+
+
+        if (traceAggregation is null)
+        {
+            return [];
+        }
+
+
+        var pageTraceIdentifiers = traceAggregation.Buckets
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(x => x.Key.ToString())
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .ToList();
+
+
+        if (pageTraceIdentifiers.Count == 0)
+        {
+            return [];
+        }
+
+
+        // -------------------------------------------------------------
+        // Query 2:
+        // Load all logs for selected TraceIdentifiers
+        // -------------------------------------------------------------
+
+        var logsSearchResult = await elasticClient
+            .SearchAsync<LogModel>(s => s
+                .Index(indexName)
+                .Size(10_000)
+                .Query(q => q
+                    .Bool(b => b
+                        .Must(
+                            buildFilter,
+                            m => m.Terms(t => t
+                                .Field(f => f.TraceIdentifier.Suffix("keyword"))
+                                .Terms(pageTraceIdentifiers)))))
+                .Sort(sort => sort
+                    .Ascending(f => f.TimeStamp)));
+
+
+        if (!logsSearchResult.IsValid)
+        {
+            throw new JingetException(
+                "Jinget Says: " +
+                logsSearchResult.OriginalException);
+        }
+
+
+        var logsByTraceIdentifier = logsSearchResult.Documents
+            .GroupBy(x => x.TraceIdentifier)
+            .ToDictionary(
+                x => x.Key!,
+                x => x.OrderBy(l => l.TimeStamp));
+
+
+        return pageTraceIdentifiers
+            .Where(id => logsByTraceIdentifier.ContainsKey(id))
+            .Select(id =>
+                new LogSearchViewModel(
+                    id,
+                    logsByTraceIdentifier[id]))
+            .ToList();
     }
 }

@@ -3,7 +3,8 @@
 /// <summary>
 /// Provides domain services for Elasticsearch logging operations.
 /// </summary>
-public class ElasticSearchLoggingDomainService(IElasticSearchLoggingRepository repository) : IElasticSearchLoggingDomainService
+public class ElasticSearchLoggingDomainService(IElasticSearchLoggingRepository repository) : 
+    IElasticSearchLoggingDomainService
 {
     // Repository for Elasticsearch logging operations.
     protected readonly IElasticSearchLoggingRepository Repository = repository;
@@ -31,17 +32,17 @@ public class ElasticSearchLoggingDomainService(IElasticSearchLoggingRepository r
     /// <summary>
     /// Searches for log entries in Elasticsearch based on specified criteria.
     /// </summary>
-    /// <param name="partitionKey">The partition key for the search.</param>
-    /// <param name="searchString">The search string.</param>
+    /// <param name="indexPattern">The index pattern used for searching.</param>
+    /// <param name="queryString">The search string.</param>
     /// <param name="pageNumber">The page number for pagination.</param>
     /// <param name="pageSize">The page size for pagination.</param>
     /// <param name="username">Optional username for filtering.</param>
     /// <param name="origin">Optional origin for filtering.</param>
     /// <returns>A list of log search view models matching the search criteria.</returns>
     public virtual async Task<List<LogSearchViewModel>> SearchAsync(
-        string partitionKey,
-        string searchString,
+        string indexPattern,
+        string? quertString,
         int pageNumber, int pageSize,
         string username = "",
-        string origin = "") => await Repository.SearchAsync(partitionKey, searchString, pageNumber, pageSize, username, origin);
+        string origin = "") => await Repository.SearchAsync(indexPattern, quertString, pageNumber, pageSize, username, origin);
 }

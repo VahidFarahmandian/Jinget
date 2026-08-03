@@ -4,17 +4,18 @@ using Jinget.Logger.Extensions;
 using Jinget.ExceptionHandler.Extensions;
 
 using Microsoft.AspNetCore.Mvc;
+using Jinget.Logger.Handlers.CommandHandlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var config = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true).Build();
 
 string[] blacklist = [
-    "[Information] Now listening on:", 
-    "[Information] Application started. Press Ctrl+C to shut down", 
+    "[Information] Now listening on:",
+    "[Information] Application started. Press Ctrl+C to shut down",
     "[Information] Hosting environment:",
 "[Information] Content root path:"];
-string[] blacklistUrl = ["/ratelimit"];
+string[] blacklistUrl = ["/logs/"];
 
 //FileSettingModel fileSetting = new()
 //{
@@ -114,8 +115,8 @@ app.MapGet("exception", (IHttpContextAccessor httpContextAccessor, ILogger<Sampl
 });
 app.MapGet("customlog", (IHttpContextAccessor httpContextAccessor, ILogger<SampleModel> logger) =>
 {
-    //logger.LogInformation(httpContextAccessor.HttpContext, "Sample Custom message!");
-    //logger.LogCustom(httpContextAccessor.HttpContext, "Sample Custom message2!");
+    logger.LogInformation(httpContextAccessor.HttpContext, "Sample Custom message!");
+    logger.LogCustom(httpContextAccessor.HttpContext, "Sample Custom message2!");
     return "custom log saved";
 });
 app.MapGet("errorlog", (IHttpContextAccessor httpContextAccessor, ILogger<SampleModel> logger) =>
@@ -134,9 +135,9 @@ app.MapGet("successlog", () => "Hello vahid");
 app.MapGet("detailedlog", () => "Sample Success");
 app.MapPost("save", (object vm) => vm);
 
-//app.MapGet("/logs/{search}/{page}/{pagesize}", async (
-//        IElasticSearchLoggingDomainService domainService, string search, int page, int pagesize) =>
-//    await domainService.SearchAsync("20241026", search, page, pagesize, origin: "/logs/"));
+app.MapGet("/logs", async (
+        IElasticSearchLoggingDomainService domainService, string? search, int page, int pagesize) =>
+    await domainService.SearchAsync("jinget", search, page, pagesize));
 
 app.Run();
 public record LoginViewModel(string Username, string Password);
