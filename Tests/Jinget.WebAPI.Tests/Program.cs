@@ -121,7 +121,10 @@ app.MapGet("api", async (IHttpContextAccessor httpContextAccessor, ILogger<Sampl
     {
         client.BaseAddress = new Uri("http://localhost:5063");
         var response = await client.GetAsync("/exception");
+
+        return await response.Content.ReadAsStringAsync();
     }
+    
 });
 app.MapGet("customlog", (IHttpContextAccessor httpContextAccessor, ILogger<SampleModel> logger) =>
 {

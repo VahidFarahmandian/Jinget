@@ -67,8 +67,46 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
 
         if (!elasticClient.Indices.Exists(indexName.ToLower()).Exists)
         {
-            var indexCreationResult = await elasticClient.Indices
-                .CreateAsync(indexName.ToLower(), index => index.Map(m => m.AutoMap(typeof(LogModel)).NumericDetection(true)));
+            var indexCreationResult =
+         await elasticClient.Indices.CreateAsync(
+             indexName,
+             index => index.Map<LogModel>(m => m
+                 .AutoMap()
+                 .Properties(ps => ps
+                     .Keyword(k => k
+                         .Name(n => n.TraceIdentifier))
+
+                     .Keyword(k => k
+                         .Name(n => n.SpanIdentifier))
+
+                     .Keyword(k => k
+                         .Name(n => n.ParentSpanIdentifier))
+
+                     .Keyword(k => k
+                         .Name(n => n.RequestIdentifier))
+
+                     .Keyword(k => k
+                         .Name(n => n.PartitionKey))
+
+                     .Keyword(k => k
+                         .Name(n => n.SubSystem))
+
+                     .Keyword(k => k
+                         .Name(n => n.Username))
+
+                     .Keyword(k => k
+                         .Name(n => n.Method))
+
+                     .Keyword(k => k
+                         .Name(n => n.TypeDescription))
+
+                     .Keyword(k => k
+                         .Name(n => n.Severity))
+
+                     .Date(d => d
+                         .Name(n => n.TimeStamp))
+                 )
+             ));
 
             if (!indexCreationResult.IsValid)
             {
