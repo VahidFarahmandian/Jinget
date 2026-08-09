@@ -61,6 +61,7 @@ public class ElasticSearchLoggerProvider(IServiceProvider serviceProvider, IOpti
                 {
                     if (log != null)
                     {
+                        log.Category = item.Category;
                         log.TimeStamp = item.Timestamp;
                         log.Severity = item.Severity.ToString();
                         await _logService.CreateAsync(log);

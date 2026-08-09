@@ -33,7 +33,14 @@ string[] blacklistUrl = ["/logs/"];
 //builder.Host.LogToFile(blacklist, fileSetting, blacklistUrl, LogLevel.Information);
 //builder.Services.ConfigureFileLogger(fileSetting);
 
-builder.Host.LogToElasticSearch(blacklist, blacklistUrl, LogLevel.Information);
+builder.Host.LogToElasticSearch(
+    blacklist,
+    blacklistUrl,
+    allowedLogCategories: new Dictionary<string, LogLevel>
+    {
+        ["*"] = LogLevel.Error,
+        ["Jinget.Logger"] = LogLevel.Information
+    });
 var elasticSearchSetting = new ElasticSearchSettingModel
 {
     CreateIndexPerPartition = true,
@@ -117,14 +124,14 @@ app.MapGet("exception", (IHttpContextAccessor httpContextAccessor, ILogger<Sampl
 });
 app.MapGet("api", async (IHttpContextAccessor httpContextAccessor, ILogger<SampleModel> logger) =>
 {
-    using (var client=new HttpClient())
+    using (var client = new HttpClient())
     {
         client.BaseAddress = new Uri("http://localhost:5063");
         var response = await client.GetAsync("/exception");
 
         return await response.Content.ReadAsStringAsync();
     }
-    
+
 });
 app.MapGet("customlog", (IHttpContextAccessor httpContextAccessor, ILogger<SampleModel> logger) =>
 {

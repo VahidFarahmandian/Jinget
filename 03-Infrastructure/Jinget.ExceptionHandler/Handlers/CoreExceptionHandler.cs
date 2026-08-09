@@ -18,7 +18,8 @@ public abstract class CoreExceptionHandler(ILogger<CoreExceptionHandler> logger,
 
         var httpStatusCode = statusCode ?? (exception == null ? 204 : 500);
         logEntity.StatusCode = httpStatusCode;
-        logger.LogError(logEntity.Serialize());
+        
+        logger.LogError(httpContext, logEntity.Serialize());
         if (useGlobalExceptionHandler)
         {
             if (!httpContext.Response.HasStarted)

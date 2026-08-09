@@ -19,7 +19,29 @@ builder.Host.LogToElasticSearch(blacklist);
 
 `blacklistUrls`: Urls/PageUrls contain the blacklistUrls array items will not be logged.
 
-`minAllowedLoglevel`: Defines the minimum allowed log level. If log's severity is equal or greater than this value, then it will be saved in elasticsearch otherwise it will be ignored. If this parameter not set, then default log level will be applied(LogLevel.Information).
+`_allowedLogCategories`: defines the minimum log level required for each logging category. The dictionary uses the following rules:
+
+* Category-specific configuration takes precedence over the global configuration.
+* The `*` category acts as the global/default log level for categories that do not have an explicit configuration.
+* If the requested category is `null` or whitespace, it is treated as `*`.
+* A log entry is enabled when its severity is equal to or higher than the configured minimum level.
+* If neither the requested category nor `*` is configured, logging is disabled for that category.
+
+For example:
+
+```csharp
+_allowedLogCategories = new()
+{
+    ["*"] = LogLevel.Warning,
+    ["MyApp.Services.OrderService"] = LogLevel.Information
+};
+```
+
+With this configuration:
+
+* `MyApp.Services.OrderService` → `Information` and above are enabled.
+* Other categories → `Warning` and above are enabled.
+* A category-specific setting overrides `*`.
 
 After setting the logging destination, you need to configure Elasticsearch:
 ```csharp
@@ -205,7 +227,29 @@ builder.Host.LogToFile(blacklist, fileSetting);
 
 `blacklistUrls`: Urls/PageUrls contain the blacklistUrls array items will not be logged.
 
-`minAllowedLoglevel`: Defines the minimum allowed log level. Default log level is `LogLevel.Information`.
+`_allowedLogCategories`: defines the minimum log level required for each logging category. The dictionary uses the following rules:
+
+* Category-specific configuration takes precedence over the global configuration.
+* The `*` category acts as the global/default log level for categories that do not have an explicit configuration.
+* If the requested category is `null` or whitespace, it is treated as `*`.
+* A log entry is enabled when its severity is equal to or higher than the configured minimum level.
+* If neither the requested category nor `*` is configured, logging is disabled for that category.
+
+For example:
+
+```csharp
+_allowedLogCategories = new()
+{
+    ["*"] = LogLevel.Warning,
+    ["MyApp.Services.OrderService"] = LogLevel.Information
+};
+```
+
+With this configuration:
+
+* `MyApp.Services.OrderService` → `Information` and above are enabled.
+* Other categories → `Warning` and above are enabled.
+* A category-specific setting overrides `*`.
 
 `FileNamePrefix`: Gets or sets the filename prefix to use for log files. Defaults is `logs-`
 

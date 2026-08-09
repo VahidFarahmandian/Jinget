@@ -22,11 +22,11 @@ public class BatchingLoggerOptions
     /// </summary>
     public long MaxResponseBodySize { get; set; } = MB_10;
 
-    /// <summary>
-    /// Defines the min log level that should processed
-    /// Defaults to <seealso cref="Microsoft.Extensions.Logging.LogLevel.Error"/>
-    /// </summary>
-    public Microsoft.Extensions.Logging.LogLevel MinAllowedLogLevel { get; set; } = Microsoft.Extensions.Logging.LogLevel.Information;
+    ///// <summary>
+    ///// Defines the min log level that should processed
+    ///// Defaults to <seealso cref="Microsoft.Extensions.Logging.LogLevel.Error"/>
+    ///// </summary>
+    //public Microsoft.Extensions.Logging.LogLevel MinAllowedLogLevel { get; set; } = Microsoft.Extensions.Logging.LogLevel.Information;
 
     /// <summary>
     ///     Gets or sets the period after which logs will be flushed to the store.
@@ -41,6 +41,11 @@ public class BatchingLoggerOptions
             _flushPeriod = value;
         }
     }
+
+    /// <summary>
+    /// defines logging categories which should be considered
+    /// </summary>
+    public Dictionary<string, Microsoft.Extensions.Logging.LogLevel> AllowedLogCategories = [];
 
     /// <summary>
     ///     Gets or sets the blacklist string. reuqest/responses contain the blacklist array items will not logged.

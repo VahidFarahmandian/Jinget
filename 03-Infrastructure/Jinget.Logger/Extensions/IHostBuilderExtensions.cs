@@ -22,19 +22,26 @@ public static class IHostBuilderExtensions
     /// <param name="webHostBuilder">The <see cref="IHostBuilder"/> instance.</param>
     /// <param name="blackList">Array of strings to blacklist from logging.</param>
     /// <param name="blackListUrls">Optional array of URLs to blacklist from logging.</param>
-    /// <param name="minAllowedLoglevels">Minimum allowed log level. Defaults to Information.</param>
+    /// <param name="allowedLogCategories">Log categories to be considered.</param>
     /// <returns>The configured <see cref="IHostBuilder"/>.</returns>
     public static IHostBuilder LogToElasticSearch(
         this IHostBuilder webHostBuilder,
         string[] blackList,
         string[]? blackListUrls = null,
-        Microsoft.Extensions.Logging.LogLevel minAllowedLoglevels = Microsoft.Extensions.Logging.LogLevel.Information) =>
-        webHostBuilder.ConfigureLogging(builder => builder.AddElasticSearch(f =>
+        Dictionary<string, Microsoft.Extensions.Logging.LogLevel>? allowedLogCategories = null)
+    {
+        allowedLogCategories ??= new Dictionary<string, Microsoft.Extensions.Logging.LogLevel>
         {
-            f.BlackListStrings = blackList.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
-            f.BlackListUrls = blackListUrls?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
-            f.MinAllowedLogLevel = minAllowedLoglevels;
-        }));
+            ["*"] = Microsoft.Extensions.Logging.LogLevel.Warning
+        };
+
+        return webHostBuilder.ConfigureLogging(builder => builder.AddElasticSearch(f =>
+            {
+                f.BlackListStrings = blackList.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
+                f.BlackListUrls = blackListUrls?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
+                f.AllowedLogCategories = allowedLogCategories;
+            }));
+    }
 
     /// <summary>
     /// Configures logging to a file with specified settings, blacklist, and log level.
@@ -43,15 +50,20 @@ public static class IHostBuilderExtensions
     /// <param name="blackList">Array of strings to blacklist from logging.</param>
     /// <param name="fileSettingModel">File logging settings model.</param>
     /// <param name="blackListUrls">Optional array of URLs to blacklist from logging.</param>
-    /// <param name="minAllowedLoglevels">Minimum allowed log level. Defaults to Error.</param>
+    /// <param name="allowedLogCategories">Log categories to be considered.</param>
     /// <returns>The configured <see cref="IHostBuilder"/>.</returns>
     public static IHostBuilder LogToFile(
         this IHostBuilder webHostBuilder,
         string[] blackList,
         FileSettingModel fileSettingModel,
         string[]? blackListUrls = null,
-        Microsoft.Extensions.Logging.LogLevel minAllowedLoglevels = Microsoft.Extensions.Logging.LogLevel.Error) =>
-        webHostBuilder.ConfigureLogging(builder => builder.AddFile(f =>
+        Dictionary<string, Microsoft.Extensions.Logging.LogLevel>? allowedLogCategories = null)
+    {
+        allowedLogCategories ??= new Dictionary<string, Microsoft.Extensions.Logging.LogLevel>
+        {
+            ["*"] = Microsoft.Extensions.Logging.LogLevel.Information
+        };
+        return webHostBuilder.ConfigureLogging(builder => builder.AddFile(f =>
         {
             f.FileName = fileSettingModel.FileNamePrefix;
             f.LogDirectory = fileSettingModel.LogDirectory;
@@ -59,6 +71,7 @@ public static class IHostBuilderExtensions
             f.BlackListStrings = blackList.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
             f.BlackListUrls = blackListUrls?.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLower()).ToArray();
             f.FileSizeLimit = fileSettingModel.FileSizeLimitMB;
-            f.MinAllowedLogLevel = minAllowedLoglevels;
+            f.AllowedLogCategories = allowedLogCategories;
         }));
+    }
 }

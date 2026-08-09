@@ -97,6 +97,7 @@ public class LogModel : BaseEntity<long>
     }
 
     public DateTime TimeStamp { get; set; }
+    public string? Category { get; set; }
     public string? Url { get; set; }
     public string? Description { get; set; }
     public int? StatusCode { get; set; }

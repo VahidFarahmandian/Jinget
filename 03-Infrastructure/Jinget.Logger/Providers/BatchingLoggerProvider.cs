@@ -9,7 +9,7 @@ namespace Jinget.Logger.Providers;
 /// </summary>
 public abstract class BatchingLoggerProvider : ILoggerProvider
 {
-    private readonly Microsoft.Extensions.Logging.LogLevel _minAllowedLogLevel;
+    private readonly Dictionary<string, Microsoft.Extensions.Logging.LogLevel> _allowedLogCategories;
     private readonly int? _batchSize;
     private readonly string[] _blacklistStrings;
     private readonly string[] _blacklistUrls;
@@ -42,13 +42,13 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
         _interval = loggerOptions.FlushPeriod;
         _batchSize = loggerOptions.BatchSize;
         _queueSize = loggerOptions.BackgroundQueueSize;
-        
+
         _blacklistStrings = loggerOptions.BlackListStrings
             .Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()).ToArray() ?? [];
         _blacklistUrls = loggerOptions.BlackListUrls?
             .Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.ToLowerInvariant()).ToArray() ?? [];
 
-        _minAllowedLogLevel = loggerOptions.MinAllowedLogLevel;
+        _allowedLogCategories = loggerOptions.AllowedLogCategories;
 
         Start();
     }
@@ -61,7 +61,7 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
     }
 
     /// <inheritdoc />
-    public ILogger CreateLogger(string categoryName) => new BatchingLogger(this);
+    public ILogger CreateLogger(string categoryName) => new BatchingLogger(this, categoryName);
 
     /// <summary>
     /// Writes the log messages asynchronously.
@@ -112,9 +112,27 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
     /// <returns>A task representing the asynchronous operation.</returns>
     protected virtual Task IntervalAsync(TimeSpan interval, CancellationToken cancellationToken) => Task.Delay(interval, cancellationToken);
 
+    public bool IsEnabled(string? category, Microsoft.Extensions.Logging.LogLevel severity)
+    {
+        if (string.IsNullOrWhiteSpace(category))
+            category = "*";
+        if (_allowedLogCategories.TryGetValue(category, out Microsoft.Extensions.Logging.LogLevel categoryLogLevel))
+        {
+            return categoryLogLevel <= severity;
+        }
+        else if (_allowedLogCategories.TryGetValue("*", out Microsoft.Extensions.Logging.LogLevel globalCategoryLogLevel))
+        {
+            return globalCategoryLogLevel <= severity;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     internal void AddMessage(LogMessage message)
     {
-        if (message.Severity < _minAllowedLogLevel)
+        if (!IsEnabled(message.Category, message.Severity))
         {
             return;
         }
@@ -138,7 +156,7 @@ public abstract class BatchingLoggerProvider : ILoggerProvider
                 .FirstOrDefault(x => string.Equals(x.Name, "PageUrl", StringComparison.OrdinalIgnoreCase));
 
             if (_blacklistUrls.Any(
-                jsonUrl.ToString().ToLowerInvariant().ToLowerInvariant().Contains) || 
+                jsonUrl.ToString().ToLowerInvariant().ToLowerInvariant().Contains) ||
                 _blacklistUrls.Any(jsonPageUrl.ToString().ToLowerInvariant().Contains))
             {
                 return;

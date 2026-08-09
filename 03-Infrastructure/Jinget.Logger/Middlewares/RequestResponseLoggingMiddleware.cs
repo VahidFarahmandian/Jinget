@@ -156,13 +156,19 @@ public class RequestResponseLoggingMiddleware
     /// <param name="responseBody"></param>
     private void SetResponseLog(HttpContext context, string responseBody)
     {
-        var model = LogModel.GetNewResponseObject(
+        // Log only if status code is successful or 429 (Too Many Requests).
+        if (context.Response.StatusCode < 400 || context.Response.StatusCode == 429)
+        {
+            var log = LogModel.GetNewResponseObject(
             context,
             responseBody,
             context.GetLoggerHeaders(_blackListHeaders, _whiteListHeaders, isRequestHeader: false));
-        // Log only if status code is successful or 429 (Too Many Requests).
-        if (context.Response.StatusCode < 400 || context.Response.StatusCode == 429)
-            _logger.LogInformation(model.Serialize());
+
+            log.Description = log.Serialize();
+
+            _logger.Log(Microsoft.Extensions.Logging.LogLevel.Information, log.Serialize());
+        }
+        //_logger.LogInformation(context, model.Serialize());
     }
 
     /// <summary>
@@ -172,8 +178,12 @@ public class RequestResponseLoggingMiddleware
     /// <param name="requestBodyText"></param>
     private void SetRequestLog(HttpContext context, string requestBodyText)
     {
-        var model = LogModel.GetNewRequestObject(context, requestBodyText,
+        var log = LogModel.GetNewRequestObject(context, requestBodyText,
             context.GetLoggerHeaders(_blackListHeaders, _whiteListHeaders, isRequestHeader: true));
-        _logger.LogInformation(model.Serialize());
+
+        log.Description = log.Serialize();
+
+        _logger.Log(Microsoft.Extensions.Logging.LogLevel.Information, log.Serialize());
+        //_logger.LogInformation(context, model.Serialize());
     }
 }

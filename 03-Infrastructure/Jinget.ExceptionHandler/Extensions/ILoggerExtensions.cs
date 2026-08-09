@@ -1,6 +1,8 @@
-﻿using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+﻿using Jinget.ExceptionHandler.Entities.Log;
 
-namespace Jinget.Logger;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+
+namespace Jinget.ExceptionHandler.Extensions;
 
 public static class ILoggerExtensions
 {
@@ -20,7 +22,7 @@ public static class ILoggerExtensions
         log.CallerLineNumber = callerLineNumber;
         log.CallerMember = callerMember;
 
-        logger.Log(LogLevel.Information, log.Serialize());
+        logger.Log(LogLevel.Debug, log.Serialize());
     }
 
     public static void LogInformation(this ILogger logger, HttpContext? httpContext, string message)

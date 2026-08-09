@@ -3,8 +3,17 @@
 /// <summary>
 /// A logger that batches log messages for efficient processing.
 /// </summary>
-public class BatchingLogger(BatchingLoggerProvider loggerProvider) : ILogger
+public class BatchingLogger(
+    BatchingLoggerProvider loggerProvider,
+    string categoryName) : ILogger
 {
+    private static readonly HashSet<string> _jingetLogCategories =
+    [
+        "Jinget.Logger.Middlewares.RequestResponseLoggingMiddleware",
+        "Jinget.ExceptionHandler.Handlers.GlobalExceptionHandler",
+        "Jinget.ExceptionHandler.Handlers.CoreExceptionHandler"
+    ];
+
     /// <summary>
     /// Begins a logical operation scope. (Not implemented in this logger.)
     /// </summary>
@@ -18,7 +27,8 @@ public class BatchingLogger(BatchingLoggerProvider loggerProvider) : ILogger
     /// </summary>
     /// <param name="logLevel">The log level to check.</param>
     /// <returns>True if the log level is enabled; otherwise, false.</returns>
-    public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) => logLevel != Microsoft.Extensions.Logging.LogLevel.None;
+    public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
+        => logLevel != Microsoft.Extensions.Logging.LogLevel.None;
 
     /// <summary>
     /// Writes a log message at the specified log level.
@@ -29,15 +39,13 @@ public class BatchingLogger(BatchingLoggerProvider loggerProvider) : ILogger
     /// <param name="state">The state of the event.</param>
     /// <param name="exception">The exception related to this message.</param>
     /// <param name="formatter">A function to create a message from the state and exception.</param>
-    public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-    {
-        if (!IsEnabled(logLevel))
-        {
-            return;
-        }
-
-        Log(DateTime.UtcNow, logLevel, state, exception, formatter);
-    }
+    public void Log<TState>(
+        Microsoft.Extensions.Logging.LogLevel logLevel,
+        EventId eventId,
+        TState state,
+        Exception? exception,
+        Func<TState, Exception?, string> formatter)
+        => Log(DateTime.UtcNow, logLevel, eventId, state, exception, formatter);
 
     /// <summary>
     /// Writes a log message with a specified timestamp.
@@ -48,13 +56,33 @@ public class BatchingLogger(BatchingLoggerProvider loggerProvider) : ILogger
     /// <param name="state">The state of the event.</param>
     /// <param name="exception">The exception related to this message.</param>
     /// <param name="formatter">A function to create a message from the state and exception.</param>
-    public void Log<TState>(DateTime timestamp, Microsoft.Extensions.Logging.LogLevel logLevel, TState state,
-        Exception? exception, Func<TState, Exception?, string> formatter) => loggerProvider.AddMessage(
-            new LogMessage
-            {
-                Description = formatter(state, exception),
-                Exception = exception == null ? "" : exception.ToString(),
-                Severity = logLevel,
-                Timestamp = timestamp
-            });
+    public void Log<TState>(
+        DateTime timestamp,
+        Microsoft.Extensions.Logging.LogLevel logLevel,
+        EventId eventId,
+        TState state,
+        Exception? exception,
+        Func<TState, Exception?, string> formatter)
+    {
+        if (!IsEnabled(logLevel))
+        {
+            return;
+        }
+
+        if (_jingetLogCategories.Contains(
+                categoryName,
+                StringComparer.OrdinalIgnoreCase))
+            categoryName = "Jinget.Logger";
+
+        loggerProvider.AddMessage(
+                        new LogMessage
+                        {
+                            Timestamp = timestamp,
+                            Description = formatter(state, exception),
+                            Exception = exception == null ? "" : exception.ToString(),
+                            Severity = logLevel,
+                            Category = categoryName,
+                            EventId = eventId
+                        });
+    }
 }
