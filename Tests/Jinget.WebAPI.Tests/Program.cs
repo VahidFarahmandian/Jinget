@@ -39,7 +39,8 @@ builder.Host.LogToElasticSearch(
     allowedLogCategories: new Dictionary<string, LogLevel>
     {
         ["*"] = LogLevel.Error,
-        ["Jinget.Logger"] = LogLevel.Information
+        ["Jinget.Logger"] = LogLevel.Information,
+        ["Jinget.WebAPI.Tests.SampleModel"] = LogLevel.Debug
     });
 var elasticSearchSetting = new ElasticSearchSettingModel
 {
