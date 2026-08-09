@@ -168,7 +168,6 @@ public class RequestResponseLoggingMiddleware
 
             _logger.Log(Microsoft.Extensions.Logging.LogLevel.Information, log.Serialize());
         }
-        //_logger.LogInformation(context, model.Serialize());
     }
 
     /// <summary>
@@ -184,6 +183,5 @@ public class RequestResponseLoggingMiddleware
         log.Description = log.Serialize();
 
         _logger.Log(Microsoft.Extensions.Logging.LogLevel.Information, log.Serialize());
-        //_logger.LogInformation(context, model.Serialize());
     }
 }
