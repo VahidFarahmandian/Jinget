@@ -1,4 +1,8 @@
-﻿using Jinget.Core.ExtensionMethods.HttpContext;
+﻿using Azure;
+
+using Jinget.Core.ExtensionMethods.HttpContext;
+
+using System.Diagnostics;
 
 [assembly: InternalsVisibleTo("Jinget.Logger")]
 namespace Jinget.ExceptionHandler.Entities.Log;
@@ -29,11 +33,17 @@ public class LogModel : BaseEntity<long>
             }.Serialize()
         };
 
+        if (Activity.Current != null)
+        {
+            log.TraceIdentifier = Activity.Current.TraceId.ToString();
+            log.SpanIdentifier = Activity.Current.SpanId.ToString();
+            log.ParentSpanIdentifier = Activity.Current.ParentSpanId.ToString();
+        }
         if (context != null)
         {
             context.Request.Headers.TryGetValue("Referer", out StringValues pageUrl);
             log.PageUrl = pageUrl.FirstOrDefault();
-            log.TraceIdentifier = context.TraceIdentifier;
+            log.RequestIdentifier = context.TraceIdentifier;
             log.PartitionKey = context.GetLoggerPartitionKey();
             log.Username = context.User.Identity?.Name;
             log.Method = context.Request.Method;
@@ -110,9 +120,27 @@ public class LogModel : BaseEntity<long>
     public string? PartitionKey { get => string.IsNullOrWhiteSpace(partitionKey) ? SubSystem : partitionKey; set => partitionKey = value; }
 
     /// <summary>
-    /// unique identifier for a request and response. value is read from HttpContext.TraceIdentifier
+    /// Identifies the entire distributed operation.
+    /// The same value is propagated across services.
     /// </summary>
     public string? TraceIdentifier { get; set; }
+
+    /// <summary>
+    /// Identifies the current operation/span within the distributed trace.
+    /// Different for each service/operation.
+    /// </summary>
+    public string? SpanIdentifier { get; set; }
+
+    /// <summary>
+    /// Identifies the parent span that caused or initiated the current operation.
+    /// </summary>
+    public string? ParentSpanIdentifier { get; set; }
+
+    /// <summary>
+    /// Identifies the current ASP.NET Core HTTP request.
+    /// Unique to this HTTP request only.
+    /// </summary>
+    public string? RequestIdentifier { get; set; }
 
     /// <summary>
     /// Http Method

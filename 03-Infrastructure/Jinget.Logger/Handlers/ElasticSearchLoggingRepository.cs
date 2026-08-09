@@ -3,7 +3,7 @@
 /// <summary>
 /// Repository for Elasticsearch logging operations.
 /// </summary>
-public class ElasticSearchLoggingRepository(IElasticClient elasticClient, ElasticSearchSettingModel settings) : 
+public class ElasticSearchLoggingRepository(IElasticClient elasticClient, ElasticSearchSettingModel settings) :
     IElasticSearchLoggingRepository
 {
     /// <summary>
@@ -181,6 +181,8 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
                                 f => f.PageUrl,
                                 f => f.PartitionKey,
                                 f => f.TraceIdentifier,
+                                f => f.SpanIdentifier,
+                                f => f.RequestIdentifier,
                                 f => f.SubSystem,
                                 f => f.Url,
                                 f => f.Username))

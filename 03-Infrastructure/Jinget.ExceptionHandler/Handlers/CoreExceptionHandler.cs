@@ -1,5 +1,7 @@
 using Jinget.ExceptionHandler.Entities.Log;
 
+using System.Diagnostics;
+
 namespace Jinget.ExceptionHandler.Handlers;
 
 public abstract class CoreExceptionHandler(ILogger<CoreExceptionHandler> logger, IHostEnvironment env, bool useGlobalExceptionHandler)
@@ -46,7 +48,12 @@ public abstract class CoreExceptionHandler(ILogger<CoreExceptionHandler> logger,
         };
         problemDetails.Extensions.Add("message", exception?.Message);
         problemDetails.Extensions.Add("data", exception?.Data);
-        problemDetails.Extensions.Add("traceId", context.TraceIdentifier);
+        if (Activity.Current != null)
+        {
+            problemDetails.Extensions.Add("traceId", Activity.Current.TraceId.ToString());
+            problemDetails.Extensions.Add("spanId", Activity.Current.SpanId.ToString());
+        }
+        problemDetails.Extensions.Add("requestId", context.TraceIdentifier);
         problemDetails.Extensions.Add("nodeId", Environment.MachineName);
 
         if (env.IsProduction())
