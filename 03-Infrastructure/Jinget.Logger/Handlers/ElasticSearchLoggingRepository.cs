@@ -1,4 +1,9 @@
-﻿namespace Jinget.Logger.Handlers;
+﻿using Jinget.Core.Enumerations;
+using Jinget.Logger.Enum;
+
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+
+namespace Jinget.Logger.Handlers;
 
 /// <summary>
 /// Repository for Elasticsearch logging operations.
@@ -182,13 +187,14 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
     /// <param name="username">Optional username for filtering.</param>
     /// <param name="origin">Optional origin for filtering.</param>
     /// <returns>A list of log search view models matching the search criteria.</returns>
-    public async Task<List<LogSearchViewModel>> SearchAsync(
+    public async Task<IReadOnlyList<LogSearchViewModel>> SearchAsync(
     string indexPattern,
-    string? queryString,
     int pageNumber,
     int pageSize,
-    string username = "",
-    string origin = "")
+    string? queryString = null,
+    string? username = null,
+    string? origin = null,
+    CancellationToken cancellationToken = default)
     {
         pageNumber = Math.Max(pageNumber, 1);
         pageSize = Math.Clamp(pageSize, 1, 100);
@@ -199,6 +205,10 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
 
         var requiredBucketCount = checked(pageNumber * pageSize);
 
+        // -------------------------------------------------------------
+        // Build common filter
+        // -------------------------------------------------------------
+
         Func<QueryContainerDescriptor<LogModel>, QueryContainer> buildFilter =
             q =>
             {
@@ -207,24 +217,67 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
                 // Full text search
                 if (!string.IsNullOrWhiteSpace(queryString))
                 {
+                    var search = queryString.Trim();
+
                     queries.Add(
-                        q.QueryString(qs => qs
-                            .Fields(fs => fs.Fields(
-                                f => f.AdditionalData,
-                                f => f.Body,
-                                f => f.Description,
-                                f => f.Headers,
-                                f => f.IP,
-                                f => f.Method,
-                                f => f.PageUrl,
-                                f => f.PartitionKey,
-                                f => f.TraceIdentifier,
-                                f => f.SpanIdentifier,
-                                f => f.RequestIdentifier,
-                                f => f.SubSystem,
-                                f => f.Url,
-                                f => f.Username))
-                            .Query($"*{queryString}*")));
+                        q.Bool(b => b
+                            .Should(
+                                sh => sh.Wildcard(w => w
+                                    .Field(f => f.Url.Suffix("keyword"))
+                                    .Value($"*{search}*")
+                                    .CaseInsensitive()),
+
+                                sh => sh.Wildcard(w => w
+                                    .Field(f => f.PageUrl.Suffix("keyword"))
+                                    .Value($"*{search}*")
+                                    .CaseInsensitive()),
+
+                                sh => sh.Wildcard(w => w
+                                    .Field(f => f.Method.Suffix("keyword"))
+                                    .Value($"*{search}*")
+                                    .CaseInsensitive()),
+
+                                sh => sh.Wildcard(w => w
+                                    .Field(f => f.SubSystem.Suffix("keyword"))
+                                    .Value($"*{search}*")
+                                    .CaseInsensitive()),
+
+                                sh => sh.Wildcard(w => w
+                                    .Field(f => f.TraceIdentifier.Suffix("keyword"))
+                                    .Value($"*{search}*")
+                                    .CaseInsensitive()),
+
+                                sh => sh.Wildcard(w => w
+                                    .Field(f => f.RequestIdentifier.Suffix("keyword"))
+                                    .Value($"*{search}*")
+                                    .CaseInsensitive()),
+
+                                sh => sh.Wildcard(w => w
+                                    .Field(f => f.SpanIdentifier.Suffix("keyword"))
+                                    .Value($"*{search}*")
+                                    .CaseInsensitive()),
+
+                                sh => sh.Wildcard(w => w
+                                    .Field(f => f.IP.Suffix("keyword"))
+                                    .Value($"*{search}*")
+                                    .CaseInsensitive()),
+
+                                sh => sh.Wildcard(w => w
+                                    .Field(f => f.Username.Suffix("keyword"))
+                                    .Value($"*{search}*")
+                                    .CaseInsensitive()),
+
+                                sh => sh.Wildcard(w => w
+                                    .Field(f => f.Body.Suffix("keyword"))
+                                    .Value($"*{search}*")
+                                    .CaseInsensitive()),
+
+                                sh => sh.Wildcard(w => w
+                                    .Field(f => f.Description.Suffix("keyword"))
+                                    .Value($"*{search}*")
+                                    .CaseInsensitive())
+                            )
+                            .MinimumShouldMatch(1)));
                 }
 
                 // Exact username filtering
@@ -253,7 +306,7 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
 
         // -------------------------------------------------------------
         // Query 1:
-        // Get page of TraceIdentifiers
+        // Get page of TraceIdentifiers ordered by latest log timestamp
         // -------------------------------------------------------------
 
         var traceSearchResult = await elasticClient
@@ -270,7 +323,8 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
                                 "latest_timestamp",
                                 m => m.Field(f => f.TimeStamp)))
                         .Order(o => o
-                            .Descending("latest_timestamp")))));
+                            .Descending("latest_timestamp")))),
+                cancellationToken);
 
 
         if (!traceSearchResult.IsValid)
@@ -323,7 +377,8 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
                                 .Field(f => f.TraceIdentifier.Suffix("keyword"))
                                 .Terms(pageTraceIdentifiers)))))
                 .Sort(sort => sort
-                    .Ascending(f => f.TimeStamp)));
+                    .Ascending(f => f.TimeStamp)),
+                cancellationToken);
 
 
         if (!logsSearchResult.IsValid)
@@ -334,19 +389,121 @@ public class ElasticSearchLoggingRepository(IElasticClient elasticClient, Elasti
         }
 
 
+        // -------------------------------------------------------------
+        // Group logs by TraceIdentifier
+        // -------------------------------------------------------------
+
         var logsByTraceIdentifier = logsSearchResult.Documents
             .GroupBy(x => x.TraceIdentifier)
+            .Where(x => !string.IsNullOrWhiteSpace(x.Key))
             .ToDictionary(
                 x => x.Key!,
-                x => x.OrderBy(l => l.TimeStamp));
+                x => x
+                    .OrderBy(l => l.TimeStamp)
+                    .ToList());
 
+
+        // -------------------------------------------------------------
+        // Build trace-level result
+        // -------------------------------------------------------------
 
         return pageTraceIdentifiers
             .Where(id => logsByTraceIdentifier.ContainsKey(id))
             .Select(id =>
-                new LogSearchViewModel(
-                    id,
-                    logsByTraceIdentifier[id]))
+            {
+                var logs = logsByTraceIdentifier[id];
+
+                var firstLog = logs[0];
+                var lastLog = logs[^1];
+
+                return new LogSearchViewModel(
+                    TraceIdentifier: id,
+
+                    // Request information comes from the first log
+                    RequestUrl: firstLog.Url,
+                    Method: firstLog.Method,
+                    SubSystem: firstLog.SubSystem,
+
+                    HopCount: logs.Count,
+
+                    // Actual wall-clock trace duration.
+                    TraceDurationMilliseconds:
+                        (lastLog.TimeStamp - firstLog.TimeStamp)
+                            .TotalMilliseconds,
+
+                    // Sum of all response/request content lengths.
+                    TotalContentLength:
+                        logs.Sum(x => x.ContentLength),
+
+                    StartTime:
+                        firstLog.TimeStamp,
+
+                    EndTime:
+                        lastLog.TimeStamp,
+
+                    FinalStatus:
+                        GetFinalStatus(logs),
+
+                    Logs:
+                        logs);
+            })
             .ToList();
+    }
+
+    private static TraceFinalStatus GetFinalStatus(IReadOnlyList<LogModel> logs)
+    {
+        if (logs.Count == 0)
+            return TraceFinalStatus.AwaitingResponse;
+
+        var firstLog = logs[0];
+
+        // A response must have the same RequestIdentifier
+        // as the initial request and Type == 2.
+        var hasResponse = logs.Any(x =>
+            x.RequestIdentifier == firstLog.RequestIdentifier &&
+            x.Type == LogType.Response);
+
+        if (!hasResponse)
+            return TraceFinalStatus.AwaitingResponse;
+
+        var latestLog = logs[^1];
+
+        var latestSeverity =
+            ParseSeverity(latestLog.TypeDescription);
+
+        // Latest log is Error/Critical => failed.
+        if (latestSeverity >= LogLevel.Error)
+            return TraceFinalStatus.Failed;
+
+        // Latest log is Information.
+        if (latestSeverity == LogLevel.Information)
+        {
+            var hasNonInformationLog = logs.Any(x =>
+                ParseSeverity(x.TypeDescription) != LogLevel.Information);
+
+            return hasNonInformationLog
+                ? TraceFinalStatus.Warning
+                : TraceFinalStatus.Success;
+        }
+
+        // Latest log is Warning => warning.
+        if (latestSeverity == LogLevel.Warning)
+            return TraceFinalStatus.Warning;
+
+        return TraceFinalStatus.Warning;
+    }
+
+    private static LogLevel ParseSeverity(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return LogLevel.Information;
+
+
+        return System.Enum.TryParse<LogLevel>(
+            value,
+            ignoreCase: true,
+            out var result)
+            ? result
+            : LogLevel.Information;
     }
 }

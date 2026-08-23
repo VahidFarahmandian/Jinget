@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides domain services for Elasticsearch logging operations.
 /// </summary>
-public class ElasticSearchLoggingCommandHandler(IElasticSearchLoggingRepository repository) : 
+public class ElasticSearchLoggingCommandHandler(IElasticSearchLoggingRepository repository) :
     IElasticSearchLoggingCommandHandler
 {
     // Repository for Elasticsearch logging operations.
@@ -39,10 +39,13 @@ public class ElasticSearchLoggingCommandHandler(IElasticSearchLoggingRepository 
     /// <param name="username">Optional username for filtering.</param>
     /// <param name="origin">Optional origin for filtering.</param>
     /// <returns>A list of log search view models matching the search criteria.</returns>
-    public virtual async Task<List<LogSearchViewModel>> SearchAsync(
+    public virtual async Task<IReadOnlyList<LogSearchViewModel>> SearchAsync(
         string indexPattern,
-        string? quertString,
-        int pageNumber, int pageSize,
-        string username = "",
-        string origin = "") => await Repository.SearchAsync(indexPattern, quertString, pageNumber, pageSize, username, origin);
+        int pageNumber,
+        int pageSize,
+        string? queryString = null,
+        string? username = null,
+        string? origin = null,
+        CancellationToken cancellationToken = default)
+        => await Repository.SearchAsync(indexPattern, pageNumber, pageSize, queryString, username, origin, cancellationToken);
 }

@@ -27,10 +27,12 @@ public interface IElasticSearchLoggingRepository
     /// Get list of logs
     /// </summary>
     /// <param name="username">If username specified, then logs will be filtered using <see cref="Entities.Log.OperationLog.UserName"/></param>
-    Task<List<LogSearchViewModel>> SearchAsync(
+    Task<IReadOnlyList<LogSearchViewModel>> SearchAsync(
         string indexPattern,
-        string? queryString,
-        int pageNumber, int pageSize,
-        string username = "",
-        string origin = "");
+        int pageNumber,
+        int pageSize,
+        string? queryString = null,
+        string? username = null,
+        string? origin = null,
+        CancellationToken cancellationToken = default);
 }

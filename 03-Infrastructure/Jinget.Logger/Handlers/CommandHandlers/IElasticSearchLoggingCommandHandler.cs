@@ -16,10 +16,12 @@ public interface IElasticSearchLoggingCommandHandler
     /// <param name="username">filter data for this user only</param>
     /// <param name="origin">specific filter for url</param>
     /// <returns></returns>
-    Task<List<LogSearchViewModel>> SearchAsync(
+    Task<IReadOnlyList<LogSearchViewModel>> SearchAsync(
         string indexPattern,
-        string? queryString,
-        int pageNumber, int pageSize,
-        string username = "",
-        string origin = "");
+        int pageNumber,
+        int pageSize,
+        string? queryString = null,
+        string? username = null,
+        string? origin = null,
+        CancellationToken cancellationToken = default);
 }

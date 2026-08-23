@@ -157,8 +157,12 @@ app.MapGet("detailedlog", () => "Sample Success");
 app.MapPost("save", (object vm) => vm);
 
 app.MapGet("/logs", async (
-        IElasticSearchLoggingCommandHandler domainService, string? search, int page, int pagesize) =>
-    await domainService.SearchAsync("jinget", search, page, pagesize));
+    IElasticSearchLoggingCommandHandler domainService,
+    int page,
+    int pagesize,
+    string? search,
+    CancellationToken cancellationToken = default) =>
+    await domainService.SearchAsync("tmsi", page, pagesize, search, cancellationToken: cancellationToken));
 
 app.Run();
 public record LoginViewModel(string Username, string Password);
