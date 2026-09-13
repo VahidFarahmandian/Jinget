@@ -1,5 +1,4 @@
 ﻿using Jinget.Logger.Extensions;
-using Jinget.Logger.Handlers.CommandHandlers;
 
 namespace Jinget.Logger.Configuration.ElasticSearch;
 

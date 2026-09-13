@@ -9,7 +9,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Jinget.Core" Version="8.0.35" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.0" />

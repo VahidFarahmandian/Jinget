@@ -1,7 +1,6 @@
 ﻿global using Jinget.Core.ExtensionMethods;
 global using System.Collections.Concurrent;
 global using System.Threading;
-global using System.Runtime.CompilerServices;
 global using System.Text;
 global using System;
 global using System.IO;

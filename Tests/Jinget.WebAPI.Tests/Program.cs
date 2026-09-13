@@ -6,7 +6,6 @@ using Jinget.ExceptionHandler.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Jinget.Logger.Handlers.CommandHandlers;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 

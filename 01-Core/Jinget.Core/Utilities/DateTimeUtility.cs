@@ -1,7 +1,5 @@
 ﻿using System.Globalization;
 
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace Jinget.Core.Utilities;
 
 public static class DateTimeUtility

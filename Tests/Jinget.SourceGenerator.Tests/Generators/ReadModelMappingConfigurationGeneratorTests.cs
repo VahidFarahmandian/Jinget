@@ -19,7 +19,7 @@ namespace Jinget.SourceGenerator.Tests.Generators
         }
 
         [TestMethod]
-        public void should_generate_non_jinget_readonly_mapping_configurations()
+        public void Should_generate_non_jinget_readonly_mapping_configurations()
         {
             //Arrange
             var classes = _compilation?.GetTypeByMetadataName("Jinget.SourceGenerator.Tests._BaseTypes.MappingConfigurations.StudentMappingConfiguration");
@@ -28,12 +28,11 @@ namespace Jinget.SourceGenerator.Tests.Generators
             var result = ReadModelMappingConfigurationGenerator.GenerateReadModelMappingCode(_compilation!, [classes]);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Length);
+            Assert.HasCount(1, result);
 
             var generatedCode = result[0].Code;
 
-            var tree = CSharpSyntaxTree.ParseText(generatedCode);
+            var tree = CSharpSyntaxTree.ParseText(generatedCode, cancellationToken: TestContext.CancellationToken);
             var root = tree.GetRoot() as CompilationUnitSyntax;
 
             if (root == null)
@@ -41,7 +40,7 @@ namespace Jinget.SourceGenerator.Tests.Generators
                 Assert.Fail();
             }
 
-            Assert.AreEqual(1, tree.GetClassNames().Count());
+            Assert.HasCount(1, tree.GetClassNames());
             Assert.AreEqual($"ReadOnlyStudentMappingConfiguration", tree.GetClassNames().FirstOrDefault());
 
             var classDeclaration = tree.GetClasses().First();
@@ -52,10 +51,10 @@ namespace Jinget.SourceGenerator.Tests.Generators
             else
                 Assert.Fail();
 
-            Assert.AreEqual(1, tree.GetMethodNames().Count());
+            Assert.HasCount(1, tree.GetMethodNames());
             Assert.AreEqual("Configure", tree.GetMethodNames().FirstOrDefault());
         }
-        private CSharpCompilation CreateCompilation()
+        private static CSharpCompilation CreateCompilation()
         {
             // Get the source root from MSBuild (works in .NET Core 3.1+)
             var sourceRoot = Path.GetFullPath(Path.Combine(
@@ -72,5 +71,7 @@ namespace Jinget.SourceGenerator.Tests.Generators
 
             return CSharpCompilation.Create("TestAssembly", [syntaxTree], references);
         }
+
+        public TestContext TestContext { get; set; }
     }
 }

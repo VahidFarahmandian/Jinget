@@ -21,10 +21,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Include="assets\icon.png">
 		  <Pack>True</Pack>
 		  <PackagePath>\</PackagePath>
@@ -36,5 +32,10 @@
 		  <Pack>True</Pack>
 		  <PackagePath>\</PackagePath>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.9.0" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
 	</ItemGroup>
 </Project>
