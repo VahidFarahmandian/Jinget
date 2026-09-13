@@ -1,5 +1,8 @@
 ﻿using Jinget.Handlers.ExternalServiceHandlers.Extensions;
+
 using Microsoft.Extensions.DependencyInjection;
+
+using System.Text.Json;
 
 namespace Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler;
 
@@ -46,7 +49,7 @@ public class CustomServiceHandlerTests
         };
 
         // Act
-        var result = await customServiceHandler.GetAsync<List<SampleGetResponse>>("users");
+        var result = await customServiceHandler.GetAsync<List<SampleGetResponse>>("users", cancellationToken: TestContext.CancellationToken);
 
         // Assert
         Assert.IsNotNull(result);
@@ -84,7 +87,7 @@ public class CustomServiceHandlerTests
         var result = await customServiceHandler
             .PostAsync<SamplePostResponse>("posts",
                 new { title = "foo", body = "bar", userId = 1 },
-                new Dictionary<string, string> { { "Content-type", "application/json; charset=UTF-8" } });
+                new Dictionary<string, string> { { "Content-type", "application/json; charset=UTF-8" } }, cancellationToken: TestContext.CancellationToken);
 
         // Assert
         Assert.IsNotNull(result);
@@ -122,12 +125,19 @@ public class CustomServiceHandlerTests
         {
             RequestUri = new Uri("https://jsonplaceholder.typicode.com/posts/1"),
             Method = HttpMethod.Put,
-            Content = new StringContent(JsonConvert.SerializeObject(new { id = 1, title = "foo", body = "bar", userId = 1 }))
+            Content = new StringContent(
+                JsonSerializer.Serialize(new
+                {
+                    id = 1,
+                    title = "foo",
+                    body = "bar",
+                    userId = 1
+                }))
         };
         request.Headers.TryAddWithoutValidation("Content-type", "application/json; charset=UTF-8");
 
         // Act
-        var result = await customServiceHandler.SendAsync<SamplePutResponse>(request);
+        var result = await customServiceHandler.SendAsync<SamplePutResponse>(request, cancellationToken: TestContext.CancellationToken);
 
         // Assert
         Assert.IsNotNull(result);
@@ -171,7 +181,7 @@ public class CustomServiceHandlerTests
         {
             { "Content-Type", "text/xml" },
             { "SOAPAction", "http://tempuri.org/Add" }
-        });
+        }, cancellationToken: TestContext.CancellationToken);
 
         // Assert
         Assert.IsNotNull(result);
@@ -182,7 +192,7 @@ public class CustomServiceHandlerTests
     }
 
     //[TestMethod]
-    public async Task UploadFilesAsync_ShouldReturnDeserializedResponse_AndTriggerEvents_WhenApiCallIsSuccessful()
+    public async Task UploadFilesAsync_ShouldReturnDeserializedResponse_AndTriggerEvents_WhenApiCallIsSuccessfulAsync()
     {
         // Arrange
         var customServiceHandler = new CustomServiceHandler(serviceProvider, "https://localhost:7027/api/upload");
@@ -197,11 +207,13 @@ public class CustomServiceHandlerTests
         List<FileInfo> files = [new FileInfo("Sample Upload File1.txt"), new FileInfo("Sample Upload File2.txt")];
 
         // Act
-        var response = await customServiceHandler.UploadFilesAsync<SamplePostResponse>("something", files);
+        var response = await customServiceHandler.UploadFilesAsync<SamplePostResponse>("something", files, cancellationToken: TestContext.CancellationToken);
 
         // Assert
         Assert.IsNotNull(response);
         Assert.IsFalse(string.IsNullOrWhiteSpace(response.Status));
         Assert.IsTrue(serviceCalled);
     }
+
+    public TestContext TestContext { get; set; }
 }

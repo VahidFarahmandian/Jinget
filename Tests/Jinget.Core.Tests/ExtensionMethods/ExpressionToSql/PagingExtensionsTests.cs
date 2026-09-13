@@ -15,7 +15,6 @@ public class PagingExtensionsTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(JingetException), AllowDerivedTypes = false)]
     public void should_throw_jinget_exception()
     {
         Paging paging = new()
@@ -23,9 +22,11 @@ public class PagingExtensionsTests
             PageNumber = 1,
             PageSize = 10
         };
-        List<OrderBy> lstOrderBy = null;
 
-        paging.GetPaging(lstOrderBy);
+        List<OrderBy> lstOrderBy = null!;
+
+        Assert.Throws<JingetException>(() =>
+            paging.GetPaging(lstOrderBy));
     }
 
     [TestMethod]

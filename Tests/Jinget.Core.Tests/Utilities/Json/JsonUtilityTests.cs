@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json;
 
 namespace Jinget.Core.Tests.Utilities.Json;
 
@@ -46,15 +46,17 @@ public class JsonUtilityTests
 
         Assert.AreEqual(expectedResult, result);
     }
-
     [TestMethod]
     public void should_merge_two_json_string()
     {
         string json1 = "{\"Id\":\"i1\"}";
         string json2 = "{\"Id\":\"i2\"}";
         string expectedResult = "{\"Id\":\"i1\",\"p1\":{\"Id\":\"i2\"}}";
+
         var result = JsonUtility.Merge(json1, json2, "p1");
 
-        Assert.AreEqual(JToken.Parse(expectedResult).ToString(), JToken.Parse(result).ToString());
+        Assert.AreEqual(
+            JsonDocument.Parse(expectedResult).RootElement.ToString(),
+            JsonDocument.Parse(result).RootElement.ToString());
     }
 }

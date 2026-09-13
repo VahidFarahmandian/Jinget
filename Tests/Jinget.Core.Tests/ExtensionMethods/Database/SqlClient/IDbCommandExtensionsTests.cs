@@ -17,16 +17,16 @@ public class IDbCommandExtensionsTests
 
         command.ApplyCorrectYeKe();
 
-        Assert.IsFalse(command.CommandText.Contains("علي"));
-        Assert.IsTrue(command.CommandText.Contains("علی"));
+        Assert.DoesNotContain("علي", command.CommandText);
+        Assert.Contains("علی", command.CommandText);
 
-        Assert.IsFalse(command.CommandText.Contains("روشنك"));
-        Assert.IsTrue(command.CommandText.Contains("روشنک"));
+        Assert.DoesNotContain("روشنك", command.CommandText);
+        Assert.Contains("روشنک", command.CommandText);
 
-        Assert.IsFalse(((SqlParameter)command.Parameters["@p1"]).Value.ToString() == "N'رهي'");
-        Assert.IsTrue(((SqlParameter)command.Parameters["@p1"]).Value.ToString() == "N'رهی'");
+        Assert.AreNotEqual("N'رهي'", ((SqlParameter)command.Parameters["@p1"]).Value.ToString());
+        Assert.AreEqual("N'رهی'", ((SqlParameter)command.Parameters["@p1"]).Value.ToString());
 
-        Assert.IsFalse(((SqlParameter)command.Parameters["@p2"]).Value.ToString() == "N'قاصدك'");
-        Assert.IsTrue(((SqlParameter)command.Parameters["@p2"]).Value.ToString() == "N'قاصدک'");
+        Assert.AreNotEqual("N'قاصدك'", ((SqlParameter)command.Parameters["@p2"]).Value.ToString());
+        Assert.AreEqual("N'قاصدک'", ((SqlParameter)command.Parameters["@p2"]).Value.ToString());
     }
 }

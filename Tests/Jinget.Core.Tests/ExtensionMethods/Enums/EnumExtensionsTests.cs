@@ -58,19 +58,21 @@ public class EnumExtensionsTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(System.ComponentModel.InvalidEnumArgumentException))]
     public void should_throw_exception_where_display_name_not_found()
     {
         string enumDescription = "Java";
-        EnumUtility.GetValueFromDisplayName<ProgrammingLanguage>(enumDescription);
+
+        Assert.Throws<InvalidEnumArgumentException>(() =>
+            EnumUtility.GetValueFromDisplayName<ProgrammingLanguage>(enumDescription));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void should_throw_exception_where_enum_type_is_invalid_in_display_name()
     {
         string enumDescription = "Java";
-        EnumUtility.GetValueFromDisplayName<InvalidStruct>(enumDescription);
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EnumUtility.GetValueFromDisplayName<InvalidStruct>(enumDescription));
     }
 
     #endregion
@@ -130,19 +132,21 @@ public class EnumExtensionsTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(System.ComponentModel.InvalidEnumArgumentException))]
     public void should_throw_exception_where_description_not_found()
     {
         string enumDescription = "Java";
-        EnumUtility.GetValueFromDescription<ProgrammingLanguage>(enumDescription);
+
+        Assert.Throws<InvalidEnumArgumentException>(() =>
+            EnumUtility.GetValueFromDescription<ProgrammingLanguage>(enumDescription));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void should_throw_exception_where_enum_type_is_invalid_in_description()
     {
         string enumDescription = "Java";
-        EnumUtility.GetValueFromDescription<InvalidStruct>(enumDescription);
+
+        Assert.Throws<InvalidOperationException>(() =>
+            EnumUtility.GetValueFromDescription<InvalidStruct>(enumDescription));
     }
 
     #endregion region
@@ -158,8 +162,11 @@ public class EnumExtensionsTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidEnumArgumentException))]
-    public void should_throw_exception_for_empty_enum_min() => EnumUtility.GetMinValue<EmptyEnum, int>();
+    public void should_throw_exception_for_empty_enum_min()
+    {
+        Assert.Throws<InvalidEnumArgumentException>(() =>
+            EnumUtility.GetMinValue<EmptyEnum, int>());
+    }
 
     [TestMethod]
     public void should_return_max_val_in_enum()
@@ -170,8 +177,9 @@ public class EnumExtensionsTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidEnumArgumentException))]
-    public void should_throw_exception_for_empty_enum_max() => EnumUtility.GetMaxValue<EmptyEnum, int>();
+    public void should_throw_exception_for_empty_enum_max() =>
+        Assert.Throws<InvalidEnumArgumentException>(() =>
+            EnumUtility.GetMaxValue<EmptyEnum, int>());
 
     #endregion
 }

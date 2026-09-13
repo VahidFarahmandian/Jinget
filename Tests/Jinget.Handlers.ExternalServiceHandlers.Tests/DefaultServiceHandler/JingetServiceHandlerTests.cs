@@ -2,6 +2,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Jinget.Handlers.ExternalServiceHandlers.Tests.DefaultServiceHandler;
@@ -34,7 +35,7 @@ public class JingetServiceHandlerTests
         try
         {
             // Act
-            var result = await jingetServiceHandler.GetAsync("users");
+            var result = await jingetServiceHandler.GetAsync("users", cancellationToken: TestContext.CancellationToken);
 
             //Assert
             Assert.IsNull(result);
@@ -44,25 +45,30 @@ public class JingetServiceHandlerTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(TaskCanceledException))]
     public async Task GetAsync_ShouldThrowTimeoutException_WhenTimeoutIsConfigured()
     {
         // Arrange
-        var jingetServiceHandler = new JingetServiceHandler<List<SampleGetResponse>>(serviceProvider, "https://jinget.ir", timeout: TimeSpan.FromSeconds(1));
+        var jingetServiceHandler = new JingetServiceHandler<List<SampleGetResponse>>(
+            serviceProvider,
+            "https://jinget.ir",
+            timeout: TimeSpan.FromSeconds(1));
+
         bool timeoutExceptionOccurred = false;
 
         jingetServiceHandler.Events.ExceptionOccurredAsync += async (sender, e) =>
         {
             await Task.CompletedTask;
-            timeoutExceptionOccurred = e != null && e.Message.Contains("Timeout of 1 seconds");
+            timeoutExceptionOccurred = e != null &&
+                                       e.Message.Contains("Timeout of 1 seconds");
         };
 
-        // Act
-        var result = await jingetServiceHandler.GetAsync("users");
+        // Act & Assert
+        await Assert.ThrowsAsync<TaskCanceledException>(async () =>
+        {
+            await jingetServiceHandler.GetAsync("users", cancellationToken: TestContext.CancellationToken);
+        });
 
-        //// Assert
-        //Assert.IsNull(result);
-        //Assert.IsTrue(timeoutExceptionOccurred);
+        Assert.IsTrue(timeoutExceptionOccurred);
     }
 
     [TestMethod]
@@ -97,7 +103,7 @@ public class JingetServiceHandlerTests
         };
 
         // Act
-        var result = await jingetServiceHandler.GetAsync("users");
+        var result = await jingetServiceHandler.GetAsync("users", cancellationToken: TestContext.CancellationToken);
 
         // Assert
         Assert.IsNotNull(result);
@@ -142,7 +148,7 @@ public class JingetServiceHandlerTests
         var result = await jingetServiceHandler
             .PostAsync("posts",
                 new { title = "foo", body = "bar", userId = 1 },
-                new Dictionary<string, string> { { "Content-type", "application/json; charset=UTF-8" } });
+                new Dictionary<string, string> { { "Content-type", "application/json; charset=UTF-8" } }, TestContext.CancellationToken);
 
         // Assert
         Assert.IsNotNull(result);
@@ -187,12 +193,19 @@ public class JingetServiceHandlerTests
         {
             RequestUri = new Uri("https://jsonplaceholder.typicode.com/posts/1"),
             Method = HttpMethod.Put,
-            Content = new StringContent(JsonConvert.SerializeObject(new { id = 1, title = "foo", body = "bar", userId = 1 }))
+            Content = new StringContent(
+                JsonSerializer.Serialize(new
+                {
+                    id = 1,
+                    title = "foo",
+                    body = "bar",
+                    userId = 1
+                }))
         };
         request.Headers.TryAddWithoutValidation("Content-type", "application/json; charset=UTF-8");
 
         // Act
-        var result = await jingetServiceHandler.SendAsync(request);
+        var result = await jingetServiceHandler.SendAsync(request, TestContext.CancellationToken);
 
         // Assert
         Assert.IsNotNull(result);
@@ -201,46 +214,7 @@ public class JingetServiceHandlerTests
         Assert.IsTrue(exceptionNotOccurred);
         Assert.IsTrue(responseDeserialized);
     }
-    //[TestMethod]
-    //public async Task should_call_json_path()
-    //{
-    //    var jingetServiceHandler = new JingetServiceHandler<AddResponse>(serviceProvider, "https://dev.azure.com/farahmandian/MSFarsi/");
-    //    List<NewWorkItemModel> properties =
-    //    [
-    //        new NewWorkItemModel()
-    //        {
-    //            path="/fields/System.Title",
-    //            value="Sample WorkItem"
-    //        },
-    //        new NewWorkItemModel()
-    //        {
-    //            path="/fields/System.Description",
-    //            value="Sample description"
-    //        },
-    //        new NewWorkItemModel()
-    //        {
-    //            path="/fields/System.History",
-    //            value="Sample comment"
-    //        },
-    //        new NewWorkItemModel()
-    //        {
-    //            path="/fields/System.AssignedTo",
-    //            value="farahmandian2011@gmail.com"
-    //        },
-    //        new NewWorkItemModel()
-    //        {
-    //            path="/fields/System.AreaPath",
-    //            value="MSFarsi"
-    //        }
-    //    ];
-    //    var result = await jingetServiceHandler.PostAsync<NewWorkItemViewModel>("_apis/wit/workitems/$Task?api-version=7.1", 
-    //        properties, 
-    //        new Dictionary<string, string>
-    //        {
-    //            {"Content-Type","application/json-patch+json" },
-    //            {"Authorization","Basic OjFueTZmTWZ4bVIwODZjVHBHeDc3NERxTnpEa3AzWlNLRU1IOHBsaXQ4RHJKTGR2VXp0TVJKUVFKOTlCR0FDQUFBQUFBQUFBQUFBQUdBWkRPM0pTSg==" },
-    //        });
-    //}
+    
     [TestMethod]
     public async Task PostAsync_ShouldDeserializeSoapResponse_AndTriggerEvents_WhenSoapCallIsSuccessful()
     {
@@ -284,7 +258,7 @@ public class JingetServiceHandlerTests
             {
                 { "Content-Type", "text/xml" },
                 { "SOAPAction", "http://tempuri.org/Add" }
-            });
+            }, TestContext.CancellationToken);
 
         // Assert
         Assert.IsNotNull(result);
@@ -320,7 +294,7 @@ public class JingetServiceHandlerTests
         ];
 
         // Act
-        var response = await jingetServiceHandler.UploadFilesAsync("something", files);
+        var response = await jingetServiceHandler.UploadFilesAsync("something", files, cancellationToken: TestContext.CancellationToken);
 
         // Assert
         Assert.IsNotNull(response);
@@ -328,6 +302,8 @@ public class JingetServiceHandlerTests
         Assert.IsTrue(serviceCalled);
         Assert.IsTrue(rawResponseReceived);
     }
+
+    public TestContext TestContext { get; set; }
 }
 public class NewWorkItemModel
 {

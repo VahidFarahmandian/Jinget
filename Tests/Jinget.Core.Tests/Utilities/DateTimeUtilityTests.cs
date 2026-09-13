@@ -40,11 +40,12 @@ public class DateTimeUtilityTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void should_throw_exception_for_out_of_supported_range_date()
     {
         DateTime input = DateTime.MinValue;
-        DateTimeUtility.ToSolarDate(input, true);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            DateTimeUtility.ToSolarDate(input, true));
     }
 
     [TestMethod]

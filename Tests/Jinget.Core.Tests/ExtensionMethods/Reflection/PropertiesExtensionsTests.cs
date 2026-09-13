@@ -24,7 +24,7 @@ public class PropertiesExtensionsTests
         string s1 = NullStr();
         string s2 = NonNullStr();
         Assert.AreEqual(s1, s2);
-        Assert.IsTrue(s1 == s2);
+        Assert.AreEqual(s2, s1);
 
         Assert.IsTrue(typeof(int).IsSimpleType());
         Assert.IsTrue(typeof(bool).IsSimpleType());
@@ -92,7 +92,7 @@ public class PropertiesExtensionsTests
         var result = typeof(TestClass).GetWritableProperties();
 
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Count != 0);
+        Assert.IsNotEmpty(result);
         Assert.AreEqual(expectedResult.First(), result.First());
     }
 }

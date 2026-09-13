@@ -24,14 +24,14 @@ public static class JsonExtensions
             PropertyNameCaseInsensitive = true,
         };
 
-        options = options ?? defaultOptions;
+        options ??= defaultOptions;
 
         T? deserializedValue = default;
         try
         {
             deserializedValue = JsonSerializer.Deserialize<T>(serializedString, options);
         }
-        catch (JsonException ex)
+        catch (JsonException)
         {
             // Attempt to parse the JSON to inspect it
             using JsonDocument doc = JsonDocument.Parse(serializedString);

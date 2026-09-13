@@ -56,7 +56,7 @@ public class ExpressionUtilityTests
         Assert.AreEqual(expectedFilter, filter.ToString());
 
         var result = data.Where(filter).ToList();
-        Assert.IsTrue(result.Count == 5);
+        Assert.AreEqual(5, result.Count);
     }
 
     [TestMethod]
@@ -81,7 +81,7 @@ public class ExpressionUtilityTests
         Assert.AreEqual(expectedFilter, filter.ToString());
 
         var result = data.Where(filter).ToList();
-        Assert.IsTrue(result.Count == 0);
+        Assert.IsEmpty(result);
     }
 
     [TestMethod]
@@ -107,8 +107,8 @@ public class ExpressionUtilityTests
 
         var result = data.Where(filter).ToList();
 
-        Assert.IsTrue(result.Count == 5);
-        Assert.IsTrue(result.First().Property1 == 1);
+        Assert.AreEqual(5, result.Count);
+        Assert.AreEqual(1, result.First().Property1);
     }
 
     [TestMethod]
@@ -133,7 +133,7 @@ public class ExpressionUtilityTests
         Assert.AreEqual(expectedFilter, filter.ToString());
 
         var result = data.Where(filter).ToList();
-        Assert.IsTrue(result.Count == 0);
+        Assert.IsEmpty(result);
     }
 
     #endregion
@@ -163,8 +163,8 @@ public class ExpressionUtilityTests
 
         var result = data.Where(filter).ToList();
 
-        Assert.IsTrue(result.Count == 1);
-        Assert.IsTrue(result.First().Property1 == 4);
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual(4, result.First().Property1);
     }
 
     #endregion
@@ -199,8 +199,8 @@ public class ExpressionUtilityTests
 
         var result = data.Where(filter).ToList();
 
-        Assert.IsTrue(result.Count == 2);
-        Assert.IsTrue(result.First().Property1 == 2);
+        Assert.AreEqual(2, result.Count);
+        Assert.AreEqual(2, result.First().Property1);
     }
 
     [TestMethod]
@@ -245,8 +245,8 @@ public class ExpressionUtilityTests
 
         var result = data.Where(filter).ToList();
 
-        Assert.IsTrue(result.Count == 4);
-        Assert.IsTrue(result.First().Property1 == 1);
+        Assert.AreEqual(4, result.Count);
+        Assert.AreEqual(1, result.First().Property1);
     }
 
     #endregion

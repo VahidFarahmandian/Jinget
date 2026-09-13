@@ -68,7 +68,7 @@ public class TypeExtensionsTests
     {
         var result = typeof(TestClass).GetReferenceTypeProperties();
 
-        Assert.IsTrue(result.Any(x => x.Name == "InnerSingularProperty"));
+        Assert.Contains(x => x.Name == "InnerSingularProperty", result);
     }
 
     [TestMethod]
@@ -76,7 +76,7 @@ public class TypeExtensionsTests
     {
         var result = typeof(TestClass).GetReferenceTypeProperties(includeStringTypes: true);
 
-        Assert.IsTrue(result.Any(x => x.Name == "Property2"));
+        Assert.Contains(x => x.Name == "Property2", result);
     }
 
     [TestMethod]

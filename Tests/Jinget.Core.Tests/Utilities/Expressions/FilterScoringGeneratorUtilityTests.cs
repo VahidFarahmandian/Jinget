@@ -326,13 +326,13 @@ public class FilterScoringGeneratorUtilityTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void GenerateScoreExpression_WithNullFilter_ThrowsException()
     {
         // Arrange
-        Expression<Func<TestEntity, bool>> filter = null;
+        Expression<Func<TestEntity, bool>> filter = null!;
 
         // Act & Assert
-        FilterScoringGeneratorUtility.GenerateScoreExpression(filter);
+        Assert.Throws<ArgumentNullException>(() =>
+            FilterScoringGeneratorUtility.GenerateScoreExpression(filter));
     }
 }

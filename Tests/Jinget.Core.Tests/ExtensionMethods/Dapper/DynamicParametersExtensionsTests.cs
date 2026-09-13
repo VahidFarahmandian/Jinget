@@ -14,7 +14,7 @@ public class DynamicParametersExtensionsTests
 
         var result = parameters.GetKeyValues();
 
-        Assert.IsTrue(result.Count == 4);
+        Assert.AreEqual(4, result.Count);
         Assert.IsTrue(result.GetValueOrDefault("persianName") == "وحید");
         Assert.IsTrue(result.GetValueOrDefault("englishName") == "vahid");
         Assert.IsTrue(result.GetValueOrDefault("sampleNumber") == 123);
@@ -31,7 +31,7 @@ public class DynamicParametersExtensionsTests
         parameters.Add("sampleBool", true, System.Data.DbType.Boolean);
         var result = parameters.GetSQLValues();
 
-        Assert.IsTrue(result.Count == 4);
+        Assert.AreEqual(4, result.Count);
         Assert.IsTrue(result[0] == "N'وحید'");
         Assert.IsTrue(result[1] == "'vahid'");
         Assert.IsTrue(result[2] == 123);

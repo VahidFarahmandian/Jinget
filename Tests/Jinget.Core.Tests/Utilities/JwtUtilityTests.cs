@@ -36,12 +36,15 @@ public class JwtUtilityTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(SecurityTokenMalformedException))]
     public async Task should_return_false_for_invalid_tokenAsync()
     {
         string token = "InvalidJwtToken";
-        var result = await JwtUtility.IsValidAsync(token);
-        Assert.IsFalse(result);
+
+        await Assert.ThrowsAsync<SecurityTokenMalformedException>(async () =>
+        {
+            var result = await JwtUtility.IsValidAsync(token);
+            Assert.IsFalse(result);
+        });
     }
 
     [TestMethod]

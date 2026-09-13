@@ -17,9 +17,9 @@ public class StringExtensionsTests
     [TestMethod]
     public void should_return_empty_string()
     {
-        Assert.IsTrue("".ApplyCorrectYeKe() == string.Empty);
-        Assert.IsTrue("   ".ApplyCorrectYeKe() == string.Empty);
-        Assert.IsTrue(string.Empty.ApplyCorrectYeKe() == string.Empty);
+        Assert.AreEqual(string.Empty, "".ApplyCorrectYeKe());
+        Assert.AreEqual(string.Empty, "   ".ApplyCorrectYeKe());
+        Assert.AreEqual(string.Empty, string.Empty.ApplyCorrectYeKe());
     }
 
     [TestMethod]

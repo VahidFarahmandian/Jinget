@@ -12,7 +12,7 @@ public class ExpressionExtensionsTests
 
         var result = expression.Transform();
 
-        Assert.IsTrue(result.ToString() == "x => new TestClass() {Property1 = 1}");
+        Assert.AreEqual("x => new TestClass() {Property1 = 1}", result.ToString());
     }
 
     [TestMethod]
@@ -35,6 +35,6 @@ public class ExpressionExtensionsTests
 
         var result = expression.Transform();
 
-        Assert.IsTrue(result.ToString() == expectedExpression);
+        Assert.AreEqual(expectedExpression, result.ToString());
     }
 }

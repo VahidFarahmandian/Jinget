@@ -44,7 +44,7 @@ public class DateTimeExtensionsTest
     public void HasStarted_NotStarted_ReturnsFalse()
     {
         DateTime? restriction = new DateTime(2024, 1, 2);
-        DateTime dt = new DateTime(2024, 1, 1);
+        DateTime dt = new(2024, 1, 1);
         Assert.IsFalse(restriction.HasStarted(dt));
     }
 
@@ -52,7 +52,7 @@ public class DateTimeExtensionsTest
     public void HasEnded_Ended_ReturnsTrue()
     {
         DateTime? restriction = new DateTime(2024, 1, 1);
-        DateTime dt = new DateTime(2024, 1, 1);
+        DateTime dt = new(2024, 1, 1);
         Assert.IsTrue(restriction.HasEnded(dt));
     }
 
@@ -60,39 +60,39 @@ public class DateTimeExtensionsTest
     public void HasEnded_NotEnded_ReturnsFalse()
     {
         DateTime? restriction = new DateTime(2024, 1, 1);
-        DateTime dt = new DateTime(2024, 1, 2);
+        DateTime dt = new(2024, 1, 2);
         Assert.IsFalse(restriction.HasEnded(dt));
     }
 
     [TestMethod]
     public void IsWithinDateRange_WithinRange_ReturnsTrue()
     {
-        DateTimeRange range = new DateTimeRange { Start = new DateTime(2024, 1, 1), End = new DateTime(2024, 1, 31) };
-        DateTime dt = new DateTime(2024, 1, 15);
+        DateTimeRange range = new() { Start = new DateTime(2024, 1, 1), End = new DateTime(2024, 1, 31) };
+        DateTime dt = new(2024, 1, 15);
         Assert.IsTrue(range.IsWithinDateRange(dt));
     }
 
     [TestMethod]
     public void IsWithinDateRange_OutsideRange_ReturnsFalse()
     {
-        DateTimeRange range = new DateTimeRange { Start = new DateTime(2024, 1, 1), End = new DateTime(2024, 1, 31) };
-        DateTime dt = new DateTime(2024, 2, 1);
+        DateTimeRange range = new() { Start = new DateTime(2024, 1, 1), End = new DateTime(2024, 1, 31) };
+        DateTime dt = new(2024, 2, 1);
         Assert.IsFalse(range.IsWithinDateRange(dt));
     }
 
     [TestMethod]
     public void IsWithinTimeOfDayRange_WithinRange_ReturnsTrue()
     {
-        TimeRange range = new TimeRange { Start = new TimeOnly(8, 0), End = new TimeOnly(17, 0) };
-        TimeOnly time = new TimeOnly(12, 0);
+        TimeRange range = new() { Start = new TimeOnly(8, 0), End = new TimeOnly(17, 0) };
+        TimeOnly time = new(12, 0);
         Assert.IsTrue(range.IsWithinTimeOfDayRange(time));
     }
 
     [TestMethod]
     public void IsWithinTimeOfDayRange_OutsideRange_ReturnsFalse()
     {
-        TimeRange range = new TimeRange { Start = new TimeOnly(8, 0), End = new TimeOnly(17, 0) };
-        TimeOnly time = new TimeOnly(18, 0);
+        TimeRange range = new() { Start = new TimeOnly(8, 0), End = new TimeOnly(17, 0) };
+        TimeOnly time = new(18, 0);
         Assert.IsFalse(range.IsWithinTimeOfDayRange(time));
     }
 

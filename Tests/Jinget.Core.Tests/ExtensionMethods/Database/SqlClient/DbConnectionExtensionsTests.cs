@@ -33,7 +33,7 @@ public class DbConnectionExtensionsTests
         var cnn = mockDbConnection.Object;
         await cnn.SafeOpenAsync();
         await cnn.SafeOpenAsync();
-        Assert.IsTrue(cnn.State == ConnectionState.Open);
+        Assert.AreEqual(ConnectionState.Open, cnn.State);
     }
 
     [TestMethod]
@@ -41,9 +41,9 @@ public class DbConnectionExtensionsTests
     {
         var select = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest");
         var param = new GenericRequestSampleMessage();
-        var result = DbConnectionExtensions.PrepareQuery(select, param);
+        var (queryText, queryParameters) = DbConnectionExtensions.PrepareQuery(select, param);
 
-        Assert.IsFalse(string.IsNullOrWhiteSpace(result.queryText));
+        Assert.IsFalse(string.IsNullOrWhiteSpace(queryText));
     }
 
     [TestMethod]
@@ -51,9 +51,9 @@ public class DbConnectionExtensionsTests
     {
         var select = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest");
         var param = new NonGenericRequestSampleMessage();
-        var result = DbConnectionExtensions.PrepareQuery(select, param);
+        var (queryText, queryParameters) = DbConnectionExtensions.PrepareQuery(select, param);
 
-        Assert.IsFalse(string.IsNullOrWhiteSpace(result.queryText));
+        Assert.IsFalse(string.IsNullOrWhiteSpace(queryText));
     }
 
     [TestMethod]
@@ -62,11 +62,11 @@ public class DbConnectionExtensionsTests
         var select = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest");
 
         var param1 = new GenericRequestSampleMessage();
-        var result1 = DbConnectionExtensions.PrepareQuery(select, param1);
+        var (queryText, queryParameters) = DbConnectionExtensions.PrepareQuery(select, param1);
 
         var param2 = new NonGenericRequestSampleMessage();
         var result2 = DbConnectionExtensions.PrepareQuery(select, param2);
 
-        Assert.AreEqual(result1.queryText, result2.queryText);
+        Assert.AreEqual(queryText, result2.queryText);
     }
 }

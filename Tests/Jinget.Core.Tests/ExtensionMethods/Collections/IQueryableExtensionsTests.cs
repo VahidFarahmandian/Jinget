@@ -75,20 +75,22 @@ public class IQueryableExtensionsTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Should_throw_ArgumentException_when_property_name_is_invalid()
     {
         TestClass class1 = new() { Property1 = 1, Property2 = "C" };
-        var input = new List<TestClass>() { class1 }.AsQueryable();
-        input.OrderByDynamic("PropertyXYZ", OrderByDirection.Descending);
+        var input = new List<TestClass> { class1 }.AsQueryable();
+
+        Assert.Throws<ArgumentException>(() =>
+            input.OrderByDynamic("PropertyXYZ", OrderByDirection.Descending));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(NullReferenceException))]
     public void Should_throw_NullReferenceException_when_collection_is_null()
     {
         IQueryable<TestClass> input = null;
-        input.OrderByDynamic("Property1", OrderByDirection.Descending);
+
+        Assert.Throws<NullReferenceException>(() =>
+            input.OrderByDynamic("Property1", OrderByDirection.Descending));
     }
 
     [TestMethod]

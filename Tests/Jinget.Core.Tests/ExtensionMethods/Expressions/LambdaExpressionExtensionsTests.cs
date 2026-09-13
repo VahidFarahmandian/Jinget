@@ -44,18 +44,22 @@ public class LambdaExpressionExtensionsTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(JingetException))]
     public void stringfy_methodcall_where_exppression()
     {
-        Expression<Func<TestClass, object>> expr = x => x.InnerProperty.Where(y => x.Property1 > 0);
-        var result = expr.Stringfy();
+        Expression<Func<TestClass, object>> expr =
+            x => x.InnerProperty.Where(y => x.Property1 > 0);
+
+        Assert.Throws<JingetException>(() =>
+            expr.Stringfy());
     }
 
     [TestMethod]
-    [ExpectedException(typeof(JingetException))]
     public void stringfy_methodcall_orderby_exppression()
     {
-        Expression<Func<TestClass, object>> expr = x => x.InnerProperty.OrderBy(y => x.Property1);
-        var result = expr.Stringfy();
+        Expression<Func<TestClass, object>> expr =
+            x => x.InnerProperty.OrderBy(y => x.Property1);
+
+        Assert.Throws<JingetException>(() =>
+            expr.Stringfy());
     }
 }

@@ -38,8 +38,8 @@ public class ObjectExtensionsTests
             ]
         };
         var result = obj.ToDictionary();
-        Assert.IsTrue(result.Keys.Count == 5);
-        Assert.IsTrue(result.Keys.Any(x => x == "InnerSingularProperty"));
+        Assert.AreEqual(5, result.Keys.Count);
+        Assert.Contains(x => x == "InnerSingularProperty", result.Keys);
     }
 
     [TestMethod]
@@ -68,8 +68,8 @@ public class ObjectExtensionsTests
             IgnoreExpressions = false
         });
 
-        Assert.IsTrue(result.Keys.Count == 7);
-        Assert.IsTrue(result.Keys.Any(x => x == "InnerSingularProperty"));
+        Assert.AreEqual(7, result.Keys.Count);
+        Assert.Contains(x => x == "InnerSingularProperty", result.Keys);
     }
 
     [TestMethod]
@@ -108,7 +108,7 @@ public class ObjectExtensionsTests
 
         Assert.AreEqual(obj.Id, result.Id);
         Assert.AreEqual(obj.Name, result.Name);
-        Assert.IsTrue(result.SurName == null);
+        Assert.IsNull(result.SurName);
     }
 
     [TestMethod]

@@ -1,6 +1,4 @@
-﻿using Azure;
-
-using Jinget.Core.ExtensionMethods.HttpContext;
+﻿using Jinget.Core.ExtensionMethods.HttpContext;
 
 using System.Diagnostics;
 

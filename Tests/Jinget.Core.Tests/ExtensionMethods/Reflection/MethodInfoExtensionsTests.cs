@@ -13,8 +13,8 @@ public class MethodInfoExtensionsTests
         var method = GetType().GetMethod("GetAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         var result = (List<Type1>)method.InvokeAsync(this, "vahid");
 
-        Assert.IsTrue(result.First().Id == 1);
-        Assert.IsTrue(result.First().Name == "vahid");
-        Assert.IsTrue(result.Last().Id == 2);
+        Assert.AreEqual(1, result.First().Id);
+        Assert.AreEqual("vahid", result.First().Name);
+        Assert.AreEqual(2, result.Last().Id);
     }
 }

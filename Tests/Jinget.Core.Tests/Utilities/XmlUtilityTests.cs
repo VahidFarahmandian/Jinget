@@ -108,7 +108,7 @@ public class XmlUtilityTests
 
         var result = XmlUtility.DeserializeXmlDescendantsAll<XmlSample.InnerXmlSample>(input);
 
-        Assert.AreEqual(expectedObjects.Count, result.Count);
+        Assert.HasCount(expectedObjects.Count, result);
     }
 
     [TestMethod]

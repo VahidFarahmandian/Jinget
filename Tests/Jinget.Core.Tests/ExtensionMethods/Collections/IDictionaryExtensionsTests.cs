@@ -36,13 +36,13 @@ public class IDictionaryExtensionsTests
         
         var result = First.Merge(Second);
 
-        Assert.IsFalse(result.Keys.Except(expected.Keys).Any());
-        Assert.IsFalse(expected.Keys.Except(result.Keys).Any());
+        Assert.IsEmpty(result.Keys.Except(expected.Keys));
+        Assert.IsEmpty(expected.Keys.Except(result.Keys));
 
         Assert.IsTrue(expected.Keys.SequenceEqual(result.Keys));
         Assert.IsTrue(expected.Values.SequenceEqual(result.Values));
 
-        Assert.IsTrue(result["name"] == "vahid");
+        Assert.AreEqual("vahid", result["name"]);
     }
 
     [TestMethod]
@@ -58,12 +58,12 @@ public class IDictionaryExtensionsTests
 
         var result = First.Merge(Second, overwrite: true);
 
-        Assert.IsFalse(result.Keys.Except(expected.Keys).Any());
-        Assert.IsFalse(expected.Keys.Except(result.Keys).Any());
+        Assert.IsEmpty(result.Keys.Except(expected.Keys));
+        Assert.IsEmpty(expected.Keys.Except(result.Keys));
 
         Assert.IsTrue(expected.Keys.SequenceEqual(result.Keys));
         Assert.IsTrue(expected.Values.SequenceEqual(result.Values)); 
         
-        Assert.IsTrue(result["name"] == "alex");
+        Assert.AreEqual("alex", result["name"]);
     }
 }

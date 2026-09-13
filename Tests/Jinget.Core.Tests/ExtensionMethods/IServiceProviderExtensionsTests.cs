@@ -10,19 +10,21 @@ public class IServiceProviderExtensionsTests
     public void Initialize()
     {
         var serviceCollection = new ServiceCollection();
-        serviceCollection.AddTransient(typeof(ISampleInterface), typeof(SampleInterfaceClass));
+        serviceCollection.AddTransient<ISampleInterface, SampleInterfaceClass>();
         services = serviceCollection.BuildServiceProvider();
     }
 
     [TestMethod]
-    public void should_return_registered_service()
+    public void Should_return_registered_service()
     {
         var result = services.GetJingetService<ISampleInterface>();
 
-        Assert.IsInstanceOfType(result, typeof(SampleInterfaceClass));
+        Assert.IsInstanceOfType<SampleInterfaceClass>(result);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
-    public void should_throw_exception_for_nonregistered_service() => services.GetJingetService<ITestMethod>();
+    public void Should_throw_exception_for_nonregistered_service()
+    {
+        Assert.Throws<InvalidOperationException>(services.GetJingetService<ITestMethod>);
+    }
 }

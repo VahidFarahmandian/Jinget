@@ -4,7 +4,7 @@
 public class JingetDynamicCodeTests
 {
     [TestMethod]
-    public void should_compile_and_execute_dynamic_code_at_runtime_void_parameterless()
+    public void Should_compile_and_execute_dynamic_code_at_runtime_void_parameterless()
     {
         string expectedSource = @"
 using System;
@@ -21,12 +21,12 @@ namespace JingetDynamic {
         var result = JingetDynamicCode.Execute(source, out List<string> errors, out string compiledSourceCode);
 
         Assert.IsNull(result);
-        Assert.IsFalse(errors.Any());
+        Assert.IsEmpty(errors);
         Assert.AreEqual(expectedSource.Trim(), compiledSourceCode);
     }
 
     [TestMethod]
-    public void should_compile_and_execute_dynamic_code_at_runtime_int_parameterless()
+    public void Should_compile_and_execute_dynamic_code_at_runtime_int_parameterless()
     {
         int expectedResult = 4;
         string expectedSource = @"
@@ -44,13 +44,13 @@ namespace JingetDynamic {
         var result = JingetDynamicCode.Execute(source, out List<string> errors, out string compiledSourceCode,
             new JingetDynamicCode.MethodOptions { ReturnType = typeof(int) });
 
-        Assert.IsFalse(errors.Any());
+        Assert.IsEmpty(errors);
         Assert.AreEqual(expectedResult, result);
         Assert.AreEqual(expectedSource.Trim(), compiledSourceCode);
     }
 
     [TestMethod]
-    public void should_compile_and_execute_dynamic_code_at_runtime_void_parametric()
+    public void Should_compile_and_execute_dynamic_code_at_runtime_void_parametric()
     {
         string expectedSource = @"
 using System;
@@ -75,13 +75,13 @@ namespace JingetDynamic {
             ]
             });
 
-        Assert.IsFalse(errors.Any());
+        Assert.IsEmpty(errors);
         Assert.IsNull(result);
         Assert.AreEqual(expectedSource.Trim(), compiledSourceCode);
     }
 
     [TestMethod]
-    public void should_compile_and_return_error()
+    public void Should_compile_and_return_error()
     {
         string expectedSource = @"
 using System;
@@ -106,13 +106,13 @@ namespace JingetDynamic {
             ]
             });
 
-        Assert.IsTrue(errors.Any());
+        Assert.IsNotEmpty(errors);
         Assert.IsNull(result);
         Assert.AreEqual(expectedSource.Trim(), compiledSourceCode);
     }
 
     [TestMethod]
-    public void should_compile_and_execute_multiline_dynamic_code_at_runtime()
+    public void Should_compile_and_execute_multiline_dynamic_code_at_runtime()
     {
         string expectedResult = "1399/07/21";
 
@@ -140,13 +140,13 @@ namespace JingetDynamic {
             },
             references: [typeof(DateTimeUtility).Assembly.Location]);
 
-        Assert.IsFalse(errors.Any());
+        Assert.IsEmpty(errors);
         Assert.IsFalse(string.IsNullOrEmpty(compiledSourceCode));
         Assert.AreEqual(expectedResult, result);
     }
 
     [TestMethod]
-    public void should_compile_and_execute_single_dynamic_code_at_runtime()
+    public void Should_compile_and_execute_single_dynamic_code_at_runtime()
     {
         string expectedResult = "1399/07/21";
 
@@ -170,13 +170,13 @@ namespace JingetDynamic {
             },
             references: [typeof(DateTimeUtility).Assembly.Location]);
 
-        Assert.IsFalse(errors.Any());
+        Assert.IsEmpty(errors);
         Assert.IsFalse(string.IsNullOrEmpty(compiledSourceCode));
         Assert.AreEqual(expectedResult, result);
     }
 
     [TestMethod]
-    public void should_compile_and_execute_single_dynamic_code_at_runtime_with_pass_parameter_value()
+    public void Should_compile_and_execute_single_dynamic_code_at_runtime_with_pass_parameter_value()
     {
         int expectedResult = 6;
 
@@ -201,18 +201,24 @@ namespace JingetDynamic {
                 ]
             });
 
-        Assert.IsFalse(errors.Any());
+        Assert.IsEmpty(errors);
         Assert.IsFalse(string.IsNullOrEmpty(compiledSourceCode));
         Assert.AreEqual(expectedResult, result);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void should_throw_exception()
+    public void Should_throw_exception()
     {
         string source = "";
-        for (int i = 0; i < 10001; i++) source += "c = a*b;";
+        for (int i = 0; i < 10001; i++)
+            source += "c = a*b;";
 
-        JingetDynamicCode.Execute(source, out List<string> _, out string _);
+        Assert.Throws<ArgumentException>(() =>
+        {
+            JingetDynamicCode.Execute(
+                source,
+                out List<string> _,
+                out string _);
+        });
     }
 }

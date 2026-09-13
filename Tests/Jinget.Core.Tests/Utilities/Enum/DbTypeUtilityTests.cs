@@ -20,7 +20,8 @@
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void should_raise_exception_for_unknown_dbtype() => DbTypeUtility.GetDbType<SampleInterfaceClass>();
+        public void should_raise_exception_for_unknown_dbtype() =>
+            Assert.Throws<ArgumentException>(() =>
+                DbTypeUtility.GetDbType<SampleInterfaceClass>());
     }
 }

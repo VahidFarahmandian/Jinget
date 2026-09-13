@@ -87,7 +87,7 @@ public class ZipUtility
         byte[] saltBytes = new byte[16];
         RandomNumberGenerator.Fill(saltBytes);
 
-        byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+        //byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
 
         // Derive a key using Rfc2898
         Rfc2898DeriveBytes rfc2898 = new(password, saltBytes, 10000, HashAlgorithmName.SHA256);
@@ -113,7 +113,7 @@ public class ZipUtility
     }
     static async Task SplitZipFileAsync(string zipFile, int chunkSize, string? destinationDirectory)
     {
-        if (destinationDirectory == null) destinationDirectory = "";
+        destinationDirectory ??= "";
         FileInfo fileInfo = new(zipFile);
         string fileName = Path.GetFileNameWithoutExtension(zipFile);
 

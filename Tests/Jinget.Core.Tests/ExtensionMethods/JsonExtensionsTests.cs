@@ -21,14 +21,16 @@ public class JsonExtensionsTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(JsonException))]
     public void Deserialize_ValidJson_To_InvalidType_ThrowsException()
     {
         // Arrange
         string json = "{\"Name\":\"Test\",\"Value\":123}";
 
         // Act
-        json.Deserialize<InvalidType>(strictPropertyMatching: true);
+        Action act = () => json.Deserialize<InvalidType>(strictPropertyMatching: true);
+
+        // Assert
+        Assert.Throws<JsonException>(act);
     }
 
     [TestMethod]
@@ -51,36 +53,36 @@ public class JsonExtensionsTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(JsonException))]
     public void Deserialize_InvalidJson_ThrowsException()
     {
         // Arrange
         string json = "invalid json";
 
-        // Act
-        json.Deserialize<TestType>();
+        // Act & Assert
+        Assert.Throws<JsonException>(() =>
+            json.Deserialize<TestType>());
     }
 
     [TestMethod]
-    [ExpectedException(typeof(JsonException))]
     public void Deserialize_NullJson_ThrowsException()
     {
         // Arrange
-        string json = null;
+        string json = null!;
 
-        // Act
-        json.Deserialize<TestType>();
+        // Act & Assert
+        Assert.Throws<JsonException>(() =>
+            json.Deserialize<TestType>());
     }
 
     [TestMethod]
-    [ExpectedException(typeof(JsonException))]
     public void Deserialize_EmptyJson_ThrowsException()
     {
         // Arrange
         string json = "";
 
-        // Act
-        json.Deserialize<TestType>();
+        // Act & Assert
+        Assert.Throws<JsonException>(() =>
+            json.Deserialize<TestType>());
     }
 
     [TestMethod]
@@ -147,14 +149,14 @@ public class JsonExtensionsTests
     }
 
     [TestMethod]
-    [ExpectedException(typeof(JsonException))]
     public void Deserialize_JsonWithInvalidCharacters_ThrowsException()
     {
-        //arrange
+        // Arrange
         string json = "{\"Name\":\"Test\",Value:123}";
 
-        //act
-        json.Deserialize<TestType>();
+        // Act & Assert
+        Assert.Throws<JsonException>(() =>
+            json.Deserialize<TestType>());
     }
 
     [TestMethod]

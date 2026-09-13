@@ -12,10 +12,10 @@ public class SqlTests
     {
         var expectedResult = "SELECT a.[Id] FROM [dbo].[tblTest] AS a";
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").ToSql();
 
-        Assert.AreEqual(expectedResult, result.query.ToString());
-        Assert.IsTrue(result.parameters is null);
+        Assert.AreEqual(expectedResult, query.ToString());
+        Assert.IsNull(parameters);
     }
 
     [TestMethod]
@@ -23,10 +23,10 @@ public class SqlTests
     {
         var expectedResult = "SELECT a.[Id] FROM [dbo].[tblTest] AS a";
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, new Table { Name = "tblTest" }).ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, new Table { Name = "tblTest" }).ToSql();
 
-        Assert.AreEqual(expectedResult, result.query.ToString());
-        Assert.IsTrue(result.parameters is null);
+        Assert.AreEqual(expectedResult, query.ToString());
+        Assert.IsNull(parameters);
     }
 
     #endregion
@@ -38,10 +38,10 @@ public class SqlTests
     {
         var expectedResult = "SELECT a.[Id] FROM [sch].[tblTest] AS a";
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, new Table() { Name = "tblTest", Schema = "sch" }).ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, new Table() { Name = "tblTest", Schema = "sch" }).ToSql();
 
-        Assert.AreEqual(expectedResult, result.query.ToString());
-        Assert.IsTrue(result.parameters is null);
+        Assert.AreEqual(expectedResult, query.ToString());
+        Assert.IsNull(parameters);
     }
 
     #endregion
@@ -52,10 +52,10 @@ public class SqlTests
     {
         var expectedResult = "SELECT TOP 10 a.[Id] FROM [dbo].[tblTest] AS a";
 
-        var result = Sql.Top<SqlTableSample, object>(x => new { x.Id }, 10, "tblTest").ToSql();
+        var (query, parameters) = Sql.Top<SqlTableSample, object>(x => new { x.Id }, 10, "tblTest").ToSql();
 
-        Assert.AreEqual(expectedResult, result.query.ToString());
-        Assert.IsTrue(result.parameters is null);
+        Assert.AreEqual(expectedResult, query.ToString());
+        Assert.IsNull(parameters);
     }
 
     [TestMethod]
@@ -63,10 +63,10 @@ public class SqlTests
     {
         var expectedResult = "SELECT TOP 10 a.[Id] FROM [dbo].[tblTest] AS a";
 
-        var result = Sql.Top<SqlTableSample, object>(x => new { x.Id }, 10, new Table { Name = "tblTest" }).ToSql();
+        var (query, parameters) = Sql.Top<SqlTableSample, object>(x => new { x.Id }, 10, new Table { Name = "tblTest" }).ToSql();
 
-        Assert.AreEqual(expectedResult, result.query.ToString());
-        Assert.IsTrue(result.parameters is null);
+        Assert.AreEqual(expectedResult, query.ToString());
+        Assert.IsNull(parameters);
     }
 
     #endregion
@@ -78,9 +78,9 @@ public class SqlTests
     {
         var expectedQuery = "SELECT a.[Id], a.[FirstName] FROM [dbo].[tblTest] AS a";
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id, x.FirstName }, "tblTest").ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id, x.FirstName }, "tblTest").ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
     }
 
     [TestMethod]
@@ -88,9 +88,9 @@ public class SqlTests
     {
         var expectedQuery = "SELECT a.[Id], a.[FirstName] FROM [dbo].[tblTest] AS a";
 
-        var result = Sql.Select<SqlTableSample, SqlTableSample>(x => new SqlTableSample { Id = x.Id, FirstName = x.FirstName }, "tblTest").ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, SqlTableSample>(x => new SqlTableSample { Id = x.Id, FirstName = x.FirstName }, "tblTest").ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
     }
 
     [TestMethod]
@@ -98,9 +98,9 @@ public class SqlTests
     {
         var expectedQuery = "SELECT a.[Id], a.[FirstName], a.[LastName], a.[Age] FROM [dbo].[tblTest] AS a";
 
-        var result = Sql.Select<SqlTableSample, object>(x => x, "tblTest").ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => x, "tblTest").ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
     }
 
     [TestMethod]
@@ -108,9 +108,9 @@ public class SqlTests
     {
         var expectedQuery = "SELECT a.[Id], 'Const Value' FROM [dbo].[tblTest] AS a";
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id, Name = "'Const Value'" }, "tblTest").ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id, Name = "'Const Value'" }, "tblTest").ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
     }
 
     #endregion
@@ -127,19 +127,19 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ([FirstName] = @1)";
         Dictionary<string, object> expectedParameters = new() { { "1", "Vahid" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == "Vahid").ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == "Vahid").ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 1)
+        if (parameters.Count != 1)
             Assert.Fail($"Expected 1 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
     }
 
     [TestMethod]
@@ -148,13 +148,13 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ([FirstName] = @FirstName)";
         Dictionary<string, object> expectedParameters = [];
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == x.FirstName).ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == x.FirstName).ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 0)
+        if (parameters.Count != 0)
             Assert.Fail($"Expected 0 parameter, but get {expectedParameters.Count}");
     }
 
@@ -164,13 +164,13 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ([FirstName] = @LastName)";
         Dictionary<string, object> expectedParameters = [];
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == x.LastName).ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == x.LastName).ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 0)
+        if (parameters.Count != 0)
             Assert.Fail($"Expected 0 parameter, but get {expectedParameters.Count}");
     }
 
@@ -180,24 +180,33 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ([FirstName] = @1)";
         Dictionary<string, object> expectedParameters = new() { { "1", "vahid" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == "Vahid".ToLower()).ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == "Vahid".ToLower()).ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 1)
+        if (parameters.Count != 1)
             Assert.Fail($"Expected 1 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
-    public void Should_throw_exception_for_unsupported_method_call() => Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName.Normalize() == "Vahid").ToSql();
+    public void Should_throw_exception_for_unsupported_method_call()
+    {
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            Sql.Select<SqlTableSample, object>(
+                x => new { x.Id },
+                "tblTest")
+                .Where(x => x.FirstName.Normalize() == "Vahid")
+                .ToSql();
+        });
+    }
 
     #endregion
 
@@ -209,19 +218,19 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ([FirstName] LIKE @1)";
         Dictionary<string, object> expectedParameters = new() { { "1", "%vahid%" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName.Contains("vahid")).ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName.Contains("vahid")).ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 1)
+        if (parameters.Count != 1)
             Assert.Fail($"Expected 1 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
     }
 
     [TestMethod]
@@ -230,19 +239,19 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ([FirstName] LIKE @1)";
         Dictionary<string, object> expectedParameters = new() { { "1", "vahid%" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName.StartsWith("vahid")).ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName.StartsWith("vahid")).ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 1)
+        if (parameters.Count != 1)
             Assert.Fail($"Expected 1 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
     }
 
     [TestMethod]
@@ -251,19 +260,19 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ([FirstName] LIKE @1)";
         Dictionary<string, object> expectedParameters = new() { { "1", "%vahid" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName.EndsWith("vahid")).ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName.EndsWith("vahid")).ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 1)
+        if (parameters.Count != 1)
             Assert.Fail($"Expected 1 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
     }
 
     #endregion
@@ -276,19 +285,19 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ([Age] > @1)";
         Dictionary<string, object> expectedParameters = new() { { "1", 20 } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.Age > 20).ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.Age > 20).ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 1)
+        if (parameters.Count != 1)
             Assert.Fail($"Expected 1 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
     }
 
     #endregion
@@ -301,23 +310,23 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ([Age] IN (@1,@2))";
         Dictionary<string, object> expectedParameters = new() { { "1", 20 }, { "2", 30 } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => new List<int>() { 20, 30 }.Contains(x.Age)).ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => new List<int>() { 20, 30 }.Contains(x.Age)).ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 2)
+        if (parameters.Count != 2)
             Assert.Fail($"Expected 2 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        if (!result.parameters.ContainsKey("2"))
+        if (!parameters.ContainsKey("2"))
             Assert.Fail("Expected parameter 2 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
-        Assert.AreEqual(expectedParameters["2"].ToString(), result.parameters["2"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["2"].ToString(), parameters["2"].ToString());
     }
 
     #endregion
@@ -329,24 +338,24 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE (([FirstName] = @1) AND ([LastName] = @2))";
         Dictionary<string, object> expectedParameters = new() { { "1", "Vahid" }, { "2", "Farahmandian" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == "Vahid" && x.LastName == "Farahmandian").ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == "Vahid" && x.LastName == "Farahmandian").ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 2)
+        if (parameters.Count != 2)
             Assert.Fail($"Expected 2 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        if (!result.parameters.ContainsKey("2"))
+        if (!parameters.ContainsKey("2"))
             Assert.Fail("Expected parameter 2 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
 
-        Assert.AreEqual(expectedParameters["2"].ToString(), result.parameters["2"].ToString());
+        Assert.AreEqual(expectedParameters["2"].ToString(), parameters["2"].ToString());
     }
 
     [TestMethod]
@@ -355,24 +364,24 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE (([Age] > @1) AND ([LastName] = @2))";
         Dictionary<string, object> expectedParameters = new() { { "1", 20 }, { "2", "Farahmandian" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.Age > 20 && x.LastName == "Farahmandian").ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.Age > 20 && x.LastName == "Farahmandian").ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 2)
+        if (parameters.Count != 2)
             Assert.Fail($"Expected 2 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        if (!result.parameters.ContainsKey("2"))
+        if (!parameters.ContainsKey("2"))
             Assert.Fail("Expected parameter 2 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
 
-        Assert.AreEqual(expectedParameters["2"].ToString(), result.parameters["2"].ToString());
+        Assert.AreEqual(expectedParameters["2"].ToString(), parameters["2"].ToString());
     }
 
     #endregion
@@ -385,24 +394,24 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE (([FirstName] = @1) OR ([LastName] = @2))";
         Dictionary<string, object> expectedParameters = new() { { "1", "Vahid" }, { "2", "Farahmandian" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == "Vahid" || x.LastName == "Farahmandian").ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == "Vahid" || x.LastName == "Farahmandian").ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 2)
+        if (parameters.Count != 2)
             Assert.Fail($"Expected 2 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        if (!result.parameters.ContainsKey("2"))
+        if (!parameters.ContainsKey("2"))
             Assert.Fail("Expected parameter 2 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
 
-        Assert.AreEqual(expectedParameters["2"].ToString(), result.parameters["2"].ToString());
+        Assert.AreEqual(expectedParameters["2"].ToString(), parameters["2"].ToString());
     }
 
     public string SampleProperty { get; set; }
@@ -414,19 +423,19 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE (([FirstName] = @1) OR ([LastName] = @2))";
         Dictionary<string, object> expectedParameters = new() { { "1", "testFieldValue" }, { "2", "testPropertyValue" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == sampleField || x.LastName == SampleProperty).ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.FirstName == sampleField || x.LastName == SampleProperty).ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 2)
+        if (parameters.Count != 2)
             Assert.Fail($"Expected 1 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
     }
 
     #endregion
@@ -439,35 +448,35 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ((([FirstName] = @1) OR ([LastName] = @2)) AND (([LastName] = @3) OR ([FirstName] = @4)))";
         Dictionary<string, object> expectedParameters = new() { { "1", "Vahid" }, { "2", "Farahmandian" }, { "3", "Vahid" }, { "4", "Farahmandian" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest")
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest")
             .Where(x => (x.FirstName == "Vahid" || x.LastName == "Farahmandian") && (x.LastName == "Vahid" || x.FirstName == "Farahmandian")).ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 4)
+        if (parameters.Count != 4)
             Assert.Fail($"Expected 4 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        if (!result.parameters.ContainsKey("2"))
+        if (!parameters.ContainsKey("2"))
             Assert.Fail("Expected parameter 2 not found");
 
-        if (!result.parameters.ContainsKey("3"))
+        if (!parameters.ContainsKey("3"))
             Assert.Fail("Expected parameter 3 not found");
 
-        if (!result.parameters.ContainsKey("4"))
+        if (!parameters.ContainsKey("4"))
             Assert.Fail("Expected parameter 4 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
 
-        Assert.AreEqual(expectedParameters["2"].ToString(), result.parameters["2"].ToString());
+        Assert.AreEqual(expectedParameters["2"].ToString(), parameters["2"].ToString());
 
-        Assert.AreEqual(expectedParameters["3"].ToString(), result.parameters["3"].ToString());
+        Assert.AreEqual(expectedParameters["3"].ToString(), parameters["3"].ToString());
 
-        Assert.AreEqual(expectedParameters["4"].ToString(), result.parameters["4"].ToString());
+        Assert.AreEqual(expectedParameters["4"].ToString(), parameters["4"].ToString());
     }
 
     #endregion
@@ -480,19 +489,19 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE (CAST(FirstName AS NVARCHAR(MAX)) = @1)";
         Dictionary<string, object> expectedParameters = new() { { "1", "vahid" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => Convert.ToString(x.FirstName) == "Vahid".ToLower()).ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => Convert.ToString(x.FirstName) == "Vahid".ToLower()).ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 1)
+        if (parameters.Count != 1)
             Assert.Fail($"Expected 1 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
     }
 
     [TestMethod]
@@ -501,19 +510,19 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE (CAST(Id AS NVARCHAR(MAX)) = @1)";
         Dictionary<string, object> expectedParameters = new() { { "1", "Vahid" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.Id.ToString() == "Vahid").ToSql();
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest").Where(x => x.Id.ToString() == "Vahid").ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 1)
+        if (parameters.Count != 1)
             Assert.Fail($"Expected 1 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
     }
 
     #endregion
@@ -526,24 +535,24 @@ public class SqlTests
         var expectedQuery = "SELECT a.[Id] FROM [dbo].[tblTest] AS a WHERE ((UPPER(FirstName) = @1) AND (LOWER(LastName) = @2))";
         Dictionary<string, object> expectedParameters = new() { { "1", "Vahid" }, { "2", "farahmandian" } };
 
-        var result = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest")
+        var (query, parameters) = Sql.Select<SqlTableSample, object>(x => new { x.Id }, "tblTest")
             .Where(x => x.FirstName.ToUpper() == "Vahid" && x.LastName.ToLower() == "farahmandian").ToSql();
 
-        Assert.AreEqual(expectedQuery, result.query.ToString());
+        Assert.AreEqual(expectedQuery, query.ToString());
 
         Assert.IsNotNull(expectedParameters);
 
-        if (result.parameters.Count != 2)
+        if (parameters.Count != 2)
             Assert.Fail($"Expected 1 parameter, but get {expectedParameters.Count}");
 
-        if (!result.parameters.ContainsKey("1"))
+        if (!parameters.ContainsKey("1"))
             Assert.Fail("Expected parameter 1 not found");
 
-        if (!result.parameters.ContainsKey("2"))
+        if (!parameters.ContainsKey("2"))
             Assert.Fail("Expected parameter 2 not found");
 
-        Assert.AreEqual(expectedParameters["1"].ToString(), result.parameters["1"].ToString());
-        Assert.AreEqual(expectedParameters["2"].ToString(), result.parameters["2"].ToString());
+        Assert.AreEqual(expectedParameters["1"].ToString(), parameters["1"].ToString());
+        Assert.AreEqual(expectedParameters["2"].ToString(), parameters["2"].ToString());
 
     }
 

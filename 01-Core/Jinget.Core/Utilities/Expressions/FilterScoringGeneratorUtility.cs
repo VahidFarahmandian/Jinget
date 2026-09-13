@@ -44,15 +44,15 @@ public static class FilterScoringGeneratorUtility
         /// <summary>
         /// Gets the default scoring rules (all weights set to 1)
         /// </summary>
-        public static ScoringRules Default => new ScoringRules();
+        public static ScoringRules Default => new();
 
         /// <summary>
-        /// Weight applied to OR conditions (||)
+        /// Weight applied to OR conditions
         /// </summary>
         public int OrWeight { get; set; } = 1;
 
         /// <summary>
-        /// Weight applied to AND conditions (&&)
+        /// Weight applied to AND conditions
         /// </summary>
         public int AndWeight { get; set; } = 1;
 
@@ -65,14 +65,8 @@ public static class FilterScoringGeneratorUtility
     /// <summary>
     /// Expression visitor that converts boolean expressions to integer scoring expressions
     /// </summary>
-    private class FilterScoringGeneratorVisitor : ExpressionVisitor
+    private class FilterScoringGeneratorVisitor(FilterScoringGeneratorUtility.ScoringRules rules) : ExpressionVisitor
     {
-        private readonly ScoringRules _rules;
-
-        public FilterScoringGeneratorVisitor(ScoringRules rules)
-        {
-            _rules = rules;
-        }
 
         /// <summary>
         /// Visits binary expressions and converts them to scoring logic
@@ -87,12 +81,12 @@ public static class FilterScoringGeneratorUtility
                 // OR conditions: sum the scores of both sides and apply OR weight
                 ExpressionType.OrElse => Expression.Multiply(
                     Expression.Add(ConvertToInt(left), ConvertToInt(right)),
-                    Expression.Constant(_rules.OrWeight)),
+                    Expression.Constant(rules.OrWeight)),
 
                 // AND conditions: sum the scores of both sides and apply AND weight  
                 ExpressionType.AndAlso => Expression.Multiply(
                     Expression.Add(ConvertToInt(left), ConvertToInt(right)),
-                    Expression.Constant(_rules.AndWeight)),
+                    Expression.Constant(rules.AndWeight)),
 
                 // Comparison operations: convert to 1 or 0 and apply condition weight
                 ExpressionType.Equal or ExpressionType.NotEqual or
@@ -100,7 +94,7 @@ public static class FilterScoringGeneratorUtility
                 ExpressionType.LessThan or ExpressionType.LessThanOrEqual =>
                     Expression.Multiply(
                         Expression.Condition(node, Expression.Constant(1), Expression.Constant(0)),
-                        Expression.Constant(_rules.ConditionWeight)),
+                        Expression.Constant(rules.ConditionWeight)),
 
                 // For other binary operations, use default visitor behavior
                 _ => base.VisitBinary(node)
@@ -116,7 +110,7 @@ public static class FilterScoringGeneratorUtility
                 // Convert boolean method calls to 1 or 0 and apply condition weight
                 return Expression.Multiply(
                     Expression.Condition(node, Expression.Constant(1), Expression.Constant(0)),
-                    Expression.Constant(_rules.ConditionWeight));
+                    Expression.Constant(rules.ConditionWeight));
             }
 
             return base.VisitMethodCall(node);
@@ -135,7 +129,7 @@ public static class FilterScoringGeneratorUtility
                         node,
                         Expression.Constant(1),
                         Expression.Constant(0)),
-                    Expression.Constant(_rules.ConditionWeight));
+                    Expression.Constant(rules.ConditionWeight));
             }
 
             return base.VisitMember(node);
@@ -146,7 +140,7 @@ public static class FilterScoringGeneratorUtility
         /// </summary>
         /// <param name="expression">Expression to convert</param>
         /// <returns>Integer expression representing the score</returns>
-        private Expression ConvertToInt(Expression expression)
+        private static Expression ConvertToInt(Expression expression)
         {
             // If already integer, return as-is
             if (expression.Type == typeof(int))

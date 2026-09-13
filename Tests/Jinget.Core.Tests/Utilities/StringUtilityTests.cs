@@ -11,7 +11,7 @@ public class StringUtilityTests
 
         var result = StringUtility.GetRandomString(length, charset);
 
-        Assert.IsTrue(result.Length == length);
+        Assert.AreEqual(length, result.Length);
         Assert.IsTrue(result.ToCharArray().All(x => charset.Contains(x)));
     }
 

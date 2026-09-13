@@ -21,14 +21,14 @@ public class SqlServerParserUtilityTests
     {
         string invalidConnectionString = "InvalidConnectionString";
         var result = SqlServerParserUtility.ParseConnectionString(invalidConnectionString);
-        Assert.IsTrue(result.Keys.Count == 0);
+        Assert.IsEmpty(result.Keys);
 
         string emptyConnectionString = "";
         result = SqlServerParserUtility.ParseConnectionString(emptyConnectionString);
-        Assert.IsTrue(result.Keys.Count == 0);
+        Assert.IsEmpty(result.Keys);
 
         string nullConnectionString = "";
         result = SqlServerParserUtility.ParseConnectionString(nullConnectionString);
-        Assert.IsTrue(result.Keys.Count == 0);
+        Assert.IsEmpty(result.Keys);
     }
 }

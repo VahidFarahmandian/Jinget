@@ -8,7 +8,7 @@ public class AssemblyExtensionsTests
     {
         var result = GetType().Assembly.GetTypes(typeof(NonGenericParent), normalizingPattern: @"Parent`1$");
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Any());
+        Assert.IsNotEmpty(result);
         Assert.IsTrue(result.All(x => x.Summary != string.Empty));
     }
 
@@ -17,8 +17,8 @@ public class AssemblyExtensionsTests
     {
         var result = GetType().Assembly.GetMethods(typeof(NonGenericParent), typeof(Attributes.SummaryAttribute));
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Any());
-        Assert.IsTrue(result.Any(x => x.MethodName != "SampleMethod3"));
+        Assert.IsNotEmpty(result);
+        Assert.Contains(x => x.MethodName != "SampleMethod3", result);
     }
 
 
@@ -27,7 +27,7 @@ public class AssemblyExtensionsTests
     {
         var result = GetType().Assembly.GetMethods(typeof(NonGenericParent), typeof(Attributes.SummaryAttribute), onlyAuthorizedMethods: false);
         Assert.IsNotNull(result);
-        Assert.IsTrue(result.Any());
-        Assert.IsTrue(result.Any(x => x.Summary != null));
+        Assert.IsNotEmpty(result);
+        Assert.Contains(x => x.Summary != null, result);
     }
 }
