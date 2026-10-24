@@ -22,8 +22,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="JetBrains.Annotations" Version="2026.2.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.12" />
-		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="10.0.12" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.13" />
+		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="10.0.13" />
 	</ItemGroup>
 
 	<ItemGroup>

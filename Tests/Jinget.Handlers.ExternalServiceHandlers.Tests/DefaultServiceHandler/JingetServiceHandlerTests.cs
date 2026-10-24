@@ -270,7 +270,7 @@ public class JingetServiceHandlerTests
     }
 
     //[TestMethod]
-    public async Task UploadFilesAsync_ShouldReturnDeserializedResponse_AndTriggerEvents_WhenMultipartUploadIsSuccessful()
+    public async Task UploadFilesAsync_ShouldReturnDeserializedResponse_AndTriggerEvents_WhenMultipartUploadIsSuccessfulAsync()
     {
         // Arrange
         var jingetServiceHandler = new JingetServiceHandler<SamplePostResponse>(serviceProvider, "https://localhost:7027/api/upload");

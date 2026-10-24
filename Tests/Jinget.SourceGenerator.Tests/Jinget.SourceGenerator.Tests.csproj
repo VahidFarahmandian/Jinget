@@ -9,11 +9,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="Jinget.Core" Version="8.0.35" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.0" />
-		<PackageReference Include="Moq" Version="4.20.72" />
-		<PackageReference Include="MSTest" Version="4.4.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.13" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.13" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+		<PackageReference Include="Moq" Version="4.21.0" />
+		<PackageReference Include="MSTest" Version="4.5.1" />
 	</ItemGroup>
 
 	<ItemGroup>

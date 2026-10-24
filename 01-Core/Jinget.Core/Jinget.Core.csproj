@@ -18,16 +18,16 @@
 		<PackageTags>jinget, extension, xml, expression, utility, codedom</PackageTags>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Dapper" Version="2.1.86" />
-		<PackageReference Include="Mapster" Version="10.0.12" />
+		<PackageReference Include="Dapper" Version="2.1.89" />
+		<PackageReference Include="Mapster" Version="10.0.13" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.3" />
-		<PackageReference Include="Microsoft.VisualStudio.Threading" Version="18.7.23" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.1" />
+		<PackageReference Include="Microsoft.VisualStudio.Threading" Version="18.12.1" />
 
 		<PackageReference Include="SoapFormatter" Version="1.1.9" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.2.3" />
-		<PackageReference Include="System.CodeDom" Version="10.0.12" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.22.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.3.1" />
+		<PackageReference Include="System.CodeDom" Version="10.0.13" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
 	</ItemGroup>
 
 	<ItemGroup>
