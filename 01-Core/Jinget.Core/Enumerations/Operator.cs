@@ -5,11 +5,32 @@
 /// </summary>
 public enum Operator
 {
+    // Equality
     Equal,
-    Contains,
+    NotEqual,
+
+    // Comparison
     GreaterThan,
-    LowerThan,
     GreaterThanOrEqual,
+    LowerThan,
     LowerThanOrEqual,
-    NotEqual
+
+    // String operations
+    Contains,
+    NotContains,
+    StartsWith,
+    DoesNotStartWith,
+    EndsWith,
+    DoesNotEndWith,
+
+    // Null checks
+    IsNull,
+    IsNotNull,
+
+    // Collection membership
+    In,
+    NotIn,
+
+    // Range
+    Between
 }

@@ -176,27 +176,284 @@ public static class ExpressionUtility
     /// </summary>
     /// <typeparam name="T">type of expression parameter</typeparam>
     /// <param name="properties">an array of member init expression properties name</param>
-    public static Expression<Func<T, T>> CreateMemberInitExpression<T>(string parameterName = "Param_0", params string[] properties)
+    public static Expression<Func<T, T>> CreateMemberInitExpression<T>(
+        string parameterName = "Param_0",
+        params string[] properties)
     {
-        var paramExpression = Expression.Parameter(typeof(T), parameterName);
+        ArgumentNullException.ThrowIfNull(properties);
 
-        List<MemberAssignment> bindings = [];
+        if (properties.Length == 0)
+            throw new ArgumentException(
+                "At least one property path is required.",
+                nameof(properties));
 
-        foreach (var property in properties)
+        var paths = properties
+            .Select(path =>
+            {
+                if (string.IsNullOrWhiteSpace(path))
+                    throw new ArgumentException(
+                        "Property paths cannot be empty.",
+                        nameof(properties));
+
+                var segments = path.Split('.');
+
+                if (segments.Any(string.IsNullOrWhiteSpace))
+                    throw new ArgumentException(
+                        $"Invalid property path: '{path}'.",
+                        nameof(properties));
+
+                return segments;
+            })
+            .ToArray();
+
+        var parameter = Expression.Parameter(typeof(T), parameterName);
+
+        var body = BuildMemberInit(
+            typeof(T),
+            parameter,
+            paths);
+
+        return Expression.Lambda<Func<T, T>>(body, parameter);
+    }
+
+    public static Expression<Func<Tin, Tout>> CreateMemberInitExpression<Tin, Tout>(
+            string parameterName = "Param_0",
+            params string[] properties)
+    {
+        Expression<Func<Tin, Tin>> expression =
+            CreateMemberInitExpression<Tin>(parameterName, properties);
+
+        if (!typeof(Tout).IsAssignableFrom(expression.Body.Type))
         {
-#pragma warning disable CS8604 // Possible null reference argument.
-            bindings.Add(Expression.Bind(
-                member: typeof(T).GetProperty(property),
-                expression: Expression.Property(paramExpression, property)
-                ));
-#pragma warning restore CS8604 // Possible null reference argument.
+            throw new InvalidOperationException(
+                $"Cannot use expression body of type '{expression.Body.Type}' " +
+                $"as return type '{typeof(Tout)}' without a conversion.");
         }
 
-        var ctor = typeof(T).GetDefaultConstructor()
-            ?? throw new Exception($"Default conxtructor not found on type {typeof(T).Name}");
-        var memberinit = Expression.MemberInit(Expression.New(ctor), bindings);
+        return Expression.Lambda<Func<Tin, Tout>>(
+            expression.Body,
+            expression.Parameters);
+    }
 
-        return Expression.Lambda<Func<T, T>>(memberinit, paramExpression);
+    private static Expression BuildMemberInit(
+        Type targetType,
+        Expression source,
+        string[][] paths)
+    {
+        var bindings = new List<MemberBinding>();
+
+        var groups = paths.GroupBy(
+            path => path[0],
+            StringComparer.OrdinalIgnoreCase);
+
+        foreach (var group in groups)
+        {
+            var property = GetProperty(targetType, group.Key);
+
+            var childPaths = group
+                .Select(path => path.Skip(1).ToArray())
+                .ToArray();
+
+            if (childPaths.Any(path => path.Length == 0))
+            {
+                if (childPaths.Length > 1)
+                {
+                    throw new ArgumentException(
+                        $"Property '{property.Name}' is selected more than once.");
+                }
+
+                if (group.Count() > 1)
+                {
+                    throw new ArgumentException(
+                        $"Property '{property.Name}' conflicts with a nested path.");
+                }
+
+                bindings.Add(Expression.Bind(
+                    property,
+                    Expression.Property(source, property)));
+
+                continue;
+            }
+
+            var sourceProperty = Expression.Property(source, property);
+
+            Expression nestedExpression;
+
+            if (TryGetEnumerableElementType(
+                property.PropertyType,
+                out var elementType))
+            {
+                nestedExpression = BuildCollectionProjection(
+                    property.PropertyType,
+                    sourceProperty,
+                    elementType,
+                    childPaths);
+            }
+            else
+            {
+                nestedExpression = BuildMemberInit(
+                    property.PropertyType,
+                    sourceProperty,
+                    childPaths);
+            }
+
+            bindings.Add(Expression.Bind(
+                property,
+                nestedExpression));
+        }
+
+        var constructor = targetType.GetConstructor(
+            BindingFlags.Public |
+            BindingFlags.NonPublic |
+            BindingFlags.Instance,
+            binder: null,
+            Type.EmptyTypes,
+            modifiers: null);
+
+        if (constructor is null)
+        {
+            throw new InvalidOperationException(
+                $"Type '{targetType.Name}' has no parameterless constructor.");
+        }
+
+        return Expression.MemberInit(
+            Expression.New(constructor),
+            bindings);
+    }
+
+    private static Expression BuildCollectionProjection(
+        Type collectionType,
+        Expression sourceCollection,
+        Type elementType,
+        string[][] paths)
+    {
+        var parameter = Expression.Parameter(elementType, "item");
+
+        var projectedElement = BuildMemberInit(
+            elementType,
+            parameter,
+            paths);
+
+        var selectorType = typeof(Func<,>).MakeGenericType(
+            elementType,
+            elementType);
+
+        var selector = Expression.Lambda(
+            selectorType,
+            projectedElement,
+            parameter);
+
+        var selectMethod = typeof(Enumerable)
+            .GetMethods(BindingFlags.Public | BindingFlags.Static)
+            .Single(method =>
+                method.Name == nameof(Enumerable.Select) &&
+                method.IsGenericMethodDefinition &&
+                method.GetParameters().Length == 2 &&
+                method.GetParameters()[1].ParameterType
+                    .GetGenericArguments().Length == 2);
+
+        var selectCall = Expression.Call(
+            selectMethod.MakeGenericMethod(elementType, elementType),
+            sourceCollection,
+            selector);
+
+        var enumerableType = typeof(IEnumerable<>)
+            .MakeGenericType(elementType);
+
+        if (collectionType.IsArray)
+        {
+            var toArrayMethod = typeof(Enumerable)
+                .GetMethod(nameof(Enumerable.ToArray))!
+                .MakeGenericMethod(elementType);
+
+            return Expression.Call(toArrayMethod, selectCall);
+        }
+
+        var listType = typeof(List<>).MakeGenericType(elementType);
+
+        var toListMethod = typeof(Enumerable)
+            .GetMethod(nameof(Enumerable.ToList))!
+            .MakeGenericMethod(elementType);
+
+        var listCall = Expression.Call(toListMethod, selectCall);
+
+        if (collectionType.IsAssignableFrom(listType))
+            return listCall;
+
+        var enumerableConstructor = collectionType.GetConstructor(
+            new[] { enumerableType });
+
+        if (enumerableConstructor is not null)
+        {
+            return Expression.New(
+                enumerableConstructor,
+                selectCall);
+        }
+
+        throw new NotSupportedException(
+            $"Collection type '{collectionType.Name}' cannot be constructed " +
+            $"from a projected sequence of '{elementType.Name}'.");
+    }
+
+    private static PropertyInfo GetProperty(
+        Type type,
+        string propertyName)
+    {
+        var property = type.GetProperty(
+            propertyName,
+            BindingFlags.Public |
+            BindingFlags.Instance |
+            BindingFlags.IgnoreCase);
+
+        if (property is null)
+        {
+            throw new ArgumentException(
+                $"Property '{propertyName}' was not found on type '{type.Name}'.");
+        }
+
+        if (property.GetIndexParameters().Length > 0)
+        {
+            throw new NotSupportedException(
+                $"Indexer property '{property.Name}' is not supported.");
+        }
+
+        if (property.SetMethod is null)
+        {
+            throw new ArgumentException(
+                $"Property '{property.Name}' must have a setter.");
+        }
+
+        return property;
+    }
+
+    private static bool TryGetEnumerableElementType(
+        Type type,
+        out Type elementType)
+    {
+        if (type.IsArray)
+        {
+            elementType = type.GetElementType()!;
+            return true;
+        }
+
+        var enumerableType = type.IsGenericType &&
+                             type.GetGenericTypeDefinition() ==
+                             typeof(IEnumerable<>)
+            ? type
+            : type.GetInterfaces()
+                .FirstOrDefault(i =>
+                    i.IsGenericType &&
+                    i.GetGenericTypeDefinition() ==
+                    typeof(IEnumerable<>));
+
+        if (enumerableType is not null)
+        {
+            elementType = enumerableType.GetGenericArguments()[0];
+            return true;
+        }
+
+        elementType = null!;
+        return false;
     }
 
     /// <summary>
@@ -246,31 +503,164 @@ public static class ExpressionUtility
 
     }
 
-    public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(IList<FilterCriteria> filters, bool treatNullOrEmptyAsTrueCondition = true)
+    public static Expression<Func<T, bool>> ConstructBinaryExpression<T>(
+    IList<FilterCriteria> filters,
+    bool treatNullOrEmptyAsTrueCondition = true)
     {
-        //if there is no filter specified, then return the default true/false condition
         if (filters is null || !filters.Any())
         {
-            return treatNullOrEmptyAsTrueCondition ? BooleanUtility.TrueCondition<T>() : BooleanUtility.FalseCondition<T>();
+            return treatNullOrEmptyAsTrueCondition
+                ? BooleanUtility.TrueCondition<T>()
+                : BooleanUtility.FalseCondition<T>();
         }
 
         var type = typeof(T);
         var exprVariable = Expression.Parameter(type, "x");
 
-        //construct queries
         IDictionary<Expression, ConditionJoinType> filterExpressions = new Dictionary<Expression, ConditionJoinType>();
+
         foreach (var filter in filters)
         {
-            var property = type.GetProperty(filter.Operand, BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public);
-            var propertyType = property.PropertyType;
-            var propertyExpression = Expression.Property(exprVariable, property);
+            var propertyExpression = GetPropertyExpression(
+                exprVariable,
+                filter.Operand);
 
-            var value = Convert.ChangeType(filter.Value, propertyType);
+            Expression rightExpression;
 
-            filterExpressions.Add(GetBinaryExpression(propertyExpression, Expression.Constant(value), filter.Operator), filter.NextConditionCombination);
+            switch (filter.Operator)
+            {
+                case Operator.IsNull:
+                case Operator.IsNotNull:
+                    rightExpression = Expression.Constant(
+                        null,
+                        propertyExpression.Type);
+                    break;
+
+                case Operator.Between:
+                    {
+                        if (filter.Value is not System.Collections.IEnumerable values
+                            || filter.Value is string)
+                        {
+                            throw new JingetException(
+                                "The Between operator requires exactly two values.");
+                        }
+
+                        var bounds = values.Cast<object>().ToArray();
+
+                        if (bounds.Length != 2)
+                        {
+                            throw new JingetException(
+                                "The Between operator requires exactly two values.");
+                        }
+
+                        var valueType =
+                            Nullable.GetUnderlyingType(propertyExpression.Type)
+                            ?? propertyExpression.Type;
+
+                        var lower = Convert.ChangeType(bounds[0], valueType);
+                        var upper = Convert.ChangeType(bounds[1], valueType);
+
+                        rightExpression = Expression.NewArrayInit(
+                            propertyExpression.Type,
+                            Expression.Convert(
+                                Expression.Constant(lower, valueType),
+                                propertyExpression.Type),
+                            Expression.Convert(
+                                Expression.Constant(upper, valueType),
+                                propertyExpression.Type));
+
+                        break;
+                    }
+
+                case Operator.In:
+                case Operator.NotIn:
+                    {
+                        if (filter.Value is not System.Collections.IEnumerable values
+                            || filter.Value is string)
+                        {
+                            throw new JingetException(
+                                "The In/NotIn operator requires a collection of values.");
+                        }
+
+                        var propertyType = propertyExpression.Type;
+                        var underlyingType =
+                            Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+
+                        var convertedValues = values.Cast<object>()
+                            .Select(value =>
+                                value is null
+                                    ? null
+                                    : Convert.ChangeType(value, underlyingType))
+                            .ToArray();
+
+                        var typedArray = Array.CreateInstance(
+                            propertyType,
+                            convertedValues.Length);
+
+                        for (var i = 0; i < convertedValues.Length; i++)
+                        {
+                            typedArray.SetValue(convertedValues[i], i);
+                        }
+
+                        rightExpression = Expression.Constant(
+                            typedArray,
+                            propertyType.MakeArrayType());
+
+                        break;
+                    }
+
+                default:
+                    {
+                        var valueType =
+                            Nullable.GetUnderlyingType(propertyExpression.Type)
+                            ?? propertyExpression.Type;
+
+                        var value = Convert.ChangeType(filter.Value, valueType);
+
+                        rightExpression = Expression.Constant(
+                            value,
+                            propertyExpression.Type);
+
+                        break;
+                    }
+            }
+
+            filterExpressions.Add(
+                GetBinaryExpression(
+                    propertyExpression,
+                    rightExpression,
+                    filter.Operator),
+                filter.NextConditionCombination);
         }
 
-        return Expression.Lambda<Func<T, bool>>(MergeFilterExpressions(filterExpressions), exprVariable);
+        return Expression.Lambda<Func<T, bool>>(
+            MergeFilterExpressions(filterExpressions),
+            exprVariable);
+    }
+
+    private static Expression GetPropertyExpression(
+    Expression expression,
+    string propertyPath)
+    {
+        foreach (var propertyName in propertyPath.Split('.'))
+        {
+            var property = expression.Type.GetProperty(
+                propertyName,
+                BindingFlags.IgnoreCase |
+                BindingFlags.Instance |
+                BindingFlags.Public);
+
+            if (property is null)
+            {
+                throw new ArgumentException(
+                    $"Property '{propertyName}' was not found on type '{expression.Type.Name}'.",
+                    nameof(propertyPath));
+            }
+
+            expression = Expression.Property(expression, property);
+        }
+
+        return expression;
     }
 
     /// <summary>
@@ -353,17 +743,119 @@ public static class ExpressionUtility
         return query;
     }
 
-    private static Expression GetBinaryExpression(MemberExpression left, ConstantExpression right, Operator @operator) => @operator switch
+    private static Expression GetBinaryExpression(
+    Expression left,
+    Expression right,
+    Operator @operator) => @operator switch
     {
+        // Equality
         Operator.Equal => Expression.Equal(left, right),
-        Operator.GreaterThan => Expression.GreaterThan(left, right),
-        Operator.LowerThan => Expression.LessThan(left, right),
-        Operator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(left, right),
-        Operator.LowerThanOrEqual => Expression.LessThanOrEqual(left, right),
         Operator.NotEqual => Expression.NotEqual(left, right),
-        Operator.Contains => Expression.Call(left, typeof(string).GetMethod("Contains", [typeof(string)]), right),
-        _ => throw new JingetException($"Operator of type {@operator} is not supported by Jinget!"),
+
+        // Comparison
+        Operator.GreaterThan => Expression.GreaterThan(left, right),
+        Operator.GreaterThanOrEqual => Expression.GreaterThanOrEqual(left, right),
+        Operator.LowerThan => Expression.LessThan(left, right),
+        Operator.LowerThanOrEqual => Expression.LessThanOrEqual(left, right),
+
+        // String operations
+        Operator.Contains => CreateStringCall(left, right, nameof(string.Contains)),
+        Operator.NotContains => Expression.Not(
+            CreateStringCall(left, right, nameof(string.Contains))),
+
+        Operator.StartsWith => CreateStringCall(left, right, nameof(string.StartsWith)),
+        Operator.DoesNotStartWith => Expression.Not(
+            CreateStringCall(left, right, nameof(string.StartsWith))),
+
+        Operator.EndsWith => CreateStringCall(left, right, nameof(string.EndsWith)),
+        Operator.DoesNotEndWith => Expression.Not(
+            CreateStringCall(left, right, nameof(string.EndsWith))),
+
+        // Null checks
+        Operator.IsNull => Expression.Equal(
+            left,
+            Expression.Constant(null, left.Type)),
+
+        Operator.IsNotNull => Expression.NotEqual(
+            left,
+            Expression.Constant(null, left.Type)),
+
+        // Collection membership
+        Operator.In => CreateMembershipExpression(left, right),
+        Operator.NotIn => Expression.Not(CreateMembershipExpression(left, right)),
+
+        // Range: right must represent a two-element collection/array
+        Operator.Between => CreateBetweenExpression(left, right),
+
+        _ => throw new JingetException(
+            $"Operator of type {@operator} is not supported by Jinget!")
     };
+
+    private static Expression CreateStringCall(
+    Expression left,
+    Expression right,
+    string methodName)
+    {
+        if (left.Type != typeof(string) || right.Type != typeof(string))
+        {
+            throw new JingetException(
+                $"Operator '{methodName}' requires string operands.");
+        }
+
+        var overload = typeof(string).GetMethod(
+            methodName,
+            [typeof(string), typeof(StringComparison)]);
+
+        if (overload is null)
+        {
+            throw new JingetException(
+                $"String method '{methodName}' is not supported.");
+        }
+
+        return Expression.Call(
+            left,
+            overload,
+            right,
+            Expression.Constant(StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static Expression CreateMembershipExpression(
+        Expression left,
+        Expression right)
+    {
+        var enumerableType = typeof(IEnumerable<>).MakeGenericType(left.Type);
+
+        if (!enumerableType.IsAssignableFrom(right.Type))
+        {
+            throw new JingetException(
+                $"The In/NotIn operator requires a collection of '{left.Type.Name}' values.");
+        }
+
+        var containsMethod = typeof(Enumerable)
+            .GetMethods()
+            .Single(method =>
+                method.Name == nameof(Enumerable.Contains) &&
+                method.GetParameters().Length == 2)
+            .MakeGenericMethod(left.Type);
+
+        return Expression.Call(containsMethod, right, left);
+    }
+
+    private static Expression CreateBetweenExpression(
+        Expression left,
+        Expression right)
+    {
+        if (right is not NewArrayExpression array ||
+            array.Expressions.Count != 2)
+        {
+            throw new JingetException(
+                "The Between operator requires an array containing exactly two values.");
+        }
+
+        return Expression.AndAlso(
+            Expression.GreaterThanOrEqual(left, array.Expressions[0]),
+            Expression.LessThanOrEqual(left, array.Expressions[1]));
+    }
 
     public static Expression<Func<T, bool>> CreateEqualCondition<T, TValueType>(string propertyName, object value, string parameterName = "Param_0")
     {

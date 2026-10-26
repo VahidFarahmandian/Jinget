@@ -1,4 +1,6 @@
-﻿namespace Jinget.Core.Tests._BaseData;
+﻿using Jinget.Core.Contracts;
+
+namespace Jinget.Core.Tests._BaseData;
 
 public class SampleInterfaceClass : ISampleInterface
 {
@@ -31,7 +33,7 @@ public class PrivateClass
 {
     internal PrivateClass()
     {
-        
+
     }
     public int Property1 { get; set; }
 }
@@ -113,4 +115,43 @@ public class SoapSample
 
     public int Id { get => id; set => id = value; }
     public string Name { get => name; set => name = value; }
+}
+
+public class Employee : BaseEntity<Guid>, IEntity
+{
+    public string? Name { get; set; }
+
+    public EmployeeProfile Profile { get; set; } = new();
+
+    public EmployeeRole Role { get; set; } = new();
+
+    public List<EmployeeOrder> Orders { get; set; } = [];
+}
+
+public class EmployeeProfile
+{
+    public string? Department { get; set; }
+
+    public string? Email { get; set; }
+}
+
+public class EmployeeRole
+{
+    public EmployeeClaim Claim { get; set; } = new();
+
+    public string? Description { get; set; }
+}
+
+public class EmployeeClaim
+{
+    public string? Title { get; set; }
+
+    public string? Code { get; set; }
+}
+
+public class EmployeeOrder
+{
+    public string? Serial { get; set; }
+
+    public decimal Amount { get; set; }
 }
