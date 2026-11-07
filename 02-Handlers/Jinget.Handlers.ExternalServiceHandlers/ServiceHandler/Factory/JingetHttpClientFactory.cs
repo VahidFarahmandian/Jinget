@@ -22,6 +22,8 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
     /// </summary>
     internal TimeSpan? timeout;
 
+    internal string? defaultAuthorizationScheme = "Bearer";
+
     /// <summary>
     /// Creates a configured HttpClient instance.
     /// </summary>
@@ -29,8 +31,16 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
     private HttpClient CreateHttpClient()
     {
         var httpClient = httpClientFactory.CreateClient(clientName);
-        if (!string.IsNullOrWhiteSpace(baseUri)) httpClient.BaseAddress = new Uri(baseUri);
-        if (timeout.HasValue) httpClient.Timeout = timeout.Value;
+        if (!string.IsNullOrWhiteSpace(baseUri))
+        {
+            httpClient.BaseAddress = new Uri(baseUri);
+        }
+
+        if (timeout.HasValue)
+        {
+            httpClient.Timeout = timeout.Value;
+        }
+
         httpClient.DefaultRequestHeaders.ConnectionClose = false;
         return httpClient;
     }
@@ -48,17 +58,58 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
     /// <param name="requestHeaders">The request headers.</param>
     /// <param name="httpClient">The HttpClient instance.</param>
     /// <returns>The set request headers.</returns>
-    private static Dictionary<string, string> SetRequestHeaders(Dictionary<string, string>? requestHeaders, HttpClient httpClient)
+    private Dictionary<string, string> SetRequestHeaders(
+        Dictionary<string, string>? requestHeaders,
+        HttpClient httpClient)
     {
         httpClient.DefaultRequestHeaders.Clear();
-        requestHeaders ??= new Dictionary<string, string> { { "Content-type", "application/json; charset=utf-8" } };
+
+        requestHeaders ??= new Dictionary<string, string>
+        {
+            { "Content-Type", "application/json; charset=utf-8" }
+        };
+
         foreach (var header in requestHeaders)
         {
-            if (Not(header.Key.Equals("Authorization", StringComparison.InvariantCultureIgnoreCase))) httpClient.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
-            else if (header.Value.StartsWith("Bearer ", StringComparison.InvariantCultureIgnoreCase)) httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", header.Value[7..]);
-            else if (header.Value.StartsWith("Basic ", StringComparison.InvariantCultureIgnoreCase)) httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", header.Value[6..]);
-            else if (header.Value.StartsWith("Digest ", StringComparison.InvariantCultureIgnoreCase)) httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Digest", header.Value[7..]);
+            if (!header.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase))
+            {
+                httpClient.DefaultRequestHeaders.TryAddWithoutValidation(
+                    header.Key,
+                    header.Value);
+
+                continue;
+            }
+
+            var authorization = header.Value.Trim();
+
+            if (string.IsNullOrWhiteSpace(authorization))
+                continue;
+
+            var separatorIndex = authorization.IndexOf(' ');
+
+            if (separatorIndex > 0)
+            {
+                var scheme = authorization[..separatorIndex];
+                var credentials = authorization[(separatorIndex + 1)..].Trim();
+
+                httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue(scheme, credentials);
+            }
+            else if (!string.IsNullOrWhiteSpace(defaultAuthorizationScheme))
+            {
+                httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue(
+                        defaultAuthorizationScheme,
+                        authorization);
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.TryAddWithoutValidation(
+                    header.Key,
+                    authorization);
+            }
         }
+
         return requestHeaders;
     }
 
@@ -78,7 +129,14 @@ public class JingetHttpClientFactory(IHttpClientFactory httpClientFactory)
         using var multipartFormContent = new MultipartFormDataContent();
         if (fileInfos is not null)
         {
-            foreach (var item in fileInfos) multipartFormContent.Add(new ByteArrayContent(await File.ReadAllBytesAsync(item.FullName)), item.Name, item.Name);
+            foreach (var item in fileInfos)
+            {
+                multipartFormContent.Add(
+                    new ByteArrayContent(
+                        await File.ReadAllBytesAsync(item.FullName, cancellationToken)),
+                    item.Name,
+                    item.Name);
+            }
         }
         return await UploadFilesAsync(requestUrl, multipartFormContent, requestHeaders, cancellationToken);
     }

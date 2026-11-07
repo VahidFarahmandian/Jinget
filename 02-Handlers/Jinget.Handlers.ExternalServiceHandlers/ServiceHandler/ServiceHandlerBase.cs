@@ -17,12 +17,18 @@ public abstract class ServiceHandlerBase
     /// </summary>
     /// <param name="baseUri">The base URI for the HttpClient.</param>
     /// <param name="timeout">The timeout for HTTP requests.</param>
-    protected ServiceHandlerBase(IServiceProvider serviceProvider, string baseUri, string clientName = "jinget-client", TimeSpan? timeout = null)
+    protected ServiceHandlerBase(
+        IServiceProvider serviceProvider,
+        string baseUri,
+        string clientName = "jinget-client",
+        TimeSpan? timeout = null,
+        string? defaultAuthorizationScheme = "Bearer")
     {
         HttpClientFactory = serviceProvider.GetRequiredService<JingetHttpClientFactory>();
         HttpClientFactory.clientName = clientName;
         HttpClientFactory.baseUri = baseUri;
         HttpClientFactory.timeout = timeout;
+        HttpClientFactory.defaultAuthorizationScheme = defaultAuthorizationScheme;
     }
 }
 
