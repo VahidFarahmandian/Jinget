@@ -8,6 +8,11 @@ jobs:
   releasePreview:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    
+    permissions:
+      id-token: write
+      contents: read
+      
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -30,7 +35,7 @@ jobs:
       uses: NuGet/login@v1
       id: login
       with:
-        user: VahidFarahmandian
+        user: vfarahmandian
         
     - name: Publish the package
       run: dotnet nuget push ./artifacts/**.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{steps.login.outputs.NUGET_API_KEY}} --skip-duplicate
